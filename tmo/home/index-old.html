@@ -1,0 +1,345 @@
+﻿<!--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>果林众创空间</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="云计算，互联网+，互联网，大众创业，万众创新，高新孵化器" />
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+    <!-- Custom Theme files -->
+    <link href="css/style.css" rel='stylesheet' type='text/css' />
+    <script src="js/jquery.min.js"> </script>
+
+    <script src="/xbase.js/jquery.min.js"></script>
+    <script src="/xbase.js/jquery.xbase.js"></script>
+    <script src="/xbase.js/jquery.xbase.form.js"></script>
+    <script src="/xbase.js/jquery.xbase.jsonform.js"></script>
+
+    <!--web-fonts-->
+    <link href='css/font.css' rel='stylesheet' type='text/css'>
+    <!--//web-fonts-->
+</head>
+<body>
+    <!--start-header-->
+    <div id="home" class="header">
+        <!--logo-->
+        <div class="header-top">
+            <div class="container">
+                <!--top-nav-->
+                <div class="top-nav">
+                    <span class="menu"></span>
+                    <ul>
+                        <li wbo="dspt_navbar.rows" wbo-ctrl="jsonList" name="nav"><a wbo-bind="nav.Url" wbo-attr="{innerHTML:'Name'}" href="index.html">Home</a></li>
+                        <div class="clearfix"></div>
+                    </ul>
+                </div>
+                <div class="clearfix"></div>
+                <!-- script-for-menu -->
+                <script>
+                    $(document).ready(function () {
+                        $("span.menu").click(function () {
+                            $(".top-nav ul").slideToggle(200);
+                        });
+                    });
+                </script>
+            </div>
+            <!--End-top-nav-script-->
+            <div class="clearfix"></div>
+        </div>
+        <!--/header-->
+    </div>
+    <!--start-slider-->
+    <div class="slider-bg">
+        <div class="side wow bounceInRight" data-wow-delay="0.7s">
+            <div id="top" class="callbacks_container">
+                <ul class="rslides" id="slider4" wbo="dspt_article.rows" wbo-query="pType:'2'" name="topArt" wbo-ctrl="jsonList">
+                    <li wbo-bind="topArt.item">
+                        <img src="images/bg1.jpg" wbo-bind="topArt.CoverPicture" class="img-responsive" alt="" />
+                        <div class="caption1">
+                            <div class="logo">
+                                <a href="index.html">
+                                    <h1>果林<span>众创空间</span></h1>
+                                </a>
+                            </div>
+                            <h2 wbo-bind="topArt.Title">BEST RECIPES WITH
+											BEST INGREDIENTS</h2>
+                            <p wbo-bind="topArt.Summary">
+                                We offer the best Services in our Restarant.<p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--- banner Slider starts Here --->
+    <script src="js/responsiveslides.min.js"></script>
+    <script>
+        // You can also use "$(window).load(function() {"
+        $(function () {
+            // Slideshow 4
+            $("#slider4").responsiveSlides({
+                auto: true,
+                pager: true,
+                nav: true,
+                speed: 500,
+                namespace: "callbacks",
+                before: function () {
+                    $('.events').append("<li>before event fired.</li>");
+                },
+                after: function () {
+                    $('.events').append("<li>after event fired.</li>");
+                }
+            });
+
+        });
+    </script>
+    <!----//End-slider-script---->
+    <div class="clearfix"></div>
+    </div>
+		<!--start-welcome-->
+    <div class="welcome-section">
+        <div class="container" wbo="dspt_article.rows?pType=3" wbo-ctrl="jsonList" name="shopArt" fixed-list="true">
+            <div class="wel-grid" wbo-bind="shopArt.item">
+                <div class="col-md-4 welcome-text">
+                    <h3 wbo-bind="shopArt.Title">Welcome</h3>
+                    <h4 wbo-bind="shopArt.SubTitle">TO RESTAURANT!</h4>
+                    <p wbo-bind="shopArt.Summary">Lorem ipsum dolor sit amet conse ctetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                </div>
+                <div class="col-md-8 welcome-img">
+                    <img wbo-bind="shopArt.CoverPicture" src="images/img_03.jpg" class="img-responsive" alt="" />
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="about-grid" wbo-bind="shopArt.item">
+                <div class="col-md-4 about-img">
+                    <img wbo-bind="shopArt.CoverPicture" src="images/img_02.jpg" class="img-responsive" alt="" />
+                </div>
+                <div class="col-md-8 about-text">
+                    <h3 wbo-bind="shopArt.Title">About</h3>
+                    <h4 wbo-bind="shopArt.SubTitle">OUR RESTAURANT!</h4>
+                    <p wbo-bind="shopArt.Summary">Lorem ipsum dolor sit amet conse ctetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+    <!--start-team-->
+    <div class="team-section">
+        <div class="container">
+            <div class="team">
+                <div class="col-md-4 team-left">
+                    <h3>团队</h3>
+                </div>
+                <div class="col-md-8 team-right">
+                    <ul class="ch-grid">
+                        <li>
+                            <div class="ch-item ch-img-1">
+                                <div class="ch-info">
+                                    <h3>Brainiac</h3>
+                                    <p>by Daniel Nyari <a href="#">View on Dribbble</a></p>
+                                </div>
+                            </div>
+                            <h4>MICHAEL </h4>
+                            <p>Nulla facilisi. </p>
+                            <a class="more" href="#">More Info </a>
+                        </li>
+                        <li>
+                            <div class="ch-item ch-img-2">
+                                <div class="ch-info">
+                                    <h3>Vision</h3>
+                                    <p>by Daniel Nyari <a href="#">View on Dribbble</a></p>
+                                </div>
+                            </div>
+                            <h4>ADRIANA</h4>
+                            <p>Nulla facilisi. </p>
+                            <a class="more" href="#">More Info </a>
+                        </li>
+                        <li>
+                            <div class="ch-item ch-img-3">
+                                <div class="ch-info">
+                                    <h3>Cylon</h3>
+                                    <p>by Daniel Nyari <a href="#">View on Dribbble</a></p>
+                                </div>
+                            </div>
+                            <h4>ADRIANA </h4>
+                            <p>Nulla facilisi</p>
+                            <a class="more" href="#">More Info </a>
+                        </li>
+                        <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <!--start-blog-->
+    <div class="blog-section">
+        <div class="container">
+            <h3>入驻企业</h3>
+            <div class="blog">
+                <div class="col-md-4 blog-text">
+                    <h5>THU 14 May, 2015</h5>
+                    <a href="single.html">
+                        <h4>EXCEPTEUR SINT OCCAECAT CUPIDATAT NON</h4>
+                    </a>
+                    <p>Lorem ipsum dolor sit amet conse ctetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                </div>
+                <div class="col-md-8 welcome-img">
+                    <a href="single.html" class="mask">
+                        <img src="images/b2.jpg" alt="image" class="img-responsive zoom-img"></a>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="blog">
+                <div class="col-md-4 blog-text two">
+                    <h5>THU 14 May, 2015</h5>
+                    <a href="single.html">
+                        <h4>LOREM IPSUM DOLOR SIT AMET CONSE</h4>
+                    </a>
+                    <p>Lorem ipsum dolor sit amet conse ctetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                </div>
+                <div class="col-md-8 blog-img two">
+                    <a href="single.html" class="mask">
+                        <img src="images/b3.jpg" alt="image" class="img-responsive zoom-img"></a>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="blog">
+                <div class="col-md-4 blog-text">
+                    <h5>THU 14 May, 2015</h5>
+                    <a href="single.html">
+                        <h4>EXCEPTEUR SINT OCCAECAT CUPIDATAT NON</h4>
+                    </a>
+                    <p>Lorem ipsum dolor sit amet conse ctetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                </div>
+                <div class="col-md-8 welcome-img">
+                    <a href="single.html" class="mask">
+                        <img src="images/b1.jpg" alt="image" class="img-responsive zoom-img"></a>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+    <!--gallery-->
+    <div class="gallery">
+        <div class="container">
+            <h3>画廊</h3>
+            <div class="portfolio-bottom">
+                <div class="gallery-one">
+                    <div class="col-md-3 gallery-left">
+                        <a href="images/g1.jpg" class=" mask b-link-stripe b-animate-go   swipebox" title="Image Title">
+                            <img src="images/g1.jpg" alt="" class="img-responsive zoom-img" />
+                        </a>
+                    </div>
+                    <div class="col-md-3 gallery-left">
+                        <a href="images/g2.jpg" class=" mask b-link-stripe b-animate-go   swipebox" title="Image Title">
+                            <img src="images/g2.jpg" alt="" class="img-responsive zoom-img" />
+                        </a>
+                    </div>
+                    <div class="col-md-3 gallery-left">
+                        <a href="images/g4.jpg" class=" mask b-link-stripe b-animate-go   swipebox" title="Image Title">
+                            <img src="images/g4.jpg" alt="" class="img-responsive zoom-img" />
+                        </a>
+                    </div>
+                    <div class="col-md-3 gallery-left">
+                        <a href="images/g3.jpg" class=" mask b-link-stripe b-animate-go   swipebox" title="Image Title">
+                            <img src="images/g3.jpg" alt="" class="img-responsive zoom-img" />
+                        </a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--swipebox -->
+    <link rel="stylesheet" href="css/swipebox.css">
+    <script src="js/jquery.swipebox.min.js"></script>
+    <script type="text/javascript">
+        jQuery(function ($) {
+            $(".swipebox").swipebox();
+        });
+    </script>
+    <!--//swipebox Ends -->
+    <!--/start-footer-->
+    <div class="footer">
+        <div class="container">
+            <div class="col-md-3 footer-grid">
+                <div class="logo two">
+                    <a href="index.html">
+                        <h3>果林<span>众创</span></h3>
+                    </a>
+                </div>
+            </div>
+            <div class=" col-md-3 footer-grid footer-grid2">
+                <div class="bottom-nav">
+                    <h4>导航</h4>
+                    <ul wbo="dspt_navbar.rows" wbo-ctrl="jsonList" name="nav1">
+                        <li wbo-bind="nav1.item"><a wbo-bind="nav1.Url" wbo-attr="{innerHTML:'Name'}" class="active" href="index.html">Home</a></li>
+                        <div class="clearfix"></div>
+                    </ul>
+                </div>
+            </div>
+            <div class=" col-md-3 footer-grid">
+                <div class="Office Address">
+                    <h4>地址</h4>
+                    <ul class="bottom-icons">
+                        <li><a class="home" href="#"><span></span></a>昆明市经济开发区</li>
+                        <li><a class="mail" href="mailto:info@example.com"><span></span>bill@w3ccloud.com</a></li>
+                        <li><a class="mbl" href="#"><span></span></a>18687517071</li>
+                        <div class="clearfix"></div>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-3 footer-grid">
+                <h4>建议反馈</h4>
+                <div class="support">
+                    <input type="text" class="text" value="请在这里输入你的建议" onfocus="this.value = '';" onblur="if (this.value == '请在这里输入你的建议') {this.value = '请在这里输入你的建议';}">
+                    <input type="submit" value="提交" class="botton">
+                    <p>果林众创空间将尽快回复的建议 .</p>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="copy-right">
+        <div class="container">
+            <p>Copyright &copy; 2015 All Rights Reserved Design by <a href="http://w3layouts.com/">W3layouts</a> </p>
+        </div>
+
+    </div>
+    <!--start-smoth-scrolling-->
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+            $(".scroll").click(function (event) {
+                event.preventDefault();
+                $('html,body').animate({ scrollTop: $(this.hash).offset().top }, 1000);
+            });
+        });
+    </script>
+    <!--start-smooth-scrolling-->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            /*
+            var defaults = {
+                containerID: 'toTop', // fading element id
+                containerHoverID: 'toTopHover', // fading element hover id
+                scrollSpeed: 1200,
+                easingType: 'linear' 
+            };
+            */
+
+            $().UItoTop({ easingType: 'easeOutQuart' });
+
+        });
+    </script>
+    <a href="#home" id="toTop" class="scroll" style="display: block;"><span id="toTopHover" style="opacity: 1;"></span></a>
+
+</body>
+</html>

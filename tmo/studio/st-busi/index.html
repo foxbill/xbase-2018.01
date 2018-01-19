@@ -1,0 +1,557 @@
+﻿<html>
+<head>
+    <title>xbase 可视化开发平台 </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+
+    <link href="../css/style.css" rel="stylesheet" type="text/css">
+    <link href="css/studio.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="../../jquery-easyui-1.4.3/themes/metro/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../jquery-easyui-1.4.3/themes/icon.css">
+    <link rel="stylesheet" href="../../plug/ckeditor/samples/sample.css">
+
+
+
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../jquery-easyui-1.4.3/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="../../xbase.js/control.js"></script>
+
+    <script src="../../plug/ckeditor/ckeditor.js"></script>
+    <script src="../../plug/ckeditor/samples/sample.js"></script>
+
+    <!--全局变量-->
+    <script type="text/javascript" id="Const">
+        var PROP_NAME = {
+            dataType: "数据种类",
+            dataMethod: "取数方法",
+            dataInst: "数据源",
+            dataItem: "数据项",
+            elTage: "标记",
+            id: "id",
+            name: "name",
+            className: "class",
+            style: "style"
+        }
+        var PROP_GROUP = {
+            element: "元素",
+            data: "数据",
+            event: "事件活动"
+        }
+
+        var WBPS_SCRIPT_ID = "wpbs";
+        var WBPS_SCRIPT_SRC = "wbps.xjs";
+
+        var editor;
+        var pSeldEl;
+        var propEditor;
+        var pPath;
+
+        function saveFile(name) {
+            var fi = {};
+            fi.FileName = name;
+            fi.Charset = editor.document.$.charset;
+            fi.Data = editor.getData();
+            if (!$.rCall("SiteAdmin.saveFile", { file: fi })) {
+                $.messager.alert("提示", "文件保存成功");
+                pPath = name;
+                $(spMsg).valu(pPath);
+            }
+        }
+
+
+        function test() {
+            var editor = setEditorData(PROP_NAME.dataItem, [{ text: 'java', value: 'Java' }, { text: 'ruby', value: 'ruby' }]);
+        }
+
+    </script>
+
+    <script type="text/javascript">
+
+        /***
+        *页面组件初始化
+        ***/
+        $(function () {
+            editor = CKEDITOR.replace('textPageEditor', {
+                fullPage: true,
+                allowedContent: true,
+                extraPlugins: 'wysiwygarea',
+                removePlugins: 'resize'
+            });
+            editor.on('selectionChange', function (evt) {
+
+                var se = evt.data.selection.getSelectedElement();
+                if (!se) {
+                    var ranges = evt.data.selection.getRanges();
+                    var range = ranges[0];
+                    if (ranges.length > 1 || range.startContainer.type == 3)
+                        se = range.startContainer.getParent();
+                    else
+                        se = range.startContainer;
+
+
+                    //var range = ranges[0];
+                    //se = range.root;
+                    //se = evt.data.selection.getStartElement();
+                    // if (se)
+                    //     se = se.getParent();
+                }
+                pSeldEl = se
+                propEditor.getElProp(pSeldEl);
+
+                // alert(element.getName());
+            });
+
+            editor.on('save', function (evt) {
+                if (!pPath) {
+                    $(divFileDlg).dialog("open", true);
+                }
+                else
+                    saveFile(pPath);
+                evt.cancel();
+            });
+            //alert(editor.container.getName());
+
+            editor.on('loaded', function (evt) {
+                var w = $(divEditContainer).width();
+                var h = $(divEditContainer).height();
+                this.resize(w, h, false);
+            });
+
+            $(ulFileTree).tree({
+                onSelect: function (node) {
+                    if (node.nodeType == 2) {
+                        pPath = node.path;
+                        $(spMsg).valu(pPath);
+                        $.get(node.path + "?" + $.timeVer(), function (data) {
+                            editor.setData(data);
+                        })
+                    }
+                }
+            });
+
+        });
+
+        /***
+        *  负责设置或提取文档元素的数据属性
+        ***/
+        function PropEditor() {
+            var _selEl;
+
+            function getWboEl(el) {
+                var wbo = $(el.$).attr("wbo");
+                if (!wbo && el.getName() != "body") {
+                    var p = el.getParent();
+                    if (p)
+                        return getWboEl(p);
+                }
+                if (wbo)
+                    return el;
+                else
+                    return null;
+            }
+
+            function getElDataProp(el) {
+                var wboEl = getWboEl(el);
+                if (wboEl) {
+                    var wbo = $(wboEl.$).attr("wbo");
+                    var ary = wbo.split(".");
+                    setPropValue(PROP_NAME.dataType, ary.shift());
+
+                    var s1 = ary.shift();
+                    var s2 = ary.shift();
+
+                    if (s2) {
+                        setPropValue(PROP_NAME.dataInst, s1);
+                        setPropValue(PROP_NAME.dataMethod, s2);
+                    }
+                    else if (s1) {
+                        setPropValue(PROP_NAME.dataMethod, s1);
+                    }
+
+                } else {
+                    setPropValue(PROP_NAME.dataType, "");
+                    setPropValue(PROP_NAME.dataInst, "");
+                    setPropValue(PROP_NAME.dataMethod, "");
+                }
+
+                var wbo_bind = $(el.$).attr("wbo-bind");
+                if (wbo_bind) {
+                    var ary = wbo_bind.split(".");
+                    setPropValue(PROP_NAME.dataItem, ary.pop());
+                } else {
+                    setPropValue(PROP_NAME.dataItem, "");
+                }
+
+            }
+
+
+
+            this.getElProp = function (el) {
+                _selEl = el;
+                getElDataProp(el);
+                setPropValue(PROP_NAME.elTage, el.getName());
+                setPropValue(PROP_NAME.id, $(el.$).attr("id"));
+                setPropValue(PROP_NAME.className, $(el.$).attr("class"));
+                setPropValue(PROP_NAME.style, $(el.$).attr("style"));
+            }
+
+            this.bindElField = function (value) {
+                var el = getWboEl(_selEl);
+                if (el && el.$ != _selEl.$)
+                    $(_selEl.$).attr("wbo-bind", value);
+            }
+
+            this.bindElWbo = function (propName, value) {
+                if (!pSeldEl) return;
+                var id = $(pSeldEl.$).attr("id");
+
+                //        if (!id) {
+                //            $.messager.alert("捆绑数据类型的元素必须要有id，请在元素属性中输入id");
+                //            return;
+                //        }
+
+                var wbo = propName == PROP_NAME.dataType ? value : getPropValue(PROP_NAME.dataType);
+                var inst = propName == PROP_NAME.dataInst ? value : getPropValue(PROP_NAME.dataInst);
+                var method = propName == PROP_NAME.dataMethod ? value : getPropValue(PROP_NAME.dataMethod);
+
+                if (inst) wbo += "." + inst;
+                if (method) wbo += "." + method;
+                if (wbo)
+                    $(pSeldEl).attr("wbo", wbo)
+
+            }
+
+        }
+
+        propEditor = new PropEditor();
+        //window.onload = function () {
+        //    //setTimeout(function () { setDataTypeOption() }, 100);
+        //}
+
+        function resizeEditor() {
+            var w = $(divEditContainer).width();
+            var h = $(divEditContainer).height();
+            if (editor) {
+                editor.resize(w - 20, h - 20, false);
+                editor.resize(w, h, false);
+            }
+        }
+
+        function propChange(index, row, changes) {
+            var name = row.name;
+            switch (name) {
+
+            }
+        }
+
+        var gRowIndexies;
+        function getPropRow(propName) {
+            if (!gRowIndexies && gRowIndexies != 0) {
+                gRowIndexies = new Object();
+                var rows = $(tbEleProp).propertygrid("getRows");
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i]
+                    gRowIndexies[row.name] = i;
+                }
+            }
+            return gRowIndexies[propName];
+        }
+
+        function setPropValue(propName, value) {
+
+            var index = getPropRow(propName);
+            var row = $(tbEleProp).propertygrid("getRows")[index];
+            row.value = value;
+            $(tbEleProp).propertygrid("refreshRow", index);
+            var row = $(tbEleProp).propertygrid("getRows")[index];
+
+        }
+
+        function getPropValue(propName) {
+            var index = getPropRow(propName);
+            var row = $(tbEleProp).propertygrid("getRows")[index];
+            return row.value;
+        }
+
+
+
+
+        function setEditorData(propName, data) {
+            var index = getPropRow(propName);
+            var col = $(tbEleProp).propertygrid('getColumnOption', "value");
+            var row = $(tbEleProp).propertygrid('getRows')[index];
+            row.editor.options.data = data;
+            //            col.editor = row.editor;
+
+            //					leaveCurrRow();
+            //stopEditing(currTarget);
+            //$(this).datagrid('beginEdit', index);
+            //          return $(tbEleProp).propertygrid('getEditor', { index: index, field: 'value' });//[0].target.focus();
+            //opts.editIndex = index;
+        }
+
+
+
+        function kvToEasyData(kv) {
+            var data = [];
+            for (value in kv) {
+                var text = kv[value];
+                data.push({ text: text, value: value });
+            }
+            return data;
+        }
+
+
+        function doDataTypeChange(dataType) {
+
+            var tables;
+            if (dataType == "table") {
+                tables = $.rCall("DataExplore.getTables");
+            }
+
+            if (dataType == "ds") {
+                tables = $.rCall("DsExplore.getDsNames");
+            }
+
+
+
+            if (dataType == "table" || dataType == "ds") {
+                setEditorData(PROP_NAME.dataInst, kvToEasyData(tables));
+                setEditorData(PROP_NAME.dataMethod, [{
+                    text: "一页", value: "data"
+                }, {
+                    text: "列表", value: "rows"
+                }, {
+                    text: "一行", value: "row"
+                }]);
+            }
+        }
+
+        function doDataInstChange(dsName) {
+
+            var dataType = getPropValue(PROP_NAME.dataType);
+
+            if (dataType == "ds" || dataType == "table") {
+                var cols = $.rCall(dsName + ".cols", { dsId: dsName });
+                var cldNodes = [];
+
+
+
+                for (var i = 0; i < cols.length; i++) {
+                    var col = cols[i];
+                    if (!col.title)
+                        col.title = col.field;
+                    cldNodes.push({ id: col.field, text: col.title });
+                }
+
+                var nodes = [{
+                    id: "item",
+                    text: '行',
+                    children: cldNodes
+                }];
+
+                setEditorData(PROP_NAME.dataItem, nodes);
+            };
+        }
+
+
+        function onPropChange(index, propName, value, row) {
+            if (propName == PROP_NAME.dataType)
+                doDataTypeChange(value)
+            if (propName == PROP_NAME.dataInst) {
+                doDataInstChange(value);
+            }
+
+            if (row.group == PROP_GROUP.data) {
+
+                if (propName != PROP_NAME.dataItem)
+                    propEditor.bindElWbo(propName, value);
+                else
+                    propEditor.bindElField(value);
+
+
+            } else if (row.group == PROP_GROUP.element) {
+                $(pSeldEl.$).attr(propName, value);
+            }
+        }
+
+
+
+        function onClickCell(index, field, value) {
+            var col = $(this).datagrid('getColumnOption', "value");
+            var row = $(this).datagrid('getRows')[index];
+            col.editor = row.editor;
+
+            $(this).datagrid('beginEdit', index);
+            var editor = $(tbEleProp).propertygrid('getEditor', { index: index, field: 'value' });
+
+            if (editor.type == "text") {
+                editor.target.change(function (e) {
+                    alert($(e.target).val());
+                });
+            } else {
+                editor.target[editor.type]({
+                    onChange: function (n, o) {
+                        onPropChange(index, row.name, n, row);
+                    }
+                })
+            }
+            editor.target.focus();
+        }
+
+    </script>
+
+    <script type="text/javascript">
+        //保存文件对话框
+        $(function () {
+
+            var filePath = "/";
+            var nodeType;
+            var curNode;
+
+            function getName(s) {
+                return s.substr(s.lastIndexOf("/") + 1);
+            }
+            function getPath(s) {
+                return s.substr(0, s.lastIndexOf("/") + 1);
+            }
+
+            $(dlgFileTree).tree({
+                onSelect: function (node) {
+                    if (node.nodeType == 2) {
+                        nodeType = "file";
+                        filePath = getPath(node.path);
+                        $(dlgFileName).val(getName(node.path));
+                    } else {
+                        nodeType = "folder";
+                        filePath = node.path + "/";
+                        curNode = Node;
+
+                    }
+                    $(spanDlgPath).html(filePath);
+                }
+            });
+
+            $(btnFileDlgCancel).click(function () {
+                $('#divFileDlg').dialog('close');
+            });
+
+            $(btnFileDlgSave).click(function () {
+                var name = $(dlgFileName).val();
+                if (!name) {
+                    $.messager.alert("提示", "请输入文件名");
+                    return;
+                }
+
+                name = name.toLowerCase()
+                if (name.indexOf(".html") < 0 && name.indexOf(".htm") < 0)
+                    name += ".html";
+
+                name = filePath + name;
+                if ($.rCall("SiteAdmin.fileExists", { path: name }) == true) {
+                    $.messager.ok = "继续";
+                    $.messager.cancel = "取消";
+                    $.messager.confirm("提示", "文件已经存在，是否覆盖原来的文件", function (r) {
+                        if (r) {
+                            saveFile(name);
+                            $('#divFileDlg').dialog('close');
+                        }
+                    });
+                }
+                else {
+                    saveFile(name);
+                    $('#divFileDlg').dialog('close');
+                }
+
+            });
+        });
+
+    </script>
+
+</head>
+<body class="easyui-layout" style="width: 100%; height: 100%">
+
+    <div id="divFileDlg" class="easyui-dialog" data-options="{closed:true}" title="保存文件" style="width: 400px; height: 500px;">
+        <div class="easyui-layout" fit="true" data-options="{toolbar:'#divFileDlgBB'}" style="border: none">
+            <div data-options="region:'south'" style="height: 62px; padding: 5px; border: none">
+                <div style="border-top: 1px solid #ebe2e2"></div>
+                <div style="margin: 2px">路径：<span id="spanDlgPath"></span></div>
+                <div style="margin: 2px">文件：<input id="dlgFileName" type="text" style="width: 200px" /><span id="btnFileDlgSave" class="easyui-linkbutton" style="margin-left: 5px">保存</span><span id="btnFileDlgCancel" class="easyui-linkbutton" style="margin-left: 5px">取消</span></div>
+            </div>
+            <div data-options="region:'center'" style="border: none">
+                <ul id="dlgFileTree" class="easyui-tree" data-options="url:'SiteAdmin.getFileNodes.call',method:'post'"></ul>
+            </div>
+        </div>
+    </div>
+
+
+    <div data-options="region:'north'" style="height: 60px; background-color: #485F7E"></div>
+    <div data-options="region:'south',split:true" style="height: 25px;">
+        <span id="spMsg"></span>
+    </div>
+    <div data-options="region:'east',split:true" title="文件" style="width: 200px;">
+        <div class="easyui-tabs" data-options="fit:true,border:false,plain:true">
+            <div title="项目" style="padding: 2px">
+                <ul id="ulFileTree" class="easyui-tree" data-options="url:'SiteAdmin.getFileNodes.call',method:'post'"></ul>
+            </div>
+            <div title="模板" style="padding: 5px">
+            </div>
+        </div>
+
+    </div>
+    <div data-options="region:'west',split:true" title="工具" style="width: 280px;">
+        <div class="easyui-accordion" data-options="fit:true,border:false">
+            <div title="元素设置" style="padding: 0px; border: none" data-options="selected:true,border:false">
+                <table id="tbEleProp" style="border: none" class="easyui-propertygrid" fit="true" data-options="
+                url: 'element-prop.json',
+                method: 'get',
+                showGroup: true,
+                scrollbarSize: 0,
+                columns: mycolumns,
+                onAfterEdit:propChange,
+                onClickCell:onClickCell
+            ">
+                </table>
+                <script>
+                    var mycolumns = [[
+                        { field: 'name', title: '设置项', width: 120 },
+                             { field: 'value', title: '设置', width: 158 }
+                    ]];
+                </script>
+            </div>
+            <div title="常用插件" style="padding: 10px;">
+                <button onclick="test()">测试</button>
+            </div>
+            <div title="数据资源" style="padding: 10px">
+                content3
+            </div>
+        </div>
+    </div>
+    <div data-options="region:'center'">
+        <div class="easyui-tabs" data-options="fit:true,border:false,plain:true">
+            <div id="divEditContainer" title="页面" style="padding: 2px" data-options="onResize:resizeEditor">
+                <form method="post" action="SiteAdmin.Save">
+                    <textarea style="width: 100%; height: 100%" id="textPageEditor" fit="true" name="page"></textarea>
+                </form>
+            </div>
+            <div title="预览" style="padding: 5px">
+                <table class="easyui-datagrid"
+                    data-options="url_:'datagrid_data1.json',method:'get',singleSelect:true,fit:true,fitColumns:true">
+                    <thead>
+                        <tr>
+                            <th data-options="field:'itemid'" width="80">Item ID</th>
+                            <th data-options="field:'productid'" width="100">Product ID</th>
+                            <th data-options="field:'listprice',align:'right'" width="80">List Price</th>
+                            <th data-options="field:'unitcost',align:'right'" width="80">Unit Cost</th>
+                            <th data-options="field:'attr1'" width="150">Attribute</th>
+                            <th data-options="field:'status',align:'center'" width="50">Status</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

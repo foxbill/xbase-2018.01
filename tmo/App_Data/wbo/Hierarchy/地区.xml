@@ -1,0 +1,1 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Hierarchy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><table><name>city</name></table><levels><Level><name>1</name><column>city_provinceId</column></Level><Level><name>2</name><column>city_name</column></Level></levels><primaryKey>city_id</primaryKey><hasAll>true</hasAll></Hierarchy>

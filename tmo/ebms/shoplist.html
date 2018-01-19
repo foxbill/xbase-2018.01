@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0 minimal-ui" />
+    <link rel="stylesheet" href="/boostrap/css/bootstrap.min.css">
+    <script src="/xbase.js/jquery.min.js"></script>
+    <script src="/boostrap/js/bootstrap.min.js"></script>
+    <script src="/xbase.js/jquery.xbase.form.js"></script>
+    <script src="/xbase.js/jquery.xbase.js"></script>
+    <script src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script src="scripts/jk.pagetool.js"></script>
+    <script src="scripts/jk.date.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script src="scripts/jk.uploadimg.js"></script>
+    <title>店铺管理</title>
+    <style>
+        .art-content {
+            padding: 10px;
+        }
+
+        section {
+            padding: 10px 10px;
+            border: 1px solid #eee;
+            margin: 10px 0px;
+            background-color: white;
+        }
+
+        .art-date {
+            color: gray;
+            font-size: 1.2rem;
+        }
+
+        .art-img {
+            margin: 5px auto;
+        }
+
+        .art-content {
+            color: gray;
+        }
+
+        .art-tlt-font {
+            font-weight: bold;
+            font-size: 2.0rem;
+        }
+
+        .art-more {
+            font-weight: normal;
+            font-size: 1.2rem;
+        }
+
+        .artType-item-title {
+            cursor: pointer;
+        }
+
+        .artType-item-name {
+            width: 100%;
+            display: inline-block;
+        }
+
+        .sidebar-form {
+            max-width: 350px;
+            width: 100%;
+            margin-right: 30px;
+            margin-bottom: 10px;
+        }
+
+        .shop-img {
+            max-width: 150px;
+            min-height: 150px;
+            cursor: pointer;
+        }
+
+        .imgDiv {
+            height: 150px;
+        }
+    </style>
+
+    <script>
+        $(function () {
+
+            //$(".art-edit").click(function () {
+            //    // body...
+            //    var ptd = $(this).parents(".artitem");
+            //    var obj = ptd.find(".artid");
+
+            //    var parmets = "xbase_ds_name=" + ds + "&ID=" + obj.val()
+            //    window.location.href = url + "?" + parmets;
+
+            //});
+
+
+            //$(".art-adds").click(function () {
+            //    // body...
+            //    var parmets = "xbase_ds_name=" + ds + "&operator=add";
+            //    window.location.href = url + "?" + parmets;
+            //});
+
+            $(".shop-add").click(function () {
+                operator = "add";
+                $("#picBack").attr("src", []);
+                $("#picLogo").attr("src", []);
+                $("#shopForm").form('reset');
+                $("#myModal .modal-title").html("添加店铺");
+                $("#myModal").modal("show");
+            })
+
+
+            //initPageTool(5,1);
+        })
+        var user = $.rCall("LoginUser");
+        var url = "articleTypeEdit.html";
+        var ds = "pt_shop";
+        var operator = "add";
+        function edit(e) {
+            var ptd = $(e).parents(".artitem");
+            var obj = ptd.find(".shopid");
+            var objds = $.rCall(ds + ".data", { page: 1, rows: 1, filterRules: [{ field: 'ID', op: 'equal', value: obj.val() }] });
+            var data = objds.rows[0];
+            $("#pk_ID").val(data.ID);
+            $("#shopForm").form('load', data);
+            $("#picBack").attr("src", data.Background);
+            $("#picLogo").attr("src", data.Logo);
+            $("#myModal .modal-title").html("编辑店铺");
+            operator = "update";
+            $('#myModal').modal('show')
+        }
+
+        function delPt(e) {
+            if (confirm("您确定要删除该项？")) {
+                if (ds != undefined && ds != "") {
+                    var ptd = $(e).parents(".artitem");
+                    var obj = ptd.find(".shopid");
+                    var res = $.rCall(ds + ".delete", { row: { pk_ID: obj.val() } });
+                    if (!res) {
+                        alert("删除成功");
+                        //refresh();
+                        ptd.remove();
+                        articleTypes.ctrl.reload({ page: page, rows: pageSize, filterRules: [{ field: 'Name', op: 'notequal', value: value }] });
+                        showAddShop();
+                    }
+                }
+
+            }
+        }
+
+        function add() {
+            var input =$("#shopForm [name='Name']");
+            if (input.val() == "") {
+                input.parent().addClass("has-error");
+                return;
+            }
+            input.parent().removeClass("has-error");
+            var url = "DataForm." + ds + ".post.wbo?action=add";
+            var date = new Date();
+            var createTime = date.Format("yyyy-MM-dd hh:mm:ss");
+            if (operator != "add") {
+                url = "DataForm." + ds + ".post.wbo?action=edit";
+            }
+            $("#shopForm").form("submit", {
+                url: url,
+                onSubmit: function (param) {
+                    param.CreateTime = createTime;
+                    param.Creater = user.Id;
+                    param.UpdateTime = createTime;
+                },
+                success: function (data) {
+                    if (data && data.Err)
+                        alert(data.Err.Text)
+                    else {
+                        alert("记录已被保存");
+                        //  loadForm();
+
+                        //window.history.back(-1);
+                        $('#myModal').modal('hide')
+                        operator = "add";
+                        $("#myModal .modal-title").html("添加文章类型");
+                        articleTypes.ctrl.reload({ page: page, rows: pageSize, filterRules: [{ field: 'Name', op: 'notequal', value: value }] });
+                        showAddShop();
+                    }
+                }
+            })
+          
+           
+        }
+
+
+
+        function showAddShop() {
+            var total = articleTypes.ctrl.data().total;
+            if (total >= 1) {
+                $(".shop-add").addClass("hidden");
+            } else {
+                $(".shop-add").removeClass("hidden");
+            }
+        }
+
+    </script>
+</head>
+<body>
+    <div class="view" style="padding: 0px 20px;">
+        <p></p>
+
+        <div class="view">
+            <table class="table table-hover" wbo="pt_shop.data" id="articleTypes" name="articleTypes" wbo-params="{ page:1,rows:20}">
+                <caption>
+                    <form action="#" method="get" class="sidebar-form pull-left">
+                        <div class="input-group">
+
+                            <input type="text" name="query" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                                <button type="button" onclick="search()" class="btn btn-default">提交</button>
+                            </span>
+                        </div>
+                    </form>
+                    <button role="button" class="btn btn-info pull-left shop-add">
+                        添加店铺</button>
+                </caption>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>店铺名：</th>
+                        <th>Logo</th>
+                        <th class="hidden-xs">背景图片</th>
+                        <th class="hidden-xs">摘要</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody name="articleTypeRows" wbo-bind="articleTypes.rows">
+                    <tr name="articleTypeRows.item" class="artitem">
+                        <td>
+                            <input type="hidden" name="articleTypeRows.ID" class="shopid">
+                            <input type="checkbox" name="" id="">
+                        </td>
+                        <td name="articleTypeRows.Name"></td>
+                        <td>
+                            <img name="articleTypeRows.Logo" class="shop-img" src="" />
+                        </td>
+                        <td>
+                            <img name="articleTypeRows.Background" class="shop-img" />
+                        </td>
+                        <td class="hidden-xs" name="articleTypeRows.Summary" style="width: 40%;">Bangalore</td>
+                        <td>
+                            <button class="btn btn-primary art-edit" role="button" onclick="edit(this)"><span class="glyphicon glyphicon-edit"></span></button>
+                            <button class="btn btn-danger art-del" role="button" onclick="delPt(this)"><span class="glyphicon glyphicon-remove"></span></button>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+            <div style="height: 50px">
+                <div class="" style="margin-left: 15px;">
+                    <ul class="pagination ">
+                        <li><a href="#">&laquo;</a></li>
+                        <li><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#">&raquo;</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">添加店铺
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" id="shopForm" action="/" method="post" enctype="multipart/form-data">
+                        <input type="text" class="form-control hidden" name="pk_ID" id="pk_ID" placeholder="">
+                        <input type="text" class="form-control hidden" name="Code" id="code" placeholder="">
+                        <div class="form-group">
+                            <label for="name">Logo：</label>
+                            <div class="col-md-12">
+                                <input type="file" name="file_Logo" class="easyui-filebox" id="file_Logo" style="display: none;">
+                                <div class="thumbnail">
+                                    <a href="javascript:;" id="showPanel" onclick="addImage('#file_Logo','#showPanel')" title="添加封面图片" style="width: 100%; min-height: 50px; display: block;">
+                                        <img src="images/addpicture.png" onerror="this.src='images/addpicture.png'" width="100%" id="picLogo" alt="" class="shop-img">
+                                    </a>
+                                </div>
+                                <input type="hidden" name="Logo" id="Logo">
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            <label for="name">背景：</label>
+                            <div class="col-md-12">
+                                <input type="file" name="file_Background" class="easyui-filebox" id="filepicture" style="display: none;">
+                                <div class="thumbnail">
+                                    <a href="javascript:;" id="backPanel" onclick="addImage('#filepicture','#backPanel')" title="添加封面图片" style="width: 100%; min-height: 50px; display: block;">
+                                        <img src="images/addpicture.png" onerror="this.src='images/addpicture.png'" width="100%" id="picBack" alt="" class="shop-img">
+                                    </a>
+                                </div>                             
+                                <input type="hidden" name="Background" id="Background">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">名称：</label>
+                            <input type="text" class="form-control" name="Name" id="Name" placeholder="店铺名称">
+                        </div>
+                        <div class="form-group">
+                            <label for="name">摘要：</label>
+                            <input type="text" class="form-control" name="Summary" id="Summary" placeholder="摘要">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="closeModal" class="btn btn-default"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                    <button type="button" onclick="add()" class="btn btn-primary">
+                        提交
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
+    </div>
+</body>
+<script>
+    $(function () {
+        search();
+        var total = articleTypes.ctrl.data().total;
+       
+        initPage(total);
+        if (total >= 1) {
+            $(".shop-add").addClass("hidden");
+        } else {
+            $(".shop-add").removeClass("hidden");
+
+        }
+        //$("#filepicture").uploadPreview({ width: 90, height: 110, imgDiv: "#picBack" });
+    })
+
+    function initPage(total) {
+        $("ul.pagination").pageTool({
+            datatotal: total, currnum: 1, pagesize: pageSize, jumpPageFunc: function (num) {
+                articleTypes.ctrl.reload({ page: num, rows: pageSize, filterRules: [{ field: 'Name', op: 'contains', value: value }] });
+                page = num;
+            }
+        });
+    }
+    var page = 1;
+    var pageSize = 20;
+    var value = "";
+    function search() {
+        value = $("[name='query']").val();
+        articleTypes.ctrl.reload({ page: 1, rows: pageSize, filterRules: [{ field: 'Name', op: 'contains', value: value }] });
+        var total = articleTypes.ctrl.data().total;
+        initPage(total);
+    }
+</script>
+</html>

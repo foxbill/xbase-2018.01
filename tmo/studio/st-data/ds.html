@@ -1,0 +1,664 @@
+﻿<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+    <meta http-equiv="expires" content="Mon, 23 Jan 1978 20:52:30 GMT" />
+    <title>数据库管理</title>
+    <!--<script type="text/javascript" src="../../xbase.js/tab_control.js"></script>-->
+    <script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tree.jquery.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tab_control.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.form.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.jsonform.js" type="text/javascript"></script>
+    <script src="../../easyui/jquery.easyui.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/easyui.xbase.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/icon.css">
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link href="../css/jqtree.css" rel="stylesheet" type="text/css" />
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <link href="css/studio.css" rel="stylesheet" type="text/css" />
+    <script language="javascript" type="text/javascript">
+
+        var dsName = $.url.queryString["dsName"] == undefined ? null : $.url.queryString["dsName"];
+        var dirOptions = $.rCall("ParameterDirectionCaptions.captions.wbo", null);
+        var dbTypeOptions = $.rCall("DbTypeCaptions.captions.wbo", null);
+
+        var $DsForm;
+        var triggerList;
+        var consList;
+
+        window.onload = function () {
+            var tab = new TabControl([tagField, tagSelectCmd, tagUpdateCmd, tagInsertCmd, tagDeleteCmd, tagCustomerCmd, tagSubTable, tagReference],
+                  [pgField, pgSelectCmd, pgUpdateCmd, pgInsertCmd, pgDeleteCmd, pgCustomerCmd, pgSubTable, pgReference], "onclick", "act");
+            //  $(divDs).autoHight();
+            $(pgField).autoHight();
+            $(pgCustomerCmd).autoHight();
+            $(pgReference).autoHight();
+
+            //  var dsOption = $.rCall("dsExplore.getTree");
+
+            if (dsName)
+                loadDs();
+        }
+
+        function newDs() {
+        }
+
+        function loadDs() {
+
+            $.post("DataExplore.getConnections.wbo", null, function (data) {
+                var ret = $.parseJSON(data);
+                if (ret && ret.Err) {
+                    alert(ret.Err.Text);
+                    return;
+                }
+                $("[name = 'Ds.ConnectionName']").options(ret);
+            });
+            var op = $.rCall("DsExplore.getDataExtandTypes.wbo");
+            $("[name = 'Ds.Fields.ExtendType']").options(op);
+
+
+            $.post("DsExplore.getDsSchema.wbo", { dsId: dsName }, function (data) {
+                var ret = $.parseJSON(data);
+                if (ret && ret.Err)
+                    divDs.innerHTML = ret.Err.Text;
+                $DsForm = $(divDs).jsonForm(ret);
+                dsName = ret.Id;
+            })
+        }
+
+        function btnDeleteDs_onclick() {
+            $.post("DsExplore.deleteDs.wbo", { dsId: dsName }, function (data) {
+                var ret = $.parseJSON(data);
+                if (ret && ret.Err)
+                    alert(ret.Err.Text);
+                else {
+                    parent.window.loadDataTree();
+                    alert("数据源删除成功。");
+                }
+            })
+        }
+
+        function btnEditData_onclick() {
+            window.location = "data-table2.html?" + $.param({ dsName: dsName });
+        }
+
+        function btnUpdateDsSchema_onclick() {
+            var dsSchema = divDs.ctrl.data();
+            var ret = $.rCall("DsExplore.updateDsSchema", {
+                dsId: dsName,
+                dss: dsSchema
+            })
+            if (!ret)
+                alert("数据源更新成功。");
+
+        }
+
+        function chkReadOnlyAll_onclick(el) {
+            $("[name='Ds.Fields.ReadOnly']").valu($(el).valu());
+        }
+
+
+        function chkDisplayAll_onclick(el) {
+            $("[name='Ds.Fields.Visable']").valu($(el).valu());
+        }
+
+        function chkIsInCard_onclick(el) {
+            $("[name='Ds.Fields.IsInCard']").valu($(el).valu());
+
+        }
+
+        function chkIsInForm_onclick(el) {
+
+            $("[name='Ds.Fields.IsInForm']").valu($(el).valu());
+        }
+
+        function onOptionDsChange(newValue, oldValue) {
+            alert(newValue);
+        }
+
+        function onFieldOption_Click(el) {
+            var option = $(el).data("wbo");
+            var form = $(tabFieldOptionForm).jsonForm(option);
+
+            $(divOptionDlg).data("el", el);
+
+            $(divOptionDlg).dialog({
+                title: '选项框设置',
+                width: 450,
+                height: 400,
+                closed: false,
+                cache: false,
+                resizable: true,
+                //      href: 'field-option.html',
+                modal: true
+            });
+            // $(divOptionDlg).dialog('refresh', 'field-option.html');
+            //var ret = window.showModalDialog("field-option.html", option, "dialogHeight:400px;dialogWidth:600px;center:yes;resizable:false"); //
+            // $(el).data("wbo", option);
+        }
+
+
+        /***
+        *  SqlParam dialog
+        ***/
+
+        function doAppendSqlParam() {
+            var row = {
+                Id: "",
+                DataType: 1,
+                DefaultValue: "",
+                Direction: 1
+            };
+
+            $('#tabParamGrid').datagrid('appendRow', row);
+            var editIndex = $('#tabParamGrid').datagrid('getRows').length - 1;
+            //.datagrid('selectRow', editIndex)
+            $('#tabParamGrid').datagrid('beginEdit', editIndex);
+        }
+
+        function deleteSqlParam() {
+            $('#tabParamGrid').datagrid("deleteSel");
+        }
+
+
+        var elParams;
+        function editCmdParams(el) {
+            //pCurJqParam = $(el);
+            elParams = el;
+
+            var rows = el.ctrl.data();   // el.data; // pCurJqParam.data("wbo");
+            $('#tabParamGrid').datagrid({
+                data: {
+                    total: 0,
+                    rows: []
+                }
+            });
+            if (rows && rows.length) {
+                $('#tabParamGrid').datagrid({
+                    data: {
+                        total: rows.length,
+                        rows: rows
+                    }
+                });
+            }
+            $('#dlgSqlParam').dialog('open');
+            $('#tabParamGrid').datagrid("setEditMode", true);
+        }
+
+        function confirmSqlParam() {
+            $('#tabParamGrid').datagrid("endEdit");
+            var rows = $('#tabParamGrid').datagrid("getRows");
+            if (!rows)
+                rows = [];
+            elParams.ctrl.data(rows);
+            $('#dlgSqlParam').dialog('close');
+        }
+
+        function refreshFields() {
+            var req = "Ds";
+            if (dsName)
+                req += "." + dsName;
+            req += "." + "refreshFields"
+            var ret = $.rCall(req);
+            if (!ret)
+                document.location.reload(); //当前页面  
+        }
+
+        function btnAddField_onclick() {
+            tabFieldList.ctrl.addItem();
+        }
+
+
+        var subTable = {};
+        var subTableItem = null;
+
+        function deleteSubTable(el) {
+            tabSubTable.ctrl.removeItem(el.dataForm);
+        }
+
+        function viewSubTable(el) {
+            subTableItem = el.dataForm;
+            subTable = el.data;
+            $(subName).val(subTable.Name);
+            $(subFks).val(subTable.Fks.join("\n"));
+            //tabSubTable.ctrl.addDataItem(subTable);
+            $("#dlgSubTable").dialog("open");
+        }
+
+        function subTableOk() {
+            subTable.Name = $(subName).val();
+            subTable.Fks = $(subFks).val().split("\n");
+
+            if (subTableItem)
+                subTableItem.data(subTable)
+            else
+                tabSubTable.ctrl.addDataItem(subTable);
+            $("#dlgSubTable").dialog("close");
+        }
+
+        function subTableCancel() {
+            $("#dlgSubTable").dialog("close");
+        }
+
+        function btnAddSubTable_onclick() {
+            subTableItem = null;
+            subTable = {}
+            $("#dlgSubTable").dialog("open");
+        }
+    </script>
+</head>
+<body style="overflow: hidden" class="bg-white  pd3">
+    <table class="autosize" id="divDs" name="Ds" width="100%" height="100%" border="0">
+        <tr>
+            <td height="25">
+                <p>
+                    <input id="btnUpdateDsSchema" class="form-btn" type="button" value="保存编辑" onclick="return btnUpdateDsSchema_onclick()" />
+                    <input id="btnRefreshField" type="button" value="刷新字段" onclick="return refreshFields()" /><input
+                        id="btnAddField" class="form-btn" type="button" value="添加字段" onclick="return btnAddField_onclick()" />
+                    <input class="form-btn" id="btnDeleteDs" type="button" value="删除数据源" onclick="return btnDeleteDs_onclick()" /><input
+                        class="form-btn" id="btnEditData" type="button" value="数据维护" onclick="return btnEditData_onclick()" />&nbsp;
+                    <input
+                        class="form-btn" id="btnAddSubTable" type="button" value="添加子表" onclick="return btnAddSubTable_onclick()" />&nbsp;
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td height="55">
+                <table border="0" cellspacing="1" class="dataform" istemplate="1">
+                    <tr>
+                        <td>数据源id
+                        </td>
+                        <td>
+                            <label name="Ds.Id">
+                            </label>
+                        </td>
+                        <td>显示名称
+                        </td>
+                        <td>
+                            <input type="text" name="Ds.Title" id="inptId" value="" />
+                        </td>
+                        <td>连接名
+                        </td>
+                        <td>
+                            <select name="Ds.ConnectionName" id="selConnName">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>每页行数
+                        </td>
+                        <td>
+                            <input type="text" name="Ds.PageSize" />
+                        </td>
+                        <td>&nbsp;&nbsp;
+                        </td>
+                        <td>&nbsp;
+                        </td>
+                        <td>自动增加新行&nbsp;
+                        </td>
+                        <td>
+                            <input type="checkbox" name="Ds.IsAutoNewLine" id="chkIsAutoNewLine">&nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>说明
+                        </td>
+                        <td colspan="5">
+                            <textarea class="text400" name="Ds.Description" id="Description" rows="1"></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td height="20">
+                <dl class="tabpage" style="margin-bottom: 0px">
+                    <dt class="fn-clear"><a href="#" id="tagField" class="act">字段定义</a> <a href="#" id="tagSelectCmd">查询命令</a> <a href="#" id="tagUpdateCmd">更新命令</a> <a href="#" id="tagInsertCmd">插入命令</a>
+                        <a href="#" id="tagDeleteCmd">删除命令</a> <a href="#" id="tagCustomerCmd">自定义命令</a>
+                        <a href="#" id="tagSubTable">子表</a>
+                        <a href="#" id="tagReference">维度表</a>
+                        <div class="control">
+                            收缩
+                        </div>
+                    </dt>
+                </dl>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="pgField" style="display: block; border: none; overflow: auto">
+                    <table border="0" cellpadding="0" cellspacing="1" class="datalist" name="Ds.Fields"
+                        id="tabFieldList">
+                        <tr align="center" list="hr" name="Ds.Fields.head">
+                            <th class="hc">PK
+                            </th>
+                            <th class="hc">字段名
+                            </th>
+                            <th nowrap class="hc">显示名称
+                            </th>
+                            <th nowrap class="hc">显示类型
+                            </th>
+                            <th nowrap class="hc">显示格式
+                            </th>
+                            <th nowrap class="hc">&nbsp;计算公式
+                            </th>
+                            <th nowrap class="hc">默认值
+                            </th>
+                            <th nowrap class="hc">选项
+                            </th>
+                            <th nowrap class="hc">
+                                <input type="checkbox" id="chkReadOnlyAll" onclick="return chkReadOnlyAll_onclick(this)" />只读
+                            </th>
+                            <th nowrap class="hc">
+                                <input type="checkbox" id="chkDisplayAll" onclick="return chkDisplayAll_onclick(this)" />显示
+                            </th>
+                            <th nowrap class="hc">
+                                <input type="checkbox" id="chkIsInForm" onclick="return chkIsInForm_onclick(this)" />表单项
+                            </th>
+                            <th nowrap class="hc">
+                                <input type="checkbox" id="chkIsInCard" onclick="return chkIsInCard_onclick(this)" />标签项
+                            </th>
+                        </tr>
+                        <tbody>
+                            <tr name="Ds.Fields.item">
+                                <td class="ic">
+                                    <input id="Checkbox1" name="Ds.Fields.IsKey" type="checkbox" />
+                                </td>
+                                <td class="ic">
+                                    <input type="text" name="Ds.Fields.Id" id="Ds.Fields.Id" />
+                                </td>
+                                <td class="ic">
+                                    <input type="text" name="Ds.Fields.Title" id="Ds.Fields.Title" />
+                                </td>
+                                <td class="ic">
+                                    <select name="Ds.Fields.ExtendType" id="Ds.Fields.ExtendType">
+                                        <option></option>
+                                    </select>
+                                </td>
+                                <td class="ic" name="d">
+                                    <input name="Ds.Fields.EditFormat" type="text" id="Ds.Fields.EditFormat" />
+                                </td>
+                                <td class="ic" name="e">
+                                    <input name="Ds.Fields.Expression" type="text" id="Ds.Fields.Expression" />
+                                </td>
+                                <td class="ic" name="e">
+                                    <input name="Ds.Fields.DefaultValue" type="text" id="Ds.Fields.DefaultValue" />
+                                </td>
+                                <td class="ic" name="e">
+                                    <input name="Ds.Fields.Option" id="btnFieldOption" type="button" value="..." onclick="onFieldOption_Click(this)"
+                                        style="width: 40px;" />
+                                </td>
+                                <td class="ic" name="e">
+                                    <input type="checkbox" name="Ds.Fields.ReadOnly" id="Ds.Fields.ReadOnly" />
+                                </td>
+                                <td class="ic" name="e">
+                                    <input type="checkbox" name="Ds.Fields.Visable" id="Ds.Fields.Visable" />
+                                </td>
+                                <td class="ic" name="e">
+                                    <input type="checkbox" name="Ds.Fields.IsInForm" />
+                                </td>
+                                <td class="ic" name="e">
+                                    <input type="checkbox" name="Ds.Fields.IsInCard" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <table id="pgSelectCmd" class="LayoutTable" name="Ds.SelectCommand">
+                    <tr valign="middle" height="30">
+                        <td class="LH20 pd5">命令类型
+                            <select name="Ds.SelectCommand.CommandType" id="selSelectType">
+                                <option value="1">Sql语句</option>
+                                <option value="4">存储过程</option>
+                                <option value="512">表</option>
+                            </select>
+                            <input id="btnSelectParams" class="w60" type="button" control="JsonList" name="Ds.SelectCommand.QueryParams"
+                                value="命令参数" onclick="return editCmdParams(this)" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top">
+                            <textarea name="Ds.SelectCommand.CommandText" style="width: 100%; height: 100%; border: none">  select </textarea>
+                        </td>
+                    </tr>
+                </table>
+                <table id="pgUpdateCmd" class="LayoutTable" name="Ds.UpdateCommand">
+                    <tr valign="middle" height="30">
+                        <td class="LH20 pd5">命令类型
+                            <select name="Ds.UpdateCommand.CommandType" id="Select1">
+                                <option value="1">Sql语句</option>
+                                <option value="4">存储过程</option>
+                                <option value="512">表</option>
+                            </select>
+                            <input name="Ds.UpdateCommand.QueryParams" control="JsonList" type="button" class="w60"
+                                id="btnUpdateParams" onclick="return editCmdParams(this)" value="命令参数" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top">
+                            <textarea name="Ds.UpdateCommand.CommandText" style="width: 100%; height: 100%; border: none">  select </textarea>
+                        </td>
+                    </tr>
+                </table>
+                <table id="pgInsertCmd" name="Ds.InsertCommand" class="LayoutTable">
+                    <tr valign="middle" height="30">
+                        <td class="LH20 pd5">命令类型
+                            <select name="Ds.InsertCommand.CommandType" id="Select2">
+                                <option value="1">Sql语句</option>
+                                <option value="4">存储过程</option>
+                                <option value="512">表</option>
+                            </select>
+                            <input name="Ds.InsertCommand.QueryParams" control="JsonList" type="button" class="w60"
+                                id="btnInsertParams" onclick="return editCmdParams(this)" value="命令参数" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top">
+                            <textarea name="Ds.InsertCommand.CommandText" style="width: 100%; height: 100%; border: none">  select </textarea>
+                        </td>
+                    </tr>
+                </table>
+                <table id="pgDeleteCmd" name="Ds.DeleteCommand" class="LayoutTable">
+                    <tr valign="middle" height="30">
+                        <td class="LH20 pd5">命令类型
+                            <select name="Ds.DeleteCommand.CommandType" id="Select3">
+                                <option value="1">Sql语句</option>
+                                <option value="4">存储过程</option>
+                                <option value="512">表</option>
+                            </select>
+                            <input id="btnDeleteParams" control="JsonList" type="button" name="Ds.DeleteCommand.QueryParams"
+                                value="命令参数" onclick="return editCmdParams(this)" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top">
+                            <textarea name="Ds.DeleteCommand.CommandText" style="width: 100%; height: 100%; border: none">  select </textarea>
+                        </td>
+                    </tr>
+                </table>
+                <div id="pgCustomerCmd" style="display: block; border: none; overflow: auto">
+                    <table cellpadding="0" cellspacing="0" class="datalist" id="Table1" name="tbCons">
+                        <tr bgcolor="#A4BDA2" align="center" name="tbCons.head">
+                            <th class="hc">约束名
+                            </th>
+                            <th class="hc">操作
+                            </th>
+                        </tr>
+                        <tbody id="Tbody1">
+                            <tr obj="WboSchema.Properties" name="tbCons.item">
+                                <td class="ic">
+                                    <input name="tbCons.value" type="text" />
+                                </td>
+                                <td class="ic">
+                                    <a href="javascript:;" id="A1" name="tbCons.operate" onclick="return btnModifyCons_onclick(this)">查看</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="pgSubTable" style="display: block; border: none; overflow: auto">
+                    <table id="tabSubTable" cellpadding="0" cellspacing="0" class="datalist" id="Table2" name="Ds.SubTables" ctrl="jsonList">
+                        <tr bgcolor="#A4BDA2" align="center" name="Ds.SubTables.head">
+                            <th class="hc">子表
+                            </th>
+                            <th class="hc">操作
+                            </th>
+                        </tr>
+                        <tbody id="Tbody2">
+                            <tr name="Ds.SubTables.item">
+                                <td class="ic">
+                                    <input name="Ds.SubTables.Name" type="text" />
+                                </td>
+                                <td class="ic">
+                                    <a href="javascript:;" id="A2" name="Ds.SubTables.operate" onclick="return viewSubTable(this)">编辑</a>
+                                    <a href="javascript:;" id="A3" name="Ds.SubTables.operate" onclick="return deleteSubTable(this)">删除</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="pgReference" style="display: block; border: none; overflow: auto">
+                    <table cellpadding="0" cellspacing="0" class="datalist" id="tbCons" name="tbCons">
+                        <tr bgcolor="#A4BDA2" align="center" name="tbCons.head">
+                            <th class="hc">引用表
+                            </th>
+                            <th class="hc">操作
+                            </th>
+                        </tr>
+                        <tbody id="proTabbody">
+                            <tr obj="WboSchema.Properties" name="tbCons.item">
+                                <td class="ic">
+                                    <input name="tbCons.value" type="text" />
+                                </td>
+                                <td class="ic">
+                                    <a href="javascript:;" id="btnModifyCons" name="tbCons.operate" onclick="return btnModifyCons_onclick(this)">查看</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <div id="divOptionDlg" style="padding: 0px">
+        <div class="easyui-layout" id="tabFieldOptionForm" name="FieldOptionForm" fit="true">
+            <div data-options="region:'north'" style="height: auto; background: white; border: none">
+                <div style="border: 1px none blue; background-color: #ddd">
+                    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok',plain:true ,iconAlign:'left'">确定 </a><a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true,iconAlign:'left'">取消 </a>
+                </div>
+                <div style="border: 1px none blue; padding: 5px">
+                    <label style="margin-right: 5px">
+                        数据源<select id="cc" name="FieldOptionForm.DataSource" class="easyui-combotree" style="width: 200px;"
+                            data-options="url:'dsExPlore.getTree.wbo',required:true,onChange:onOptionDsChange">
+                        </select></label>
+                    <label style="margin-right: 5px">
+                        文本字段<select name="FieldOptionForm.TextField"></select></label>
+                    <label style="margin-right: 5px">
+                        值字段<select name="FieldOptionForm.ValueField"></select></label>
+                    <br />
+                    aaaaaa
+                </div>
+            </div>
+            <div data-options="region:'center',iconCls:'icon-ok'" style="border: none">
+                <div class="easyui-tabs" fit="true">
+                    <div title="查询参数" style="padding: 10px">
+                        查询参数
+                    </div>
+                    <div title="下拉内容" style="padding: 10px">
+                        <ul class="easyui-tree" data-options="url:'tree_data1.json',method:'get',animate:true">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="dlgSqlParam" class="easyui-dialog" title="命令参数" style="padding: 0px" data-options="
+         toolbar:'#tabParamGridTb',width:600,height:300,closed:true,modal:true
+    ">
+        <table id="tabParamGrid" class="easyui-datagrid">
+            <thead>
+                <tr>
+                    <th data-options="field: 'Id', width: 100, editor: 'text'">名称
+                    </th>
+                    <th data-options="field: 'DefaultValue', width: 100, align: 'left', editor: 'text'">默认值
+                    </th>
+                    <th data-options="field: 'DataType',
+                      title: '参数类型',
+                      width: 100,
+                      editor: {
+                          type: 'combobox',
+                          options: {
+                              url: 'DsExplore.getDbTypes.wbo',
+                              valueField: 'value',
+                              textField: 'text'
+                          }
+                      },
+                      formatter: function (value, row) {
+                          //alert(value);
+                          return dbTypeOptions[value];
+                      }">类型
+                    </th>
+                    <th data-options="field: 'Direction',
+                      title: '输入输出',
+                      width: 100,
+                      editor: {
+                          type: 'combobox',
+                          options: {
+                              url: 'DsExplore.getParameterDirections.wbo',
+                              valueField: 'value',
+                              textField: 'text'
+                          }
+                      },
+                      formatter: function (value, row) {
+                          //alert(value);
+                          return dirOptions[value];
+                      }">输入输出
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div id="tabParamGridTb" style="padding: 2px; margin: 0px">
+        <a href="#" class="easyui-linkbutton" height="15px" iconcls="icon-add" iconalign="right"
+            plain="true" onclick="javascript:doAppendSqlParam()">增加</a> <a href="#" class="easyui-linkbutton"
+                height="15px" iconalign="right" iconcls="icon-remove" plain="true" onclick="javascript:deleteSqlParam()">删除</a><a href="#" class="easyui-linkbutton" height="15px" iconalign="right" iconcls="icon-save"
+                    plain="true" onclick="javascript:confirmSqlParam()"> 确认</a>
+    </div>
+
+
+    <!--子表对话框-->
+    <div id="dlgSubTable" class="easyui-dialog" title="子表定义" style="padding: 10px" data-options="toolbar:'#tlbSubTable',width:350,height:300,closed:true,modal:true">
+        <div>
+            <p>表名：</p>
+            <p>
+                <input id="subName" type="text" style="width: 300px" />
+            </p>
+            <p>外键：</p>
+            <p>
+                <textarea id="subFks" style="width: 300px; height:80px"></textarea>
+            </p>
+            <p>
+            </p>
+            <p style="margin-top: 5px;">
+                <select style="width: 220px">
+                    <option>table</option>
+                </select><input type="button" value="添加外键" style="width: 80px" />
+            </p>
+        </div>
+        <div id="tlbSubTable" style="padding: 2px; margin: 0px">
+            <a href="#" class="easyui-linkbutton" height="15px" iconcls="icon-save" iconalign="right"
+                plain="true" onclick="javascript:subTableOk();">确认</a><a href="#" class="easyui-linkbutton" style="margin-left: 20px" height="15px" iconalign="right" iconcls="icon-cancel"
+                    plain="true" onclick="javascript:subTableCancel();">取消</a>
+        </div>
+    </div>
+
+
+</body>
+</html>

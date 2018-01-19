@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>控制面板</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<style>
+body {
+	padding: 5px;
+}
+.RndBox .RndTopLeft {
+	background-image: url(images/main_lt.jpg);
+	background-repeat: no-repeat;
+	background-position: 0px 0px;
+}
+.RndBox .RndTopLeft .RndTopRight {
+	background-image: url(images/main_rt.jpg);
+	background-repeat: no-repeat;
+	background-position: right top;
+}
+.RndBox .RndTopLeft .RndTopRight .RndTopMid {
+	margin-right: 5px;
+	margin-left: 5px;
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: #938E3B;
+	height: 5px;
+}
+.RndBox .RndContent {
+	border-right-width: 1px;
+	border-left-width: 1px;
+	border-right-style: solid;
+	border-left-style: solid;
+	border-right-color: #938E3B;
+	border-left-color: #938E3B;
+}
+.RndBox .RndBtmLeft {
+	background-image: url(images/main_lb.jpg);
+	background-repeat: no-repeat;
+	background-position: left top;
+}
+.RndBox .RndBtmLeft .RndBtmRight {
+	background-image: url(images/main_rb.jpg);
+	background-repeat: no-repeat;
+	background-position: right top;
+}
+.RndBox .RndBtmLeft .RndBtmRight .RndBtmMid {
+	height: 5px;
+	margin-right: 5px;
+	margin-left: 5px;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #938E3B;
+}
+.RndBox .RndContent {
+	padding-right: 5px;
+	padding-left: 5px;
+}
+
+#tags {
+	padding-right: 0px;
+	padding-left: 0px;
+	padding-bottom: 0px;
+	margin: 0px 0px 0px 10px;
+	width: 900px;
+	padding-top: 0px;
+	height: 20px;
+	clear:left;
+}
+#tags LI {
+	float: left;
+	margin-right: 1px;
+	list-style-type: none;
+	height: 25px;
+	background-repeat: no-repeat;
+	background-position: left bottom;
+}
+#tags LI A {
+	padding-right: 10px;
+	padding-left: 10px;
+	float: left;
+	padding-bottom: 0px;
+	color: #000;
+	line-height: 25px;
+	padding-top: 0px;
+	height: 25px;
+	text-decoration: none;
+	background-repeat: no-repeat;
+	background-position: right bottom;
+}
+#tags LI.emptyTag {
+	background: none transparent scroll repeat 0% 0%;
+	width: 4px;
+}
+#tags LI.selectTag {
+	background-image: url(images/tag_left.jpg);
+	background-repeat: no-repeat;
+	background-position: left bottom;
+	margin-bottom: 0px;
+	position: relative;
+	height: 25px;
+}
+#tags LI.selectTag A {
+	background-repeat: no-repeat;
+	background-position: right top;
+	background-image: url(images/tag_right.jpg);
+	color: #000;
+	line-height:25px;
+	height: 25px;
+	margin-left:5px;
+	
+}
+#tagContent {
+	border-right: #938E3B 1px solid;
+	padding-right: 1px;
+	border-top: #938E3B 1px solid;
+	padding-left: 1px;
+	padding-bottom: 1px;
+	border-left: #938E3B 1px solid;
+	padding-top: 1px;
+	border-bottom: #938E3B 1px solid;
+	background-color: #fff;
+	clear:left;
+}
+.tagContent {
+	padding-right: 10px;
+	display: none;
+	padding-left: 10px;
+	padding-bottom: 10px;
+	color: #474747;
+	padding-top: 10px;
+	height: 250px;
+}
+#tagContent DIV.selectTag {
+	display: block;
+}
+#con {
+	margin-top: 5px;
+}
+</style>
+        <script type="text/javascript">
+            function selectTag(showContent, selfObj) {
+                // 操作标签
+                var tag = document.getElementById("tags").getElementsByTagName("li");
+                var taglength = tag.length;
+                for (i = 0; i < taglength; i++) {
+                    tag[i].className = "";
+                }
+                selfObj.parentNode.className = "selectTag";
+                // 操作内容
+                for (i = 0; j = document.getElementById("tagContent" + i); i++) {
+                    j.style.display = "none";
+                }
+                document.getElementById(showContent).style.display = "block";
+
+
+            }
+            function newTable_onclick() {
+
+            }
+
+        </script>
+
+</head>
+<body>
+<div class="RndBox">
+	<div class="RndTopLeft">
+		<div class="RndTopRight">
+			<div class="RndTopMid"> </div>
+		</div>
+	</div>
+	<div class="RndContent">
+		<div class="MainPageTitleBox"><img src="images/sjmk.jpg" width="126" height="27" alt="数据模块" />&nbsp;首页</div>
+		<p><strong>名称：</strong> SY&nbsp;<strong>中文名称：</strong>首页数据模块</p>
+		<div class="BottomBox">
+			<input type="button" name="newTable" id="newTable" 
+                onclick="return newTable_onclick()" />
+			<input type="button" name="newTable" id="appnendTable" />
+			<input type="button" name="newTable" id="appendRelation" />
+			<input type="button" name="newTable" id="setColunm" />
+		</div>
+	</div>
+	<div class="RndBtmLeft">
+		<div class="RndBtmRight">
+			<div class="RndBtmMid"> </div>
+		</div>
+	</div>
+	
+</div>
+
+	<div id="con" style="display:none">
+		<ul id="tags">
+			<li class="selectTag"><a onclick="selectTag('tagContent1',this)" href="javascript:void(0)">发型</a> </li>
+			<li><a onclick="selectTag('tagContent0',this)" href="javascript:void(0)">尖端风尚</a> </li>
+			<li><a onclick="selectTag('tagContent2',this)" href="javascript:void(0)">发型盛宴</a> </li>
+			<li><a onclick="selectTag('tagContent3',this)" href="javascript:void(0)">发型师</a> </li>
+			<li><a onclick="selectTag('tagContent4',this)" href="javascript:void(0)">视频</a> </li>
+			<li><a onclick="selectTag('tagContent5',this)" href="javascript:void(0)">关于名成</a> </li>
+		</ul>
+		<div id="tagContent">
+			<div class="tagContent" id="tagContent0"> 第一个标签的内容</div>
+			<div class="tagContent selectTag" id="tagContent1"> 第二个标签的内容</div>
+			<div class="tagContent" id="tagContent2"> 第三个标签的内容</div>
+			<div class="tagContent" id="tagContent3"> 第四个标签的内容</div>
+			<div class="tagContent" id="tagContent4"> 第五个标签的内容</div>
+			<div class="tagContent" id="tagContent5"> 第六个标签的内容</div>
+		</div>
+	</div>
+
+
+</body>
+</html>

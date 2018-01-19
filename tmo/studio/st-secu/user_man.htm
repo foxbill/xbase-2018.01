@@ -1,0 +1,425 @@
+<html>
+<head>
+    <title>用户管理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+    <style type="text/css">
+    .TabHead2 .TabTag2 {
+	width: 80px;
+	float:left;
+}
+    .TabHead2 .TabTag2.Act {
+	width: 80px;
+	float:left;
+}
+	</style>
+    <script type="text/javascript" src="../../xbase.js/utils/net_util.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/system/system.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/system/wjs.js"></script>
+
+    <script type="text/jscript" src="../../xbase.js/controls/xlistview.js"></script>
+
+    <script type="text/jscript" src="../../xbase.js/controls/tab_control.js"></script>
+
+    <script type="text/javascript">
+        var gUserList;
+        var gTabPage;
+        var gRoleList;
+
+        window.onload = function() {
+            if (!gUserList) {
+                gUserList = new ListView(elUserList, elUserItem, elUserListHead);
+                gUserList.activeItemCss = "activeItem";
+            }
+
+            getUserList();
+            gTabPage = new TabControl([divTagUserList, divTagUserInfo], [divPageUserList, divPageUserInfo], "onclick", "TabTag2 Act");
+            gTabPage.onTabActive = onTabActive;
+
+
+            if (!gRoleList) {
+                gRoleList = new ListView(elRoleList, elRoleItem, elRoleListHead);
+                gRoleList.activeItemCss = "activeItem";
+            }
+
+        }
+
+
+
+        function getUserList() {
+            var req = new JoapRequest("UserAccount", "", "GetUsers");
+            req.addParamate("groupId", "");
+
+            var users = req.invoke();
+
+
+            gUserList.clear();
+            if (!users) return;
+
+            for (var i = 0; i < users.length; i++) {
+                var user = users[i];
+                var listItem = gUserList.addItem();
+                listItem.data = user;
+                if (!user.DisplayName)
+                    user.DisplayName = user.Id;
+                gUserList.setItemValue(listItem, "UserId", user.Id);
+                gUserList.setItemValue(listItem, "DisplayName", user.DisplayName);
+                gUserList.setItemValue(listItem, "CreateDate", user.CreateDate);
+                gUserList.setItemValue(listItem, "Active", user.Active == true ? "√" : "");
+                gUserList.setItemValue(listItem, "Disable", user.Disable == true ? "√" : "");
+                gUserList.setItemValue(listItem, "Mobile", user.Mobile);
+                gUserList.setItemValue(listItem, "Email", user.Email);
+                //                gUserList.setItemValue(listItem, "Memo", user.Memo);
+            }
+        }
+
+
+        function setUser(user) {
+            if (elPassword.value != elRePassword.value) {
+                alert("口令和口令确认输入不一直");
+                return false;
+            }
+            user.Id = elUserId.value;
+            user.DisplayName = elDisplayName.value;
+            user.Password = elPassword.value;
+            user.Email = elEmail.value;
+            user.Mobile = elMobile.value;
+            user.Disable = elDisable.checked;
+            user.Active = elActive.checked;
+            user.GroupId = txtUserGroup.value;
+            return true;
+        }
+
+        function getUser(user) {
+            elUserId.value = user.Id;
+            elDisplayName.value = user.DisplayName;
+            elPassword.value = "";
+            elRePassword.value = "";
+            elEmail.value = user.Email;
+            elMobile.value = user.Mobile;
+            elDisable.checked = user.Disable;
+            elActive.checked = user.Active;
+            elOldUserId.value = user.Id;
+            txtUserGroup.value = user.GroupId;
+
+            getUserRoles();
+
+        }
+
+        function onNewUserClick() {
+            gTabPage.selectTab(divTagUserInfo);
+            newUser();
+        }
+
+        function newUser() {
+            var user = new Object();
+            user.Id = "";
+            user.DisplayName = "";
+            user.Password = "";
+            user.Memo = "";
+            user.Email = "";
+            user.Mobile = "";
+            user.Disable = false;
+            user.Active = true;
+            getUser(user);
+            return user;
+        }
+
+        function saveUser() {
+            var tab = gTabPage.getActiveTab();
+            if (tab != divTagUserInfo) {
+                alert("没有用户被编辑，请选择新建用户，或编辑用户");
+                return false;
+            }
+            if (!elUserId.value) {
+                alert("用户名必须输入");
+                return false;
+            }
+            var user = new Object();
+            setUser(user);
+
+            var gUserReq = new JoapRequest("UserAccount", "", "SaveUser");
+            gUserReq.addParamate("user", user);
+            gUserReq.addParamate("userId", elOldUserId.value);
+
+            var ret = gUserReq.invoke();
+
+            if (ret) {
+                elOldUserId.value = user.Id;
+                alert("用户保存完成!");
+            }
+            getUserList();
+            return true;
+        }
+
+        function deleteUserbyId(userId) {
+
+            var gUserReq = new JoapRequest("UserAccount", "", "DeleteUser");
+            gUserReq.addParamate("userId", userId);
+
+            var ret = gUserReq.invoke();
+            if (ret)
+                alert("用户：" + userId + "被删除");
+        }
+
+        function onTabActive(tab) {
+            var item = gUserList.getActiveItem();
+            var user;
+            if (item)
+                user = item.data;
+            else
+                user = newUser();
+            getUser(user);
+
+        }
+
+        function listEditUser_onclick(sender) {
+            var item = gUserList.getItemByElement(sender);
+            gUserList.setActiveItem(item);
+            gTabPage.selectTab(divTagUserInfo);
+        }
+
+        function listDeleteUser_onclick(sender) {
+            var item = gUserList.getItemByElement(sender);
+            var userId = gUserList.getItemValue(item, "UserId");
+            var displayName = gUserList.getItemValue(item, "DisplayName");
+            if (!confirm("是否要删除用户：'" + displayName + "(" + userId + ")'?")) return;
+            deleteUserbyId(userId);
+            getUserList();
+        }
+
+        function getUserRoles() {
+            var req = new JoapRequest("UserAccount", "", "GetUserRoles");
+            req.addParamate("userId", elUserId.value);
+
+            var roles = req.invoke();
+
+
+
+            gRoleList.clear();
+            if (!roles) return;
+
+            for (var i = 0; i < roles.length; i++) {
+                var role = roles[i];
+                var listItem = gRoleList.addItem();
+                listItem.data = role;
+                if (!role.DisplayName)
+                    role.DisplayName = role.Id;
+                gRoleList.setItemValue(listItem, "RoleId", role.Id);
+                gRoleList.setItemValue(listItem, "DisplayName", role.DisplayName);
+                gRoleList.setItemValue(listItem, "Remark", role.Remark);
+            }
+        }
+
+        function addUserRole_Click() {
+            var ret = window.showModalDialog("role_list.htm", null, "dialogWidth=800px;dialogHeight=600px");
+            if (!ret) return;
+            if (!saveUser()) return;
+            var userRoleIds = new Object();
+            userRoleIds.UserId = elUserId.value;
+            userRoleIds.RoleIds = ret;
+
+            var req = new JoapRequest("UserAccount", "", "AppendRoles");
+            req.addParamate("userRoleIds", userRoleIds);
+
+            var ret = req.invoke();
+
+            getUserRoles();
+
+        }
+
+        function listDeleteRole_onclick(sender) {
+            var item = gRoleList.getItemByElement(sender);
+            var roleId = gRoleList.getItemValue(item, "RoleId");
+            var userId = elUserId.value;
+            var displayName = gRoleList.getItemValue(item, "DisplayName");
+
+            if (!confirm("是否要删除" + userId + "的角色：'" + displayName + "(" + roleId + ")'?")) return;
+
+            var req = new JoapRequest("UserAccount", "", "DeleteUserRole");
+            req.addParamate("userId", userId);
+            req.addParamate("roleId", roleId);
+
+            var ret = req.invoke();
+
+
+            getUserRoles();
+        }       
+    </script>
+
+	<link href="../css/style.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style></head>
+<body>
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" class="LayoutTable">
+        <tr valign="top">
+            <td  nowrap="nowrap" class="TdRight">
+                <table width="100%"  height="100%" border="0" cellpadding="0" cellspacing="0">
+					<tr>
+						<td height="28"><span class="BottomBox">
+							<input type="button" name="newTable" id="newTable" value="新建用户" onClick="onNewUserClick()" />
+							<input type="button" name="newTable2" id="newTable2" value="保存用户" onClick="saveUser()" />
+						</span></td>
+					</tr>
+					<tr>
+						<td class="TabHead2">
+							<div class="TabTag2 Act" id="divTagUserList">
+								<div class="Left">
+									<div class="Right">
+										用户列表									</div>
+								</div>
+							</div>
+						 	
+								<div class="TabTag2" id="divTagUserInfo">
+									<div class="Left">
+										<div class="Right">
+											用户信息										</div>
+									</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td valign="top" bgcolor="#CCCCCC">
+							<div class="TabPageContainer">
+								<div class="TabPage2 Act" id="divPageUserList">
+									<table class="ListTable" id="elUserList" width="100%" border="0" cellspacing="0"
+                            cellpadding="0">
+										<tr class="ListHead" id="elUserListHead">
+											<td name="UserId"> 用户名 </td>
+											<td name="DisplayName"> 显示名称 </td>
+											<td name="CreateDate"> 创建日期 </td>
+											<td name="Active"> 已激活 </td>
+											<td name="Disable"> 已失效 </td>
+											<td name="Mobile"> 手机 </td>
+											<td name="Email"> 电子邮件 </td>
+											<td> </td>
+										</tr>
+										<tr id="elUserItem">
+											<td name="UserId">&nbsp; </td>
+											<td name="DisplayName">&nbsp; </td>
+											<td name="CreateDate"> </td>
+											<td name="Active">&nbsp; </td>
+											<td name="Disable">&nbsp; </td>
+											<td name="Mobile">&nbsp; </td>
+											<td name="Email">&nbsp; </td>
+											<td>
+												<input type="button" name="listEditUser" value="编辑" onClick="return listEditUser_onclick(this)" />
+												<input type="button" name="listDeleteUser" value="删除" onClick="return listDeleteUser_onclick(this)" />
+											</td>
+										</tr>
+										<tr class="activeItem">
+											<td name="UserId">&nbsp; </td>
+											<td name="DisplayName">&nbsp; </td>
+											<td name="CreateDate"> </td>
+											<td name="Active">&nbsp; </td>
+											<td name="Disable">&nbsp; </td>
+											<td name="Mobile">&nbsp; </td>
+											<td name="Email">&nbsp; </td>
+											<td>
+												<input type="button" name="listEditUser" value="编辑" />
+												<input type="button" name="listDeleteUser" value="删除" />
+											</td>
+										</tr>
+									</table>
+								</div>
+								<div class="TabPage2" id="divPageUserInfo">
+									<table class="TableForm" width="100%" border="0" cellspacing="0" cellpadding="0">
+										<tr>
+											<td width="80" nowrap> 用户名 </td>
+											<td width="110">
+												<input type="text" name="elUserName" id="elUserId" />
+												<input type="hidden" name="elOldUserId" id="elOldUserId" />
+											</td>
+											<td width="80" nowrap> 显示名称 </td>
+											<td width="110">
+												<input type="text" name="elUserName2" id="elDisplayName">
+											</td>
+											<td width="60" nowrap >用户组</td>
+											<td width="110" align="left">
+												<input type="text" name="txtUserGroup" id="txtUserGroup">
+											</td>
+										</tr>
+										<tr>
+											<td nowrap> 口令 </td>
+											<td width="110">
+												<input type="password" name="elPassword" id="elPassword">
+											</td>
+											<td nowrap> 激活 </td>
+											<td>
+												<input type="checkbox" name="elActive" id="elActive">
+											</td>
+											<td>&nbsp;</td>
+											<td>&nbsp;</td>
+										</tr>
+										<tr>
+											<td nowrap> 口令确认 </td>
+											<td width="110">
+												<input type="password" name="elRePassword" id="elRePassword">
+											</td>
+											<td nowrap> 失效 </td>
+											<td>
+												<input type="checkbox" name="elDisable" id="elDisable">
+											</td>
+											<td>&nbsp;</td>
+											<td>&nbsp;</td>
+										</tr>
+										<tr>
+											<td nowrap> 电子邮件 </td>
+											<td width="110">
+												<input type="text" name="elEmail" id="elEmail">
+											</td>
+											<td nowrap> 电话 </td>
+											<td>
+												<input type="text" name="elMobile" id="elMobile">
+											</td>
+											<td>&nbsp;</td>
+											<td>&nbsp;</td>
+										</tr>
+									</table>
+									<p style="line-height: 25px; margin: 0px; height: 25px; vertical-align: middle"> 用户角色：
+										<input type="button" value="添加角色" id="addUserRole" onClick="addUserRole_Click()" />
+									</p>
+									<table class="ListTable" id="elRoleList" width="100%" border="0" cellspacing="0"
+                            cellpadding="0">
+										<tr class="ListHead" id="elRoleListHead">
+											<td name="RoleId"> 角色名 </td>
+											<td name="DisplayName"> 显示名称 </td>
+											<td name="Remark"> 备注 </td>
+											<td> </td>
+										</tr>
+										<tr id="elRoleItem">
+											<td name="RoleId">&nbsp; </td>
+											<td name="DisplayName">&nbsp; </td>
+											<td name="Remark">&nbsp; </td>
+											<td>
+												<input type="button" name="listDeleteRole" value="删除" onClick="return listDeleteRole_onclick(this)" />
+											</td>
+										</tr>
+										<tr class="activeItem">
+											<td name="RoleId">&nbsp; </td>
+											<td name="DisplayName">&nbsp; </td>
+											<td name="Remark">&nbsp; </td>
+											<td>
+												<input type="button" name="listEditRole" value="编辑" />
+												<input type="button" name="listDeleteRole" value="删除" />
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
+            </td>
+        </tr>
+    </table>
+</body>

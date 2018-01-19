@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0 minimal-ui" />
+    <link rel="stylesheet" href="/boostrap/css/bootstrap.min.css">
+    <script src="/xbase.js/jquery.min.js"></script>
+    <script src="/boostrap/js/bootstrap.min.js"></script>
+    <script src="/xbase.js/jquery.xbase.form.js"></script>
+    <script src="/xbase.js/jquery.xbase.js"></script>
+    <script src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script src="scripts/jk.pagetool.js"></script>
+    <script src="scripts/jk.date.js"></script>
+    <script src="../../My97DatePicker/WdatePicker.js"></script>
+    <title>订单管理</title>
+    <style>
+        .art-content {
+            padding: 10px;
+        }
+
+        section {
+            padding: 10px 10px;
+            border: 1px solid #eee;
+            margin: 10px 0px;
+            background-color: white;
+        }
+
+        .art-date {
+            color: gray;
+            font-size: 1.2rem;
+        }
+
+        .art-img {
+            margin: 5px auto;
+        }
+
+        .art-content {
+            color: gray;
+        }
+
+        .art-tlt-font {
+            font-weight: bold;
+            font-size: 2.0rem;
+        }
+
+        .art-more {
+            font-weight: normal;
+            font-size: 1.2rem;
+        }
+
+        .artType-item-title {
+            cursor: pointer;
+        }
+
+        .artType-item-name {
+            width: 100%;
+            display: inline-block;
+        }
+
+        .sidebar-form {
+            max-width: 350px;
+            width: 100%;
+            margin-right: 30px;
+            margin-bottom: 10px;
+        }
+
+        .ReceivedTime {
+            float: right;
+        }
+    </style>
+
+    <script>
+
+        $(function () {
+
+            //$(".art-edit").click(function () {
+            //    // body...
+            //    var ptd = $(this).parents(".artitem");
+            //    var obj = ptd.find(".artid");
+
+            //    var parmets = "xbase_ds_name=" + ds + "&ID=" + obj.val()
+            //    window.location.href = url + "?" + parmets;
+
+
+            //});
+            //$("#orderylist").attr("wbo","dspt_ordermgr.data?end="+new Date().Format("yyyy-MM-dd")+"&start=2015-08-01");
+            //$("#orderylist").attr("wbo-param","{page:1 rows=2}");
+            $(".art-del").click(function () {
+
+            });
+            //var data = $.rCall("dspt_ordermgr.data?end="+new Date().Format("yyyy-MM-dd")+"&start=2015-5-30", { page: page, rows: pageSize })
+            //orderylist.ctrl.data(data);
+
+
+            //initPageTool(5,1);
+
+        })
+
+        var url = "companyEdit.html";
+        var ds = "pt_company";
+
+        function edit(e) {
+            var ptd = $(e).parents(".artitem");
+            var obj = ptd.find(".artid");
+            var parmets = "xbase_ds_name=" + ds + "&ID=" + obj.val();
+            window.location.href = url + "?" + parmets;
+
+        }
+
+        function delPt(e) {
+            if (confirm("您确定要删除该项？")) {
+                if (ds != undefined && ds != "") {
+                    var ptd = $(e).parents(".artitem");
+                    var obj = ptd.find(".artid");
+                    //alert(row.ID);
+                    var res = $.rCall(ds + ".delete", { row: { pk_ID: obj.val() } });
+                    if (!res) {
+                        alert("删除成功");
+                        //refresh();
+                        ptd.remove();
+
+                    }
+                }
+
+            }
+        }
+
+        var orderRefundData = undefined;
+        var orderSendData = undefined;
+        function payStatus(e) {
+            var ptd = $(e).parents(".artitem");
+            var obj = ptd.find(".artid");
+            var refund = $.rCall("pt_orderRefund.data", { page: 1, rows: 1, filterRules: [{ field: 'OrderId', op: 'equal', value: obj.val() }] });
+            orderRefundData = refund.rows[0];
+            if (orderRefundData == undefined || orderRefundData.Status == 1) {
+                orderRefundData = undefined;
+                return;
+            }
+            $("#myModal .Summary").html(refund.rows[0].Summary);
+            $("#myModal .Title").html(refund.rows[0].Title);
+            $("#myModal .ReceivedTime").html(refund.rows[0].ReceivedTime);
+            $("#myModal .submitRefund").attr("onclick", "subimtRefund('" + obj.val() + "')");
+            $("#myModal").modal("show");
+
+        }
+
+        function receivedStatus(e) {
+            var ptd = $(e).parents(".artitem");
+            var obj = ptd.find(".artid");
+            var data = $.rCall("pt_order.data", { page: 1, rows: 1, filterRules: [{ field: 'ID', op: 'equal', value: obj.val() }] });
+            orderSendData = data.rows[0];
+            if (orderSendData == undefined || orderSendData.ReceivedStatus != 1) {
+                orderSendData = undefined;
+                return;
+            }
+            $("#sendModal .submitSend").attr("onclick", "subimtSend('" + obj.val() + "')");
+            $("#sendModal").modal("show");
+        }
+
+        function subimtRefund(orderId) {
+            if (orderRefundData == undefined)
+                return;
+            orderRefundData.Status = 1;
+            var result = $.rCall("pt_orderRefund.update", { row: orderRefundData });
+            if (result == null) {
+                var data = $.rCall("pt_order.data", { page: 1, rows: 1, filterRules: [{ field: 'ID', op: 'equal', value: orderId }] })
+                if (data.rows.length > 0) {
+                    data.rows[0].PayStatus = 3;
+                    var rlt = $.rCall("pt_order.update", { row: data.rows[0] });
+                    if (rlt == null) {
+                        alert("修改成功");
+                        //微信退款
+                        //var refund = $.rCall("TenPay.refund", { orderId: orderId, total_fee: data.rows[0].total, refund_fee: data.rows[0].total });
+                        orderylist.ctrl.load("dspt_ordermgr.data?end=" + end + "&start=" + start, {
+                            page: page, rows: pageSize,
+                        });
+                        orderRefundData = undefined;
+                    }
+                    else
+                        alert($.getJsonStr(rlt));
+                    $("#myModal").modal("hide");
+
+                }
+            }
+        }
+
+        function orderDetail(e) {
+            var ptd = $(e).parents(".artitem");
+            var obj = ptd.find(".artid");
+            order.ctrl.load("dspt_oneorderMgrInfo.data?OrderId=" + obj.val(), {
+                page: 1,
+                rows: 1
+            });
+            initOrderInfo();
+            $("#detailModal").modal("show");
+
+        }
+        function initOrderInfo() {
+            $(".order-table").each(function () {
+                // body...
+                var p = $(this);
+                var t = p.find(".productCount").val();
+
+
+                p.find('tbody tr:first td.merge-td').attr({
+                    rowspan: t
+                });
+                var otr = p.find('tbody tr').not(":first")
+                otr.find('td.merge-td').remove();
+
+                var sumcount = 0;
+                p.find("tr td.prod-count").each(function () {
+                    // body...
+                    sumcount += parseInt($(this).html());
+                });
+
+                p.find(".prod-num").html(sumcount);
+
+            })
+
+        }
+
+        function subimtSend(orderId) {
+            if (orderSendData != undefined) {
+                orderSendData.ReceivedStatus = 2;
+                var rlt = $.rCall("pt_order.update", { row: orderSendData });
+                if (rlt == null) {
+                    alert("修改成功");
+                    orderylist.ctrl.load("dspt_ordermgr.data?end=" + end + "&start=" + start, {
+                        page: page, rows: pageSize,
+                    });
+                    orderSendData = undefined;
+                }
+                else
+                    alert($.getJsonStr(rlt));
+                $("#sendModal").modal("hide");
+            }
+        }
+
+        function getOrderById(orderId) {
+            var data = orderylist.ctrl.data().rows;
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].ID == orderId)
+                    return data[i];
+            }
+        }
+
+
+    </script>
+</head>
+<body>
+    <div class="view" style="padding: 0px 20px;">
+        <p></p>
+        <div class="view">
+            <table class="table table-hover" id="orderylist" name="orderylist" wbo="dspt_ordermgr.data" wbo-param="{page:1 rows=20}">
+                <caption>
+                    <form action="#" method="get" class="form-inline pull-left">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="input-group input-group-justified">
+
+                                    <div class="input-group">
+                                        <span class="input-group-addon">开始日期</span>
+                                        <input class="form-control" id="startDate" type="text" onclick="WdatePicker({ startDate: '%y-%M-01 00:00:00', dateFmt: 'yyyy-MM-dd HH:mm:ss', readOnly: true, autoPickDate: true })" />
+
+                                        <span class="input-group-addon">结束日期</span>
+                                        <input class="form-control" id="endDate" type="text" onclick="WdatePicker({ startDate: '%y-%M-%ld 00:00:00', dateFmt: 'yyyy-MM-dd HH:mm:ss', readOnly: true, autoPickDate: true })" />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                    <button role="button" class="btn btn-info pull-left art-search" onclick="search()">查询</button>
+                    <!-- <button role="button" class="btn btn-info pull-left art-add">添加公司</button>-->
+                </caption>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>名称</th>
+                        <th>总额</th>
+                        <th>交易状态</th>
+                        <th>付款状态</th>
+                        <th>物流状态</th>
+
+                        <th class="hidden-xs">订单时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody name="orderRows" wbo-bind="orderylist.rows">
+                    <tr name="orderRows.item" class="artitem">
+                        <td>
+                            <input type="hidden" name="orderRows.ID" class="artid">
+                            <input type="checkbox" name="" id="">
+                        </td>
+                        <td name="orderRows.Name"></td>
+                        <td name="orderRows.Total"></td>
+                        <td name="orderRows.StatusText"></td>
+                        <td><span name="orderRows.payStatusText" class="label label-info" style="cursor: pointer" onclick="payStatus(this)"></span></td>
+                        <td><span name="orderRows.receivedStatusText" class="label label-info" style="cursor: pointer" onclick="receivedStatus(this)"></span></td>
+
+                        <td class="hidden-xs" name="orderRows.CreateTime"></td>
+                        <td>
+                            <button onclick="orderDetail(this)" class="tooltip-test" data-toggle="tooltip"
+                                title="订单详情">
+                                <span class="glyphicon glyphicon-list-alt"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+            <div style="height: 50px">
+                <div class="" style="margin-left: 15px;">
+                    <ul class="pagination ">
+                        <li><a href="#">&laquo;</a></li>
+                        <li><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#">&raquo;</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">退款申请
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <h4 class="Title"></h4>
+                    <h5 class="Summary"></h5>
+                    <span class="ReceivedTime"></span>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="submitRefund btn btn-primary">
+                        同意申请
+                    </button>
+                    <button type="button" class="btn btn-danger">
+                        拒绝申请
+                    </button>
+                    <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+    <div class="modal fade" id="sendModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">发货申请
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <h4 class="Title"></h4>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="submitSend btn btn-primary">
+                        确定发货
+                    </button>
+                    <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 900px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">订单详情
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                    <div id="order" class="content  active" wbo="dspt_oneorderMgrInfo.data" name="order" wbo-params="{ page: 1,rows:1 }" view="jsonForm">
+
+                        <div class="orderlist" wbo-bind="order.rows" name="orderRows">
+
+                            <div class="order" wbo-bind="orderRows.item">
+
+                                <table class="table table-bordered order-table" wbo="dspt_orderDetailmgr.data" name="orderDetail" wbo-embed="orderRows" wbo-query="{OrderId:'orderRows.ID'}" wbo-params="{ page: 1,rows:10}" wbo-ctrl="jsonForm">
+                                    <caption class="prod-order">
+
+
+                                        <input type="hidden" value="0" class="productCount" wbo-bind="orderDetail.total">
+                                        <input type="hidden" name="orderRows.ID" class="OrderId" value="0">
+                                        <input type="hidden" name="orderRows.Status" class="Status" value="0">
+                                        <input type="hidden" name="orderRows.PayStatus" class="PayStatus" value="0">
+                                        <input type="hidden" name="orderRows.ReceivedStatus" class="ReceivedStatus" value="0">
+                                        订单号:<span name="orderRows.Code" class="OrderCode">订单号</span>
+                                        <span name="orderRows.StatusText" style="float: right; margin-right: 10px;">订单状态</span>
+                                    </caption>
+
+                                    <thead>
+                                        <tr class="tbhead">
+                                            <td>商品</td>
+                                            <td>商品属性</td>
+                                            <td>单价</td>
+                                            <td class="hidden-xs">数量</td>
+                                            <td class="hidden-xs">合计</td>
+                                            <td class="hidden-xs">状态</td>
+                                        </tr>
+
+                                        <tbody wbo-bind="orderDetail.rows" name="orderDetailRows">
+
+                                            <tr wbo-bind="orderDetailRows.item">
+                                                <td class="prod-info prod-img">
+                                                    <a href="">
+                                                        <img src="images/allcar_01.jpg" wbo-bind="orderDetailRows.Picture" style="max-width: 120px; width: 100%" alt="">
+                                                        <span wbo-bind="orderDetailRows.Name" style="font-weight: bold;">拍拍乐 支持国货！国产拍拍乐 拍脸神器 补水保湿 急救棒 包邮 [交易快照]</span>
+                                                    </a>
+                                                </td>
+                                                <td class="prod-info">
+
+
+
+                                                    <p wbo-bind="orderDetailRows.BrandSeries"></p>
+                                                    <p wbo-bind="orderDetailRows.CustomFieldValuelist"></p>
+                                                </td>
+                                                <td class="prod-info prod-price-td">￥
+         	<span wbo-bind="orderDetailRows.CostPirce">258888</span>
+                                                    <p class="pull-right visible-xs">x<span wbo-bind="orderDetailRows.pCount">0</span></p>
+                                                </td>
+                                                <td class="prod-info hidden-xs prod-count " wbo-bind="orderDetailRows.pCount">1</td>
+                                                <td class="hidden-xs merge-td">￥<span name="orderRows.Total"></span></td>
+                                                <td class="hidden-xs merge-td" name="orderRows.receivedStatusText">已确认收货
+	
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    <tfoot>
+                                        <tr class="visible-xs">
+                                            <td colspan="7">
+                                                <div class="pull-right">
+                                                    共商品
+      	<span class="prod-num"></span>
+                                                    件 合计：￥
+      	<span name="orderRows.Total">530000</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+    <script>
+        $(function () {
+            orderylist.ctrl.load("dspt_ordermgr.data?end=" + end, {
+                page: page, rows: pageSize,
+            });
+            var total = orderylist.ctrl.data().total;
+            initPage(total);
+        })
+
+        function initPage(total) {
+            $("ul.pagination").pageTool({
+                datatotal: total, currnum: 1, pagesize: pageSize, jumpPageFunc: function (num) {
+                    orderylist.ctrl.load("dspt_ordermgr.data?end=" + end + "&start=" + start, {
+                        page: num, rows: pageSize,
+                    });
+                    page = num;
+                }
+            });
+        }
+
+        var page = 1;
+        var pageSize = 20;
+        var start = "";
+        var end = new Date().Format("yyyy-MM-dd hh:mm:ss");
+        function search() {
+            start = $("#startDate").val();
+            var endDate = $("#endDate").val();
+            if (endDate == "")
+                return;
+            end = endDate;
+            orderylist.ctrl.load("dspt_ordermgr.data?end=" + end + "&start=" + start, {
+                page: 1, rows: pageSize,
+            });
+            var total = orderylist.ctrl.data().total;
+            initPage(total);
+        }
+    </script>
+</body>
+</html>

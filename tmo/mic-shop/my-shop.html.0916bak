@@ -1,0 +1,460 @@
+﻿<!doctype html>
+<html manifest="index.appcache">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>附近</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" href="css/tmo.css">
+      <link rel="stylesheet" href="css/shop.css">
+    <link rel="stylesheet" href="/boostrap/css/bootstrap.min.css">
+
+   
+    <script type="text/javascript" src="/xbase.js/jquery-1.9.1.min.js"></script>
+     <script type="text/javascript" src="/boostrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.jsonform.js"></script>
+
+
+    <script src="/xbase.js/imagesloaded.pkgd.js"></script>
+    <script src="/xbase.js/masonry.pkgd.min.js"></script>
+    <script src="/xbase.js/jquery.touchSwipe.min.js"></script>
+    <script type="text/javascript" src="js/tmo.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            var row = $.rCall("shop_goods.rows", {
+                page: 1,
+                rows: 50
+            })
+          //  var gProdList = $(elProdList).jsonList(row);
+
+        })
+    </script>
+    <style>
+
+    .panel h2{
+        border: none;
+        padding-left: 10px;
+  padding-top: 5px;
+    }
+    .boxName{
+        margin-right:10px;
+    }
+    .desc-bg{
+     display: none;
+    }
+    .desc{
+      display: none;
+    }
+    /*自定义样式*/
+    .titlePrice{
+        
+    }
+    .car-style{
+       padding: 5px;
+    }
+    /* */
+    .cloth-style{
+      
+        padding: 3px;
+    }
+    .cloth-style .titlePrice{
+        display: none;
+    }
+    /* */
+    .goods-style{
+     
+       
+       padding: 2px;
+    }  
+     .goods-style .viewinfo{
+       background-color: #f8f8f8;
+       width: 100%;
+     
+       
+    }  
+    .goods-style:nth-child(3n+1){
+        
+    }
+    .goods-style:nth-child(3n+1) .imginfo{
+        /* margin-top: 50px;*/
+    }
+     
+    .goods-style:nth-child(3n+1) .titlePrice{
+        text-align: center;
+    }
+   
+     .goods-style:last-child{
+    
+        border:none; 
+       
+    }
+    /**/
+    .type-style{
+        padding: 3px;
+       
+    }
+    .type-style .titlePrice{ display: none;
+    }
+       
+
+    /**/
+     .sport-style{   
+       padding: 2px;
+     
+   }
+   .sport-style .titlePrice{
+        text-align: center;
+        color: gray;
+    }
+    .sport-style .boxName{
+        display: block;
+        margin-right:0px;
+    }
+     .sport-style .boxprice{
+       color: #FF3E96;
+     }
+    .sport-style .viewinfo{   
+     /*  padding: 10px;*/
+     
+   }
+
+   /*唯品会样式*/
+   .weipinhui{
+     padding: 0;
+     border-bottom: 8px solid #eee;
+
+   }
+    .weipinhui:last-child{
+      border-bottom: 0;
+    }
+    .weipinhui .imginfo{
+      position: relative;
+    }
+   .weipinhui .titlePrice{
+        padding-top: 15px;
+        padding-bottom:5px;
+
+        padding-left: 5px;
+        padding-right:5px;
+        color: black;
+        font-family: '微软雅黑';
+   }
+  .weipinhui:first-child .imginfo .desc-bg{
+     background-color: black;
+filter:alpha(opacity=50); 
+-moz-opacity:0.5; 
+opacity:0.5;
+height: 20px;
+position: absolute;
+bottom: 0px;
+left: 0;
+right: 0;
+display: block;
+  }
+
+   .weipinhui:first-child .imginfo .desc{
+    color: white;
+    font-size: 1.2rem;
+height: 20px;
+
+line-height: 20px;
+position: absolute;
+bottom: 0px;
+left: 10px;
+right: 0;
+z-index: 5;
+display: block;
+  }
+
+.shop-header{
+  position: relative;
+  height: auto;
+}
+    .shop-content{
+        margin-top:10px; 
+        margin-bottom: 10px;
+         width: 100%;
+         overflow: hidden;
+    }
+    .shop-content .imginfo{
+        width: 100%;
+         overflow: hidden;
+    }
+    .-shopheader-main{
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+    }
+
+    .shop-content .car-style .imgitem{
+
+         transform:scale(1);
+        -webkit-transform:scale(1);
+        -o-transform:scale(1);
+        -moz-transform:scale(1);
+        -ms-transform:scale(1);
+
+        transition:all .5s linear .5s ;
+        -webkit-transition:all .5s linear .5s ;
+        -o-transition:all .5s linear .5s ;
+        -ms-transition:all .5s linear .5s ;
+        -moz-transition:all .5s linear .5s ;
+    }
+    .shop-content .car-style .imgitem:hover{
+        transform:scale(1.2);
+        -webkit-transform:scale(1.2,1.2);
+        -o-transform:scale(1.2);
+        -moz-transform:scale(1.2);
+        -ms-transform:scale(1.2);
+     
+    }
+    header.shop-header{
+      height:220px;
+    }
+
+    @media screen and (max-width: 769px)
+    {
+        .bg3 .container{
+            padding:0px; 
+        }
+
+        header.shop-header{
+          height: 125px;
+        }
+    }
+    </style>
+</head>
+<body class="bg3" style="padding: 0px; margin: 0px;overflow-x:hidden;">
+<div class="container">
+
+        
+   
+    <header class="shop-header" wbo="pt_shop.rows" name="shopinfo" wbo-params="{ page: 1,rows:1 }" view="jsonList" wbo-custom="bg">
+        
+        <div class="view shopheader-main"  wbo-bind="shopinfo.item" name="shopinfoItme">
+        <input type="hidden" name="shopinfo.Background" class="customStyle" data-style="bg" >
+        <div class="shop-header-logo-box">
+            <img class="shop-header-logo-img" alt="我的店铺" src="" wbo-bind="shopinfo.Logo" />
+        </div>
+        <div class="shop-header-mid">
+            <h1 class="shop-header-title"  wbo-bind="shopinfo.Name">
+                银城服装店</h1>
+            <p class="shop-header-sum content" wbo-bind="shopinfo.Summary">
+                经营时尚的服装、鞋帽、头饰</p>
+        </div>
+        <div class="shop-header-right">
+            <div>
+                <img alt="" src="images/icon1/chrome.png" /><br />
+                分享店铺
+            </div>
+        </div>
+        </div>
+    </header>
+    <ul class="button-box-rect c4" avgchild="4">
+        <li>
+            <div>
+                待发货</div>
+        </li>
+        <li>
+            <div>
+                待收款</div>
+        </li>
+        <li>
+            <div>
+                已结款</div>
+        </li>
+        <li>
+            <div>
+                已评价</div>
+        </li>
+    </ul>
+    <ul class="button-box-rnd">
+        <li onclick="goto('goods.html')">
+            <img src="images/icon1/addlocation.png" /><div>
+                添加商品</div>
+        </li>
+        <li>
+            <img src="images/icon1/addlocation.png" /><div>
+                添加货架</div>
+        </li>
+        <li>
+            <img src="images/icon1/addlocation.png" /><div>
+                同步淘宝</div>
+        </li>
+        <li>
+            <img src="images/icon1/addlocation.png" /><div>
+                市场找货</div>
+        </li>
+        <li onclick="readCode()">
+            <img src="images/icon1/addlocation.png" /><div>
+                扫码</div>
+        </li>
+    </ul>
+
+    <div class="view" wbo="pt_productType.data" name="prodtype" wbo-params="{ page: 1,rows:100 }" view="jsonForm">
+        <div class="prod-content" wbo-bind="prodtype.rows" name="prodtypeRows">
+            
+       
+            <div  class="panel"  wbo-bind="prodtypeRows.item">
+      
+      <h2 class="panel-title" name="prodtypeRows.Name">
+            服装
+        </h2>
+        <input type="hidden" name="prodtypeRows.ChildClass" data-target="wbo-class" class="customitemClass">
+   <div class="masmory view shop-content" wbo="dspt_productByType.data" name="prodinfo" wbo-embed="prodtypeRows" wbo-query="{Type:'prodtypeRows.ID'}" wbo-params="{ page: 1,rows:20}"  wbo-ctrl="jsonForm">
+         <div class=" product-list row" wbo-bind="prodinfo.rows" name="prodinfoRows">
+                <a    wbo-bind="prodinfoRows.item" wbo-attr="{'Class':'prodtypeRows.ChildClass'}" wbo-class='custom' >
+                    <div class="viewinfo">
+                    <div class="imginfo">
+                        <img src="images/fz/1.jpg" name="prodinfoRows.Picture" width="100%" class="imgitem"/>
+                        <div class="desc-bg">
+                        </div>
+                        <span class="desc" name="prodinfoRows.Summary">特价看看</span>
+                    </div>
+                    
+                    <p class="titlePrice">
+                        <span name="prodinfoRows.Name" class="boxName" >盒子</span>
+                     <span class="boxprice">￥<span name="prodinfoRows.CostPirce">1.8</span></span></p>
+                    </div>
+                </a>
+            </div>
+   </div>
+   </div>
+
+ </div>
+    </div>
+
+
+       
+</div>
+<script>
+    $(function  () {
+        // body...
+
+                    var masonryOptions = {
+    itemSelector: '.item-masnory',
+    columnWidth: '.item-masnory',
+    percentPosition: true
+};
+
+            var masonryNode = $('.masmory');
+
+             masonryNode.imagesLoaded(function () {
+
+        $('.masmory').masonry('destroy');
+        $('.masmory').masonry(masonryOptions);
+    });
+
+    //添加背景图片
+    $(".customStyle").each(function  () {
+        // body...
+        var $this=$(this);
+
+       var p=$(this).parents("[wbo-custom='bg']:first");
+       //var v=p.find(".header-bg");
+       //v.attr("src",$this.val());
+       p.css({"background":"url("+$this.val()+") repeat center","background-size":"cover"});
+    })
+
+    //添加自定义class
+    //目前的自定义class为：class="item-masnory col-xs-6 col-sm-3 col-md-2"
+   $(".shop-content").each(function  () {
+       // body...
+       var _this=$(this);
+       var cc=_this.siblings(".customitemClass");
+
+       _this.find("[wbo-class='custom']").addClass(cc.val());
+   })
+
+  
+  //goods-style结合样式
+  /*
+   var gdsh=$(".goods-style:first").height();
+   var maskh=$(".goods-style:first .titlePrice").height();
+   var tarindex=$(".goods-style ").length-3;
+     console.log(tarindex);
+ //  $(".goods-style:eq("+tarindex+")").css({"border-bottom":"none"});
+ $(".goods-style").each(function  (index,ele) {
+     // body...
+   
+     if(index==0)
+     {
+      //  $(ele).find(".imginfo").css({"height":(2*gdsh)+"px"});
+        $(ele).css({"height":(2*gdsh-4)+"px"});
+     }
+ })
+ //nth-child(3n+1)
+
+  // $(".goods-style:eq(3n+1)").css({"height":(2*gdsw-14)+"px"});
+
+*/
+  //   
+    // alert(len-1);
+  // $(".goods-style:nth-child("+(len-2)+")").css({"border-bottom":"none"});
+  /*
+   var bdw=$(window).width();
+   $(".type-style").css({"width":(bdw*0.48)+"px"});
+   var tlen=$(".bannerbox").length;
+   var bh=$(".bannerbox img").height();
+   var bp=$(".bannerbox").parent();
+   bp.css({"width":(bdw/2*tlen)+"px","position":"absolute","left":"0px","top":"0px"});
+   var banner= bp.parent();
+   console.log(bh);
+   banner.css({"min-height":(bh+5)+"px"});
+
+/*
+     $('.bannerbox').mousedown(function (event) { 
+var isMove = true; 
+var p=$(this).parent();
+console.log(p);
+console.log("进入移动");
+
+var abs_x = event.pageX -p.offset().left; 
+var abs_y = event.pageY - p.offset().top; 
+
+console.log("进入移动:"+abs_x);
+$(".bannerbox").mousemove(function (event) { 
+        if (isMove) { 
+        var obj = p; 
+        obj.css({'left':event.pageX - abs_x}); 
+
+        console.log("进入移动:"+(event.pageX - abs_x));
+        } 
+});
+$("html,.bannerbox").mouseup( 
+    function () { 
+        isMove = false; 
+    }); 
+}); 
+
+*/
+$(".bannerbox").swipe( {
+swipe:function(event, direction, distance, duration, fingerCount) {
+  console.log("你用"+fingerCount+"个手指以"+duration+"秒的速度向" + direction + "滑动了" +distance+ "像素 ");
+    if(direction == "left"||direction=="right"){
+console.log("你用"+fingerCount+"个手指以"+duration+"秒的速度向" + direction + "滑动了" +distance+ "像素 ");
+
+}
+  
+
+        var obj=$('.bannerbox').parent();
+
+      var abs_x=p.offset().left;
+      obj.css({'left':(abs_x+distance)+"px"}); 
+
+}
+});
+
+    });
+
+</script>
+</body>
+</html>

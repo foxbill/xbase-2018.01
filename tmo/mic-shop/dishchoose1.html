@@ -1,0 +1,340 @@
+﻿<!DOCTYPE html>
+<!-- saved from url=(0117)http://370351.m.weimob.com/dining/dishes/chooseDishes/pid/370351/outletid/53823/wechatid/oUH-Hji5w-DI8kZDm5vq3spodZUw -->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <script type="text/javascript" async="" src="./dishchoose_files/wtj.js"></script>
+    <script src="./dishchoose_files/getsignpackage" type="text/javascript"></script>
+    <script type="text/javascript" src="./dishchoose_files/jQuery.js"></script>
+    <script type="text/javascript" src="./dishchoose_files/main.js"></script>
+    <script type="text/javascript" src="./dishchoose_files/jquery_min.js"></script>
+    <script type="text/javascript" src="./dishchoose_files/menu.js"></script>
+    <script type="text/javascript" src="./dishchoose_files/jquery_validate_min.js"></script>
+    <script type="text/javascript" src="./dishchoose_files/jquery_validate_methods.js"></script>
+    <script type="text/javascript" src="./dishchoose_files/jquery_form_min.js"></script>
+    <script type="text/javascript" src="./dishchoose_files/inside.js"></script>
+
+    <script src="/boostrap/js/bootstrap.min.js"></script>
+    <script src="/xbase.js/jquery.min.js"></script>
+    <script src="/xbase.js/jquery.xbase.form.js"></script>
+    <script src="/xbase.js/jquery.xbase.js"></script>
+    <script src="/xbase.js/jquery.xbase.jsonform.js"></script>
+
+    <title></title>
+
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <meta name="Keywords" content="">
+    <meta name="Description" content="">
+    <!-- Mobile Devices Support @begin -->
+
+    <meta content="telephone=no, address=no" name="format-detection">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- apple devices fullscreen -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Mobile Devices Support @end -->
+    <link rel="shortcut icon" href="http://stc.weimob.com/img/favicon.ico">
+</head>
+<body onselectstart="return true;" ondragstart="return false;">
+    <link href="dishchoose_files/css/common.css" rel="stylesheet">
+    <link href="dishchoose_files/css/color.css" rel="stylesheet">
+    <script type="text/javascript">
+        function check_i_like(id) {
+            $.post("/dining/dishes/addlike/pid/370351/sp_id/53823/wechatid/oUH-Hji5w-DI8kZDm5vq3spodZUw", { dishes_id: id }, function (msg) { })
+        }
+        function next() {
+            if (ischeckOK == 0) return;
+            var data = getMenuChecklist();//[{'id':id,'count':count},{'id':id,'count':count}]    
+            $.ajax({
+                type: "POST",
+                url: "/dining/dishes/addCart/pid/370351/sp_id/53823/wechatid/oUH-Hji5w-DI8kZDm5vq3spodZUw",
+                data: {
+                    "cart": data
+                },
+                async: true,
+                success: function (res) {
+                    if (res.errno == 0) //成功
+                    {
+                        location.href = "/dining/orderDish/showConfirmPage/pid/370351/sp_id/53823/wechatid/oUH-Hji5w-DI8kZDm5vq3spodZUw/order_sn//operation_mode";
+                    }
+                    else {
+                        alert(res.msg);
+                    }
+
+                },
+                dataType: "json"
+            });
+        }
+
+        function smartdishes() {
+            var data = getMenuChecklist();//[{'id':id,'count':count},{'id':id,'count':count}]    
+            var combo_url = "/dining/Combo/ShowCombo/pid/370351/sp_id/53823/wechatid/oUH-Hji5w-DI8kZDm5vq3spodZUw/order_sn";
+            if ('' == data) {
+                location.href = combo_url;
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/dining/dishes/addCart/pid/370351/sp_id/53823/wechatid/oUH-Hji5w-DI8kZDm5vq3spodZUw",
+                    data: {
+                        "cart": data
+                    },
+                    async: true,
+                    success: function (res) {
+                        location.href = combo_url;
+                    },
+                    dataType: "json"
+                });
+            }
+        }
+
+    </script>
+    <div data-role="container" class="container menu">
+        <header data-role="header">
+        </header>
+        <section data-role="body">
+            <div class="left">
+                <div class="top">
+                    <div><a href="javascript:smartdishes();"><span class="icon mg"></span>智能点菜</a></div>
+                    <div id="ILike"><a><span class="icon hartblckgray"></span>我喜欢</a></div>
+                </div>
+                <div class="content">
+                    <ul id="typeList">
+                        <!--class="on"-->
+                        <li id="li_type40783" class="on" wbo-attr="{'type-id':'ID'}" wbo="dspt_productType_apply.rows" wbo-ctrl="jsonList" name="type"><span wbo-bind="type.Name">锅底</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="right" id="usermenu">
+                <div class="likediv">
+                    <ul></ul>
+                </div>
+                <div class="all">
+                    <ul id="ul_type40783" name="Type" wbo-attr="{'type-id':'ID'}" wbo="dspt_productType_apply.rows" wbo-ctrl="jsonList">
+                        <li id="li212190" class="" wbo-embed="Type" name="Prod" wbo="dspt_productByType.rows" wbo-query="{Type:'Type.ID'}" wbo-ctrl="jsonList">
+                            <span>
+                                <img name="Prod.Picture" src="./dishchoose_files/20150421155859_50106.jpg" alt="生态番茄锅 （特辣）中锅20元">
+                            </span>
+                            <label>
+                                <span name="Prod.Name">生态番茄锅 （特辣）中锅20元<label></label></span>
+                                <label>
+                                    <span class="price">
+                                        <label class="orange">
+                                            ￥<label class="price_n">20</label>
+                                        </label>
+                                    </span>
+                                </label>
+                                <div>
+                                    <span class="sell">月售64份</span>
+                                    <label class="add ">
+                                        <span class="btn  minus" style="display: none;"></span>
+                                        <span class="num">
+                                            <input max="-1" type="text" readonly="" value="0" style="display: none;"></span>
+                                        <span class="btn plus"></span>
+                                    </label>
+                                </div>
+                            </label>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <footer data-role="footer">
+            <nav class="g_nav">
+                <div>
+                    <label class="count cart" id="menucount"></label>
+                    <!--…当数子大于9的时候显示省略号-->
+                    <input type="hidden" id="input_menucount" value="0">
+                    <span style="display: none;">￥<label id="allmoney">0</label></span>
+                    <input type="submit" value="选好了" id="btn_submit" form="form1" class="btn orange gray" onclick="return next()">
+                </div>
+            </nav>
+        </footer>
+        <div class="details">
+            <div class="mDialog freeSet">
+                <div class="content">
+                    <a class="x" href="javascript:void(0)">X</a>
+                    <img src="./dishchoose_files/20140115151914_91175.jpg">
+                    <h2>
+                        <span class="name">黑胡椒烤牛排</span>
+                        <span class="heart red"></span>
+                        <span class="heart gray"></span>
+                    </h2>
+                    <p>酸菜鱼属四川菜系，四川菜享有“一菜一格，百菜百味”之誉。以其特有的调味和独特的烹调技法而著称，各地也有称之为“酸汤鱼”。以鲜草鱼为主料，配以四川泡菜煮制而成。此菜虽为四川民间家常菜。</p>
+                    <label>
+
+                        <span class="price">￥<label class="price_n">28</label></span>
+                        <label>
+                            <span class="btn  minus"></span>
+                            <span class="num">
+                                <input type="text" readonly="" value="0"></span>
+                            <span class="btn plus"></span>
+                        </label>
+                    </label>
+                </div>
+                <div class="bottom"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function onBridgeReady() {
+            WeixinJSBridge.call('showOptionMenu');
+        }
+
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        } else {
+            onBridgeReady();
+        }
+    </script>
+    <script type="text/javascript">
+        (function () {
+            var wtj = document.createElement('script'); wtj.type = 'text/javascript'; wtj.async = true;
+            wtj.src = 'http://tj.weimob.com/wtj.js?url=' + encodeURIComponent(location.href);
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(wtj, s);
+        })();
+        function weimobAfterShare(shareFromWechatId, sendFriendLink, shareToPlatform) {
+            var wmShare = document.createElement('script'); wmShare.type = 'text/javascript'; wmShare.async = true;
+            wmShare.src = 'http://tj.weimob.com/api-share.js?fromWechatId=' + shareFromWechatId + '&shareToPlatform=';
+            wmShare.src += shareToPlatform + '&pid=370351&sendFriendLink=' + encodeURIComponent(sendFriendLink);
+            var stj = document.getElementsByTagName('script')[0]; stj.parentNode.insertBefore(wmShare, stj);
+        }
+
+        /**
+         * 默认分享出去的数据
+         *
+         */
+        function getShareImageUrl() {
+
+            var share_imgurl = "http://hs-album.oss.aliyuncs.com/static/d3/dc/94/image/20150420/20150420165027_16045.jpg";
+            if ("" == share_imgurl) {
+                var shareImgObj = document.getElementsByClassName("shareImgUrl")[0];
+                if ('undefined' != typeof (shareImgObj)) {
+                    share_imgurl = shareImgObj.src;
+                }
+            }
+            return share_imgurl;
+        }
+
+        window.shareData = window.shareData || {
+            "timeLineLink": "http://370351.m.weimob.com/dining/dishes/chooseDishes/pid/370351/outletid/53823/wechatid/fromUsername",
+            "sendFriendLink": "http://370351.m.weimob.com/dining/dishes/chooseDishes/pid/370351/outletid/53823/wechatid/fromUsername",
+            "weiboLink": "http://370351.m.weimob.com/dining/dishes/chooseDishes/pid/370351/outletid/53823/wechatid/fromUsername",
+            "tTitle": '我已经在[中百餐饮]点过餐了，还可以收藏自己喜欢的菜品，真是太棒了~你也来试试吧！',
+            "tContent": '光谷一家亲火锅，藏龙岛杨桥湖大道15号中百仓储一层，电话：027-81739907',
+            "fTitle": '我已经在[中百餐饮]点过餐了，还可以收藏自己喜欢的菜品，真是太棒了~你也来试试吧！',
+            "fContent": '光谷一家亲火锅，藏龙岛杨桥湖大道15号中百仓储一层，电话：027-81739907',
+            "wContent": '光谷一家亲火锅，藏龙岛杨桥湖大道15号中百仓储一层，电话：027-81739907'
+        }
+
+
+
+        document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+            // 发送给好友
+            WeixinJSBridge.on('menu:share:appmessage', function (argv) {
+                WeixinJSBridge.invoke('sendAppMessage', {
+                    "img_url": getShareImageUrl(),
+                    "img_width": "640",
+                    "img_height": "640",
+                    "link": window.shareData.sendFriendLink,
+                    "desc": window.shareData.fContent,
+                    "title": window.shareData.fTitle
+                }, function (res) {
+                    if ('send_app_msg:cancel' != res.err_msg) {
+                        weimobAfterShare("oUH-Hji5w-DI8kZDm5vq3spodZUw", window.shareData.sendFriendLink, 'appmessage');
+                    }
+                    //_report('send_msg', res.err_msg);
+                })
+            });
+
+            // 分享到朋友圈
+            WeixinJSBridge.on('menu:share:timeline', function (argv) {
+                WeixinJSBridge.invoke('shareTimeline', {
+                    "img_url": getShareImageUrl(),
+                    "img_width": "640",
+                    "img_height": "640",
+                    "link": window.shareData.timeLineLink,
+                    "desc": window.shareData.tContent,
+                    "title": window.shareData.tTitle
+                }, function (res) {
+                    if ('share_timeline:cancel' != res.err_msg) {
+                        //如果用户没有取消
+                        weimobAfterShare("oUH-Hji5w-DI8kZDm5vq3spodZUw", window.shareData.timeLineLink, 'timeline');
+                    }
+                    //_report('timeline', res.err_msg);
+                });
+            });
+
+            // 分享到微博
+            WeixinJSBridge.on('menu:share:weibo', function (argv) {
+                WeixinJSBridge.invoke('shareWeibo', {
+                    "content": window.shareData.wContent,
+                    "url": window.shareData.weiboLink
+                }, function (res) {
+                    if ('share_weibo:cancel' != res.err_msg) {
+                        weimobAfterShare("oUH-Hji5w-DI8kZDm5vq3spodZUw", window.shareData.weiboLink, 'weibo');
+                    }
+                    //_report('weibo', res.err_msg);
+                });
+            });
+        }, false);
+    </script>
+    <script type="text/javascript" src="./dishchoose_files/ChatFloat.js"></script>
+    <script type="text/javascript">
+        new ChatFloat({
+            AId: '370351',
+            openid: "oUH-Hji5w-DI8kZDm5vq3spodZUw",
+            top: 150,
+            right: 0,
+            IsTest: false
+        });
+    </script>
+
+
+    <script type="text/javascript" src="./dishchoose_files/share_channel.js"></script>
+    <script type="text/javascript" src="./dishchoose_files/base64.js"></script>
+    <script type="text/javascript" src="./dishchoose_files/st.js"></script>
+    <script type="text/javascript">
+        //使用案例如###如若上线请到研发群找我@赵增煜###
+        st.push("_triggerEvent", {
+            "is_statistic_on": "on", //开关
+            "statisticServerPath": "http://statistic.weimob.com/wm.js", //统计地址
+            "memcServerPath": "http://statistic.weimob.com/memc?cmd=get", //缓存地址
+            "stat_action": "loadPage",  //统计动作类型
+            "stat_optValue": ""    //参数值
+        });
+    </script>
+
+    <!-- weixin js sdk start-->
+    <script type="text/javascript" src="./dishchoose_files/jweixin-1.0.0.js"></script>
+    <script type="text/javascript" src="./dishchoose_files/weixin.js"></script>
+    <script type="text/javascript">
+        var imgUrl = getShareImageUrl();
+        _share.push("_shareEvent", {
+            "is_share_on": "on", //开关
+            "pid": 370351,
+            "bid": "",
+            "mUrl": "",
+            "optVal":
+                {
+                    "shareLink": window.shareData.timeLineLink,
+                    "shareTitle": window.shareData.tTitle,
+                    "shareContent": window.shareData.tContent,
+                    "t_callback_func": window.shareData.t_callback_func,
+                    "f_callback_func": window.shareData.f_callback_func,
+                    "shareImg": imgUrl,
+                    "shareType": "",
+                    "shareDataUrl": ""
+                }
+        });
+    </script>
+    <!-- weixin js sdk end -->
+    <div id="fallr-overlay"></div>
+    <script src="./dishchoose_files/wm.js"></script>
+</body>
+</html>

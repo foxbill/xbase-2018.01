@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0 minimal-ui" />
+    <link rel="stylesheet" href="/boostrap/css/bootstrap.min.css">
+    <script src="/xbase.js/jquery.min.js"></script>
+    <script src="/boostrap/js/bootstrap.min.js"></script>
+    <script src="/xbase.js/jquery.xbase.form.js"></script>
+    <script src="/xbase.js/jquery.xbase.js"></script>
+    <script src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script src="scripts/jk.pagetool.js"></script>
+    <script src="scripts/jk.select.load.js"></script>
+    <title>文章列表</title>
+    <style>
+        .art-content {
+            padding: 10px;
+        }
+
+        section {
+            padding: 10px 10px;
+            border: 1px solid #eee;
+            margin: 10px 0px;
+            background-color: white;
+        }
+
+        .art-date {
+            color: gray;
+            font-size: 1.2rem;
+        }
+
+        .art-img {
+            margin: 5px auto;
+        }
+
+        .art-content {
+            color: gray;
+        }
+
+        .art-tlt-font {
+            font-weight: bold;
+            font-size: 2.0rem;
+        }
+
+        .art-more {
+            font-weight: normal;
+            font-size: 1.2rem;
+        }
+
+        .artType-item-title {
+            cursor: pointer;
+        }
+
+        .artType-item-name {
+            width: 100%;
+            display: inline-block;
+        }
+
+        .sidebar-form {
+            max-width: 350px;
+            width: 100%;
+            margin-right: 30px;
+            margin-bottom: 10px;
+        }
+    </style>
+
+    <script>
+        $(function () {
+            //$(".art-edit").click(function () {
+            //    // body...
+            //    var ptd = $(this).parents(".artitem");
+            //    var obj = ptd.find(".artid");
+
+            //    var parmets = "xbase_ds_name=" + ds + "&ID=" + obj.val()
+            //    window.location.href = url + "?" + parmets;
+
+
+            //});
+
+            $(".art-del").click(function () {
+
+            });
+
+            $(".art-add").click(function () {
+                // body...
+                var parmets = "xbase_ds_name=" + ds + "&operator=add";
+                window.location.href = url + "?" + parmets;
+
+
+            });
+            initSelect($("#articleType"), 0);
+            //initPageTool(5,1);
+
+
+        })
+
+        var url = "articleEdit.html";
+        var ds = "pt_article";
+
+        function edit(e) {
+            var ptd = $(e).parents(".artitem");
+            var obj = ptd.find(".artid");
+            var parmets = "xbase_ds_name=" + ds + "&ID=" + obj.val()
+            window.location.href = url + "?" + parmets;
+
+        }
+
+        function delPt(e) {
+            if (confirm("您确定要删除该项？")) {
+                if (ds != undefined && ds != "") {
+                    var ptd = $(e).parents(".artitem");
+                    var obj = ptd.find(".artid");
+                    //alert(row.ID);
+                    var res = $.rCall(ds + ".delete", { row: { pk_ID: Number(obj.val()) } });
+                    if (!res) {
+                        alert("删除成功");
+                        //refresh();
+
+                        ptd.remove();
+
+                    }
+                }
+
+            }
+        }
+
+        function typeChange(e) {
+            var v = $(e).find("option:selected").val();
+            value = $("[name='query']").val();
+            articlelist.ctrl.reload({ page: 1, rows: pageSize, filterRules: [{ field: 'Title', op: 'contains', value: value },{ field: 'Type', op: 'contains', value: v }] });
+        }
+
+
+    </script>
+</head>
+<body>
+    <div class="view" style="padding: 0px 20px;">
+        <p></p>
+
+        <div class="view">
+            <table class="table table-hover" wbo="pt_article.data" id="articlelist" name="articlelist" wbo-params="{ page:1,rows:20}">
+                <caption>
+                    <form action="#" method="get" class="form-inline pull-left">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="input-group input-group-justified">
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <select name="selectOption"  id="articleType" wbo-select="{'tar':'pt_articleType','frmfield':'ID'}" onchange="typeChange(this)"  class="form-control ">                                                
+                                            </select></span>
+                                        <input type="text" name="query" class="form-control" placeholder="Search...">
+                                        <span class="input-group-btn">
+                                            <button type="button" onclick="search()" class="btn btn-default">提交</button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <button role="button" class="btn btn-info pull-left art-add">添加文章</button>
+                </caption>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>标题</th>
+                        <th>文章封面</th>
+                        <th class="hidden-xs">文章摘要</th>
+                        <th class="hidden-xs">创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody name="articleRows" wbo-bind="articlelist.rows">
+                    <tr name="articleRows.item" class="artitem">
+                        <td>
+                            <input type="hidden" name="articleRows.ID" class="artid">
+                            <input type="checkbox" name="" id="">
+                        </td>
+                        <td name="articleRows.Title"></td>
+                        <td>
+                            <img src="" name="articleRows.CoverPicture" style="width: 100px;"></td>
+                        <td class="hidden-xs" name="articleRows.Summary" style="width: 40%;">Bangalore</td>
+                        <td class="hidden-xs" name="articleRows.CreateTime"></td>
+                        <td>
+                            <button class="btn btn-primary art-edit" role="button" onclick="edit(this)"><span class="glyphicon glyphicon-edit"></span></button>
+                            <button class="btn btn-danger art-del" role="button" onclick="delPt(this)"><span class="glyphicon glyphicon-remove"></span></button>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+            <div style="height: 50px">
+                <div class="" style="margin-left: 15px;">
+                    <ul class="pagination ">
+                        <li><a href="#">&laquo;</a></li>
+                        <li><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#">&raquo;</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    $(function () {
+        search();
+        var total = articlelist.ctrl.data().total;
+        initPage(total);
+    })
+
+    function initPage(total) {
+        $("ul.pagination").pageTool({
+            datatotal: total, currnum: 1, pagesize: pageSize, jumpPageFunc: function (num) {
+                articlelist.ctrl.reload({ page: num, rows: pageSize, filterRules: [{ field: 'Title', op: 'contains', value: value }] });
+                page = num;
+
+            }
+        });
+    }
+
+    var page = 1;
+    var pageSize = 20;
+    var value = "";
+    function search() {
+        value = $("[name='query']").val();
+        articlelist.ctrl.reload({ page: 1, rows: pageSize, filterRules: [{ field: 'Title', op: 'contains', value: value }] });
+        var total = articlelist.ctrl.data().total;
+        initPage(total);
+    }
+</script>
+
+</html>

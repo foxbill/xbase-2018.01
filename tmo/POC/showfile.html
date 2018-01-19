@@ -1,0 +1,107 @@
+﻿<!doctype html>
+<html manifest="index.appcache">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script type="text/javascript" src="../xbase.js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript">
+        /** 
+        * 从 file 域获取 本地图片 url 
+        */
+        function getFileUrl(fileInput) {
+
+            var file = fileInput;
+            if ((typeof fileInput) == "string")
+                file = document.getElementById(fileInput);
+            var img = document.getElementById("imgPre");
+            var url;
+
+            if (window.webkitURL) {
+                url = window.webkitURL.createObjectURL(file.files[0]);
+                elWebkitUrl.innerHTML = url;
+                imgWebkitUrl.src = url;
+            }
+
+            if (window.URL) {
+                url = window.URL.createObjectURL(file.files[0]);
+                elUrl.innerHTML = url;
+                imgUrl.src = url;
+            }
+
+            if (window.FileReader) {
+                url = null;
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    elFileReader.innerHTML = e.target.result;
+                    imgFileReader.src = e.target.result;
+                }
+                reader.readAsDataURL(file.files[0]);
+            }
+
+            if (navigator.userAgent.indexOf("MSIE") >= 1 && !url) {   // IE 
+                url = file.value;
+                elIE.innerHTML = url;
+                imgIE.src = url;
+            }
+
+            if (url)
+                img.src = url;
+        }
+
+
+        /** 
+        * 将本地图片 显示到浏览器上 
+        */
+        function preImg(fileInput, targetId) {
+            var url = getFileUrl(fileInput);
+            var imgPre = document.getElementById(targetId);
+            imgPre.src = url;
+        }
+
+        function selectFile() {
+            var fileInput = document.createElement("input");
+            $(fileInput).attr("type", "file");
+            $(elFileList).append($(fileInput));
+
+            $(fileInput).change(function () {
+                getFileUrl(fileInput);
+            });
+
+
+            for (var i = 0; i < 10000; i++) {
+
+            }
+
+            fileInput.click();
+
+        }
+
+    </script>
+</head>
+<body>
+    v1.17
+    <input type="file" name="imgOne" id="elHideFile" onchange="preImg(this.id,'imgPre');" /><input
+        type="button" value="动态选择文件" onclick="selectFile()" />
+    <form action="">
+    <img id="imgPre" src="" width="300px" height="300px" style="display: block;" />
+    <div id="elFileList">
+    </div>
+    </form>
+    elWebkitUrl:
+    <img id="imgWebkitUrl" src="" width="50px" height="50px" style="display: block;" />
+    <div id="elWebkitUrl">
+    </div>
+    elUrl:
+    <img id="imgUrl" src="" width="50px" height="50px" style="display: block;" />
+    <div id="elUrl">
+    </div>
+    elFileReader:
+    <img id="imgFileReader" src="" width="50px" height="50px" style="display: block;" />
+    <div id="elFileReader">
+    </div>
+    ie 6:
+    <img id="imgIE" src="" width="50px" height="50px" style="display: block;" />
+    <div id="elIE">
+    </div>
+</body>
+</html>

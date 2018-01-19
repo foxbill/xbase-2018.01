@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="http://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js"></script>
+    <title>微信第三方登录</title>
+    <script>
+        //var obj = new WxLogin({
+        //    id: 'login',
+        //    appid: 'wxf96452b66298ba26',
+        //    scope: 'snsapi_login',
+        //    redirect_uri: encodeURIComponent('www.tianmiwo.com'),
+        //    state: '1',
+        //    style: 'white',
+        //    href: '',
+        //});
+
+    </script>
+   
+</head>
+<body>
+
+    <div id="login" style="width: 400px; height:400px">
+        <iframe src="https://open.weixin.qq.com/connect/qrconnect?appid=wxf96452b66298ba26&redirect_uri=http://www.tianmiwo.com/demo/UserInfo.aspx&response_type=code&scope=snsapi_login&state=1" width="100%" height="500"></iframe>
+    </div>
+</body>
+</html>

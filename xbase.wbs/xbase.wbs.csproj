@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5BB19EDE-67C4-4592-BC53-79B30DCB9525}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>xbase.wbs</RootNamespace>
+    <AssemblyName>xbase.wbs</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\xbase.wbs.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web.Extensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Action.cs" />
+    <Compile Include="CommonInterface.cs" />
+    <Compile Include="ControlWord.cs" />
+    <Compile Include="Exceptions.cs" />
+    <Compile Include="FlowControl.cs" />
+    <Compile Include="FlowControlIf.cs" />
+    <Compile Include="FlowStatus.cs" />
+    <Compile Include="Page.cs" />
+    <Compile Include="VarChecker.cs" />
+    <Compile Include="WbapRequestSender.cs" />
+    <Compile Include="wbdl\VboRefSchema.cs" />
+    <Compile Include="Wbps.cs" />
+    <Compile Include="wbap\ClientRequest.cs" />
+    <Compile Include="wbap\Validator.cs" />
+    <Compile Include="wbap\WbapAction.cs" />
+    <Compile Include="wbap\WbapControl.cs" />
+    <Compile Include="wbap\WbapList.cs" />
+    <Compile Include="wbap\JsEvent.cs" />
+    <Compile Include="wbap\JsLookup.cs" />
+    <Compile Include="wbap\JsOperate.cs" />
+    <Compile Include="wbap\WbapElementBinds.cs" />
+    <Compile Include="wbap\WbapEvent.cs" />
+    <Compile Include="wbap\WbapRequest.cs" />
+    <Compile Include="wbap\WbapResponse.cs" />
+    <Compile Include="wbap\CodeTableBind.cs" />
+    <Compile Include="wbap\DataBody.cs" />
+    <Compile Include="wbap\Event.cs" />
+    <Compile Include="wbap\FieldBind.cs" />
+    <Compile Include="wbap\RequestEnv.cs" />
+    <Compile Include="wbap\ResponseEnv.cs" />
+    <Compile Include="wbdl\DecisionControlSchema.cs" />
+    <Compile Include="wbdl\NameValue.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="wbdl\ActionSchema.cs" />
+    <Compile Include="wbdl\FieldBindSchema.cs" />
+    <Compile Include="wbdl\DataListBindSchema.cs" />
+    <Compile Include="wbdl\EventSchema.cs" />
+    <Compile Include="wbdl\WbdlControl.cs" />
+    <Compile Include="wbdl\WbdlDataSchema.cs" />
+    <Compile Include="wbdl\WbdlSchemaContainer.cs" />
+    <Compile Include="wbdl\WbdlSchema.cs" />
+    <Compile Include="Wjs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\xbase.security\xbase.security.csproj">
+      <Project>{FE61869C-1B3A-4C72-B976-ADF6DC0E06A5}</Project>
+      <Name>xbase.security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xBase\xbase.csproj">
+      <Project>{70854294-306B-493D-9264-87699D33A18B}</Project>
+      <Name>xbase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xbase.data\xbase.data.csproj">
+      <Project>{21E8E302-AECD-43EC-8C4D-1A5473B9E5E4}</Project>
+      <Name>xbase.data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wbs\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

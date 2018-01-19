@@ -1,0 +1,24 @@
+﻿[{
+	"id":1,
+	"text":"页面",
+	"children":[{
+		"id":11,
+		"demoUrl":"mobile_demo.html",
+		"docUrl":"",
+		"text":"可折叠集合"
+    },{
+		"id":12,
+		"demoUrl":"mobile_demo1.html",
+		"text":"列表集合"
+	}]
+},
+{
+	"id":1,
+	"text":"模拟商城",
+	"children":[{
+		"id":11,
+		"demoUrl":"mobile_home.html",
+		"docUrl":"",
+		"text":"首页"
+    }]
+}]

@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            getList(1, 8);
+        });
+
+            //后台数据库访问
+            function getList(page,size) {
+                var list = $.rCall("shop_goods.data", { page: page, rows: size });
+                var tr = "";
+                $(".item").remove();
+                $("#listTotal").html(list.total);
+                for (var i = 0; i <list.rows.length; i++) {
+                
+                    tr+="<tr class='item'>"
+                + "<td class='tdName'>" + list.rows[i].name + "</td>"
+                + "<td class='tdPrice'>" + list.rows[i].summary + "</td>"
+                + "<td class='tdCategory'>" + list.rows[i].category + "</td>"
+                + "<td class='tdSummary'>" + list.rows[i].price + "</td>"
+                + "<td><img class='imgPicuture' /><img src='"+ list.rows[i].picture +"' width='50' height='50' /></td>"
+            +"</tr>"              
+                }
+                
+                var table = $("#table1");
+               
+                table.append(tr);
+
+            }
+            //上一页
+            function listPrior() {
+                var page = parseInt($(listPage).val()) - 1;
+                if (page > 0) {
+                    $(listPage).val(page);
+                    getList(page, 8)
+                }
+            }
+            //分组
+            function getPageCount() {
+                var total = $(listTotal).html();
+                total = parseInt(total);
+                var pageCount = total / 8;
+                if ((total % 8) > 0)
+                    pageCount++;
+                return pageCount;
+            }
+            //下一页
+            function listNext() {
+
+                var page = parseInt($(listPage).val()) + 1;
+                var pageCount = getPageCount();
+
+                if (page <= pageCount) {
+                    $(listPage).val(page);
+                    getList(page, 8)
+                }
+            }
+
+    </script>
+    <style type="text/css">
+        #table1 {         
+            width: 686px;
+        }
+        .auto-style1 {
+            height: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-info">
+        <div class="demo-tip icon-tip"></div>
+        <div>Js通过页码跟每月显示多少条获取后端数据表shop_goods中的记录</div>
+    </div>
+     <div>
+            记录总数：<span id="listTotal" name="list.total"></span><input type="button" value="上一页"
+                onclick="listPrior()" />
+            <input type="button" value="下一页" onclick="listNext()" />
+            第<input id="listPage" type="text" value="1" />
+        </div>
+    <table id="table1" border="1" style="background-color:#c3a9a9" >
+        <tr  >
+            <td class="auto-style1">商品名称</td>
+            <td class="auto-style1">单价</td>
+            <td class="auto-style1">种类</td>
+            <td class="auto-style1">简介</td>
+            <td class="auto-style1">图片</td>
+            
+        </tr>
+       
+
+    </table>
+
+</body>
+</html>

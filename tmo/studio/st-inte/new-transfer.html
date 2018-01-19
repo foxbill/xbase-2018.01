@@ -1,0 +1,201 @@
+﻿<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <title>数据库管理</title>
+    <!--<script type="text/javascript" src="../../xbase.js/tab_control.js"></script>-->
+    <script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tree.jquery.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tab_control.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.form.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.jsonform.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../../easyui/jquery.easyui.min.js"></script>
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link href="../css/jqtree.css" rel="stylesheet" type="text/css" />
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <link href="css/studio.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/icon.css">
+    <script type="text/javascript">
+
+        $(function () {
+            $.post("DataExplore.getConnections.wbo", null, function (data) {
+                var ret = $.parseJSON(data);
+                if (ret && ret.Err) {
+                    alert(ret.Err.Text);
+                    return;
+                }
+                $("#connName").options(ret);
+
+            });
+
+            var elFile = document.getElementById("elFile");
+            elFile.onchange = function () {
+                if (elFile.value) {
+                    var s = elFile.value;
+                    var i = s.lastIndexOf("\\");
+                    if (i > -1)
+                        s = s.substr(i + 1, s.length - 1);
+                    elName.value = s.substr(0, s.lastIndexOf("."));
+                } else {
+                    elName.value = "";
+                }
+            }
+        });
+
+
+        function UpladFile() {
+            var fileElement = document.getElementById("file"); // 获取文件对象
+            if (!fileElement.files || !fileElement.files.length) {
+                // alert("请选择要上传的文件");
+                $.messager.alert("文件上传", "请选择要上传的文件", "error");
+                return;
+            }
+            var fileObj = fileElement.files[0];
+            var FileController = "ExcelTransferMan.buildTransfer.wbo";                    // 接收上传文件的后台地址   
+
+
+            // FormData 对象
+
+            var form = new FormData();
+
+            form.append("DataRowNo", 1);                        // 可以增加表单数据
+            form.append("sheet", 1);                        // 可以增加表单数据
+
+            form.append("file", fileObj);                           // 文件对象
+
+            // XMLHttpRequest 对象
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open("post", FileController, false);
+
+            xhr.onload = function () {
+
+                //  $.messager.alert("文件上传", "文件上传成功到" + xhr.responseText, "info");
+                var ret = $.parseJSON(xhr.responseText);
+                if (ret.Err) {
+                    $.messager.alert("文件上传", "文件上传成功到" + ret.Err.Text, "erro");
+                    return;
+                }
+                var s = "transfer.html?" + $.param({ name: ret });
+                document.location = s;
+            };
+
+            xhr.upload.addEventListener("progress", progressFunction, false);
+            xhr.send(form);
+
+            function progressFunction(evt) {
+
+                var progressBar = document.getElementById("progressBar");
+
+                if (evt.lengthComputable) {
+                    progressBar.max = evt.total;
+                    progressBar.value = evt.loaded;
+                }
+            }
+        }
+
+
+        function btnUpload_onclick() {
+            // UpladFile();
+            var reqName = !elName.value ? "" : "." + elName.value;
+            $("#frmTransfer").form("submit", {
+                url: "ExcelTransfer" + reqName + ".createTransfer.wbo",
+                success: function (data) {
+                    var json = $.parseJSON(data);
+                    if (json && json.Err) {
+                        $.messager.alert('Info', json.Err.Text, 'info');
+                        return;
+                    }
+
+                    var s = "transfer.html?" + $.param({ name: elName.value });
+                    document.location = s;
+                }
+            });
+        }
+
+    </script>
+</head>
+<body style="overflow: auto" class="bg-white  pd5">
+    <h1>
+        创建Excel传输</h1>
+    <br />
+    <p style="margin-bottom: 5px">
+        <label>
+            传输名称：<input type="text" id="elName"></label>
+    </p>
+    <form method="post" enctype="multipart/form-data" id="frmTransfer" action="">
+    <table border="0" cellpadding="10px" cellspacing="0" style="background-color: #EEF;
+        width: 300px">
+        <tr style="height: 30px">
+            <td>
+                选择文件：
+            </td>
+            <td>
+                <input class="easyui-filebox" type="file" id="elFile" name="file" />
+            </td>
+        </tr>
+        <tr style="height: 30px">
+            <td>
+                sheet：
+            </td>
+            <td>
+                <input name="sheetName" type="text" id="sheetName" value="0">
+            </td>
+        </tr>
+        <tr style="height: 30px">
+            <td>
+                表头行号：
+            </td>
+            <td>
+                <input name="headRowNo" type="text" id="headRowNo" value="0">
+            </td>
+        </tr>
+        <tr style="height: 30px">
+            <td>
+                数据行号：
+            </td>
+            <td>
+                <input name="dataRowNo" type="text" id="dataRowNo" value="1">
+            </td>
+        </tr>
+        <tr style="height: 30px">
+            <td>
+                目标数据库
+            </td>
+            <td>
+                <select name="connName" id="connName">
+                </select>
+            </td>
+        </tr>
+        <tr style="height: 30px">
+            <td>
+                目标表
+            </td>
+            <td>
+                <input type="text" name="tableName" id="tableName">
+            </td>
+        </tr>
+        <tr style="height: 30px">
+            <td colspan="2">
+                <input name="btnSubmit" type="button" class="r-align" id="btnUpload" value="上传文件"
+                    onclick="return btnUpload_onclick()">
+            </td>
+        </tr>
+        <tr style="height: 30px">
+            <td>
+                上传进度：
+            </td>
+            <td>
+                <progress id="progressBar">
+                </progress>
+            </td>
+        </tr>
+    </table>
+    </form>
+</body>
+</html>

@@ -1,0 +1,40 @@
+﻿<html>
+<head>
+    <title>权限管理</title>
+    <link rel="stylesheet" type="text/css" href="/studio/css/main.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.jsonform.js"></script>
+</head>
+<body class="no-margin-body">
+    <table class="layout-table" border="0" cellspacing="0" cellpadding="0">
+        <tr class="TitleRow">
+            <td class="layout-table-head main-bg-1">
+                <div class="left-float-box">
+                    <img class="logo" alt="logo" src="../images/iopen/ico-1.png" />
+                </div>
+                <div class="left-float-box">
+                    <h1>
+                        权限管理</h1>
+                </div>
+                <div class="layout-table-head-right" wbo="LoginUser">
+                    当前用户 <span xdata="user" name="Id"></span><a href="../index.html">回首页</a>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="layout-table-content">
+                <iframe width="100%" height="100%" id="fraContent" name="Content" scrolling="no"
+                    frameborder="0" src="auth-tree.html"></iframe>
+            </td>
+        </tr>
+        <tr>
+            <td class="layout-table-foot main-bg-1">
+                <div class="x-rfbox">
+                    &copy; copyright 2015 江苏甜蜜窝电子商务有限公司</div>
+            </td>
+        </tr>
+    </table>
+</body>

@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>甜蜜窝</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="jquery.mobile/themes/tmo.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/jquery.mobile/themes/jquery.mobile.icons.min.css" />
+    <link rel="stylesheet" href="/jquery.mobile/jquery.mobile.structure-1.4.5.min.css" />
+    <link rel="stylesheet" href="css/tmo.css">
+    <script type="text/javascript" src="/xbase.js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/jquery.mobile/jquery.mobile-1.4.5.min.js"></script>
+    <script type="text/javascript">
+        function scamera() {
+            var videoElement = document.getElementById('video');
+            var canvasObj = document.getElementById('canvas1');
+            var context1 = canvasObj.getContext('2d');
+            context1.fillStyle = '#ffffff';
+            context1.fillRect(0, 0, 320, 240);
+            context1.drawImage(videoElement, 0, 0, 320, 240);
+        }
+    </script>
+</head>
+<body class="bg-xqx">
+    <input type="button" value="拍照" onclick="scamera()" />
+    <video style="width: 200px; height: 200px; border: 1px solid #000" id="video">
+    </video>
+    <canvas id="canvas1" style="width: 200px; height: 200px; border: 1px solid #000">
+    </canvas>
+</body>
+</html>

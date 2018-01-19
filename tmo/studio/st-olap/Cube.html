@@ -1,0 +1,429 @@
+﻿<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <title>数据库管理</title>
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link href="../css/jqtree.css" rel="stylesheet" type="text/css" />
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <link href="../css/studio.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/icon.css">
+    <!--<script type="text/javascript" src="../../xbase.js/tab_control.js"></script>-->
+    <script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tree.jquery.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tab_control.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.form.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.jsonform.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../../easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript">
+
+        var name = $.paramVal("name");
+        var gTansferForm;
+        var editRow = undefined;
+        var datagrid;
+        var retdata;
+        var gTableName;
+        var gConn = "";
+        $(function () {
+            loadTable();
+            Array.prototype.remove = function (dx) {
+                if (isNaN(dx) || dx > this.length) {
+                    return false;
+                }
+                for (var i = 0, n = 0; i < this.length; i++) {
+                    if (this[i] != this[dx]) {
+                        this[n++] = this[i];
+                    }
+                }
+                this.length -= 1;
+            };
+
+            $("[name = 'Cube.table.connection']").change(function () {
+                loadTableOption($(this).val());
+            });
+
+            $("[name = 'Cube.table.name']").change(function () {
+                loadFields($(this).val());
+                gTableName=$(this).val();
+            });
+
+
+
+
+        });
+
+        function LoadCharacteristic(el) {
+            var p = el.ctrl.data();
+            var data = "[";
+            $.each(p, function (index, object) {
+                data += "{\"name\":\"" + object.name + "\",\"column\":\"" + object.column + "\"},"
+            });
+            data = data.substring(0, data.lastIndexOf(','));
+            data += "]";
+            data = eval("(" + data + ")");
+            $("#tbRealTable").datagrid("loadData", data);
+        }
+
+        function showProp(el) {
+
+            $("#addproperties").show();
+            $('#addproperties').dialog({
+                title: '特性',
+                resizable: true,
+                width: 400,
+                height: 200,
+                modal: true
+            });
+            LoadCharacteristic(el);
+
+        }
+        function loadFields(tableName) {
+            var ret = $.rCall("DataExplore.getFields.wbo", { connName: gConn, tableName: tableName });
+
+            $("[name = 'Cube.Measures.column']").options(ret);
+            $("[name = 'Cube.foreignKey']").options(ret);
+
+           
+
+        }
+
+        function loadTableOption(conn) {
+            var ret = $.rCall("DataExplore.getTables.wbo", { connName: conn });
+            $("[name = 'Cube.table.name']").options(ret);
+			
+
+        }
+
+        function loadTable() {
+            var ret = $.rCall("DataExplore.getConnections.wbo", null);
+            $("[name = 'Cube.table.connection']").options(ret);
+            $("#elName").valu(name);
+            var reqName = !!name ? "." + name + ".wbo" : ".wbo";
+            var ret = $.rCall("Cube" + reqName);
+
+            if (ret && ret.Err)
+                divTableForm.innerHTML = ret.Err.Text;
+
+            if (ret && ret.table) {
+                gConn = ret.table.connection;
+                loadTableOption(gConn);
+            }
+            else {
+                loadTableOption("");
+            }
+
+            if (ret && ret.table && ret.table.name) {
+                gTableName = ret.table.name;
+                loadFields(gTableName);
+            }
+
+			
+            gTansferForm = $("#divTableForm").jsonForm(ret);
+
+
+        }
+
+        function btnDelTrans_onclick() {
+            $.messager.confirm("删除层次", "是否要删除层次'" + name + "'?", function (r) {
+                if (r) {
+                    $.rCall("Dimension." + name + ".del");
+                    parent.deleteSelNode();
+                }
+
+            });
+        }
+
+        function btnSaveTable_onclick() {
+            var newName = $(elName).valu();
+            if (!newName) {
+                $.messager.alert("保存提示","请输入名称");
+                return;
+            }
+            
+            var data = gTansferForm.getData();
+            if(data.table.name=="")
+            {
+            	$.messager.alert("保存提示","请选择事实表");
+                return;
+            }
+            
+            for(var i=0;i<data.Measures.length;i++)
+            {
+            	if( data.Measures[i].name==null)
+            	{
+            		$.messager.alert("保存提示","请填写度量的名称");
+                	return;
+            	}
+            	if( data.Measures[i].column==null)
+            	{
+            		$.messager.alert("保存提示","请选择度量的列");
+                	return;
+            	}
+            	if( data.Measures[i].aggregator==null)
+            	{
+            		$.messager.alert("保存提示","请填写聚合方式");
+                	return;
+            	}
+            	
+            }
+            var reqName = !name ? "Cube.keep" : "Cube." + name + ".keep";
+            $.rCall(reqName, { newName: newName, wboJSON: data });
+            parent.loadTree();
+        }
+
+
+        function toTreeData(ary) {
+            var treeData = [];
+            for (var i = 0; i < ary.length; i++) {
+                treeData.push({ id: ary[i], text: ary[i] });
+            }
+            return treeData;
+        }
+
+		
+		//添加度量值
+		function btnAddMeasure_onclick()
+		{
+			selectTab('度量值');
+			
+			var list = gTansferForm.Measures;
+            var item = list.addDataItem({ name: "", column: "",datatype:"",formatString:"",aggregator:"",caption:"",description:"",MeasureExpression:""});
+            
+            
+            if (gTableName) {
+                var jq = item.jq();
+                var ret = $.rCall("DataExplore.getFields.wbo", { connName: gConn, tableName: gTableName });
+                jq.find("[name = 'Cube.Measures.column']").options(ret);
+                
+              
+            }
+            
+		}
+		
+		function selectTab(title)
+		{
+			var tab = $('#divTab').tabs('getTab',title);
+			var index = $('#divTab').tabs('getTabIndex',tab);
+	    	$('#divTab').tabs("select", index);
+		}
+		
+		
+        //添加维度
+        function btnAddField_onclick() {
+        	
+			selectTab('维度');
+            var $tableName = $("#tableName");
+
+                var Hierarchys = $.rCall("Dimension.dir");
+                jqTree = $("#divTransferTree");
+
+                jqTree.tree({
+                    data: toTreeData(Hierarchys),
+                    onClick: function (node) {
+                        //处理维度不同的问题     
+                        var Dimension = $.rCall("Dimension." + node.id);
+                        Dimension.name = node.id;
+                            var list = gTansferForm.CubeDimension.data();
+                            if (list != null) {
+                                for (var i = 0; i < list.length; i++) {
+                                    if (list[i].name == $tableName.val()) {
+                                        alert("当前维度以选择,不能重复选择");
+                                        return;
+                                    }
+
+                                }
+
+                            }
+                            tbCubeDimension.ctrl.addDataItem(Dimension);
+                            $('#addproperties').dialog('close');
+                        
+                    }
+                });
+                $("#addproperties").show();
+                $('#addproperties').dialog({
+                    title: '维度',
+                    resizable: true,
+                    width: 400,
+                    height: 200,
+                    modal: true
+                });
+           
+        }
+
+        //删除
+        function btnDelField_onclick(el) {
+            var list = el.row.list;
+            list.removeItem(el.row);
+        }
+
+        //预览维度
+        function btnHierarchyView_onclick() {
+            var connName = $("[name = 'Cube.table.connection']").val();
+            var tableName = $("[name = 'Cube.table.name']").val();
+            window.location = "cube-view.html?" + $.param({ name: name, connName: connName, tableName: tableName });
+        }
+
+
+
+    </script>
+</head>
+<body style="overflow: auto" class="easyui-layout bg-white">
+    <div style="height: 30px; padding: 1px; border: none; border-bottom: solid 1px #ccc"
+        data-options="region:'north'">
+        <a class="easyui-linkbutton" id="btnSaveTable" type="button" onclick="return btnSaveTable_onclick()">保存立方</a><a class="easyui-linkbutton" id="btnAddField1" type="button" onclick="return btnAddField_onclick()">添加维度</a><a class="easyui-linkbutton"  type="button" onclick="return btnAddMeasure_onclick();">添加度量值</a><a class="easyui-linkbutton" id="btnDelTrans" type="button" onclick="return btnDelTrans_onclick()">删除层次</a><a class="easyui-linkbutton" id="btnHierarchyView" type="button" onclick="return btnHierarchyView_onclick()">立方预览</a>
+        
+    </div>
+    <div id="divTableForm" name="Cube" class="easyui-layout" data-options="region:'center'"
+        style="border: none">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'north'" style="height: 63px; border: none; border-bottom: solid 1px #ccc">
+                <table border="0" cellspacing="1" class="dataform" istemplate="1">
+                    <tr>
+                        <td>
+                            名称
+                        </td>
+                        <td>
+                            <input type="text" id="elName" value="" class="w60" />
+                        </td>
+                        <td>
+                            <table name="Cube.table">
+                                <tr>
+                                    <td>
+                                        连接名
+                                    </td>
+                                    <td>
+                                        <select name="Cube.table.connection">
+                                        </select>
+                                    </td>
+                                    <td>
+                                        事实表
+                                    </td>
+                                    <td>
+                                        <select  id="tableName" name="Cube.table.name">
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            外键
+                        </td>
+                        <td>
+                            <select name="Cube.foreignKey" class="w100">
+                            </select>
+                        </td>
+                        <td>
+                            说明标题
+                        </td>
+                        <td>
+                            <input type="text" name="Cube.caption" class="w100"  id="caption" value="" />
+                        </td>
+                        <td>
+                            描述
+                        </td>
+                        <td>
+                            <input type="text" name="Cube.description" class="w100"  id="description" value="" />
+                        </td>
+                       
+                    </tr>
+                </table>
+            </div>
+            <div data-options="region:'center'" style="border: none">
+                <div id="divTab" class="easyui-tabs" data-options="fit:true" style="border: none;
+                    background: #fff">
+                    <div title="度量">
+                        <table border="0" cellpadding="0" cellspacing="1"  class="datalist" name="Cube.Measures"
+                            id="tbMeasure">
+                            <tr align="center" list="hr" obj="Cube.Measures.head">
+                            	<th class="hc">名称
+                                </th>
+                                <th class="hc">列
+                                </th>
+                                <th class="hc">字符串格式
+                                </th>
+                                <th class="hc">聚合方式
+                                </th>
+                                <th class='hc'>数据类型</th>
+                                <th class="hc">说明</th>
+                                <th class="hc">描述</th>
+                                <th class="hc">表达式</th>
+                                <th class="hc">删除</th>
+                            </tr>
+                            <tbody>
+                             <tr list="ir" name="Cube.Measures.item">
+                             	<td class="ic">
+                                        <input type="text" id="name" class="w60" name="Cube.Measures.name" ></input>
+                                </td>
+                                <td class="ic">
+                                     <select name="Cube.Measures.column"  class="w100">
+                            		 </select>
+                                </td>
+                                <td class="ic">
+                                       <input type="text"  class="w100" name="Cube.Measures.formatString" ></input>
+                                </td>
+                                <td class="ic">
+                                       <input type="text" class="w100" name="Cube.Measures.aggregator" ></input>
+                                </td>
+                                <td class="ic">
+                                       <input type="text" class="w100" name="Cube.Measures.datatype" ></input>
+                                </td>
+                                <td class="ic">
+                                       <input type="text"  class="w100" name="Cube.Measures.caption" ></input>
+                                </td>
+                                <td class="ic">
+                                       <input type="text"  class="w100" name="Cube.Measures.description" ></input>
+                                </td>
+                                <td class="ic">
+                                       <input type="text"  class="w100" name="Cube.Measures.MeasureExpression" ></input>
+                                </td>
+                                <td class="ic">
+                                        <input name="Cube.Measures.operate" type="button" class="list-btn" id="btnDelField"
+                                            value="-" onclick="return btnDelField_onclick(this)" style="padding: 0px">
+                                </td>
+                             </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div title="维度">
+                        <table border="0" cellpadding="0" cellspacing="1"  class="datalist" name="Cube.CubeDimension"
+                            id="tbCubeDimension">
+                            <tr align="center" list="hr" obj="Cube.CubeDimension.head">
+                            	<th class="hc">维度名称
+                                </th>
+                                <th class="hc">删除
+                                </th>
+                            </tr>
+                            <tbody>
+                             <tr list="ir" name="Cube.CubeDimension.item">
+                             	<td class="ic">
+                                        <span type="text" id="name" class="w60" name="Cube.CubeDimension.name" ></span>
+                                </td>
+                                <td class="ic">
+                                        <input name="Cube.CubeDimension.operate" type="button" class="list-btn" id="btnDelField"
+                                            value="-" onclick="return btnDelField_onclick(this)" style="padding: 0px">
+                                </td>
+                             </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+      </div>
+    </div>
+    <div id="dlg" style="width: 400px; height: 150px; padding: 10px;">
+        <form id="frmImportFile" method="post" enctype="multipart/form-data">
+        请选择Excel文件：<br />
+        <input class="easyui-filebox" type="file" id="elFile" name="file" />
+        </form>
+    </div>
+    <div id="addproperties" style="display: none;">
+    	<div id="divTransferTree" title="维度">
+	                
+	    </div>
+    </div>
+</body>
+</html>

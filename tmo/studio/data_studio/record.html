@@ -1,0 +1,490 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>控制面板</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        body
+        {
+            padding: 5px;
+        }
+        .RndBox .RndTopLeft
+        {
+            background-image: url(images/main_lt.jpg);
+            background-repeat: no-repeat;
+            background-position: 0px 0px;
+        }
+        .RndBox .RndTopLeft .RndTopRight
+        {
+            background-image: url(images/main_rt.jpg);
+            background-repeat: no-repeat;
+            background-position: right top;
+        }
+        .RndBox .RndTopLeft .RndTopRight .RndTopMid
+        {
+            margin-right: 5px;
+            margin-left: 5px;
+            border-top-width: 1px;
+            border-top-style: solid;
+            border-top-color: #938E3B;
+            height: 5px;
+        }
+        .RndBox .RndContent
+        {
+            border-right-width: 1px;
+            border-left-width: 1px;
+            border-right-style: solid;
+            border-left-style: solid;
+            border-right-color: #938E3B;
+            border-left-color: #938E3B;
+        }
+        .RndBox .RndBtmLeft
+        {
+            background-image: url(images/main_lb.jpg);
+            background-repeat: no-repeat;
+            background-position: left top;
+        }
+        .RndBox .RndBtmLeft .RndBtmRight
+        {
+            background-image: url(images/main_rb.jpg);
+            background-repeat: no-repeat;
+            background-position: right top;
+        }
+        .RndBox .RndBtmLeft .RndBtmRight .RndBtmMid
+        {
+            height: 5px;
+            margin-right: 5px;
+            margin-left: 5px;
+            border-bottom-width: 1px;
+            border-bottom-style: solid;
+            border-bottom-color: #938E3B;
+        }
+        .RndBox .RndContent
+        {
+            padding-right: 5px;
+            padding-left: 5px;
+        }
+        #tags
+        {
+            padding-right: 0px;
+            padding-left: 0px;
+            padding-bottom: 0px;
+            margin: 0px 0px 0px 10px;
+            width: 900px;
+            padding-top: 0px;
+            height: 20px;
+            clear: left;
+        }
+        #tags LI
+        {
+            float: left;
+            margin-right: 1px;
+            list-style-type: none;
+            height: 25px;
+            background-repeat: no-repeat;
+            background-position: left bottom;
+        }
+        #tags LI A
+        {
+            padding-right: 10px;
+            padding-left: 10px;
+            float: left;
+            padding-bottom: 0px;
+            color: #000;
+            line-height: 25px;
+            padding-top: 0px;
+            height: 25px;
+            text-decoration: none;
+            background-repeat: no-repeat;
+            background-position: right bottom;
+        }
+        #tags LI.emptyTag
+        {
+            background: none transparent scroll repeat 0% 0%;
+            width: 4px;
+        }
+        #tags LI.selectTag
+        {
+            background-image: url(images/tag_left.jpg);
+            background-repeat: no-repeat;
+            background-position: left bottom;
+            margin-bottom: 0px;
+            position: relative;
+            height: 25px;
+        }
+        #tags LI.selectTag A
+        {
+            background-repeat: no-repeat;
+            background-position: right top;
+            background-image: url(images/tag_right.jpg);
+            color: #000;
+            line-height: 25px;
+            height: 25px;
+            margin-left: 5px;
+        }
+        #tagContent
+        {
+            border-right: #938E3B 1px solid;
+            padding-right: 1px;
+            border-top: #938E3B 1px solid;
+            padding-left: 1px;
+            padding-bottom: 1px;
+            border-left: #938E3B 1px solid;
+            padding-top: 1px;
+            border-bottom: #938E3B 1px solid;
+            background-color: #fff;
+            clear: left;
+        }
+        .tagContent
+        {
+            padding-right: 10px;
+            display: none;
+            padding-left: 10px;
+            padding-bottom: 10px;
+            color: #474747;
+            padding-top: 10px;
+            height: 250px;
+        }
+        #tagContent DIV.selectTag
+        {
+            display: block;
+        }
+        #con
+        {
+            margin-top: 5px;
+        }
+        .Form input
+        {
+            vertical-align: middle;
+        }
+    </style>
+
+    <script type="text/javascript" src="system.xjs"></script>
+
+    <script type="text/javascript" src="wjs.xjs"></script>
+
+    <script type="text/javascript" src="../../xbase.js/controls/listview.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/controls/html_editor.js"></script>
+
+    <script type="text/javascript" src="js/net_util.js"></script>
+
+    <script type="text/javascript">
+
+        var g_Edit;
+        var gTable = window.dialogArguments;
+
+        var g_changed = false;
+
+        function setData(table) {
+            gTable = table;
+            //  g_Edit.setData(table);
+        }
+
+        function RecordEdit(formDiv) {
+            this.data = null;
+            this.formDiv = null;
+
+            this.formDiv = typeof (formDiv) == "string" ? document.getElementById(formDiv) : formDiv;
+            var rowIdField = "";
+            var const_RowIdFieldMask = "Original_";
+            var htmlFields = [];
+
+
+            this.setData = function(table) {
+                htmlFields = [];
+
+                this.data = table;
+                this.formDiv.innerHTML = "";
+
+
+
+                for (fieldName in table.FieldCaptions) {
+
+                    if (fieldName.indexOf(const_RowIdFieldMask, 0) > -1 && rowIdField == "")
+                        rowIdField = fieldName;
+
+                    var label = document.createElement("lable");
+                    label.innerHTML = table.FieldCaptions[fieldName];
+                    label["for"] = table.Id + "." + fieldName;
+                    this.formDiv.appendChild(label);
+
+                    var text = document.createTextNode();
+                    text.data = "   ";
+                    this.formDiv.appendChild(text);
+
+
+                    editControl = null;
+                    var extendType = table.ExtendTypes[fieldName];
+                    switch (extendType) {
+                        case 1:
+                            {
+                                var button = document.createElement("<input type='button' name=upload_'" + fieldName + "' value='上传' onclick=\"onColumnButtonClick('" + fieldName + "', this)\"/>");
+                                this.formDiv.appendChild(button);
+
+                                var br = document.createElement("br");
+                                this.formDiv.appendChild(br);
+
+                                editControl = document.createElement("<img height='100px' width='100px'  align='middle'/>");
+                                editControl.src = table.ActiveRecord[fieldName];
+                                editControl.height = 100;
+                                editControl.width = 100;
+                                this.formDiv.appendChild(editControl);
+                                break;
+                            }
+                        case 2:
+                            {
+                                htmlFields.push(fieldName);
+                                //   var button = document.createElement("<input type='button' name=upload_'" + fieldName + "' value='编辑文章' onclick=\"editFile('" + fieldName + "', this)\"/>");
+                                //   this.formDiv.appendChild(button);
+
+                                var br = document.createElement("br");
+                                this.formDiv.appendChild(br);
+
+                                editControl = document.createElement("iframe");
+                                editControl.width = 500;
+                                editControl.height = 400;
+
+                                // editControl.style
+
+                                // editControl.frameBorder = 1;
+                                this.formDiv.appendChild(editControl);
+                                var editor = new HtmlEditor(editControl);
+
+                                var src = table.ActiveRecord[fieldName];
+
+                                if (src && src != "" && src != null)
+                                    editor.changeUrl(src);
+
+                                break;
+
+                            }
+                        default:
+                            {
+                                if (fieldName == rowIdField) {
+                                    editControl = document.createElement("span");
+                                }
+                                else {
+                                    editControl = document.createElement("<input type='text'/>");
+                                }
+                                this.formDiv.appendChild(editControl);
+                                break;
+
+                            }
+                    }
+
+                    if (editControl.tagName.toLowerCase() == "span")
+                        editControl.innerHTML = table.ActiveRecord[fieldName];
+
+                    editControl.value = table.ActiveRecord[fieldName];
+
+                    editControl.name = table.Id + "." + fieldName;
+                    editControl.id = table.Id + "." + fieldName;
+
+                    var br = document.createElement("br");
+                    this.formDiv.appendChild(br);
+                }
+
+            }
+            this.getRowId = function() {
+                if (rowIdField == "")
+                    return null;
+                return this.data.ActiveRecord[rowIdField];
+
+            }
+            this.getFieldElement = function(fieldName) {
+                return document.getElementById(this.data.Id + "." + fieldName);
+            }
+
+            this.submit = function() {
+                for (var fieldName in this.data.ActiveRecord) {
+                    var elment = this.getFieldElement(fieldName);
+                    this.data.ActiveRecord[fieldName] = elment.value;
+                }
+
+                for (var i = 0; i < htmlFields.length; i++) {
+                    var fieldName = htmlFields[i];
+                    var elemnt = this.getFieldElement(fieldName);
+
+                    var frameDoc = null;
+                    try {
+                        frameDoc = elemnt.contentWindow.document;
+                    } catch (e) {
+                        try {
+                            frameDoc = elemnt.contentDocument;
+                        } catch (e) {
+                        }
+                    }
+                    if (frameDoc == null) {
+                        alert("文档访问失败！文章内容无法保存");
+                        break;
+                    }
+
+                    try {
+                        frameDoc.body.contentEditable = "false";
+                        //                        elemnt.contentDocument.body.contentEditable = undefined;
+                        frameDoc.body.removeAttribute('contentEditable');
+                    } catch (e) {
+                    }
+
+                    var html = frameDoc.documentElement.outerHTML;
+                    var charset = frameDoc.charset;
+
+                    var req = new JoapRequest();
+                    req.setObjCls("Table");
+                    req.setObjName(this.data.FullTableName);
+                    req.setMethod("SetFieldHtml");
+                    req.addParamate("fieldName", fieldName);
+                    req.addParamate("rowId", this.getRowId());
+                    req.addParamate("htmlFile", html);
+                    req.addParamate("charset", charset);
+                    req.commit(false);
+                    frameDoc.body.contentEditable = true;
+                }
+
+                var req = new JoapRequest();
+                req.setObjCls("Table");
+                req.setObjName(this.data.FullTableName);
+                req.setMethod("UpdateRecord");
+                req.addParamate("record", this.data.ActiveRecord);
+
+
+
+
+                var rsp = req.commit(false);
+
+                if (!rsp)
+                    return false;
+
+                this.setData(rsp.ObjData.Data);
+                return true;
+
+            }
+            this.newRecord = function() {
+                if (!this.submit()) return false;
+                var req = new JoapRequest();
+                req.setObjCls("Table");
+                req.setObjName(this.data.FullTableName);
+                req.setMethod("NewRecord");
+                var rsp = req.commit(false);
+                if (!rsp) return false;
+                this.setData(rsp.ObjData.Data);
+                return true;
+            }
+
+        }
+
+        function onColumnButtonClick(fieldName, button) {
+
+            var p = new Object();
+            p.TableName = gTable.FullTableName;
+            p.FieldName = fieldName;
+            p.RowId = g_Edit.getRowId();
+            if (p.RowId == null) {
+                alert("该表没有行标识列(主键列)，不能进行编辑");
+                return;
+            }
+            var ret = window.showModalDialog("upload_dlg.html", p,
+               "dialogHeight:300px;dialogWidth:500px;center:yes;resizable:yes;scroll:no");
+            if (ret) {
+                var element = g_Edit.getFieldElement(fieldName);
+                element.src = ret;
+            }
+        }
+
+        function editFile(fieldName, button) {
+
+            var p = new Object();
+            p.TableName = gTable.FullTableName;
+            p.FieldName = fieldName;
+            p.RowId = g_Edit.getRowId();
+            if (p.RowId == null) {
+                alert("该表没有行标识列(主键列)，不能进行编辑");
+                return;
+            }
+            var ret = window.showModalDialog("../html_editor/editor.htm", p,
+               "dialogHeight:600px;dialogWidth:800px;center:yes;resizable:yes;scroll:yes");
+            if (ret) {
+                //   var element = g_Edit.getFieldElement(fieldName);
+                //   element.src = ret;
+            }
+        }
+
+        window.onload = function() {
+            g_Edit = new RecordEdit(editFormDiv);
+            if (gTable && gTable != undefined && gTable.FieldCaptions) {
+                g_Edit.setData(gTable);
+            }
+        }
+        function saveRecord_onclick() {
+            if (g_Edit.submit())
+                window.returnValue = true;
+        }
+
+        function exit_onclick() {
+            close();
+        }
+
+        function continue_onclick() {
+            if (g_Edit.newRecord())
+                window.returnValue = true;
+        }
+
+    </script>
+
+</head>
+<body>
+    <div class="RndBox">
+        <div class="RndTopLeft">
+            <div class="RndTopRight">
+                <div class="RndTopMid">
+                </div>
+            </div>
+        </div>
+        <div class="RndContent">
+            <div class="MainPageTitleBox">
+                <img src="images/sjmk.jpg" width="126" height="27" alt="数据模块" />&nbsp;首页</div>
+            <p>
+                <strong>名称：</strong> SY&nbsp;<strong>中文名称：</strong>首页数据模块</p>
+            <div class="Form" id="editFormDiv">
+            </div>
+            <div class="BottomBox">
+                <input type="button" id="saveRecord" name="saveRecord" value="保存" onclick="return saveRecord_onclick()" />
+                <input type="button" id="continue" name="continue" value="继续" onclick="return continue_onclick()" />
+                <input type="button" id="exit" name="exit" value="退出" onclick="return exit_onclick()" />
+            </div>
+        </div>
+        <div class="RndBtmLeft">
+            <div class="RndBtmRight">
+                <div class="RndBtmMid">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="con" style="display: none">
+        <ul id="tags">
+            <li class="selectTag"><a onclick="selectTag('tagContent1',this)" href="javascript:void(0)">发型</a> </li>
+            <li><a onclick="selectTag('tagContent0',this)" href="javascript:void(0)">尖端风尚</a> </li>
+            <li><a onclick="selectTag('tagContent2',this)" href="javascript:void(0)">发型盛宴</a> </li>
+            <li><a onclick="selectTag('tagContent3',this)" href="javascript:void(0)">发型师</a> </li>
+            <li><a onclick="selectTag('tagContent4',this)" href="javascript:void(0)">视频</a> </li>
+            <li><a onclick="selectTag('tagContent5',this)" href="javascript:void(0)">关于名成</a> </li>
+        </ul>
+        <div id="tagContent">
+            <div class="tagContent" id="tagContent0">
+                第一个标签的内容</div>
+            <div class="tagContent selectTag" id="tagContent1">
+                第二个标签的内容</div>
+            <div class="tagContent" id="tagContent2">
+                第三个标签的内容</div>
+            <div class="tagContent" id="tagContent3">
+                第四个标签的内容</div>
+            <div class="tagContent" id="tagContent4">
+                第五个标签的内容</div>
+            <div class="tagContent" id="tagContent5">
+                第六个标签的内容</div>
+        </div>
+    </div>
+</body>
+</html>

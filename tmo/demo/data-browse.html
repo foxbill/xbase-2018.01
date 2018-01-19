@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script type="text/javascript">
+
+        //后台数据库访问
+        var list;
+        function btnTest_onclick() {
+            var rows = $.rCall("dsshop_goods.rows?" + $.param({ name: $(txtName).val() }));
+            list.data(rows);
+        }
+
+        $(function () {
+            list = new JsonList(pList);
+        })
+
+
+    </script>
+</head>
+<body>
+    <div class="demo-info">
+        <div class="demo-tip icon-tip">
+        </div>
+        <div>
+            浏览及查询数据</div>
+    </div>
+    <input id="btnTest" type="button" value="查询" onclick="return btnTest_onclick()" /><input
+        id="txtName" type="text" /><br />
+    <div id="pList" name="tb">
+        <div name="tb.item" style="float: left">
+            商品：<span name="tb.name"></span><br />
+            单价：<span name="tb.price"></span><br />
+            图片：<img name="tb.picture" />
+        </div>
+    </div>
+</body>
+</html>

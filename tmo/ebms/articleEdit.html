@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0 minimal-ui" />
+    <link rel="stylesheet" href="/boostrap/css/bootstrap.min.css">
+    <script src="../../xbase.js/jquery-1.9.1.min.js"></script>
+    <script src="/boostrap/js/bootstrap.min.js"></script>
+    <script src="/xbase.js/jquery.xbase.form.js"></script>
+    <script src="/xbase.js/jquery.xbase.js"></script>
+    <script src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+
+    <script src="/ueditor/ueditor.config.js"></script>
+    <script src="/ueditor/ueditor.all.min.js"></script>
+    <script src="/ueditor/lang/zh-cn/zh-cn.js"></script>
+
+    <script src="scripts/jk.uploadimg.js"></script>
+
+    <script src="scripts/jk.html.filter.js"></script>
+    <title>文章编辑</title>
+
+    <script>
+
+        var name = $.paramVal("xbase_ds_name"); //数据源名称
+
+        var pms = $.url.queryString;
+        var pk = {};
+        for (var i = 0; i < pms.length; i++) {
+            var f = pms[i];
+            if (f != "xbase_ds_name")
+                pk[f] = pms[f];
+        }
+
+        var operator = $.paramVal("operator");
+
+
+        $(function () {
+            // body...
+            if (operator == undefined || operator == "" || operator == "edit") {
+                operator = "edit";
+                loadForm();
+            } else {
+                loadType($("#artType"));
+            }
+
+
+        })
+        function loadForm() {
+
+            var user = $.rCall("LoginUser");
+
+
+            var reqName = name + ".data";
+            var objds = $.rCall(reqName, { page: 1, rows: 1, filterRules: [{ field: 'ID', op: 'equal', value: pk['ID'] }] });
+            var obj = objds.rows[0];
+
+            //初始化form表单  
+            /*
+           for (x in obj)  
+               {     				 
+                   var xobj=$("input[name='"+x+"']");
+                   if(xobj!=null&&xobj!=undefined&&xobj.length>0)
+                   {
+                       var v=(obj[x]!=null&&obj[x]!=undefined)?obj[x]:"";
+                       xobj.val(v);
+   
+               var ximg=$("img[name='img_"+x+"']");
+               if(ximg!=undefined&&ximg.length>0)
+               {
+                 if(v!="")
+                 {
+                   ximg.attr("src",v).removeAttr("width");
+                 }
+                  
+               }
+                   }
+               }
+           */
+
+            $("#pk_ID").val(obj.ID);
+            $("#Title").val(obj.Title);
+            $("#SubTitle").val(obj.SubTitle);
+            $("#Type").val(obj.Type);
+            $("#Summary").val(obj.Summary);
+            $("#Url").val(obj.Url);
+
+            var content = obj.Body != null && obj.Body != undefined ? obj.Body : "";
+
+            if (content != "") {
+
+                content = HtmlDiscode(content);
+                //  $("#Body").val(content);
+
+                UE.getEditor('editor').ready(function () {
+                    UE.getEditor('editor').setContent(content);
+                });
+            }
+            // UE.getEditor('editor').setContent('欢迎使用ueditor', isAppendTo);
+            $("#CoverPicture").val(obj.CoverPicture);
+            if (obj.CoverPicture != undefined && obj.CoverPicture != "") {
+                $("#img_CoverPicture").attr("src", obj.CoverPicture).removeAttr("width");
+            }
+            loadType($("#artType"), obj.Type);
+
+        }
+
+        function submit() {
+
+            $("#Body").val(HtmlEncode(UE.getEditor('editor').getContent()));
+            //  return;
+            var url = "";
+            if (operator != "add") {
+                url = "DataForm.pt_article.post.wbo";
+            } else {
+                url = "DataForm.pt_article.post.wbo?action=add";
+            }
+            $("#articleform").form("submit", {
+                url: url,
+                onSubmit: function (param) {
+                    return true;
+                },
+                success: function (data) {
+                    if (data && data.Err)
+                        alert(data.Err.Text)
+                    else {
+                        alert("记录已被保存");
+                        //  loadForm();
+
+                        window.history.back(-1);
+                    }
+                }
+            });
+        }
+
+
+
+
+
+        function loadType(selector, selval) {
+
+            var db = selector.attr("data-target") + ".data";
+            var list = $.rCall(db, { page: 1, rows: 100, filterRules: [] });
+
+            selector.empty();
+            selector.append("<option value='-1' >请选择</option>");
+
+            var frmhiden = selector.attr("data-form");
+            $("#" + frmhiden).val("-1");
+
+            for (var i = 0; i < list.total; i++) {
+                selector.append("<option value='" + list.rows[i].ID + "'>" + list.rows[i].Name + "</option>");
+            }
+            if (selval != null && selval != undefined) {
+                selector.find("option").removeAttr("selected");
+                selector.find("option[value=" + selval + "]").attr("selected", true);
+
+                $("#" + frmhiden).val(selval);
+                // alert(selector.find("option [value=" + selval + "]").text());
+            }
+        }
+
+        function selChange(obj) {
+            var el = $(obj);
+
+            var frmhiden = el.attr("data-form");
+
+            var v = el.find("option:selected").val();
+
+
+            $("#" + frmhiden).val(v);
+            if (v != -1) {
+
+                var nextid = el.attr("data-next");
+                if (nextid != undefined && nextid != "") {
+                    var nextobj = $("#" + nextid);
+                    loadType(nextobj, v);
+                }
+
+            }
+        }
+
+
+
+    </script>
+</head>
+<script src=""></script>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+
+                <form role="form" id="articleform" method="post" action="DataForm.pt_article.post.wbo" enctype="multipart/form-data">
+                    <input type="hidden" class="form-control" name="pk_ID" id="pk_ID" placeholder="文本输入">
+                    <div class="form-group">
+                        <label for="name">标题：</label>
+                        <input type="text" class="form-control" name="Title" id="Title" placeholder="文本输入">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name">副标题：</label>
+                        <input type="text" class="form-control" name="SubTitle" id="SubTitle" placeholder="文本输入">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name">封面：</label>
+                        <div class="thumbnail">
+                            <a href="javascript:;" id="showPanel" onclick="addImage('#uploadCover','#showPanel')" title="添加封面图片" style="width: 100%; min-height: 50px; display: block;">
+                                <img src="images/addpicture.png" width="50" id="img_CoverPicture" name="img_CoverPicture" onerror="this.src='images/addpicture.png'">
+                            </a>
+                            <input type="file" id="uploadCover" name="file_CoverPicture" value="" class="form-control" style="display: none;">
+                            <input type="hidden" name="CoverPicture" id="CoverPicture">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="name">类型：</label>
+                        <select class="form-control" data-target="pt_articleType" data-form="Type" id="artType" onchange="selChange(this)"></select>
+                        <input type="hidden" name="Type" id="Type">
+                    </div>
+                    <div class="form-group">
+                        <label for="name">摘要：</label>
+                        <input type="text" class="form-control" name="Summary" id="Summary" placeholder="文本输入">
+                    </div>
+                    <input type="hidden" name="Body" id="Body">
+                    <div class="form-group">
+                        <label for="name">原文链接：</label>
+                        <input type="text" class="form-control" name="Url" id="Url" placeholder="请粘贴原文地址" />
+                    </div>
+                </form>
+                <div class="form-group">
+                    <label for="name">正文：</label>
+                    <article>
+                        <script id="editor" type="text/plain" style="width: 100%; height: 500px;"></script>
+
+                    </article>
+                </div>
+
+                <div class="view text-center">
+                    <button role="button" class="btn btn-primary btn-lg" onclick="submit()">保存</button>
+                    <button role="button" class="btn btn-default btn-lg">取消</button>
+                </div>
+                <p></p>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+<script type="text/javascript">
+
+    //实例化编辑器
+    //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+    var ue = UE.getEditor('editor');
+
+    $(function () {
+        // body...
+
+    })
+</script>
+</html>

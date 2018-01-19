@@ -1,0 +1,140 @@
+<!doctype html>
+<html manifest="index.appcache">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>附近</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" href="css/tmo.css">
+    <link rel="stylesheet" href="css/shop.css">
+    <script type="text/javascript" src="xbase.js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="xbase.js/jquery.xbase.jsonform.js"></script>
+    <script type="text/javascript" src="js/tmo.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            var row = $.rCall("shop_goods.rows", {
+                page: 1,
+                rows: 50
+            })
+            var gProdList = $(elProdList).jsonList(row);
+        })
+    </script>
+</head>
+<body class="bg3" style="padding: 0px; margin: 0px">
+    <header class="shop-header">
+        <div class="shop-header-logo-box">
+            <img class="shop-header-logo-img" alt="我的店铺" src="images/tx/2.jpeg" />
+        </div>
+        <div class="shop-header-mid">
+            <h1 class="shop-header-title">
+                银城服装店</h1>
+            <p class="shop-header-sum content">
+                经营时尚的服装、鞋帽、头饰</p>
+        </div>
+        <div class="shop-header-right">
+            <div>
+                <img alt="" src="images/icon1/chrome.png" /><br />
+                分享店铺
+            </div>
+        </div>
+    </header>
+    <ul class="button-box-rect c4" avgchild="4">
+        <li>
+            <div>
+                待发货</div>
+        </li>
+        <li>
+            <div>
+                待收款</div>
+        </li>
+        <li>
+            <div>
+                已结款</div>
+        </li>
+        <li>
+            <div>
+                已评价</div>
+        </li>
+    </ul>
+    <ul class="button-box-rnd">
+        <li onclick="goto('goods.html')">
+            <img src="images/icon1/addlocation.png" /><div>
+                添加商品</div>
+        </li>
+        <li>
+            <img src="images/icon1/addlocation.png" /><div>
+                添加货架</div>
+        </li>
+        <li>
+            <img src="images/icon1/addlocation.png" /><div>
+                同步淘宝</div>
+        </li>
+        <li>
+            <img src="images/icon1/addlocation.png" /><div>
+                市场找货</div>
+        </li>
+        <li onclick="readCode()">
+            <img src="images/icon1/addlocation.png" /><div>
+                扫码</div>
+        </li>
+    </ul>
+    <div class="panel">
+        <h2 class="panel-title">
+            日用品
+        </h2>
+        <div class="panel-content">
+            <ul id="elProdList" name="goods" class="product-list c4" avgchild="4">
+                <li name="goods.item">
+                    <img alt="" name="goods.picture" src="images/rybh/1.jpg" />
+                    <div>
+                        <span name="goods.name"></span>￥<span name="goods.price"></span>元</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel">
+        <h2 class="panel-title">
+            服装
+        </h2>
+        <div class="panel-content">
+            <ul class="product-list c2" avgchild="2">
+                <li>
+                    <img src="images/fz/1.jpg" /><div>
+                        盒子￥1.8</div>
+                </li>
+                <li>
+                    <img src="images/fz/2.jpg" /><div>
+                        盒子￥1.8</div>
+                </li>
+                <li>
+                    <img src="images/fz/3.jpg" /><div>
+                        盒子￥1.8</div>
+                </li>
+                <li>
+                    <img src="images/fz/4.jpg" /><div>
+                        盒子￥1.8</div>
+                </li>
+                <li>
+                    <img src="images/fz/1.jpg" /><div>
+                        盒子￥1.8</div>
+                </li>
+                <li>
+                    <img src="images/fz/2.jpg" /><div>
+                        盒子￥1.8</div>
+                </li>
+                <li>
+                    <img src="images/fz/3.jpg" /><div>
+                        盒子￥1.8</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

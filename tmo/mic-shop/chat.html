@@ -1,0 +1,420 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>甜蜜窝</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    <link href="jquery.mobile/themes/tmo.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/jquery.mobile/themes/jquery.mobile.icons.min.css" />
+    <link rel="stylesheet" href="/jquery.mobile/jquery.mobile.structure-1.4.5.min.css" />
+    <link rel="stylesheet" href="css/tmo.css" />
+    <link rel="icon" type="image/png" href="tmo/assets/i/favicon.png">
+    <link rel="stylesheet" href="tmo/assets/css/amazeui.min.css">
+    <link rel="stylesheet" href="tmo/assets/css/app.css">
+    <script src="tmo/assets/js/jquery.min.js"></script>
+    <script src="tmo/assets/js/amazeui.js"></script>
+    <script src="tmo/assets/js/handlebars.min.js"></script>
+    <script src="tmo/assets/js/amazeui.widgets.helper.js"></script>
+    <script type="text/javascript">
+        function addApp() {
+            if ($("#navbar").height() == 40) {
+                $("#navbar").height(180);
+                $("#appPanel").show();
+            } else {
+                $("#navbar").height(40);
+                $("#appPanel").hide();
+            }
+        }
+    </script>
+    <style>
+        .am-header-fixed
+        {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 1010;
+        }
+    </style>
+</head>
+<style>
+    .image
+    {
+        width: 43px;
+        height: 43px;
+        border-radius: 50px;
+    }
+    .chatbox
+    {
+        margin: 60px 0px 60px 0px;
+    }
+    .chatbox:after
+    {
+        content: ".";
+        height: 0;
+        visibility: hidden;
+        display: block;
+        clear: both;
+    }
+    div.speech
+    {
+        margin: 10px 0;
+        padding: 8px;
+        table-layout: fixed;
+        word-break: break-all;
+        position: relative;
+        background: -webkit-gradient( linear, 50% 0%, 50% 100%, from(#ffffff), color-stop(0.1, #ececec), color-stop(0.5, #dbdbdb), color-stop(0.9, #dcdcdc), to(#8c8c8c) );
+        border: 1px solid #989898;
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        border-radius: 8px;
+    }
+    div.speech:before
+    {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        left: 15px;
+        top: -20px;
+        border: 10px solid;
+        border-color: transparent transparent #989898 transparent;
+    }
+    div.speech:after
+    {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        left: 17px;
+        top: -16px;
+        border: 8px solid;
+        border-color: transparent transparent #ffffff transparent;
+    }
+    div.speech.right
+    {
+        box-shadow: -2px 2px 5px #CCC;
+        margin-right: 10px;
+        width: 65%;
+        float: right;
+        background: -webkit-gradient( linear, 50% 0%, 50% 100%, from(#e4ffa7), color-stop(0.1, #bced50), color-stop(0.4, #aed943), color-stop(0.8, #a7d143), to(#99BF40) );
+    }
+    div.speech.right:before
+    {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        top: 9px;
+        bottom: auto;
+        left: auto;
+        right: -10px;
+        border-width: 9px 0 9px 10px;
+        border-color: transparent #989898;
+    }
+    div.speech.right:after
+    {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        top: 10px;
+        bottom: auto;
+        left: auto;
+        right: -8px;
+        border-width: 8px 0 8px 9px;
+        border-color: transparent #bced50;
+    }
+    div.speech.left
+    {
+        box-shadow: 2px 2px 2px #CCCCCC;
+        margin-left: 5px;
+        width: 65%;
+        float: left;
+        background: -webkit-gradient( linear, 50% 0%, 50% 100%, from(#ffffff), color-stop(0.1, #eae8e8), color-stop(0.4, #E3E3E3), color-stop(0.8, #DFDFDF), to(#D9D9D9) );
+    }
+    div.speech.left:before
+    {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        top: 9px;
+        bottom: auto;
+        left: -10px;
+        border-width: 9px 10px 9px 0;
+        border-color: transparent #989898;
+    }
+    div.speech.left:after
+    {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        top: 10px;
+        bottom: auto;
+        left: -8px;
+        border-width: 8px 9px 8px 0;
+        border-color: transparent #eae8e8;
+    }
+    .leftimg
+    {
+        float: left;
+        margin-top: 10px;
+    }
+    .rightimg
+    {
+        float: right;
+        margin-top: 10px;
+    }
+    .leftd
+    {
+        clear: both;
+        float: left;
+        background: url(jquerymobile/images/icon3.png) 0px 10px no-repeat;
+        padding-left: 2px;
+    }
+    .rightd
+    {
+        clear: both;
+        float: right;
+        background: url(jquerymobile/images/icon10.png) right 10px no-repeat;
+        padding-right: 2px;
+    }
+    .clear
+    {
+        clear: both;
+    }
+</style>
+<body>
+    <!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 不提供支持。 请 <a
+  href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
+    <header data-am-widget="header" class="am-header am-header-default" style="top: 0px;
+        left: 0px; width: 100%; position: fixed; z-index: 99;">
+        <div class="am-header-left am-header-nav ">
+            <a href="index.html" class="">
+                <img alt="返回" style="width:40px; height:40px" src="images/icon1/backword.png" /></a>
+        </div>
+        <h1 class="am-header-title">
+            <a href="#title-link">客服-甜甜</a>
+        </h1>
+        <nav id="menu" data-am-widget="menu" class="am-menu  am-menu-offcanvas1" data-am-menu-offcanvas>
+            <a href="javascript: void(0)" class="am-menu-toggle"><i class="am-menu-toggle-icon am-icon-bars">
+            </i></a>
+            <div class="am-offcanvas">
+                <div class="am-offcanvas-bar am-offcanvas-bar-flip">
+                    <ul class="am-menu-nav am-avg-sm-1">
+                        <li class="am-parent"><a href="##">公司</a>
+                            <ul class="am-menu-sub am-collapse  am-avg-sm-2 ">
+                                <li class=""><a href="##">公司</a> </li>
+                                <li class=""><a href="##">人物</a> </li>
+                                <li class=""><a href="##">趋势</a> </li>
+                                <li class=""><a href="##">投融资</a> </li>
+                                <li class=""><a href="##">创业公司</a> </li>
+                                <li class=""><a href="##">创业人物</a> </li>
+                                <li class="am-menu-nav-channel"><a href="##" title="公司">进入栏目 &raquo;</a> </li>
+                            </ul>
+                        </li>
+                        <li class="am-parent"><a href="##">人物</a>
+                            <ul class="am-menu-sub am-collapse  am-avg-sm-3 ">
+                                <li class=""><a href="##">公司</a> </li>
+                                <li class=""><a href="##">人物</a> </li>
+                                <li class=""><a href="##">趋势</a> </li>
+                                <li class=""><a href="##">投融资</a> </li>
+                                <li class=""><a href="##">创业公司</a> </li>
+                                <li class=""><a href="##">创业人物</a> </li>
+                            </ul>
+                        </li>
+                        <li class="am-parent"><a href="#c3">趋势</a>
+                            <ul class="am-menu-sub am-collapse  am-avg-sm-4 ">
+                                <li class=""><a href="##">公司</a> </li>
+                                <li class=""><a href="##">人物</a> </li>
+                                <li class=""><a href="##">趋势</a> </li>
+                                <li class=""><a href="##">投融资</a> </li>
+                                <li class=""><a href="##">创业公司</a> </li>
+                                <li class=""><a href="##">创业人物</a> </li>
+                                <li class="am-menu-nav-channel"><a href="#c3" title="趋势">泥煤 &raquo;</a> </li>
+                            </ul>
+                        </li>
+                        <li class="am-parent"><a href="##">投融资</a>
+                            <ul class="am-menu-sub am-collapse  am-avg-sm-3 ">
+                                <li class=""><a href="##">公司</a> </li>
+                                <li class=""><a href="##">人物</a> </li>
+                                <li class=""><a href="##">趋势</a> </li>
+                                <li class=""><a href="##">投融资</a> </li>
+                                <li class=""><a href="##">创业公司</a> </li>
+                                <li class=""><a href="##">创业人物</a> </li>
+                            </ul>
+                        </li>
+                        <li class=""><a href="##">创业公司</a> </li>
+                        <li class=""><a href="##">创业人物</a> </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="chatbox">
+        <div class="leftd">
+            <div class="leftimg">
+                <img alt="官方" class="image" src="images/tx/1.jpeg" /><br />
+                甜甜
+            </div>
+            <div class="speech left">
+                主人你好，这里是甜蜜窝数字卖场，我叫甜甜<br />
+                请您摇一摇，甜甜给你惊喜！<br />
+                吹一吹，甜甜带你玩穿越！<br />
+                点右上角菜单，查询本店！<br />
+                底部对话栏点“+”选择本店为你提供的服务App。<br />
+                也可以说句话，甜甜来帮你。<br />
+            </div>
+        </div>
+        <div class="rightd">
+            <div class="rightimg">
+                <img alt="官方" class="image" src="images/tx/2.jpeg" /><br />
+                阿贵
+            </div>
+            <div class="speech right">
+                摇了一下，等待着惊喜的出现
+            </div>
+        </div>
+        <div class="leftd">
+            <div class="leftimg">
+                <img alt="官方" class="image" src="images/tx/1.jpeg" /><br />
+                甜甜
+            </div>
+            <div class="speech left">
+                主人，哇！你摇到了<br />
+                10元 话费 100 Q币 1元 水电， 已经打入您的甜蜜窝卡包。再点“+”玩个别的吧！
+            </div>
+        </div>
+        <div class="rightd">
+            <div class="rightimg">
+                <img alt="官方" class="image" src="images/tx/2.jpeg" /><br />
+                阿贵
+            </div>
+            <div class="speech right">
+                选了“斗地主app”,要杀死甜甜
+            </div>
+        </div>
+        <div class="leftd">
+            <div class="leftimg">
+                <img alt="官方" class="image" src="images/tx/1.jpeg" /><br />
+                甜甜
+            </div>
+            <div class="speech left">
+                主人，你好任性啊！赢了甜甜10000积分呢！<br />
+                去积分商城看看你能兑换的奖品吧
+            </div>
+        </div>
+        <div class="rightd">
+            <div class="rightimg">
+                <img alt="官方" class="image" src="images/tx/2.jpeg" /><br />
+                阿贵
+            </div>
+            <div class="speech right">
+                来包香烟，中华的！
+            </div>
+        </div>
+        <div class="leftd">
+            <div class="leftimg">
+                <img alt="官方" class="image" src="images/tx/1.jpeg" /><br />
+                甜甜
+            </div>
+            <div class="speech left">
+                主人，你要卖中华香烟！<br />
+                这是日用品，甜甜这就在附近帮你查，您稍等。
+            </div>
+        </div>
+        <div class="leftd">
+            <div class="leftimg">
+                <img alt="官方" class="image" src="images/tx/1.jpeg" /><br />
+                甜甜
+            </div>
+            <div class="speech left">
+                主人你要的中华香烟查到了！<br />
+                奥体名座店报价101元（送货）（货到付款）<br />
+                银城西堤店报价98元（送货）<br />
+                嘉业国际店报价98元（不送货）<br />
+            </div>
+        </div>
+        <div class="rightd">
+            <div class="rightimg">
+                <img alt="官方" class="image" src="images/tx/2.jpeg" /><br />
+                阿贵
+            </div>
+            <div class="speech right">
+                奥体名座
+            </div>
+        </div>
+        <div class="leftd">
+            <div class="leftimg">
+                <img alt="官方" class="image" src="images/tx/1.jpeg" /><br />
+                甜甜
+            </div>
+            <div class="speech left">
+                主人,你要的是事奥体名座的中华香烟，甜甜办号了<br />
+                已安排送货员“蜜蜜”送货<br />
+                确认请回复“1”<br />
+            </div>
+        </div>
+    </div>
+    <div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default " style="height: 40px;"
+        id="navbar">
+        <ul style="background: white; height: 40px; padding: 0px; line-height: 40px; border-top: 1px solid #eee">
+            <li style="margin: 0px">
+                <img style="width: 30px; height: 30px" src="images/recorder.png" />
+                <input style="width: 240px" type="text" /><img style="width: 30px; height: 30px"
+                    src="images/add1.png" onclick="addApp()" /><a href="#" style="color: Black; margin-left: 3px">发送</a></li>
+        </ul>
+        <ul id="appPanel" style="background: white; height: 150px; border-top: 1px solid #eee;
+            display: none">
+            <li>
+                <div style="width: 40px; height: 40px; margin: 5px; font-size: 12px; line-height: 12px;
+                    text-align: center; float: left">
+                    <img style="margin: 0px; height: 30px; width: 30px" src="images/tx/0.png" />
+                    我要买</div>
+                <div style="width: 40px; height: 40px; margin: 5px; font-size: 12px; line-height: 12px;
+                    text-align: center; float: left">
+                    <img style="margin: 0px; height: 30px; width: 30px" src="images/tx/0.png" />
+                    我要卖</div>
+                <div style="width: 40px; height: 40px; margin: 5px; font-size: 12px; line-height: 12px;
+                    text-align: center; float: left">
+                    <img style="margin: 0px; height: 30px; width: 30px" src="images/tx/0.png" />
+                    我要代理</div>
+                <div style="width: 40px; height: 40px; margin: 5px; font-size: 12px; line-height: 12px;
+                    text-align: center; float: left">
+                    <img style="margin: 0px; height: 30px; width: 30px" src="images/tx/0.png" />
+                    位置</div>
+                <div style="width: 40px; height: 40px; margin: 5px; font-size: 12px; line-height: 12px;
+                    text-align: center; float: left">
+                    <img style="margin: 0px; height: 30px; width: 30px" src="images/tx/0.png" />
+                    斗地主</div>
+                <div style="width: 40px; height: 40px; margin: 5px; font-size: 12px; line-height: 12px;
+                    text-align: center; float: left">
+                    <img style="margin: 0px; height: 30px; width: 30px" src="images/tx/0.png" />
+                    转账</div>
+                <div style="width: 40px; height: 40px; margin: 5px; font-size: 12px; line-height: 12px;
+                    text-align: center; float: left">
+                    <img style="margin: 0px; height: 30px; width: 30px" src="images/tx/0.png" />
+                    视频</div>
+                <div style="width: 40px; height: 40px; margin: 5px; font-size: 12px; line-height: 12px;
+                    text-align: center; float: left">
+                    <img style="margin: 0px; height: 30px; width: 30px" src="images/tx/0.png" />
+                    对讲</div>
+                <div style="width: 40px; height: 40px; margin: 5px; font-size: 12px; line-height: 12px;
+                    text-align: center; float: left">
+                    <img style="margin: 0px; height: 30px; width: 30px" src="images/tx/0.png" />
+                    拍照</div>
+                <div style="width: 40px; height: 40px; margin: 5px; font-size: 12px; line-height: 12px;
+                    text-align: center; float: left">
+                    <img style="margin: 0px; height: 30px; width: 30px" src="images/tx/0.png" />
+                    发图</div>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

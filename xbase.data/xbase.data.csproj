@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{21E8E302-AECD-43EC-8C4D-1A5473B9E5E4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>xbase.data</RootNamespace>
+    <AssemblyName>xbase.data</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\xbase.data.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Data, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Interception, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Microsoft.Practices.Unity.Interception.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=5.1.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="MySqlDAAB, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\MySqlDAAB.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CommandSchema.cs" />
+    <Compile Include="DataListColumn.cs" />
+    <Compile Include="DataExplore.cs" />
+    <Compile Include="DataSourceComm.cs" />
+    <Compile Include="DbTypeCaptions.cs" />
+    <Compile Include="db\MsSqlCmdText.cs" />
+    <Compile Include="db\DbTypeMap.cs" />
+    <Compile Include="DsAdapter.cs" />
+    <Compile Include="DsAdapterCustomer.cs" />
+    <Compile Include="easyui\EasyUiGridData.cs" />
+    <Compile Include="DataNodeType.cs" />
+    <Compile Include="DataSourceConst.cs" />
+    <Compile Include="db\ConnDef.cs" />
+    <Compile Include="DsExplore.cs" />
+    <Compile Include="DsExploreNodeType.cs" />
+    <Compile Include="DataSource.cs" />
+    <Compile Include="DataSummary.cs" />
+    <Compile Include="db\ConfigurationOperator.cs" />
+    <Compile Include="db\ConnectionAdmin.cs" />
+    <Compile Include="db\DatabaseAdmin.cs" />
+    <Compile Include="db\MySqlDatabaseAdmin.cs" />
+    <Compile Include="db\OleDbDatabaseAdmin.cs" />
+    <Compile Include="db\OracleDatabaseAdmin.cs" />
+    <Compile Include="db\SqlDatabaseAdmin.cs" />
+    <Compile Include="easyui\EUGridUtils.cs" />
+    <Compile Include="Exceptions.cs" />
+    <Compile Include="Exceptions\ENoColumnException.cs" />
+    <Compile Include="ExtendedPropertyNames.cs" />
+    <Compile Include="FieldDef.cs" />
+    <Compile Include="FieldInputType.cs" />
+    <Compile Include="FieldVar.cs" />
+    <Compile Include="FilterInput.cs" />
+    <Compile Include="FilterOpSigns.cs" />
+    <Compile Include="FilterOps.cs" />
+    <Compile Include="FilterOption.cs" />
+    <Compile Include="FilterRule.cs" />
+    <Compile Include="ListData.cs" />
+    <Compile Include="OptionItem.cs" />
+    <Compile Include="OptionSchema.cs" />
+    <Compile Include="Pagination.cs" />
+    <Compile Include="ParameterDirectionCaptions.cs" />
+    <Compile Include="ParameterSchema.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DataListRow.cs" />
+    <Compile Include="TableDef.cs" />
+    <Compile Include="DataSourceSchemaBuilder.cs" />
+    <Compile Include="TextType.cs" />
+    <Compile Include="Validation\UniqueValidator.cs" />
+    <Compile Include="Validation\DbExpressionValidator.cs" />
+    <Compile Include="WebDataSet.cs" />
+    <Compile Include="XDataConst.cs" />
+    <Compile Include="XDataException.cs" />
+    <Compile Include="XDataPoc.cs" />
+    <Compile Include="XDataSet.cs" />
+    <Compile Include="XDataSetAdapter.cs" />
+    <Compile Include="XSql.cs" />
+    <Compile Include="DataSourceSchemaContainer.cs" />
+    <Compile Include="DataSourceSchema.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\MySql.Data.dll" />
+    <Content Include="bin\MySqlDAAB.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="datasource\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\xbase.local\xbase.local.csproj">
+      <Project>{F42B9003-8CEE-4F14-9AA0-F43661C81F92}</Project>
+      <Name>xbase.local</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xbase.math\xbase.math.csproj">
+      <Project>{9F45AF8F-985F-4F30-9311-E1EBD9B60907}</Project>
+      <Name>xbase.math</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xbase\xbase.csproj">
+      <Project>{70854294-306B-493D-9264-87699D33A18B}</Project>
+      <Name>xbase</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0 minimal-ui" />
+    <link rel="stylesheet" href="/boostrap/css/bootstrap.min.css">
+    <script src="/xbase.js/jquery.min.js"></script>
+    <script src="/boostrap/js/bootstrap.min.js"></script>
+    <script src="/xbase.js/jquery.xbase.form.js"></script>
+    <script src="/xbase.js/jquery.xbase.js"></script>
+    <script src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script src="scripts/getTreeId.js"></script>
+    <script src="scripts/jk.pagetool.js"></script>
+    <title>公司组织机构</title>
+    <style>
+        .art-content {
+            padding: 10px;
+        }
+
+        section {
+            padding: 10px 10px;
+            border: 1px solid #eee;
+            margin: 10px 0px;
+            background-color: white;
+        }
+
+        .art-date {
+            color: gray;
+            font-size: 1.2rem;
+        }
+
+        .art-img {
+            margin: 5px auto;
+        }
+
+        .art-content {
+            color: gray;
+        }
+
+        .art-tlt-font {
+            font-weight: bold;
+            font-size: 2.0rem;
+        }
+
+        .art-more {
+            font-weight: normal;
+            font-size: 1.2rem;
+        }
+
+        .artType-item-title {
+            cursor: pointer;
+        }
+
+        .artType-item-name {
+            width: 80%;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .sidebar-form {
+            max-width: 350px;
+            width: 100%;
+            margin-right: 30px;
+            margin-bottom: 10px;
+        }
+    </style>
+
+    <script>
+        $(function () {
+
+
+
+        })
+
+
+
+
+    </script>
+</head>
+<body>
+    <div class="view" style="padding: 0px 20px;">
+        <p></p>
+
+        <div class="row">
+            <div class="col-md-3 col-xs-4 col-xm-3">
+
+                <!--<input type="checkbox" name="tm" id="tm" style="display: none;">-->
+                <div class="list-group" data-id="deptList" wbo="Hierarchy.dept.drillMembers.call" wbo-ctrl="jsonList">
+                    <div class="list-group-item artType-item-title " wbo-bind="head">公司组织机构</div>
+                    <a class="list-group-item artType-item-title active text-center" wbo-bind="operate" onclick="addDept(this)">
+                        <span class="artType-item-name" data-type="0" style="font-size: 20px">+</span>
+                    </a>
+                    <div class="list-group-item artType-item-title dataItem" wbo-bind="item">
+                        <div class="artType-item-name" onclick="getDeptChilden(this)" wbo-bind="operate">
+                            <span wbo-bind="text" class="deptName"></span>
+
+                        </div>
+                        <div class="hidden-xs" style="float: right">
+                            <span class="glyphicon glyphicon-pencil" onclick="edit(this)" wbo-bind="operate"></span>
+                        </div>
+                        <div class="childenItem" style="display: none" wbo-bind="Hierarchy.dept.drillMembers" wbo-ctrl="jsonList">
+                            <a class="list-group-item artType-item-title active text-center" wbo-bind="operate" onclick="addDept(this)">
+                                <span class="artType-item-name" data-type="0" style="font-size: 20px">+</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-md-9 col-xs-9"></div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">添加类型
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-2 control-label label-title ">名称：</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="deptValue" placeholder="组织名称" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submit btn btn-primary">
+                        提交
+                    </button>
+                    <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">编辑信息
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-2 control-label label-title ">名称：</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="deptValue" placeholder="组织名称" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submit btn btn-primary">
+                        修改
+                    </button>
+                    <button type="button" class="delete btn btn-danger">
+                        删除
+                    </button>
+                    <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+    </div>
+
+</body>
+
+<script>
+    $(function () {
+        //var total = articlelist.ctrl.data().total;
+        //initPage(total);
+        //$(".list-group").slideUp();
+
+    })
+
+    //公司ID
+    var CompanyId = "1";
+
+
+    function edit(e) {
+        ctrl = e.ctrl ? e.ctrl : e.dataForm;
+        var jq = ctrl.jq();
+        var row = ctrl.data();
+        $("#updateModal [name='deptValue']").val(row.text);
+        $("#updateModal .submit").attr("onclick", "updateDept()");
+        $("#updateModal .delete").attr("onclick", "delDept()");
+        $("#updateModal").modal("show");
+
+    }
+
+
+
+    function delDept() {
+        if (ctrl == undefined) return;
+        var jq = ctrl.jq()
+        var row = ctrl.data();
+        if (confirm("确定要删除该类型吗？")) {
+            var result = $.rCall("pt_dept.delete", { row: { pk_ID: row.id } });
+            if (result == null) {
+                var res = delDeptChilden(row.id);
+                if (res == null) {
+                    jq.remove();
+                } else
+                    alert($.getJsonStr(res));
+            } else {
+                alert($.getJsonStr(result));
+            }
+            $("#updateModal [name='deptValue']").val("");
+            $("#updateModal").modal("hide");
+        }
+    }
+
+    function delDeptChilden(parentId) {
+        var data = $.rCall("pt_dept.data", { page: 1, rows: 10000, filterRules: [{ field: 'ParentId', op: 'equal', value: parentId }] })
+        var result = $.rCall("pt_dept.delete", { rows: data.rows });
+        return result;
+    }
+
+    function updateDept() {
+        if (ctrl == undefined) return;
+        var jq = ctrl.jq()
+        var row = ctrl.data();
+        var input = $("#updateModal [name='deptValue']");
+        if ($(input).val() == "") {
+            $(input).parent().parent().addClass("has-error");
+            return;
+        }
+        $(input).parent().parent().removeClass("has-error");
+        var rowDate = $.rCall("pt_dept.row", { pk: { id: row.id } });
+        rowDate.Name = $(input).val();
+        var result = $.rCall("pt_dept.update", { row: rowDate });
+        if (result == null) {
+            jq.children().children(".deptName").html($(input).val());
+        } else {
+            alert($.getJsonStr(result));
+        }
+        $("#updateModal [name='typeValue']").val("");
+        $("#updateModal").modal("hide");
+    }
+
+    var ctrl = undefined;
+    function addDept(e) {
+        ctrl = e.ctrl ? e.ctrl : e.dataForm;
+        $("#myModal .submit").attr("onclick", "submitDept()");
+        $("#myModal").modal("show");
+    }
+
+    function submitDept() {
+        var depth = 0;
+        var parentId = "0";
+        if (ctrl == undefined) {
+          
+        }
+        else {          
+            var row = ctrl.data();
+            depth = Number(row.attr.Depth);
+            parentId = row.id;
+        }
+        var input = $("#myModal [name='deptValue']");
+        if ($(input).val() == "") {
+            $(input).parent().parent().addClass("has-error");
+            return;
+        }
+        $(input).parent().parent().removeClass("has-error");
+        var result = $.rCall("ds.pt_dept.insert", { row: { CompanyId: CompanyId, Sort: 1, Name: $(input).val(), Depth: depth + 1, ParentId: parentId } });
+        if (result == null) {
+            refreshDept(ctrl);
+        } else {
+            alert($.getJsonStr(result));
+        }
+        $("#myModal [name='deptValue']").val("");
+        $("#myModal").modal("hide");
+
+    }
+
+
+
+
+    function getDeptChilden(el) {
+        var ctrl = el.ctrl ? el.ctrl : el.dataForm;
+        var jq = ctrl.jq()
+        var row = ctrl.data();
+        //url = row.attr.url
+        //if (url) {
+        //    document.getElementById('ifrDemo').src = url;
+        //    //$(ifrDemo).attr('src', url);
+        //    return;
+        //}
+        
+        if (jq.attr("drilled") == "false" || jq.attr("drilled") == undefined) {
+            var node = jq.clone();
+            var path = null;
+            if (row.path)
+                path = row.path.split(",");
+            var children = rCall("Hierarchy.dept.drillMembers", { memberPath: path });
+            //jq.addClass("active");
+            jq.attr("drilled", true);
+            for (var i = 0; i < children.length; i++) {
+                var subNode = node.clone();
+                jq.children(".childenItem").append(subNode);
+                subNode.jsonForm(children[i]);
+            }
+        }
+
+        var content = $(el).parent().children(".childenItem");
+        var style = content.attr("style");
+        if (style == undefined || style == "display: block;" || style == "") {
+            $(el).parent(".list-group-item").find(".childenItem").slideUp();
+            return;
+        }
+        $(el).parent(".list-group-item").siblings().children(".childenItem").slideUp();
+        content.slideDown();
+    }
+
+    function refreshDept(ctrl) {
+        var path = null;
+        var jq = null;
+        if (!ctrl) {
+            location.reload();
+            return;
+        } else {
+            jq = ctrl.jq()
+            var row = ctrl.data();
+            if (row.path)
+                path = row.path.split(",");
+        }
+        var children = rCall("Hierarchy.dept.drillMembers", { memberPath: path });
+        jq.children(".childenItem").find("div").remove();
+        var node = jq.clone();
+        for (var i = 0; i < children.length; i++) {
+            var subNode = node.clone();
+
+            subNode.jsonForm(children[i]);
+            subNode.attr("drilled", false);
+            jq.children(".childenItem").append(subNode);
+        }
+        jq.children().find(".childenItem").hide();
+
+        ctrl = undefined;
+    }
+</script>
+
+</html>

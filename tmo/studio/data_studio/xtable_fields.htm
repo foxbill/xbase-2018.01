@@ -1,0 +1,391 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <title>数据源编辑</title>
+
+    <script language="javascript" type="text/javascript" src="js/js.js"></script>
+
+    <script language="javascript" type="text/javascript" src="../../xbase.js/system/system.js"></script>
+
+    <script language="javascript" type="text/javascript" src="js/xdk4j.js"></script>
+
+    <script language="javascript" type="text/javascript" src="js/controls/tablelist.js"></script>
+
+    <script language="javascript" type="text/javascript" src="js/controls/tab_page.js"></script>
+
+    <script type="text/javascript" src="js/controls/dialog.js"></script>
+
+    <script type="text/javascript" src="js/net_util.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/system/wjs.js"></script>
+
+    <script type="text/javascript">
+        var schema;
+        var isNewSchema = false;
+        var g_FieldList = null;
+        var G_TabPage = null;
+
+        function GetSchema() {
+            return schema;
+        }
+
+
+        function PostData(xTable) {
+        }
+
+
+        function Initialize() {
+            g_FieldList = new ListTable(fieldList);
+        }
+
+        function updateData(xTableSchema) {
+
+
+
+            if (xTableSchema == null) return;
+
+            //  CommandFrame.window.UpdateData(xTableSchema);
+
+            //  ReferenceFrame.window.UpdateData(xTableSchema);
+
+            var rowCount = g_FieldList.getRowCount();
+            var keyFields = "";
+            xTableSchema.Fields = [];
+            for (i = 0; i < rowCount; i++) {
+                var fieldId = g_FieldList.getColumnValue("fieldList_Id", i + 1);
+                var isKey = g_FieldList.getColumnValue("fieldList_Key", i + 1);
+                if (isKey) keyFields += fieldId + ",";
+                var isAutoInc = g_FieldList.getColumnValue("fieldList_IsAutoInc", i + 1);
+                var extendType = g_FieldList.getColumnValue("fieldList_ExtendType", i + 1);
+                var displayName = g_FieldList.getColumnValue("fieldList_DisplayName", i + 1);
+                var visable = g_FieldList.getColumnValue("fieldList_Visibility", i + 1);
+                var editFormat = g_FieldList.getColumnValue("fieldList_EditFormat", i + 1);
+                var defaultValue = g_FieldList.getColumnValue("fieldList_DefaultValue", i + 1);
+                var expression = g_FieldList.getColumnValue("fieldList_Expression", i + 1);
+				var dataType= g_FieldList.getColumnValue("fieldList_DataType", i + 1);
+
+                var field = new Object();
+
+                field.Id = fieldId;
+                field.ExtendType = extendType;
+                field.Title = displayName;
+                field.Visable = visable;
+                field.EditFormat = editFormat;
+                field.DefaultValue = defaultValue;
+                field.IsAutoInc = isAutoInc;
+                field.Expression = expression;
+				field.DataType=dataType;
+
+                if (field.Id) {
+                    xTableSchema.Fields.push(field);
+                }
+                
+            }
+            xTableSchema.KeyField = keyFields.substr(0, keyFields.length - 1);
+        }
+
+        function setData(xTableSchema) {
+            isNewSchema = false;
+            //          CommandFrame.window.Input_Id.readOnly = true;
+            //           debugger;
+            schema = xTableSchema;
+            //         CommandFrame.window.SetData(xTableSchema);
+            //       ReferenceFrame.window.SetData(xTableSchema);
+            //
+            g_FieldList.clearData();
+
+            var keyFields = "," + xTableSchema.KeyField + ",";
+
+            for (var i = 0; i < xTableSchema.Fields.length; i++) {
+                if (xTableSchema.Fields[i]) {
+                    var field = xTableSchema.Fields[i];
+
+                    var fieldId = field.Id;
+                    var isKey = keyFields.indexOf("," + fieldId + ",") > -1;
+                    var isAutoInc = field.IsAutoInc;
+                    var extendType = field.ExtendType;
+                    var displayName = field.Title;
+                    var visable = field.Visable;
+                    var editFormat = field.EditFormat;
+                    var defaultValue = field.DefaultValue;
+                    var expression = field.Expression;
+					var dataType=field.DataType;
+
+                    g_FieldList.addRow();
+
+                    g_FieldList.setColumnValue("fieldList_Id", i + 1, fieldId);
+                    g_FieldList.setColumnValue("fieldList_Key", i + 1, isKey);
+                    g_FieldList.setColumnValue("fieldList_IsAutoInc", i + 1, isAutoInc);
+                    g_FieldList.setColumnValue("fieldList_ExtendType", i + 1, extendType);
+                    g_FieldList.setColumnValue("fieldList_DisplayName", i + 1, displayName);
+                    g_FieldList.setColumnValue("fieldList_Visibility", i + 1, visable);
+                    g_FieldList.setColumnValue("fieldList_EditFormat", i + 1, editFormat);
+                    g_FieldList.setColumnValue("fieldList_DefaultValue", i + 1, defaultValue);
+                    g_FieldList.setColumnValue("fieldList_Expression", i + 1, expression);
+                    g_FieldList.setColumnValue("fieldList_DataType", i + 1, dataType);
+                }
+            }
+        }
+
+        function DeleteRow(node) {
+            var rowNo = g_FieldList.getCellObjectRowNo(node);
+            g_FieldList.deleteRow(rowNo);
+        }
+        function addField() {
+            g_FieldList.addRow();
+        }
+        function AddFields() {
+
+            UpdateData(schema);
+
+            if (schema.Id == "") {
+                alert("请输入XTable的ID！");
+                return;
+            }
+            if (schema == null) {
+                alert("当前没有列表被选中，请在列表目上选择要编辑的列表！");
+                return;
+            }
+            if (schema.SelectCommand == null || schema.SelectCommand == "") {
+                alert("列表数据源还没有配置，请先配置列表数据源！");
+                return;
+            }
+
+
+            XDialog.ShowDlg("datafields.htm?sql=" + schema.SelectCommand, g_FieldList, 600, 400);
+        }
+
+        //edit Lookup of selected field
+        function LinkLookup(node) {
+            UpdateData(schema);
+
+            var rowNo = g_FieldList.GetCellObjectRowNo(node);
+
+            XDialog.ShowDlg("field_lookupTable.html?fieldId=" + schema.Fields[rowNo - 1].Id, schema, 800, 600);
+        }
+
+        //edit validation of the selected field
+        function editFieldValid(node) {
+        }
+
+        //update to server
+        function UpdateTable() {
+            //check reference schema
+            for (var i = 0; i < schema.References.length; i++) {
+                var reference = schema.References[i];
+
+                //check ID
+                if (reference.Id == "") {
+                    alert("模板引用中存在ID为空的结构！");
+                    return;
+                }
+
+                //check maps
+                var fields = new Array();
+                for (var j = 0; j < reference.Maps.length; j++) {
+                    for (var k = 0; k < fields.length; k++) {
+                        if (fields[k] == reference.Maps[j].Id) {
+                            alert("模板引用" + reference.Id + "的字段对应列表中，本表字段" + fields[k] + "重复！");
+                            return;
+                        }
+                    }
+                    fields.push(reference.Maps[j].Id);
+                }
+            }
+
+            //check lookups
+            for (var i = 0; i < schema.LookupFields.length; i++) {
+                var lookup = schema.LookupFields[i];
+
+                //check ID
+                if (lookup.Id == "") {
+                    alert("查询引用中存在ID为空的结构！");
+                    return;
+                }
+
+                //check maps
+                var fields = new Array();
+                for (var j = 0; j < lookup.LookupMap.length; j++) {
+                    for (var k = 0; k < fields.length; k++) {
+                        if (fields[k] == lookup.LookupMap[j].Id) {
+                            alert("查询引用" + lookup.Id + "的字段对应列表中，本表字段" + fields[k] + "重复！");
+                            return;
+                        }
+                    }
+                    fields.push(lookup.LookupMap[i].Id);
+                }
+            }
+
+            //check fields and validations
+            var fieldIds = new Array();
+            for (var i = 0; i < schema.Fields.length; i++) {
+                for (var j = 0; j < fieldIds.length; j++) {
+                    if (fieldIds[j] == schema.Fields[i].Id) {
+                        alert("字段" + fieldIds[j] + "重复！");
+                        return;
+                    }
+                }
+                fieldIds.push(schema.Fields[i].Id);
+
+                //check validations
+                if (schema.Fields[i].Valids) {
+                    var validationIds = new Array();
+                    for (var j = 0; j < schema.Fields[i].Valids.length; j++) {
+
+                        for (var k = 0; k < validationIds.length; k++) {
+                            if (validationIds[k] == schema.Fields[i].Valids[j].Id) {
+                                alert("验证方法名" + validationIds[k] + "重复！");
+                                return;
+                            }
+                        }
+
+                        validationIds.push(schema.Fields[i].Valids[j].Id);
+
+                        var methodIds = new Array();
+                        for (var k = 0; k < schema.Fields[i].Valids[j].Parameters.length; k++) {
+                            for (var l = 0; l < methodIds.length; l++) {
+                                if (methodIds[l] == schema.Fields[i].Valids[j].Parameters[k].Id) {
+                                    alert("验证方法" + schema.Fields[i].Valids[j].Id + "的参数值" + methodIds[l] + "重复！");
+                                    return;
+                                }
+                            }
+
+                            methodIds.push(schema.Fields[i].Valids[j].Parameters[k].Id);
+                        }
+                    }
+                }
+            }
+
+            //check schema
+            if (schema.Id == "") {
+                alert("XTable ID为空，不能保存！");
+                return;
+            }
+
+            //            if (schema.KeyField == "") {
+            //                alert("XTable的主键字段未指定！");
+            //                return;
+            //            }
+
+            //upload           
+            PostData(schema);
+        }
+
+
+        function elRefreshSrcFields_onclick() {
+            //     if (!window.confirm("重建语句将删除现有的所有语句，替换新的语句是否继续？")) return;
+            var jr = new JoapRequest("DBManager", "", "RefreshTableSchemaFields");
+            jr.addParamate("tableId", schema.Id);
+
+            var ret = jr.invoke();
+            if (ret)
+                setData(ret);
+        }
+
+    </script>
+
+</head>
+<body onload="Initialize();">
+    <!--内容开始-->
+    <table width="950px" id="fieldList" cellspacing="0" cellpadding="0" border="1px #6e6e6e solid;"
+        style="border-collapse: collapse;">
+        <tbody id="tb">
+            <tr bgcolor="#A4BDA2" align="center">
+                <td>
+                    字段名
+                </td>
+                <td>
+                    主键
+                </td>
+                <td>
+                    自增
+                </td>
+                <td>
+                    显示名称
+                </td>
+                <td>
+                    默认值
+                </td>
+                <td>
+                    编辑格式
+                </td>
+                <td>
+                    计算公式
+                </td>
+                <td>
+                    可见
+                </td>
+                <td>类型</td>
+                <td>
+                    扩展类型
+                </td>
+                <td>
+                    验证
+                </td>
+                <td>
+                    &nbsp;操作
+                </td>
+            </tr>
+            <tr id="tempRow" style="height: 35px; display: none">
+                <td>
+                    <input id="fieldList_Id" name="fieldList_Id" />
+                </td>
+                <td>
+                    <input id="Key" name="fieldList_Key" type="checkbox" />
+                </td>
+                <td>
+                    <input id="IsAutoInc" name="fieldList_IsAutoInc" type="checkbox" />
+                </td>
+                <td>
+                    <input id="DisplayName" name="fieldList_DisplayName" type="text" />
+                </td>
+                <td>
+                    <input id="DefaultValue" name="fieldList_DefaultValue" type="text" style="width: 80px" />
+                </td>
+                <td>
+                    <!--<select id="EditFormat" name="fieldList_EditFormat">
+                                               <option label="X年X月X日">y年M月d日</option>
+                                               <option label="XXXX年XX月XX日">yyyy年MM月dd日</option>
+                                            </select>-->
+                    <input id="EditFormat" name="fieldList_EditFormat" type="text" style="width: 80px" />
+                </td>
+                <td>
+                    <input id="Expression" type="text" name="fieldList_Expression" />
+                </td>
+                <td>
+                    <input id="Visibility" type="checkbox" name="fieldList_Visibility" />
+                </td>
+                <td>
+                	<select name="fieldList_DataType" id="cmbDataType">
+                        <option style="width: 60px;" value="">自动</option>
+                        <option style="width: 60px;" value="System.String">字符</option>
+                        <option style="width: 60px;" value="System.Int64">整数</option>
+                        <option style="width: 60px;" value="System.Decimal">小数</option>
+                        <option style="width: 60px;" value="System.DateTime">日期</option>
+                        <option style="width: 60px;" value="System.Boolean">是否</option>
+               		</select>
+                </td>
+                <td>
+                    <select style="width: 60px; font-weight: bold" name="fieldList_ExtendType" id="ExtendType">
+                        <option style="width: 60px;" value="0">无</option>
+                        <option style="width: 60px;" value="1">文件</option>
+                        <option style="width: 60px;" value="2">网页文件</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="button" id="Valids" value="编辑" width="6%" name="fieldList_Validation" />
+                </td>
+                <td>
+                    <input id="Button1" type="button" value="删除" name="fieldList_Delete" onclick="DeleteRow(this)" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+&nbsp;<input id="elRefreshSrcFields" type="button" value="刷新原始字段" name="refreshSrcFields"
+        onclick="return elRefreshSrcFields_onclick()" />
+    <input id="btnAddField" value="添加字段" type="button" onclick="return addField()" />
+</body>
+</html>

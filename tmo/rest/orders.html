@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no" />
+    <title>订单详情</title>
+    <link href="css/main.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="js/zepto.min.js"></script>
+    <script type="text/javascript" src="js/jquery_script.js"></script>
+    <script type="text/javascript" src="js/fastclick.js"></script>
+
+    <script src="/xbase.js/jquery.min.js"></script>
+    <script src="/xbase.js/jquery.xbase.js"></script>
+    <script src="/xbase.js/jquery.xbase.form.js"></script>
+    <script src="/xbase.js/jquery.xbase.jsonform.js"></script>
+
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/ jweixin-1.1.0.js"></script>
+
+    <script type="text/javascript">
+        var order = rCall("dspt_orderOpera.row");
+        var OrderId = order.ID;
+        $(function () {
+            $(total).html(order.Total);
+        });
+    </script>
+
+</head>
+
+<body style="padding: 46px 0 50px;">
+
+    <div class="lanm">
+        <span id="back"><a href="javascript:history.back()"></a></span>
+        <h1>订单号：wcy201402205722</h1>
+        <span id="lm"></span>
+        <div class="submenu"><a href="#">我的订餐</a><a href="#">我的订座</a></div>
+    </div>
+    <div class="zhezhao"></div>
+    <div class="box dzxx">
+        订餐门店：滋滋烤鱼门店<br>
+        备注：无<br>
+        应付金额：<strong wbo-bind="order.Total" style="font-size: 18px; color: #FF6600; font-family: Arial" id="total">￥1200.00</strong><br>
+        支付方式：未支付
+    </div>
+    <div class="box dzxx">
+        <button>微信支付</button>
+        <button>现金支付</button>
+    </div>
+
+    <div class="box orders_xx">
+        <div class="orders_tit"><strong>我的菜单</strong></div>
+        <ul wbo="dspt_orderDetail.rows" wbo-query="OrderId:OrderId" wbo-ctrl="jsonList" name="dishs">
+            <li wbo-bind="dishs.item"><span class="od-left" name="dishs.Count">x1</span><h1 wbo-bind="dishs.Name">特色牛肉</h1>
+                <h2>￥<span name="dishs.Price"></span>/份  共计:<span name=""></span></h2>
+            </li>
+        </ul>
+    </div>
+
+</body>
+</html>

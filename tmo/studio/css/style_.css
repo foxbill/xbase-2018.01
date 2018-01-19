@@ -1,0 +1,397 @@
+﻿@charset "utf-8";
+body {
+	background-image: url(../images/body_bg.jpg);
+	background-repeat: repeat-x;
+	background-position: top;
+	padding: 2px;
+	overflow: auto;
+	color:#FF9900;
+	font-family:"宋体";
+	font-size:12px;
+}
+td , p , div {
+	color:#FF9900;
+	font-family:"宋体";
+	font-size:12px;
+}
+.LayoutTable {
+	height: 100%;
+	width: 100%;
+}
+.Title{
+	background-image: url(../images/head_bg.jpg);
+	background-repeat: repeat-x;
+	background-position: top;
+	height: 60px;
+}
+.HeadRightIcon {
+
+}
+.Logo .Left {
+	background-image: url(../images/title_left.jpg);
+	background-repeat: no-repeat;
+	background-position: left;
+}
+.Logo {
+	background-image: url(../images/logo_flow_studio.png);
+	background-repeat: no-repeat;
+	background-position: center 9px;
+	height: 60px;
+}
+.Menu .Left {
+	background-image: url(../images/menu_left.jpg);
+	background-repeat: no-repeat;
+	background-position: left top;
+	height: 60px;
+}
+.Menu {
+	background-image: url(../images/menu_bg.jpg);
+	background-repeat: repeat-x;
+	height: 60px;
+}
+.Menu .Right {
+	background-image: url(../images/menu_right_bg.jpg);
+	background-repeat: no-repeat;
+	background-position: right top;
+	height: 60px;
+}
+.Menu .TabHead {
+	height: 24px;
+	padding-left: 1px;
+}
+.Menu .TabHead .Tag {
+	height: 24px;
+	width: 70px;
+	line-height: 22px;
+	text-align: center;
+	font-family: "微软雅黑";
+	font-size: 14px;
+	color: #CCC;	/*filter: dropshadow(color=#cc66ff,offx=2,offy=2,positive=1);	*/	/*filter:  Glow(color=red,strength=2);*/
+	float:left;
+	cursor: hand;
+}
+.Menu .TabHead .Tag.Act {
+	height: 24px;
+	width: 70px;
+	background-image: url(../images/menu_act_tag.jpg);
+	background-repeat: no-repeat;
+	color: #FFF;	/*filter: dropshadow(color=#cc66ff,offx=2,offy=2,positive=1);	*/	/*filter:  Glow(color=red,strength=2);*/
+	/*filter:Shadow (Color=red, Direction=45);*/
+/*    filter:Dr opShadow(Color=#000, OffX=2, OffY=2, Positive=2);*/
+/*text-shadow: 0 1px 0 #354D70;*/	
+
+	
+	/*
+	text-shadow: 0 1px 0 #eee;凹进效果
+	text-shadow: 0 -1px 0 #123;凹进效果
+	text-shadow: 0 -1px 1px #eee;凸出效果
+	text-shadow: 0 1px 1px #000;凸出效果
+	*/
+}
+
+.Menu .MenuTabPanel {
+	height: 34px;
+	display: none;
+	overflow: hidden;
+}
+
+.Menu .MenuTabPanel.Act {
+	display:block;
+}
+
+.OutLookHead {
+	height: 25px;
+	background-image: url(../images/outlook_btn_bg.jpg);
+	background-repeat: repeat-x;
+}
+.OutLookHead div {
+	height: 25px;
+}
+.OutLookHead .Left {
+
+}
+.OutLookHead .Right {
+	background-image: url(../images/ol_tab_left.jpg);
+	background-repeat: no-repeat;
+	background-position: right;
+	cursor: pointer;
+}
+.OutLookTab {
+	height: 25px;
+	background-image: url(../images/outlook_btn_bg.jpg);
+	background-repeat: repeat-x;
+	cursor: pointer;
+	line-height: 25px;
+	color: #FFF;
+}
+.OutLookTab div {
+	height: 25px;
+	color: #CCC;
+}
+.OutLookTab .Left {
+
+}
+.OutLookTab .Right {
+	background-image: url(../images/ol_tab_down.jpg);
+	background-repeat: no-repeat;
+	background-position: right;
+}
+.OutLookTab.Act .Left .Right {
+	background-image: url(../images/ol_tab_up.jpg);
+}
+.OutSplit {
+	font-size: 1px;
+	height: 3px;
+}
+.OutLookItemList {
+	/* [disabled]background-color: #ADB8CC; */
+	font-family: "宋体";
+	font-size: 12px;
+	line-height: 22px;
+	white-space: nowrap;
+	color: #FF9900;
+}
+.Input10 {
+	width: 120px;
+	background-color: #B1B6BC;
+	border: solid 1px black;
+}
+.Foot {
+	background-image: url(../images/outlook_btn_bg.jpg);
+	background-repeat: repeat-x;
+	line-height: 23px;
+	color: #FFF;
+}
+.Foot div {
+	height: 25px;
+}
+.Foot .Left {
+	background-image: url(../images/foot_left.jpg);
+	background-repeat: no-repeat;
+	background-position: left;
+}
+.Foot .Right {
+	background-image: url(../images/foot_right.jpg);
+	background-repeat: no-repeat;
+	background-position: right;
+	text-indent: 5px;
+	font-size: 12px;
+}
+.LayoutTable .MainPanel {
+	padding-bottom: 3px;
+	padding-left: 3px;
+}
+.TabHead2 {
+	background-color: #4A5F7D;
+	font-family: "宋体";
+	font-size: 12px;
+	line-height: 28px;
+	height: 28px;
+}
+.TabHead2 div {
+	height: 28px;
+}
+.TabHead2 .TabTag2 {
+	float: left;
+	height: 28px;
+	background-image: none;
+	background-repeat: repeat-x;
+	color:#CCC;
+	cursor: pointer;
+	text-align: center;
+}
+.TabHead2 .TabTag2 .Right {
+	padding: 0px 5px 0px 5px;
+	background-image: none;
+	background-repeat: no-repeat;
+	background-position: right;
+	text-align: center;
+}
+.TabHead2 .TabTag2 .Left {
+	background-image: none;
+	background-repeat: no-repeat;
+	background-position: left;
+}
+.TabHead2  .TabTag2.Act {
+	float: left;
+	height: 28px;
+	background-image: url(../images/edit_tag_act.jpg);
+	color: #FE9900;
+}
+.TabHead2  .TabTag2.Act .Right {
+	background-image: url(../images/edit_tag_right_act.jpg);
+	background-repeat: no-repeat;
+	background-position: right;
+	text-align: center;
+}
+.TabHead2  .TabTag2.Act .Left {
+	background-image: url(../images/edit_tag_left_act.jpg);
+	background-repeat: no-repeat;
+	background-position: left;
+}
+.TabPage2 {
+	background-color: #FFF;
+	display:none;
+}
+.TabPage2.Act {
+	display:block;
+}
+.Menu .MenuBtn {
+	height: 34px;
+	text-align: center;
+	float: left;
+	font-family: "宋体";
+	font-size: 12px;
+	line-height: 12px;
+	color: #999999;
+	cursor: pointer;
+	background-color: transparent;
+	background-repeat: no-repeat;
+	background-position: center top;
+	white-space: nowrap;
+	vertical-align: bottom;
+	border: none;
+	-moz-user-select:none;
+	-webkit-user-select:none;
+	user-select:none;
+	margin: 0px;
+	overflow: hidden;
+}
+.Menu .MenuBtnIcon {
+	height: 16px;
+	width: 16px;
+}
+.ButtonBox td {
+	white-space: nowrap;
+	padding: 1px 0px 0px 3px;
+	text-align: center;
+}
+.ButtonBox .ButtonSplite {
+	background-image: url(../images/btn_splite.jpg);
+	background-repeat: no-repeat;
+	float: left;
+	height: 34px;
+	width: 5px;
+}
+.Foot .Left .Right .StatuBarRight {
+	float: left;
+}
+.Foot .Left .Right .FootLeftCol {
+	float: left;
+}
+.SmallImgButton {
+	float: left;
+	width: 30px;
+}
+.TopicHead {
+	line-height: 22px;
+	background-image: url(../images/outlook_btn_bg.jpg);
+	background-repeat: repeat-x;
+	height: 22px;
+	text-align: center;
+	font-family: "微软雅黑";
+	font-size: 14px;
+	color: #F90;
+}
+.DataForm {
+	background-color: #4A5F7D;
+}
+.ListActItem {
+	background-color: #CCF;
+}
+.Logo div {
+	height: 60px;
+}
+.AutoWidthInput {
+	width: 100%;
+}
+.PadingFormS {
+	padding: 2px;
+}
+.HeadRightIcon a {
+	border: none;
+	text-decoration: none;
+
+}
+.HeadRightIcon img {
+	border: none;
+
+}
+.LabelList div {
+	float: left;
+}
+.LabelList {
+	height: 25px;
+}
+.TableButtonForm td {
+	vertical-align: top;
+}
+.ListTable {
+	white-space: nowrap;
+	width: 100%;
+	cursor: default;
+}
+.ListTable tr.activeItem {
+	background-color: #FFC;
+}
+.ListTable .ListHead {
+	font-family: "黑体";
+	font-weight: bold;
+	background-color: #999;
+	color: #FFF;
+	height: 25px;
+}
+.ListTable .ListHead td {
+	color: #FFF;
+	text-align: left;
+	height: 25px;
+	line-height: 25px;
+}
+
+.ToolBtn {
+	float: left;
+	height: 22px;
+	width: 22px;
+	margin: 0px;
+	padding:0px;
+	background: none;
+	border: none;
+}
+
+body.content {
+	background-color: #FFF;
+	background-image: url(none);
+	color: #333;
+}
+
+.list{
+	border:solid 1px #333;
+	color:#333;
+}
+
+.list .hc{ /*表头单元格css */
+	background-color: #C9F;
+}
+       
+.list .ic{
+	
+}
+
+.list .act{
+   	background:#036;   	
+  	color:#CCC;
+}
+
+.list .ic.mo{
+	background:#FFC;
+	color:#000;
+}
+
+.form {
+	background-color: #CCE6E6;
+	border: none;
+}
+.form td {
+	border: none;
+	color: #333;
+}

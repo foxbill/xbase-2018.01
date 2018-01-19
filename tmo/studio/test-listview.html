@@ -1,0 +1,139 @@
+﻿<html>
+<head>
+    <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="js/system.js"></script>
+    <script type="text/javascript" src="js/xlistview.js"></script>
+    <script type="text/javascript" src="js/jsonlist.js"></script>
+    <script type="text/javascript">
+
+        var jo = [
+      {
+          field1: "a1",
+          field2: "b1",
+          field3: {
+              aaa: "1",
+              bbb: "1"
+          }
+      },
+      {
+          field1: "a2",
+          field2: "b2",
+          field3: {
+              aaa: "1",
+              bbb: "1"
+          }
+      },
+      {
+          field1: "a3",
+          field2: "b3",
+          field3: {
+              aaa: "1",
+              bbb: "1"
+          }
+      }
+]
+        var jm = {
+            field1: {
+                title: "字段1",
+                inputElement: "select",
+                selectDatas: [{ value: 1, text: "字符型" }, { value: 2, text: "数字型"}]
+            },
+            field2: {
+                isHide: false,
+                inputElement: "input"
+            },
+            field3: {
+                title: "字段1",
+                inputElement: "input",
+                selectDatas: {}
+            }
+        }
+        var list1;
+        var tl;
+        var temp;
+        onload = function () {
+            // TableList.prototype = new ListView(listTable);
+            //          alert("loaded");
+            list1 = new JsonList(tableList, jo, jm);
+            list3 = new JsonList(divList2, jo, jm);
+            list1.onCheckObj = function (e) {
+                // debugger;
+                //alert("aa");
+            }
+            list1.onActiveItem = function (e) {
+                //alert("Active");
+            }
+
+        }
+        function Button1_onclick() {
+            temp = list1.addItem();
+        }
+        function test() {
+
+            list1.addColumn("aah", "d", null, null);
+        }
+        function b() {
+            list1.removeItemByIndex(0);
+        }
+        function c() {
+            list1.removeColumnByIndex(0);
+        }
+        function d() {
+            list1.setCellValue("field1", 1, 0);
+
+        }
+        function errTest() {
+            list5 = new JsonList(divList2, "aaaa", jm);
+        }
+    </script>
+</head>
+<body>
+    <div id="divList2">
+        <ul id="lh" ishead="1">
+            <li name="field1">2342342</li>
+            <li name="field2">2342342</li>
+            <li name="field3">2342342</li>
+        </ul>
+        <ul id="lb" isitem="1">
+            <li name="field1">2342342</li>
+            <li name="field2">2342342</li>
+            <li name="field3">2342342</li>
+        </ul>
+    </div>
+    <table id="tableList">
+        <tr id="listHead" ishead="1">
+            <td name="field1">
+                a
+            </td>
+            <td name="field2">
+                b
+            </td>
+            <td name="field3">
+                c
+            </td>
+        </tr>
+        <tr id="listItem" isitem="1">
+            <td name="field1">
+                aa
+            </td>
+            <td name="field2">
+                bbb
+            </td>
+            <td name="field3">
+                asdf
+            </td>
+        </tr>
+    </table>
+    <p>
+        &nbsp;</p>
+    <p>
+        <input id="addRow" type="button" value="addRow" onclick="return Button1_onclick()" />
+        <input type="button" value="addCol" onclick="test()" />
+        <input type="button" value="delRow" onclick="b()" />
+        <input type="button" value="delCol" onclick="c()" />
+        <input type="button" value="test" onclick="d()" />
+        <input type="button" value="错误测试" onclick="errTest()" /></p>
+    <div id="list3">
+    </div>
+</body>
+</html>

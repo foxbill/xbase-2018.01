@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>xTable属性</title>
+    <link rel="stylesheet" href="css/style.css" type="text/css" />
+    <style type="text/css">
+        .CommandList .CommandListItem
+        {
+            float: left;
+            width: 50%;
+            height: 160px;
+        }
+        .CommandList .CommandListItem p
+        {
+            margin: 0px;
+            height: 20px;
+            line-height: 20px;
+        }
+        .CommandList div textarea
+        {
+            width: 480px;
+            height: 130px;
+            overflow-y: auto;
+        }
+        .CommandList div input
+        {
+            float: left;
+            width: 60px;
+            padding-left: 2px;
+        }
+    </style>
+
+    <script type="text/javascript" src="../../xbase.js/system/system.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/utils/net_util.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/system/wjs.js"></script>
+
+    <script type="text/javascript">
+
+        var schema;
+
+        function setData(TableSchema) {
+            schema = TableSchema;
+            Text_Select.value = TableSchema.SelectCommand;
+            Text_Insert.value = TableSchema.InsertCommand;
+            Text_Update.value = TableSchema.UpdateCommand;
+            Text_Delete.value = TableSchema.DeleteCommand;
+        }
+
+        function updateData(TableSchema) {
+            TableSchema.SelectCommand = Text_Select.value;
+            TableSchema.InsertCommand = Text_Insert.value;
+            TableSchema.UpdateCommand = Text_Update.value;
+            TableSchema.DeleteCommand = Text_Delete.value;
+            TableSchema.QueryParams = schema.QueryParams;
+        }
+
+        function rebuildCommand_onclick() {
+
+            if (!window.confirm("重建语句将删除现有的所有语句，替换新的语句是否继续？")) return;
+            var jr = new JoapRequest("DBManager", "", "BuildTableCommand");
+            jr.addParamate("schema", schema);
+
+            var ret = jr.invoke();
+            if (ret)
+                setData(ret);
+        }
+
+        function elAddParam_onclick() {
+            var ret = window.showModalDialog("query_param.html", schema, "dialogWidth:800px;dialogHeight:600px;center:yes;resizable:yes;scroll:auto");
+
+            //            var win = window.open("query_param.html");
+            //            elementReadyRun(win.document, function() {
+            //                win.setData(schema)
+            //            });
+        }
+
+
+    </script>
+
+</head>
+<body>
+    <div>
+        <div style="">
+            <input type="button" value="重建命令" id="rebuildCommand" onclick="return rebuildCommand_onclick()" />
+            <input type="button" value="命令参数" id="elAddParam" onclick="return elAddParam_onclick()" />
+        </div>
+        <div class="CommandList">
+            <div class="CommandListItem">
+                <p>
+                    查询语句</p>
+                <textarea rows="5" name="Text_Select" id="Text_Select"></textarea>
+            </div>
+            <div class="CommandListItem">
+                <p>
+                    更新语句</p>
+                <textarea rows="5" id="Text_Update" name="Text_Update"></textarea>
+            </div>
+            <div class="CommandListItem">
+                <p>
+                    删除语句</p>
+                <textarea rows="5" id="Text_Delete" name="Text_Delete"></textarea>
+            </div>
+            <div class="CommandListItem">
+                <p>
+                    插入语句</p>
+                <textarea rows="5" name="Text_Insert" id="Text_Insert"></textarea>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

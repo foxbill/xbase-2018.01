@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>常规弹出窗口示例页</title>
+
+<!--    <script type="text/javascript" src="../../JavaScript/Base/Controls.js"></script>
+-->
+    <script type="text/javascript" src="../../JavaScript/Controls/MessageBox.js"></script>
+
+    <style type="text/css">
+        body
+        {
+            margin: 0;
+            padding: 0;
+            font: 14px Verdana, Arial, sans-serif;
+            line-height: 200%;
+        }
+        #content
+        {
+            padding-left: 50px;
+            padding-right: 50px;
+        }
+        #content h2
+        {
+            font-size: 18px;
+            color: #1E9300;
+            padding-top: 8px;
+            margin-bottom: 8px;
+        }
+        #content h3
+        {
+            margin-top: 8px;
+            margin-bottom: 8px;
+            font: bold 14px 宋体,tahoma,arial,sans-serif;
+            color: #0033CC;
+        }
+        #content div
+        {
+            border: #666 solid 1px;
+            padding-left: 10px;
+        }
+        #content span
+        {
+            color: #f00;
+            font-weight: bold;
+        }
+        ul, ol
+        {
+            color: #000000;
+        }
+    </style>
+
+    <script type="text/javascript">
+        function dlgopen() {
+            J.dialog.get({ id: 'test10', title: '测试窗口', msg: '错误', cover: true });
+        }
+        function dlgopen1() {
+            J.dialog.get({ id: 'test1', title: '测试窗口', page: '_content/content.html' });
+        }
+        function dlgopen2() {
+            J.dialog.get({ id: 'test2', title: '测试窗口', page: '_content/content.html', cover: true });
+        }
+        function dlgopen3() {
+            J.dialog.get({ id: 'test3', title: '测试窗口', width: 500, link: 'http://www.google.com' });
+        }
+        function dlgopen4() {
+            J.dialog.get({ id: 'test4', title: '测试窗口', html: '<p align="center" style="font-size:13px">yqcore框架之yqdialog弹出窗口组件。</p>' });
+        }
+        function dlgopen5() {
+            J.dialog.get({ id: 'test5', title: '测试窗口', page: '_content/content.html', top: 100, left: 100 });
+        }
+        function dlgopen6() {
+            J.dialog.get({ id: 'test6', title: '测试窗口', page: '_content/content1.html' });
+        }
+        function dlgopen7() {
+            J.dialog.get({ id: 'test7', title: '测试窗口', page: '_content/content.html' });
+        }
+        function closdlg() {
+            J.dialog.close('test7'); //为打开窗口的id
+        }
+        function dlgopen8() {
+            J.dialog.get({ id: 'test8', title: '测试窗口', page: '_content/content3.html' });
+        }
+        function todlgval() {
+            // J.dialog.infrm['test8'].contentWindow.document 为弹出的id为test8的窗口的内容页（也就是content3.html）的document对象。
+            J('ctxt1', J.dialog.infrm['test8'].contentWindow.document).val(J('#txt1').value);
+        }
+        function dlgtoval() {
+            // J.dialog.infrm['test8'].contentWindow.document 为弹出的id为test8的窗口的内容页（也就是content3.html）的document对象。
+            J('#txt1').value = J('ctxt1', J.dialog.infrm['test8'].contentWindow.document).val();
+        }
+        function dlgopen9() {
+            J.dialog.get({ id: 'test9', title: '测试窗口', page: '_content/content4.html' });
+        }
+        function dlgopen10() {
+            J.dialog.get({ id: 'test10', title: '测试窗口', page: '_content/content5.html' });
+        }
+        function dlgopen11() {
+            J.dialog.get({ id: 'test11', title: '测试窗口', page: '_content/content7.html' });
+        }
+        function tochild() {
+            //child2为子窗口id，txt2为子窗口中文本框id
+            J('txt2', J.dialog.infrm['child2'].contentWindow.document).val(J('#txt4').value);
+        }
+        function dlgopen12() {
+            J.dialog.get({ id: 'test12', title: '测试窗口', page: '_content/content9.html' });
+        }
+    </script>
+
+</head>
+<body>
+    <div id="content">
+        <h2>
+            常规弹出窗口示例页</h2>
+        <hr size="1" style="width: 400px;" align="left" />
+        <h3>
+            1. 弹出窗口的普通基本功能
+        </h3>
+        <div>
+            <p>
+                <input type="button" id="a" value="不带遮罩层的普通窗口" onclick="dlgopen1()" />&nbsp;&nbsp;
+                <input type="button" id="b" value="带遮罩层的普通窗口" onclick="dlgopen2()" />&nbsp;&nbsp;
+                <input type="button" id="c" value="内容页为外部连接的窗口" onclick="dlgopen3()" />
+                <input type="button" id="z" value="测试" onclick="dlgopen()" /><br />
+                <input type="button" id="d" value="内容页为html代码的窗口" onclick="dlgopen4()" />&nbsp;&nbsp;
+                <input type="button" id="e" value="在指定位置弹出的窗口" onclick="dlgopen5()" />&nbsp;&nbsp;
+                <input type="button" id="f" value="带子窗口的窗口" onclick="dlgopen6()" />&nbsp;&nbsp;
+                <input type="button" id="l" value="创建其它按钮" onclick="dlgopen12()" /></p>
+        </div>
+        <h3>
+            2. 在调用页面关闭弹出的窗口</h3>
+        <div>
+            <p>
+                <input type="button" id="g" value="首先要打开的窗口" onclick="dlgopen7()" /><input type="button"
+                    value="关闭弹出窗口" onclick="closdlg();" /></p>
+        </div>
+        <h3>
+            3. 将文本框的值传到窗口的文本框里</h3>
+        <div>
+            <p>
+                <input type="button" id="h" value="首先要打开的窗口" onclick="dlgopen8()" /><input id="txt1"
+                    value="yqcore" type="text" />
+                <input type="button" value="将文本框的值传到窗口的文本框里" onclick="todlgval()" /><input type="button"
+                    value="取窗口的文本框里值到调用页面的文本框" onclick="dlgtoval()" /></p>
+        </div>
+        <h3>
+            4. 关闭窗口并刷新或跳转调用页面或父窗口</h3>
+        <div>
+            <p>
+                <input type="button" id="i" value="刷新或跳转调用页面" onclick="dlgopen9()" />
+                <input type="button" id="j" value="刷新或跳转父窗口" onclick="dlgopen10()" /></p>
+        </div>
+        <h3>
+            5. 子父窗口之间或子窗口和调用页面之间的传值</h3>
+        <div>
+            <p>
+                <input type="button" id="k" value="子父窗口之间的传值" onclick="dlgopen11()" />
+                <input type="text" id="txt4" value="yqcore" /><input type="button" value="将文本框中的值传到子窗口"
+                    onclick="tochild();" /></p>
+        </div>
+    </div>
+</body>
+</html>

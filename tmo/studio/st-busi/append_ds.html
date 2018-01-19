@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <base target="_self" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!--<meta http-equiv="pragram" content="no-cache">-->
+    <!--<meta http-equiv="cache-control" content="no-cache, must-revalidate">-->
+    <title>添加数据源</title>
+    <style type="text/css">
+        body
+        {
+            font-size: 12px;
+        }
+    </style>
+    <link type="text/css" href="../../xbase.js/controls/tree/css/dtree.css" rel="stylesheet" />
+
+    <script type="text/javascript" src="../../xbase.js/controls/tree/tree.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/utils/net_util.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/xdk/xdk4js.js"></script>
+
+    <script type="text/javascript" src="wjs.xjs"></script>
+
+    <script type="text/javascript">
+
+        var gWbdl = window.dialogArguments;
+        var gDataSource = null;
+        window.returnValue = false;
+
+        var gWbdlXdk = new WbdlXdk(gWbdl);
+
+        TableTree.constructor = TableTree;
+        TableTree.prototype = new Tree();
+        TableTree.prototype.superMethod = function(methodName, args) { return Tree.prototype[methodName].call(this, args); };
+
+        function TableTree(objName) {
+            Tree.call(this, objName);
+
+            var req = new JoapRequest("WboAdmin", "", "GetObjectTypes");
+            // req.addParamate("folder", "")
+            var objTypes = req.invoke();
+            if (!objTypes) return;
+            //qryTree = new Tree('qryTree');
+            var topNode = this.newNode(null, "业务对象", null);
+
+            for (var i = 0; i < objTypes.length; i++) {
+                var objType = objTypes[i];
+                //                var nodeData = new Object();
+                //                nodeData.DataType = "ObjectType";
+                //                nodeData.Id = objType.Id;
+                var tableNode = this.newNode(topNode, objType.Title, objType);
+
+                var reqObj = new JoapRequest("WboAdmin", "", "GetObjectList");
+                reqObj.addParamate("objectType", objType.Id)
+                var objects = reqObj.invoke();
+                if (!objects)
+                    continue;
+                for (var j = 0; j < objects.length; j++) {
+                    var obj = objects[j];
+                    var subNodeData = new Object();
+                    //  subNodeData.DataType = "object";
+                    //  subNodeData.Id = obj.Id;
+                    var subNode = this.newNode(tableNode, obj.Title, obj);
+                }
+            }
+        }
+
+        var tree = new TableTree("tree");
+        tree.NodeClick = function(node) {
+            if (!node.data || node.data == undefined) return;
+            if (node.data.ObjectType && node.data.ObjectType != undefined) {
+                objId.value = node.data.ObjectType + "." + node.data.Id;
+                gDataSource = new Object();
+                gDataSource.Name = node.data.Id;
+                gDataSource.DataType = node.data.ObjectType;
+                gDataSource.Title = node.name;
+            } else {
+                gDataSource = null;
+            }
+
+        }
+
+        window.onload = function() {
+            dbExploreDiv.innerHTML = tree.toString();
+        }
+
+        function btnOk_onclick() {
+            //window.returnValue = dbTree.getCheckedNames();
+            // window.close();
+            if (!gDataSource || gDataSource == null) {
+                alert("请在目录中选择一个数据源");
+                return;
+            }
+            gDataSource.Id = objId.value;
+            if (gWbdlXdk.appendDataSource(gDataSource)) {
+                window.returnValue = true;
+                window.close();
+            }
+        }
+
+        function btnCancel_onclick() {
+            window.returnValue = false;
+            window.close();
+        }
+
+        function getNewDataObjName(name) {
+            if (!gWbdl.DataObjs || gWbdl.DataObjs == undefined)
+                return name;
+
+            var dataObjs = gWbdl
+        }
+    
+    </script>
+
+    <script type="text/javascript">
+
+        //        DbTree.constructor = DbTree;
+        //        DbTree.prototype = new dTree();
+        //        DbTree.prototype.superMethod = function(methodName, args) { return dTree.prototype[methodName].call(this, args); };
+
+        //        function DbTree(objName) {
+        //            dTree.call(this, objName);
+        //            this.buildDbTree();
+        //        }
+
+        //        DbTree.prototype.buildDbTree = function() {
+
+        //            var dbs = XDataDkRequester.getDatabaseSchema();
+
+        //            var index = 1;
+
+        //            this.add(index, -1, "数据库", "", "数据库");
+        //            var pIndex = index;
+        //            index++;
+
+        //            this.add(index, 1, "数据表", "", "Table");
+        //            pIndex = index;
+        //            index++;
+
+
+        //            var tables = dbs.Tables;
+
+        //            for (var i = 0; i < tables.length; i++) {
+        //                var table = tables[i];
+        //                this.add(index, pIndex, "<input type='checkbox' name='" + table.Name + "'/>" + table.Title, "", "");
+        //                index++;
+        //            }
+
+
+        //            this.add(index, 1, "视图", "", "View");
+        //            pIndex = index;
+        //            index++;
+
+        //            var views = dbs.Views;
+
+        //            for (var i = 0; i < views.length; i++) {
+        //                var view = views[i];
+        //                this.add(index, pIndex, "<input type='checkbox' name='" + view.Name + "'/>" + view.Title, "", "");
+        //                index++;
+        //            }
+
+        //        }
+
+        //        DbTree.prototype.getCheckedNames = function() {
+        //            var ret = [];
+        //            var els = document.getElementsByTagName("input");
+        //            for (var i = 0; i < els.length; i++) {
+        //                var el = els[i];
+        //                if (el.type == "checkbox" && el.checked)
+        //                    ret.push(el.name);
+        //            }
+        //            return ret;
+        //        }
+
+        //        var dbTree;
+
+        //        window.onload = function() {
+        //            dbTree = new DbTree("dbTree");
+        //            dbExploreDiv.innerHTML = dbTree.toString();
+        //        }
+
+
+
+
+        //        function btnOk_onclick() {
+        //            window.returnValue = dbTree.getCheckedNames();
+        //            window.close();
+        //        }
+
+        //        function btnCancel_onclick() {
+        //            window.returnValue = null;
+        //            window.close();
+        //        }
+
+    </script>
+
+</head>
+<body style="overflow: hidden">
+    <div style="overflow: hidden">
+        <div id="dbExploreDiv" style="height: 350px; overflow: auto; background-color: #FFF;">
+        </div>
+        <div style="height: 50px; border: solid  0px red">
+            <div style="height: 23px; padding: 3px;">
+                数据名称:<input type="text" id="objId" />
+            </div>
+            <div style="margin: 3px 0px 0px 5px; float: right;">
+                <input type="button" id="btnOk" value="确定" onclick="return btnOk_onclick()" />&nbsp;
+                <input type="button" id="btnCancel" value="取消" onclick="return btnCancel_onclick()" />&nbsp;
+            </div>
+        </div>
+    </div>
+</body>
+</html>

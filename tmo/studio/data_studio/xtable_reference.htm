@@ -1,0 +1,439 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>无标题文档</title>
+    <link rel="stylesheet" href="css/style.css" type="text/css" />
+    <link rel="stylesheet" href="css/control_style.css" type="text/css" />
+
+    <script language="javascript" type="text/javascript" src="js/js.js"></script>
+
+    <script language="javascript" type="text/javascript" src="js/controls/tablelist.js"></script>
+
+    <script language="javascript" type="text/javascript" src="js/controls/tab_page.js"></script>
+
+    <script type="text/javascript" src="js/controls/dialog.js"></script>
+
+    <script type="text/javascript" src="js/net_util.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/system/wjs.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/system/system.js"></script>
+
+    <script type="text/javascript">
+
+        var gReferenceEditor = null;
+
+        window.onload = function() {
+            gReferenceEditor = new ReferenceEditor();
+        }
+
+        function setData(tableSchema) {
+            gReferenceEditor.setData(tableSchema);
+        }
+
+        function UpdateData(schema) {
+
+        }
+
+        function ReferenceEditor() {
+            var _tableSchema;
+            var _refTableSchema;
+
+            var _references = [];
+            var _curRefTable = null;
+
+
+            var _lstReferenceList = lstReferenceList;
+            var _selReferenceTables = selReferenceTables;
+            var _selLinkDestFields = selLinkDestFields;
+            var _selLinkSrcFields = selLinkSrcFields;
+            var _selRefDestFields = selRefDestFields;
+            var _selRefSrcFields = selRefSrcFields;
+            var _lstLinkFields = lstLinkFields;
+            var _lstRefFields = lstRefFields;
+            var _btnAddLinkField = btnAddLinkField;
+            var _btnDeleteLinkField = btnDeleteLinkField;
+            var _btnAddRefField = btnAddRefField;
+            var _btnDeleteRefField = btnDeleteRefField;
+            var _btnAddRefrenceTable = btnAddRefrenceTable;
+            var _btnDeleteRefrenceTable = btnDeleteRefrenceTable;
+
+            function lstReferenceList_OnClick() {
+
+                if (_lstReferenceList.selectedIndex < 0) {
+                    _curRefTable = null;
+                    _refTableSchema = null;
+                    selReferenceTables.value = "";
+                } else {
+                    var op = _lstReferenceList.options[_lstReferenceList.selectedIndex];
+                    _curRefTable = op.obj;
+                    selReferenceTables.value = op.obj.Id;
+                    loadSrcFieldsOptions(op.obj.Id, _selLinkSrcFields);
+                    loadSrcFieldsOptions(op.obj.Id, _selRefSrcFields);
+                }
+
+                showRefrenceTable(_curRefTable);
+            }
+
+            function getFieldCaption(tableSchema, fieldName) {
+                var fields = tableSchema.Fields;
+
+                var field = fields.searchItem(function(item) {
+                    return (item.Id == fieldName);
+                });
+
+                if (field) return !field.Title ? field.Id : field.Title;
+            }
+
+            function getRefTableCaption(tableId) {
+                for (var i = 0; i < _selReferenceTables.options.length; i++) {
+                    var op = _selReferenceTables.options[i];
+                    if (op.value == tableId) return op.text;
+                }
+                return tableId;
+            }
+
+            function showReferenceList() {
+                _lstReferenceList.options.length = 0;
+                for (var i = 0; i < _references.length; i++) {
+                    var rs = _references[i];
+                    var cap = getRefTableCaption(rs.Id);
+                    var op = new Option(cap, rs.Id);
+                    op.obj = rs;
+                    _lstReferenceList.add(op);
+                    if (i == 0) op.selected = true;
+                }
+            }
+
+            function loadTables() {
+                var req = new JoapRequest("WboAdmin", null, "GetObjectList");
+                req.addParamate("objectType", "Table");
+                var tables = req.invoke();
+
+                if (!tables) return;
+
+                _selReferenceTables.options.length = 0;
+                for (var i = 0; i < tables.length; i++) {
+                    var tb = tables[i];
+                    var op = new Option(!tb.Title ? tb.Id : tb.Title, tb.Id);
+
+                    _selReferenceTables.add(op);
+                }
+
+            }
+
+            function loadDestFieldsOptions(select) {
+                for (var i = 0; i < _tableSchema.Fields.length; i++) {
+                    var field = _tableSchema.Fields[i];
+                    var op = new Option(!field.Title ? field.Id : field.Title, field.Id);
+                    select.add(op);
+                }
+            }
+
+            function loadSrcFieldsOptions(tableName, select) {
+                var req = new JoapRequest("WboAdmin", "", "GetObjectSchema");
+                req.addParamate("objectType", "Table");
+                req.addParamate("objectId", tableName);
+                var resp = req.invoke();
+                if (!resp) return;
+                _refTableSchema = resp;
+
+                select.options.length = 0;
+                for (var i = 0; i < resp.Fields.length; i++) {
+                    var field = resp.Fields[i];
+                    var op = new Option(!field.Title ? field.Id : field.Title, field.Id);
+                    select.add(op);
+                }
+            }
+
+            function addLinkField() {
+                if (!_curRefTable) {
+                    alert("没有选择引用表，不能添加引用");
+                    return;
+                }
+                var fldMap = new Object();
+                fldMap.DestinationField = _selLinkDestFields.value;
+                fldMap.SourceField = _selLinkSrcFields.value;
+
+                if (!_curRefTable.LinkFields) {
+                    _curRefTable.LinkFields = [];
+                }
+
+                var maps = _curRefTable.LinkFields;
+
+                var sItem = maps.searchItem(
+                    function(item) {
+                        var a = item.DestinationField == fldMap.DestinationField; // && item.SourceField == fldMap.SourceField;
+                        return a;
+                    }
+                );
+
+                if (!sItem) {
+                    maps.push(fldMap);
+                } else {
+                    sItem.DestinationField = fldMap.DestinationField;
+                    sItem.SourceField = fldMap.SourceField;
+                }
+                showRefrenceTable(_curRefTable);
+
+            }
+
+            function addRefField() {
+                if (!_curRefTable) {
+                    alert("没有选择引用表，不能添加引用");
+                    return;
+                }
+                var fldMap = new Object();
+                fldMap.DestinationField = _selRefDestFields.value;
+                fldMap.SourceField = _selRefSrcFields.value;
+
+                if (!_curRefTable.Maps) {
+                    _curRefTable.Maps = [];
+                }
+
+                var maps = _curRefTable.Maps;
+
+                var sItem = maps.searchItem(
+                    function(item) {
+                        var a = item.DestinationField == fldMap.DestinationField; // && item.SourceField == fldMap.SourceField;
+                        return a;
+                    }
+                );
+
+                if (!sItem) {
+                    maps.push(fldMap);
+                } else {
+                    sItem.DestinationField = fldMap.DestinationField;
+                    sItem.SourceField = fldMap.SourceField;
+                }
+                showRefrenceTable(_curRefTable);
+
+            }
+
+            function deleteLinkField() {
+                var i = _lstLinkFields.selectedIndex;
+                if (i < 0) {
+                    alert("请选择要删除的链接字段");
+                    return;
+                }
+                if (!_curRefTable) return;
+                var op = _lstLinkFields.options[i];
+                _curRefTable.LinkFields.removeItem(op.obj);
+                showRefrenceTable(_curRefTable);
+            }
+
+            function deleteRefField() {
+                var i = _lstRefFields.selectedIndex;
+                if (i < 0) {
+                    alert("请选择要删除的引用字段");
+                    return;
+                }
+                if (!_curRefTable) return;
+                var op = _lstRefFields.options[i];
+                _curRefTable.Maps.removeItem(op.obj);
+                showRefrenceTable(_curRefTable);
+            }
+
+            function selectRefrenceTable(tableId) {
+                var refTable = new Object();
+                refTable.Id = tableId;
+                _lstReferenceList.selectedIndex = -1;
+
+                for (var i = 0; i < _lstReferenceList.options.length; i++) {
+                    var op = _lstReferenceList.options[i];
+                    if (op.obj.Id == tableId) {
+                        op.selected = true;
+                        refTable = op.obj;
+                        break;
+                    }
+                }
+                _curRefTable = refTable;
+                return refTable;
+            }
+
+
+
+            function showRefrenceTable(refTable) {
+
+                _lstLinkFields.options.length = 0;
+                _lstRefFields.options.length = 0;
+                if (!refTable) return;
+
+                if (refTable.LinkFields) {
+                    for (var i = 0; i < refTable.LinkFields.length; i++) {
+                        var fieldMap = refTable.LinkFields[i];
+                        var caption = getFieldCaption(_tableSchema, fieldMap.DestinationField) + "=" + getFieldCaption(_refTableSchema, fieldMap.SourceField);
+                        var value = fieldMap.DestinationField + "=" + fieldMap.SourceField;
+                        var op = new Option(caption, value);
+                        op.obj = fieldMap;
+                        _lstLinkFields.add(op);
+                    }
+                }
+                if (refTable.Maps) {
+                    for (var i = 0; i < refTable.Maps.length; i++) {
+                        var fieldMap = refTable.Maps[i];
+                        var caption = getFieldCaption(_tableSchema, fieldMap.DestinationField) + "=" + getFieldCaption(_refTableSchema, fieldMap.SourceField);
+                        var value = fieldMap.DestinationField + "=" + fieldMap.SourceField;
+                        var op = new Option(caption, value);
+                        op.obj = fieldMap;
+                        _lstRefFields.add(op);
+                    }
+                }
+
+            }
+
+            function addRefrenceTable() {
+                if (_tableSchema.References.searchItem(function(item) {
+                    return item.Id == _selReferenceTables.value;
+                })) {
+                    selectRefrenceTable(_selReferenceTables.value);
+                    return;
+                }
+                //                if (_lstReferenceList.selectedIndex > -1) return;
+
+                if (!_curRefTable || !_curRefTable.Id) {
+                    alert("没有选择要新增的引用表");
+                    return;
+                }
+
+                if (!_curRefTable || !_curRefTable.Maps || _curRefTable.Maps.length < 1) {
+                    alert("没有添加引用字段，请添加引用字段");
+                    return;
+                }
+
+
+                var cap = getRefTableCaption(_curRefTable.Id);
+                var op = new Option(cap, _curRefTable.Id);
+                op.obj = _curRefTable;
+                _lstReferenceList.add(op);
+                if (!_tableSchema.References)
+                    _tableSchema.References = [];
+                _tableSchema.References.push(_curRefTable);
+
+            }
+            _btnAddRefrenceTable.onclick = addRefrenceTable;
+
+            function deleteReferenceTable() {
+                var i = _lstReferenceList.selectedIndex;
+                if (i < 0) {
+                    alert("请选择要删除的引用表");
+                    return;
+                }
+
+                var op = _lstReferenceList.options[i];
+                _tableSchema.References.removeItem(op.obj);
+                _lstReferenceList.remove(i);
+            }
+            _btnDeleteRefrenceTable.onclick = deleteReferenceTable;
+
+            this.setData = function(data) {
+                _tableSchema = data;
+                _references = data.References;
+                showReferenceList();
+                loadDestFieldsOptions(_selLinkDestFields);
+                loadDestFieldsOptions(_selRefDestFields);
+                lstReferenceList_OnClick();
+            }
+
+            _selReferenceTables.onchange = function() {
+                loadSrcFieldsOptions(_selReferenceTables.value, _selLinkSrcFields);
+                loadSrcFieldsOptions(_selReferenceTables.value, _selRefSrcFields);
+                var refTable = selectRefrenceTable(_selReferenceTables.value);
+                showRefrenceTable(refTable);
+            }
+
+            _btnAddLinkField.onclick = addLinkField;
+            _btnDeleteLinkField.onclick = deleteLinkField;
+
+            _btnAddRefField.onclick = addRefField;
+            _btnDeleteRefField.onclick = deleteRefField;
+
+            _lstReferenceList.onclick = lstReferenceList_OnClick;
+
+            loadTables();
+
+        }
+
+        
+    </script>
+
+    <style type="text/css">
+        .style1
+        {
+            height: 42px;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <td width="203" valign="top">
+                <div class="PanelTitle">
+                    引用表</div>
+                <select id="lstReferenceList" name="lstReferenceList" style="width: 200px; border: solid 1px;"
+                    size="21">
+                    <option>aaa</option>
+                </select>
+            </td>
+            <td valign="top" nowrap="nowrap">
+                <div class="PanelTitle">
+                    表名称
+                    <select id="selReferenceTables" style="min-width: 100px">
+                    </select>
+                    <input id="btnAddRefrenceTable" type="button" value="保存引用表" />
+                    <input id="btnDeleteRefrenceTable" type="button" value="删除引用表" />
+                </div>
+                <div class="PanelTitle">
+                    链接字段</div>
+                <div class="HLayoutBox">
+                    <div>
+                        <select id="lstLinkFields" size="3" style="min-width: 150px">
+                            <option>aaa</option>
+                        </select>
+                    </div>
+                    <div>
+                        <p>
+                            目标字段
+                            <select id="selLinkDestFields">
+                            </select>
+                            源字段
+                            <select id="selLinkSrcFields">
+                                <option>aaa</option>
+                            </select>
+                        </p>
+                        <p>
+                            <input type="button" id="btnAddLinkField" value="添加字段" />
+                            <input type="button" id="btnDeleteLinkField" value="删除字段" />
+                        </p>
+                    </div>
+                </div>
+                <div class="PanelTitle">
+                    引用字段</div>
+                <div class="HLayoutBox">
+                    <div>
+                        <select id="lstRefFields" size="15" style="min-width: 150px">
+                            <option>aaa</option>
+                        </select>
+                    </div>
+                    <div>
+                        <p>
+                            目标字段
+                            <select id="selRefDestFields">
+                            </select>
+                            源字段
+                            <select id="selRefSrcFields">
+                                <option>aaa</option>
+                            </select>
+                        </p>
+                        <p>
+                            <input type="button" id="btnAddRefField" value="添加字段" />
+                            <input type="button" id="btnDeleteRefField" value="删除字段" />
+                        </p>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

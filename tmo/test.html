@@ -1,0 +1,379 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>附近</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="icon" type="image/png" href="tmo/assets/i/favicon.png">
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/icon.css">
+    <style>
+        h1
+        {
+            padding-top: 20px;
+        }
+    </style>
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/easyui.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            xbasecookies.innerHTML = document.cookie;
+            $(elDevice).html(window.navigator.userAgent);
+        });
+
+        function btnTest_onclick() {
+            var str = $.rCall("ClassEcho.echo", { name: "严雪" });
+            alert(str);
+        }
+
+        //后台对象调用
+        function btnTest1_onclick() {
+
+
+            //同步调用
+            var row = $.rCall("shop_goods.row", { pk: { name: "xxx1"} });
+            alert(row.summary);
+            alert(row.name);
+
+
+            //异步调用
+            $.post("shop_goods.row", { pk: "{ name: 'xxx1'}" }, function (data) {
+                alert(data);
+                data = $.parseJSON(data);
+                alert(data.summary);
+                alert(data.name);
+            });
+
+        }
+
+
+
+        function btnCloneJson_onclick() {
+            var obj = { a: "aaa", b: "bbb" };
+            var o2 = $.extend(true, {}, obj);
+            alert(o2);
+            alert(o2.a);
+
+        }
+
+        function submit_goods() {
+            $.messager.progress();
+            $("#frmGoods").form("submit", {
+                url: "shop_goods.form",
+                onSubmit: function (param) {
+                    return true;
+                },
+                success: function (data) {
+                    $.messager.progress('close'); // hide progress bar while submit successfully  
+                    try {
+                        var data = eval('(' + data + ')');
+                    } catch (e) {
+                    }
+                    if (data && data.Err)
+                        $.messager.alert("保存商品", data.Err.Text, "error");
+                    else if (data)
+                        $.messager.alert("保存商品", data, "error");
+                    else {
+                        $.messager.alert("保存商品", "商品已被保存", "info");
+                    }
+                }
+            });
+        }
+
+
+    </script>
+</head>
+<body style="background-color: #eee">
+    <h1>
+        1.Js 组件调用测试</h1>
+    <input id="btnTest" type="button" value="注册组件ClassEcho测试" onclick="return btnTest_onclick()" /><br />
+    <input id="btnTest1" type="button" value="数据库测试(*.row) " onclick="return btnTest1_onclick()" /><br />
+    <input id="btnCloneJson" type="button" value="Jquery克隆JSON" onclick="return btnCloneJson_onclick()" />
+    <h1>
+        2.组件捆绑测试</h1>
+    <div wbo="LoginUser" name="User">
+        <p>
+            user name <span name="User.Name"></span>
+        </p>
+        <p>
+            user id <span name="User.Id"></span>
+        </p>
+        <p>
+            host login name <span name="User.HostLoginName"></span>
+        </p>
+        <p>
+            cookies is <span id="xbasecookies"></span>
+        </p>
+        <p>
+            device is
+            <div id="elDevice">
+            </div>
+        </p>
+    </div>
+    <h1>
+        3.数据库--表记录元素捆绑范例</h1>
+    <div wbo="shop_goods.row" name="aaa1" wbo-params="{ pk:{ name: 'xxx1'} }">
+        <!-- 
+       wbo="数据表名.方法名"
+       name="对象别名（可任意取名）"
+       wbo-params=json格式的参数表 "{ paramName1:paramValue1,paramName2:paramValue2 }"
+    -->
+        <p>
+            商品名称:<span name="aaa1.name"></span></p>
+        <p>
+            店铺ID:<span name="aaa1.shop_id"></span></p>
+        <p>
+            类别Id：<span name="aaa1.category"></span>
+        </p>
+    </div>
+    <h1>
+        4.数据库--列表元素捆绑范例</h1>
+    <!-- 
+       wbo="数据表名.方法名"
+       name="对象别名（可任意取名）"
+       wbo-params=json格式的参数表 "{ paramName1:paramValue1,paramName2:paramValue2 }"
+    -->
+    <div wbo="shop_goods.rows" name="list1" wbo-params="{ page:1,rows:8 }" view="jsonList"
+        style="height: 300px; border: 1px solid red;">
+        <div style="width: 150px; float: left; margin: 2px; border: 1px solid blue" name="list1.item">
+            <p>
+                商品名称:<span name="list1.name"></span></p>
+            <p>
+                店铺ID:<span name="list1.shop_id"></span></p>
+            <p>
+                类别Id：<span name="list1.category"></span>
+            <p>
+                图片：<img name="list1.picture" width="50" height="50" /></span>
+            </p>
+        </div>
+    </div>
+    <h1>
+        5.数据库--列表元素捆绑范例</h1>
+    <!-- 
+       wbo="数据表名.方法名"
+       name="对象别名（可任意取名）"
+       wbo-params=json格式的参数表 "{ paramName1:paramValue1,paramName2:paramValue2 }"
+    -->
+    <script type="text/javascript">
+        function list2Prior() {
+            var page = parseInt($(list2Page).val()) - 1;
+            if (page > 0) {
+                $(list2Page).val(page);
+                list2.ctrl.reload({ page: page, rows: 8 });
+            }
+        }
+
+        function getPageCount() {
+            var total = $(list2Total).html();
+            total = parseInt(total);
+            var pageCount = total / 8;
+            if ((total % 8) > 0)
+                pageCount++;
+            return pageCount;
+        }
+
+        function list2Next() {
+
+            var page = parseInt($(list2Page).val()) + 1;
+            var pageCount = getPageCount();
+
+            if (page <= pageCount) {
+                $(list2Page).val(page);
+                list2.ctrl.reload({ page: page, rows: 8 });
+            }
+        }
+
+        function list2Edit(e) {
+            alert(e.data.name);
+        }
+    </script>
+    <div wbo="shop_goods.data" id="list2" name="list2" wbo-params="{ page:1,rows:8 }"
+        style="height: 300px; border: 1px solid red;">
+        <div>
+            记录总数：<span id="list2Total" name="list2.total"></span><input type="button" value="上一页"
+                onclick="list2Prior()" />
+            <input type="button" value="下一页" onclick="list2Next()" />
+            第<input id="list2Page" type="text" value="1" />
+        </div>
+        <div name="list2.rows">
+            <div style="width: 150px; float: left; margin: 2px; border: 1px solid blue" name="list2.rows.item">
+                <p>
+                    商品名称:<span name="list2.rows.name"></span></p>
+                <p>
+                    店铺ID:<span name="list2.rows.shop_id"></span></p>
+                <p>
+                    类别Id：<span name="list2.rows.category"></span>
+                <p>
+                    图片：<img name="list2.rows.picture" width="50" height="50" /></span>
+                </p>
+                <p>
+                    <input type="button" value="编辑" name="list2.rows.operate" onclick="list2Edit(this)" />
+                </p>
+            </div>
+        </div>
+    </div>
+    <h1>
+        5.数据库--表单
+    </h1>
+    <form id="frmGoods" method="post" enctype="multipart/form-data">
+    <div class="panel">
+        <h2>
+            商品</h2>
+        <div>
+            <p>
+                商品照片<input type="file" name="picture" value="照片" /></p>
+            <p>
+                商品名称<input type="text" name="name" value="" /></p>
+            <p>
+                商品介绍<textarea name="summary"></textarea></p>
+            <p>
+                商品类别<select name="category">
+                    <option value="2">日杂品</option>
+                    <option value="1">日用品</option>
+                    <option value="2">服装</option>
+                    <option value="2">家具</option>
+                </select></p>
+        </div>
+        <div>
+            <input type="button" value="保存" onclick="submit_goods()" />
+        </div>
+    </div>
+    </form>
+    <h1>
+        6.使用EasyUi访问数据-数据表
+    </h1>
+    <table id="tabParamGrid" class="easyui-datagrid" style="width: 600px; height: 300px"
+        data-options="url:'shop_goods.data',fitColumns:true,singleSelect:true,pagination:true">
+        <thead>
+            <tr>
+                <th data-options="field: 'name', width: 100, editor: 'text'">
+                    商品名称
+                </th>
+                <th data-options="field: 'shop_id', width: 100, align: 'left', editor: 'text',formatter:linkCol">
+                    店铺号
+                </th>
+                <th data-options="field: 'price', width: 100, align: 'left', editor: 'text'">
+                    单价
+                </th>
+                <th data-options="field: 'picture', width: 100, align: 'left',formatter:imgCol">
+                    图片
+                </th>
+                <th data-options="field: 'owner', width: 100, align: 'left', editor: 'text'">
+                    店主
+                </th>
+                <th data-options="field: 'category',
+                      title: '参数类型',
+                      width: 100,
+                      editor: {
+                          type: 'combobox',
+                          options: {
+                              url: 'DsExplore.getDbTypes.wbo',
+                              valueField: 'value',
+                              textField: 'text'
+                          }
+                      }">
+                    类型
+                </th>
+                <th data-options="field: 'summary', width: 100">
+                    简介
+                </th>
+                <th formatter="buttonCol" data-options="field: 'Original_name', width: 100">
+                    操作
+                </th>
+            </tr>
+        </thead>
+    </table>
+    <script>
+
+        function imgCol(val, row) {
+            return "<img style='width:20px;height:20px' src='" + val + "'/>";
+        }
+
+        function linkCol(val, row) {
+            return "<a href='goods.html?name=" + val + "'>" + val + "</a>";
+        }
+
+        function edit(el) {
+            var key = $(el).attr("key");
+            var row = $.rCall("shop_goods.row", { pk: { name: key} });
+            $("#pic").valu(row.picture);
+            $(ff).form('load', row);
+
+        }
+        function buttonCol(val, row) {
+            return "<input type='button' value='编辑'  onclick='edit(this)' key='" + val + "'/>";
+        }
+
+        function save() {
+            $(ff).form('submit', {
+                url: "shop_goods.form",
+                success: function (ret) {
+                    if (ret && ret.Err)
+                        $.messager.alert("保存记录", ret.Err.Text);
+                    else
+                        $.messager.alert("保存记录", "保存成功");
+                }
+            });
+        }
+
+    </script>
+    <div style="padding: 10px 0 10px 60px">
+        <form id="ff" method="post" enctype="multipart/form-data">
+        <input type="button" value="保存" onclick="save()" />
+        <table>
+            <tr>
+                <td>
+                    商品:
+                </td>
+                <td>
+                    <input type="hidden" name="Original_name" />
+                    <input class="easyui-validatebox" type="text" name="name" data-options="required:true"></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    店铺:
+                </td>
+                <td>
+                    <input class="easyui-validatebox" type="text" name="shop_id" data-options="required:true"></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    单价:
+                </td>
+                <td>
+                    <input type="text" name="price" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    简介:
+                </td>
+                <td>
+                    <textarea name="summary" style="height: 60px;"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    图片:
+                </td>
+                <td>
+                    <input type="file" name="picture" /><br />
+                    <img id="pic" src="" style="width: 100px" />
+                </td>
+            </tr>
+        </table>
+        </form>
+    </div>
+</body>
+</html>

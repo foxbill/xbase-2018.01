@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script>
+        $(function () {
+            xbasecookies.innerHTML = document.cookie;
+            $(elDevice).html(window.navigator.userAgent);
+        });
+
+    </script>
+    <style>
+        #demo span { color:blue;}
+    </style>
+</head>
+<body>
+    <div class="demo-info">
+        <div class="demo-tip icon-tip"></div>
+        <div>直接捆绑组件对象</div>
+    </div>
+
+   <div id="demo" wbo="LoginUser" name="User">
+        <p>
+            user name <span name="User.Name"></span>
+        </p>
+        <p>
+            user id <span name="User.Id"></span>
+        </p>
+        <p>
+            host login name <span name="User.HostLoginName"></span>
+        </p>
+        <p>
+            cookies is <span id="xbasecookies"></span>
+        </p>
+        <p>
+            device is
+            <span id="elDevice">
+            </span>
+        </p>
+    </div>
+
+</body>
+</html>

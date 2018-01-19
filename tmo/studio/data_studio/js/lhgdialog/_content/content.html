@@ -1,0 +1,18 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>test</title>
+	<script type="text/javascript">
+/* P返回的是父窗口对象，也就是yqdialog.html这个页面的window对象。
+   D调用yqdialog.html页面的loadinndlg()函数，返回的就是窗口调用页面对象，也就是
+   加载yqdialog.js这个页面的window对象。
+ */ 
+var P = window.parent, D = P.loadinndlg();   // 注意！这行代码是每个内容页必须加的内容，否则无法正确显示。
+	</script>
+</head>
+
+<body>
+    <p align="center">yqcore框架之yqdialog弹出窗口组件，版本2.0.2</p>
+</body>
+</html>

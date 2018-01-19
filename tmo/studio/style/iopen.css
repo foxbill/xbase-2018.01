@@ -1,0 +1,32 @@
+body{font:12px/24px Tahoma, Geneva, sans-serif; color:#6e6e6e;  background:#485f7e url(../images/bg.jpg) no-repeat center 0;}
+#logo{
+	display:block;
+	width:500px;
+	height:40px;
+	margin:50px auto 15px;
+}
+a{ color:#000;}
+a:hover{ color:#485f7e}
+#content{ padding-bottom:26px; background:url(../images/shadow.jpg) no-repeat 0 bottom; }
+#content ul{ background:#fff; border-radius:5px;}
+	#content li{ width:156px; height:160px; padding-left:170px; padding-top:50px; float:left; border-right:1px solid #ededed; border-bottom:1px solid #ededed;}
+	#content li.norline{ border-right:0;}
+	#content li.nobline{ border-bottom:0;}
+	#content li a.t{ display:block; margin-bottom:5px; font:16px/24px "微软雅黑";}
+	
+	#content li.iteam1{ background:url(../images/iopen/ico-1.png) no-repeat 55px 50px}
+	#content li.iteam2{ background:url(../images/iopen/ico-2.png) no-repeat 40px 45px}
+	#content li.iteam3{ background:url(../images/iopen/ico-3.png) no-repeat 30px 50px}
+	#content li.iteam4{ background:url(../images/iopen/ico-4.png) no-repeat 43px 50px}
+	#content li.iteam5{ background:url(../images/iopen/ico-5.png) no-repeat 42px 50px}
+	#content li.iteam6{ background:url(../images/iopen/ico-6.png) no-repeat 52px 50px}
+	
+	#content li:hover.iteam1{ background:#f8f8f8 url(../images/iopen/ico-1.png) no-repeat 55px 50px}
+	#content li:hover.iteam2{ background:#f8f8f8 url(../images/iopen/ico-2.png) no-repeat 40px 45px}
+	#content li:hover.iteam3{ background:#f8f8f8 url(../images/iopen/ico-3.png) no-repeat 30px 50px}
+	#content li:hover.iteam4{ background:#f8f8f8 url(../images/iopen/ico-4.png) no-repeat 43px 50px}
+	#content li:hover.iteam5{ background:#f8f8f8 url(../images/iopen/ico-5.png) no-repeat 42px 50px}
+	#content li:hover.iteam6{ background:#f8f8f8 url(../images/iopen/ico-6.png) no-repeat 52px 50px}
+#footer{ color:#b4bbc6; text-align:center;}
+	#footer a{ margin:0 5px; text-decoration:underline; color:#b4bbc6;}
+	#footer a:hover{ color:#fff;}

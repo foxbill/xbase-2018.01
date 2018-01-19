@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0 minimal-ui"/>
+	<link rel="stylesheet" href="boostrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="styles/style.css">
+	<script src="scripts/jquery.min.2.1.js"></script>
+	<script src="boostrap/js/bootstrap.min.js"></script>
+		<script src="../../xbase.js/jquery.xbase.form.js"></script>
+	<script src="../../xbase.js/jquery.xbase.js"></script>
+	<script src="../../xbase.js/jquery.xbase.jsonform.js"></script>
+	<script src="scripts/main.js"></script>
+	<title>列表</title>
+	<style>
+	.art-content{
+		padding:10px;
+	}
+	section{
+		padding: 10px 10px;
+		border: 1px solid #eee;
+		margin: 10px 0px;
+		background-color: white;
+	}
+	.art-date{
+		color:gray;font-size: 1.2rem;
+	}
+	.art-img{
+		margin: 5px auto;
+	}
+	.art-content{
+		color:gray ;
+	}
+	.art-tlt-font{
+		font-weight: bold;
+		font-size: 2.0rem;
+	}
+	.art-more{
+
+		font-weight: normal;
+		font-size: 1.2rem;
+	}
+	.artType-item-title{
+		cursor:pointer;
+	}
+	.artType-item-name{
+		  width: 100%;
+  display: inline-block;
+	}
+	</style>
+		<script>
+$(function  () {
+	
+
+
+	$(".artType-item-title").click(function(){
+		$(this).addClass("active").siblings().removeClass("active");
+		
+		 var itobj=$(this).find(".artType-item-name");
+		 var vt=parseInt(itobj.attr("data-type"));
+		 if(vt==0)
+		 {
+		 	articlelist.ctrl.reload({page: 1,rows: 20,filterRules: [{}]});
+		 }else
+		 {
+		 	articlelist.ctrl.reload({page: 1,rows: 20,filterRules: [{ field: 'Type', op: 'equal', value: vt }]});
+		 }
+
+		 $(".suspend-menu").click();;
+	})
+
+	// body...
+})
+	</script>
+</head>
+<body>
+	<div class="header">
+		<div class="navbar navbar-default"  >
+			<div class="container" >
+				<div class="navbody" >
+				<div class="navbar-header"  wbo="pt_company.data"  id="indextitle" name="indextitle" wbo-params="{ page:1,rows:1}">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<div name="titleRows" wbo-bind="indextitle.rows">
+						<div  name="titleRows.item" style="line-height: 50px;" class="clearfix ">
+							 <img src="" alt="" name="titleRows.Logo" class="nav-titlelogo" onerror="this.style.display='none'" >	
+							<a class="navbar-brand hidden-xs"  href="index.html" name="titleRows.HomeUrl"  wbo-attr="{'innerHTML':'Title'}">								
+							</a>		
+						</div>						
+					</div>
+					
+				</div>
+				<div>
+				<div class="navbar-collapse collapse navbar-responsive-collapse" wbo="pt_navbar.data"  id="indexnav" name="indexnav" wbo-params="{ page:1,rows:100}">
+					<ul class="nav navbar-nav" name="navRows" wbo-bind="indexnav.rows">
+						<li name="navRows.item" ><a href="index.html" name="navRows.Url" wbo-attr="{'innerHTML':'Name'}">首页</a></li>
+					</ul>
+					
+					<ul class="nav navbar-nav navbar-right">
+						<form class="navbar-form navbar-left hidden-xs">
+						<input type="text" class="form-control col-lg-8" placeholder="Search">
+					</form>
+					</ul>
+				</div><!-- /.nav-collapse -->
+			</div><!-- /.container -->
+			</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="search visible-xs">
+		<div class="container ">
+			<form class="navbar-form navbar-left">
+				<input type="text" class="form-control col-lg-8" placeholder="Search">
+			</form>
+		</div>
+	</div>
+
+	<div class="banner">
+		<div class="container">
+			<div class="view" wbo="pt_article.data"  id="articlelist" name="articlelist" wbo-params="{ page:1,rows:20,filterRules: [{}]}">
+				<div class="row" name="articleRows" wbo-bind="articlelist.rows">
+					<div class="col-md-9">
+						<section name="articleRows.item" >
+							<article>
+								<div class="art-title art-tlt-font" name="articleRows.Title">棒球
+								</div>
+								<span class="art-date" name="articleRows.CreateTime" >7月10日</span>
+								<div class="art-content  word-wrap" >
+									<img class="art-img" src="images/1.jpg" width="100%" name="articleRows.CoverPicture">
+									<p name="articleRows.Summary">棒球运动是一种以棒打球为主要特点，集体性、对抗性很强的球类运动项目，在美国、日本尤为盛行。</p>
+								</div>
+								<a class="art-more word-overhidden " href="detail.html" name="articleRows.Url">查看全文</a>
+							</article>
+						</section>
+
+					</div>
+								<div class="col-md-3 ">
+									<input type="checkbox" name="tm" id="tm" style="display:none;">
+							<div class="panel panel-default respondlist" wbo="pt_articleType.data"  id="articleType" name="articleType" wbo-params="{ page:1,rows:20,filterRules: [{}]}">
+							<div class="panel-heading" style="background-color:#555;color:#eee;">
+     				 <h3 class="panel-title">
+       					  文章类别
+     					 </h3>
+   					</div>
+   <div class="list-group"  name="articleTypeRows" wbo-bind="articleType.rows">
+   	<a class="list-group-item artType-item-title active"  >
+      	<span class="artType-item-name"  data-type="0">全部</span>
+      </a>
+      <a class="list-group-item artType-item-title" name="articleTypeRows.item" >
+      	<span class="artType-item-name"  name="articleTypeRows.Name" wbo-attr="{'data-type':'ID'}" ></span>
+      </a>
+   </div>
+			</div>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+	<label class="suspend-btn visible-xs suspend-menu "  for="tm">
+		<span class="glyphicon glyphicon-th-list"></span>
+	</label>
+    
+  
+	<div class="footer"></div>	
+</body>
+</html>

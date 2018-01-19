@@ -1,0 +1,59 @@
+﻿CACHE MANIFEST
+
+### ver 0.0.0.99 ###
+
+NETWORK:
+    *
+#  login.asp
+#   /html5/
+
+CACHE:
+    index.html
+    tmo/assets/css/amazeui.min.css
+    tmo/assets/css/app.css
+    css/tmo.css
+    css/shop.css
+    /easyui/themes/default/easyui.css
+    /easyui/themes/icon.css
+
+# test thirthd frame work-
+    tmo/assets/js/jquery.min.js
+    tmo/assets/js/amazeui.js
+    tmo/assets/js/handlebars.min.js
+    tmo/assets/js/amazeui.widgets.helper.js
+
+# tmo base frame work
+    /xbase.js/jquery.min.js
+    /xbase.js/jquery.xbase.js
+    /xbase.js/jquery.xbase.form.js
+    /xbase.js/jquery.xbase.jsonform.js
+    /xbase.js/jquery-1.9.1.min.js
+    /easyui/jquery.easyui.min.js
+    js/tmo.js
+
+# tmo app
+    tmo/assets/i/favicon.png
+    images/icon1/notepad.png
+    images/icon1/male.png
+    images/icon1/iphone.png
+    images/icon1/home.png
+    images/icon1/icq.png
+    images/ui/more.png
+    images/ui/gc.png
+    images/fz/1.jpg
+    images/fz/2.jpg
+    images/fz/3.jpg
+    images/fz/4.jpg 
+    xx.html
+    my-shop.html 0.0.0.0.12
+    sc.html
+    fx.html
+    my.html
+	wsz.html
+	goods.html
+	login.html
+	user-reg.html
+    
+
+FALLBACK:
+     net/ 404.html

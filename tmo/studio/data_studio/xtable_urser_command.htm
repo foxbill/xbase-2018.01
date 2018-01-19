@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>无标题文档</title>
+    <link rel="stylesheet" href="css/style.css" type="text/css" />
+    <link rel="stylesheet" href="css/control_style.css" type="text/css" />
+
+    <script type="text/javascript">
+
+        var g_CmdForm = null;
+
+        window.onload = function() {
+            g_CmdForm = new UserCommandForm();
+        }
+
+        function setData(data) {
+            g_CmdForm.setData(data);
+        }
+
+        function UserCommandForm() {
+            var _Cmds = null;
+            var _TbSchema = null;
+            var _lstCommandList = lstCommandList;
+            var _txtUserCommandText = txtUserCommandText;
+            var _inpCommandName = inpCommandName;
+
+            _lstCommandList.onclick = showCommand;
+            btnSaveCmd.onclick = saveCommand;
+            btnDeleteCmd.onclick = deleteCommand;
+            btnNewCmd.onclick = newCommand;
+
+            function getCommandIndex(cmdId) {
+                for (var i = 0; i < _Cmds.length; i++) {
+                    var cmd = _Cmds[i];
+                    if (cmd.Id == cmdId)
+                        return i;
+                }
+                return -1;
+            }
+
+            function showCommand() {
+                var i = getCommandIndex(_lstCommandList.value);
+                if (i < 0) return;
+                var cmd = _Cmds[i];
+                _txtUserCommandText.value = cmd.SqlText;
+                _inpCommandName.value = cmd.Id;
+            }
+
+            function saveCommand() {
+                if (!_inpCommandName.value) {
+                    alert("请输入命令名称");
+                    return;
+                }
+
+                var op;
+                var cmd;
+                var cmdId;
+                if (_lstCommandList.selectedIndex < 0) {
+                    cmdId = _inpCommandName.value;
+                    if (getCommandIndex(cmdId) > -1) {
+                        alert("命令名称已经存在");
+                        return;
+                    }
+                    op = new Option(cmdId, cmdId);
+                    _lstCommandList.add(op);
+                }
+                else {
+                    op = _lstCommandList.options[_lstCommandList.selectedIndex];
+                    cmdId = op.value;
+                }
+
+                var i = getCommandIndex(cmdId);
+
+                if (i < 0) {
+                    cmd = new Object();
+                    _Cmds.push(cmd);
+
+                } else
+                    cmd = _Cmds[i];
+
+                cmd.Id = _inpCommandName.value;
+                cmd.Title = _inpCommandName.value;
+                cmd.SqlText = txtUserCommandText.value;
+                op.value = cmd.Id;
+                op.text = cmd.Id;
+                _lstCommandList.value = cmd.Id;
+            }
+
+            function newCommand() {
+                _inpCommandName.value = "";
+                _txtUserCommandText.value = "";
+                _lstCommandList.selectedIndex = -1;
+            }
+
+            function deleteCommand() {
+                if (_lstCommandList.selectedIndex < 0) {
+                    alert("请选择要删除的命令");
+                    return;
+                }
+                var v = _lstCommandList.value;
+                _lstCommandList.remove(_lstCommandList.selectedIndex);
+
+                var i = getCommandIndex(v);
+                _Cmds.splice(i, 1);
+            }
+
+            this.showData = function() {
+                _lstCommandList.options.length = 0;
+                for (var i = 0; i < _Cmds.length; i++) {
+                    var cmd = _Cmds[i];
+                    var op = new Option((!cmd.Title ? cmd.Id : cmd.Title), cmd.Id);
+                    _lstCommandList.add(op);
+                }
+            }
+
+            this.setData = function(data) {
+                _TbSchema = data;
+                _Cmds = data.UserSqlCommands;
+                this.showData();
+            }
+
+
+
+        }
+        
+    </script>
+
+</head>
+<body>
+    <table width="614" style="display: ">
+        <tr>
+            <td width="203" valign="top">
+                <div class="PanelTitle">
+                    命令列表</div>
+                <select id="lstCommandList" size="20" style="height: 250px; width: 190px; border: solid 1px;">
+                </select>
+            </td>
+            <td width="618" valign="top">
+                <div>
+                    命令名称
+                    <input type="text" id="inpCommandName" />&nbsp;
+                    <input type="button" value="新建命令" id="btnNewCmd" />
+                    <input type="button" value="保存命令" id="btnSaveCmd" />
+                    <input type="button" value="删除命令" id="btnDeleteCmd" />
+                </div>
+                <div class="PanelTitle">
+                    命令文本</div>
+                <textarea id="txtUserCommandText" style="width: 618px; height: 300px"></textarea>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

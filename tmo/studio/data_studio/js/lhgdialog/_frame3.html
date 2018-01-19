@@ -1,0 +1,19 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<script type="text/javascript" src="../yqcore.js"></script>
+	<script type="text/javascript" src="yqdialog.js"></script>
+	<script type="text/javascript">
+function opdlg()
+{
+    J.dialog.get({ id: 'test', page: '_content/content.html' });
+}
+	</script>
+</head>
+
+<body>
+    <p>这是mainFrame页</p>
+	<input type="button" value="打开弹出窗口" onclick="opdlg();"/>
+</body>
+</html>

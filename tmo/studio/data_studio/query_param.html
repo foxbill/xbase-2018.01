@@ -1,0 +1,318 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>查询参数设置</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        body
+        {
+            padding: 5px;
+        }
+        .RndBox .RndTopLeft
+        {
+            background-image: url(images/main_lt.jpg);
+            background-repeat: no-repeat;
+            background-position: 0px 0px;
+        }
+        .RndBox .RndTopLeft .RndTopRight
+        {
+            background-image: url(images/main_rt.jpg);
+            background-repeat: no-repeat;
+            background-position: right top;
+        }
+        .RndBox .RndTopLeft .RndTopRight .RndTopMid
+        {
+            margin-right: 5px;
+            margin-left: 5px;
+            border-top-width: 1px;
+            border-top-style: solid;
+            border-top-color: #938E3B;
+            height: 5px;
+        }
+        .RndBox .RndContent
+        {
+            border-right-width: 1px;
+            border-left-width: 1px;
+            border-right-style: solid;
+            border-left-style: solid;
+            border-right-color: #938E3B;
+            border-left-color: #938E3B;
+        }
+        .RndBox .RndBtmLeft
+        {
+            background-image: url(images/main_lb.jpg);
+            background-repeat: no-repeat;
+            background-position: left top;
+        }
+        .RndBox .RndBtmLeft .RndBtmRight
+        {
+            background-image: url(images/main_rb.jpg);
+            background-repeat: no-repeat;
+            background-position: right top;
+        }
+        .RndBox .RndBtmLeft .RndBtmRight .RndBtmMid
+        {
+            height: 5px;
+            margin-right: 5px;
+            margin-left: 5px;
+            border-bottom-width: 1px;
+            border-bottom-style: solid;
+            border-bottom-color: #938E3B;
+        }
+        .RndBox .RndContent
+        {
+            padding-right: 5px;
+            padding-left: 5px;
+        }
+        #tags
+        {
+            padding-right: 0px;
+            padding-left: 0px;
+            padding-bottom: 0px;
+            margin: 0px 0px 0px 10px;
+            width: 900px;
+            padding-top: 0px;
+            height: 20px;
+            clear: left;
+        }
+        #tags LI
+        {
+            float: left;
+            margin-right: 1px;
+            list-style-type: none;
+            height: 25px;
+            background-repeat: no-repeat;
+            background-position: left bottom;
+        }
+        #tags LI A
+        {
+            padding-right: 10px;
+            padding-left: 10px;
+            float: left;
+            padding-bottom: 0px;
+            color: #000;
+            line-height: 25px;
+            padding-top: 0px;
+            height: 25px;
+            text-decoration: none;
+            background-repeat: no-repeat;
+            background-position: right bottom;
+        }
+        #tags LI.emptyTag
+        {
+            background: none transparent scroll repeat 0% 0%;
+            width: 4px;
+        }
+        #tags LI.selectTag
+        {
+            background-image: url(images/tag_left.jpg);
+            background-repeat: no-repeat;
+            background-position: left bottom;
+            margin-bottom: 0px;
+            position: relative;
+            height: 25px;
+        }
+        #tags LI.selectTag A
+        {
+            background-repeat: no-repeat;
+            background-position: right top;
+            background-image: url(images/tag_right.jpg);
+            color: #000;
+            line-height: 25px;
+            height: 25px;
+            margin-left: 5px;
+        }
+        #tagContent
+        {
+            border-right: #938E3B 1px solid;
+            padding-right: 1px;
+            border-top: #938E3B 1px solid;
+            padding-left: 1px;
+            padding-bottom: 1px;
+            border-left: #938E3B 1px solid;
+            padding-top: 1px;
+            border-bottom: #938E3B 1px solid;
+            background-color: #fff;
+            clear: left;
+        }
+        .tagContent
+        {
+            padding-right: 10px;
+            display: none;
+            padding-left: 10px;
+            padding-bottom: 10px;
+            color: #474747;
+            padding-top: 10px;
+            height: 250px;
+        }
+        #tagContent DIV.selectTag
+        {
+            display: block;
+        }
+        #con
+        {
+            margin-top: 5px;
+        }
+        #inputText
+        {
+            width: 324px;
+        }
+        #paramFormDiv tr
+        {
+            vertical-align: middle;
+        }
+        .style1
+        {
+            width: 65px;
+        }
+    </style>
+
+    <script type="text/javascript" src="../../xbase.js/system/system.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/controls/xlistview.js"></script>
+
+    <script type="text/javascript">
+        var args = window.dialogArguments;
+        window.returnValue = "";
+
+        //   var gParams = new Array();
+        var gTableSchema = null;
+
+        var paramList = null;
+
+        window.onload = function() {
+            if (paramList == null)
+                paramList = new ListView(elParamList, elParamItem, elParamHead);
+            if (args != undefined && args != null)
+                setData(args);
+        }
+
+        function setData(tableSchema) {
+
+            gTableSchema = tableSchema;
+
+            var queryParams = tableSchema.QueryParams;
+
+
+            if (paramList == null)
+                paramList = new ListView(elParamList, elParamItem, elParamHead);
+
+            paramList.clear();
+
+            for (var i = 0; i < queryParams.length; i++) {
+                var param = queryParams[i];
+                var item = paramList.addItem();
+                paramList.setItemValue(item, "elParamName", param.Id);
+                paramList.setItemValue(item, "elParamType", param.DataType);
+                paramList.setItemValue(item, "elParamValue", param.DefaultValue);
+            }
+
+            if (paramList.getCount() == 0) {
+                paramList.addItem();
+                return;
+            }
+        }
+
+        function updateData(tableSchema) {
+            var queryParams = tableSchema.QueryParams;
+            queryParams.clear();
+
+            for (var i = 0; i < paramList.getCount(); i++) {
+                var param = new Object();
+                var item = paramList.items[i];
+                param.Id = paramList.getItemValue(item, "elParamName");
+                param.DataType = paramList.getItemValue(item, "elParamType");
+                param.DefaultValue = paramList.getItemValue(item, "elParamValue");
+                queryParams.push(param);
+            }
+        }
+
+        function setColunm_onclick() {
+            window.returnValue = "";
+            window.close();
+        }
+
+        function elDeleteItem_onclick(btn) {
+            paramList.deleteByElement(btn);
+        }
+
+        function addParam_onclick() {
+            paramList.addItem();
+        }
+
+        function elOk_onclick() {
+            updateData(gTableSchema);
+            window.returnValue = true;
+            close();
+        }
+
+        function elCancel_onclick() {
+            close();
+        }
+
+    </script>
+
+</head>
+<body>
+    <div class="RndBox">
+        <div class="RndTopLeft">
+            <div class="RndTopRight">
+                <div class="RndTopMid">
+                </div>
+            </div>
+        </div>
+        <div class="RndContent">
+            <div class="MainPageTitleBox" id="dlgCaption">
+                参数编辑</div>
+            <div id="paramFormDiv">
+                <table id="elParamList" style="width: 100%;">
+                    <tr id="elParamHead">
+                        <td class="style1">
+                            参数名称
+                        </td>
+                        <td class="style1">
+                            参数类型
+                        </td>
+                        <td>
+                            参数值
+                        </td>
+                    </tr>
+                    <tr id="elParamItem" class="ListViewItem">
+                        <td class="style1">
+                            <input type="text" value="" id="elParamName" name="elParamName" />
+                        </td>
+                        <td class="style1">
+                            <select id="elParamType" name="elParamType">
+                                <option value="0">字符</option>
+                                <option value="1">数字</option>
+                                <option value="2">日期</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input id="elParamValue" name="elParamValue" type="text" />
+                            <input id="elDeleteItem" type="button" value="删除" style="width: 60px; height: 20px"
+                                onclick="return elDeleteItem_onclick(this)" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="BottomBox">
+                <div>
+                    <input id="addParam" type="button" value="添加记录" onclick="return addParam_onclick()" />&nbsp;
+                </div>
+                <div style="float: right">
+                    <input type="button" name="elOk" id="elOk" value="确定" onclick="return elOk_onclick()" />&nbsp;
+                    <input type="button" name="elCancel" id="elCancel" value="取消" onclick="return elCancel_onclick()" />
+                </div>
+            </div>
+        </div>
+        <div class="RndBtmLeft">
+            <div class="RndBtmRight">
+                <div class="RndBtmMid">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

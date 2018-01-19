@@ -1,0 +1,1034 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <base target="_self" />
+    <title></title>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <style type="text/css">
+        body
+        {
+            font-family: @宋体;
+            font-size: 12px;
+            line-height: 24px;
+        }
+        input
+        {
+            vertical-align: middle;
+            height: 14px;
+            line-height: 14px;
+            font-size: 12px;
+            width: 147px;
+        }
+        select
+        {
+            vertical-align: middle;
+            height: 18px;
+            line-height: 18px;
+            font-size: 12px;
+        }
+        .Button
+        {
+            height: 20px;
+        }
+        .style2
+        {
+        }
+        #Select1
+        {
+            height: 167px;
+            width: 152px;
+        }
+        #Select2
+        {
+            width: 188px;
+            height: 160px;
+        }
+        #Select3
+        {
+            width: 84px;
+        }
+        #Select5
+        {
+            width: 90px;
+        }
+        #Select6
+        {
+            width: 87px;
+        }
+        #Select7
+        {
+            width: 122px;
+        }
+        #Button2
+        {
+            width: 75px;
+        }
+        #txtChartText
+        {
+            height: 73px;
+            width: 300px;
+        }
+        #Button6
+        {
+            width: 75px;
+        }
+        fieldset
+        {
+            width: 283px;
+            height: 138px;
+        }
+        .CheckBox
+        {
+            width: 20px;
+        }
+        .TabHead
+        {
+            height: 25px;
+        }
+        .TabPage
+        {
+            height: 180px;
+            border: solid #938E3D 1px;
+            display: none;
+            border-top-width: 2px;
+            padding: 5px;
+        }
+        .TabPage p
+        {
+            line-height: 30px;
+            padding: 0px;
+            height: 30px;
+            margin: 0px;
+        }
+        .LeftFlowPanel
+        {
+            float: left;
+            height: 165px;
+            margin-right: 5px;
+        }
+        .TabHead .TabButton
+        {
+            float: left;
+            margin-right: 1px;
+            width: 80px;
+            height: 25px;
+        }
+        .TabHead .TabButton .BtnLeftBg
+        {
+            height: 25px;
+        }
+        .TabHead .TabButton .BtnLeftBg .BtnRightBg
+        {
+            height: 25px;
+        }
+        .TabHead .TabButton p
+        {
+            line-height: 25px;
+            height: 25px;
+            margin-top: 0px;
+            text-align: center;
+            color: #938E3C;
+        }
+        .TabHead .TabButton.Act
+        {
+            background-image: url(../images/tab_head_01_tag_mid.jpg);
+            background-repeat: repeat-x;
+            background-position: left bottom;
+        }
+        .TabHead .TabButton.Act .BtnLeftBg
+        {
+            background-image: url(../images/tab_head_01_tag_left.jpg);
+            background-repeat: no-repeat;
+            background-position: left bottom;
+        }
+        .TabHead .TabButton.Act .BtnLeftBg .BtnRightBg
+        {
+            background-image: url(../images/tab_head_01_tag_right.jpg);
+            background-repeat: no-repeat;
+            background-position: right bottom;
+        }
+        .TabHead .TabButton.Act p
+        {
+            color: #FFFFFF;
+        }
+    </style>
+
+    <script type="text/javascript" src="../../xbase.js/system/system.js"></script>
+
+    <script type="text/javascript" src="/xbase.js/utils/net_util.js"></script>
+
+    <script type="text/javascript" src="/xbase.js/system/wjs.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/controls/tab_control.js"></script>
+
+    <script language="javascript" type="text/javascript">
+
+        var urlRequest = DomUtils.getUrlRequest();
+
+        var gChartId = urlRequest["ChartId"];
+
+
+        var RequestVerb = {
+            DoOpen: "DoOpen",
+            DoApply: "DoApply",
+            DoSave: "DoSave",
+            DoDeleteSeries: "DoDeleteSeries"
+        }
+
+
+
+        var gSeries = new Object();
+
+        Page.onNoPermission = function(err) {
+            alert(err.ErrText);
+            close();
+            window.open(err.ErrUrl);
+        }
+
+        window.onload = function() {
+
+
+            var gNav = new TabControl(
+              [tabTagTBSZ, tabTagSJSZ, tabTagZBSZ, tabTagTBSM],
+              [tabPage_TBSZ, tabPage_SJSZ, tabPage_ZBSZ, tabPage_TBSM],
+                  "onclick", "TabButton Act");
+
+
+
+            //初始数据源
+
+
+            var req = new JoapRequest("DbManager", "", "GetTableSummarise");
+            req.addParamate("folder", "");
+            var tables = req.invoke();
+
+
+            if (tables) {
+                form1.selDataSource.options.length = 0;
+                for (var i = 0; i < tables.length; i++) {
+                    var table = tables[i];
+                    var varItem = new Option(table.Title, table.Name);
+                    form1.selDataSource.options.add(varItem);
+
+                }
+            }
+
+            loadDataField(form1.selDataSource.value);
+            loadChartTypes();
+            loadMarkerStyles();
+            loadChartList();
+            colorBox = new ColorBox("colorBox");
+            if (gChartId && gChartId != "") {
+                fraChart.location = "Chart.aspx?ChartId=" + gChartId;
+                loadChart(gChartId);
+            }
+        }
+
+        window.onunload = function() {
+            window.returnValue = form1.txtChartName.value;
+        }
+
+
+        function CsColorToStr(CsColor) {
+            if (CsColor.IsEmpty == true)
+                return "";
+            var r = CsColor.R.toString(16);
+            r = r.length == 2 ? r : "0" + r;
+
+            var g = CsColor.G.toString(16);
+            g = g.length == 2 ? g : "0" + g;
+
+            var b = CsColor.B.toString(16);
+            b = b.length == 2 ? b : "0" + b;
+
+            return "#" + r + "" + g + "" + b;
+        }
+
+        function loadChartList() {
+
+            form1.txtChartName.options.length = 0;
+
+            var req = new JoapRequest("ChartAdmin", "", "GetChartList");
+            var list = req.invoke();
+
+            if (!list) return;
+
+
+            var varItem = new Option("", "");
+            form1.txtChartName.options.add(varItem);
+
+            for (var i = 0; i < list.length; i++) {
+                var chart = list[i];
+                var varItem = new Option(chart.ID, chart.ID);
+                form1.txtChartName.options.add(varItem);
+            }
+            form1.txtChartName.value = "";
+        }
+
+        function getColorStyle(colorString) {
+            try {
+                var ret = colorString == null ? "" : colorString;
+                ret = ret == "0" ? "#000" : ret;
+            } catch (e) {
+                ret = "";
+            }
+            return ret;
+        }
+
+        function loadChart(chartName) {
+            if (!chartName) return;
+            var req = new JoapRequest("XChart", chartName);
+            var chart = req.invoke();
+
+            if (!chart) return;
+            var cs = chart.Schema;
+            if (!cs) return;
+
+            form1.txtChartName.value = cs.Id;
+            form1.txtChartTitle.value = cs.Title;
+            form1.selDataSource.value = cs.DataSource;
+            loadDataField(cs.DataSource);
+
+            form1.chkChart3D.checked = cs.Is3D;
+
+
+            form1.txtChartBgColor.value = chart.BackColor == null ? "" : chart.BackColor;
+            form1.txtChartBgColor.style.backgroundColor = getColorStyle(form1.txtChartBgColor.value);
+            form1.txtAreaBgColor.value = chart.AreaBackColor == null ? "" : chart.AreaBackColor;
+            form1.txtChartBgColor.style.backgroundColor = getColorStyle(form1.txtAreaBgColor.value);
+
+            form1.txtFromValue.value = chart.MinY;
+            form1.txtToValue.value = chart.MaxY;
+            form1.txtChartText.value = chart.Text;
+            form1.selXField.value = chart.XField;
+
+            form1.selChartTitlePos.value = cs.TitlePos;
+            form1.txtChartHeight.value = cs.Height;
+            form1.txtChartWidth.value = cs.Width;
+
+            form1.chkVLineDisplay.checked = cs.ShowGridVLine;
+            form1.txtVLineColor.value = cs.GridVLineColor;
+            form1.selVLineWidth.value = cs.GridVLineWidth;
+
+            form1.chkHLineDisplay.checked = cs.ShowGridHLine;
+            form1.txtHLineColor.value = cs.GridHLineColor;
+            form1.selHLineWidth.value = cs.GridHLineWidth;
+
+            form1.chkLegenH.checked = cs.LegenH;
+            form1.selLegenAlign.value = cs.LegenAlign;
+            form1.selLegenPos.value = cs.LegenPos;
+
+            form1.chkXYReverse.checked = cs.XYReverse;
+
+            form1.selXIntervalUnit.value = cs.XIntervalUnit;
+            form1.txtXInterval.value = cs.XInterval;
+            form1.txtXLableFormat.value = cs.XLableFormat;
+            form1.txtPageSize.value = cs.PageSize;
+            form1.elDataAdminPagePath.value = !cs.DataAdminPagePath ? "" : cs.DataAdminPagePath;
+
+            var seriesList = cs.SeriesList;
+            if (!seriesList) return;
+
+            gSeries = new Object();
+            form1.lstSeries.options.length = 0;
+
+            for (var i = 0; i < seriesList.length; i++) {
+                var ss = seriesList[i];
+
+                var serItem = new Object();
+                serItem.ChartType = ss.ChartType;
+                serItem.Color = ss.Color;
+                serItem.LineWidth = ss.LineWidth;
+                serItem.MarkerType = ss.MarkerType;
+                serItem.Area = ss.Area;
+                serItem.UpSeries = ss.UpSeries;
+                serItem.DownSeries = ss.DownSeries;
+                serItem.CreateAxisY = ss.CreateAxisY;
+                serItem.UsingY2 = ss.UsingY2;
+                serItem.IsFromY0 = ss.IsFromY0;
+                gSeries[ss.Id] = serItem;
+
+                var op = new Option(ss.Id, ss.Id);
+                form1.lstSeries.add(op);
+            }
+            LoadSeries()
+            //searchParams = new SchemaList<NamedValueSchema>();
+            //areaList = new xBase.SchemaList<ChartArea>();            
+        }
+
+        function loadDataField(tableId) {
+            form1.selSeriesField.options.length = 0;
+            form1.selXField.options.length = 0;
+            form1.selUpSeries.options.length = 0;
+            form1.selDownSeries.options.length = 0;
+
+            if (tableId == undefined || tableId == null || tableId == "")
+                return;
+
+            var req = new JoapRequest("Table", tableId, "GetFieldInfos");
+            var fields = req.invoke();
+            if (!fields) return;
+
+            for (var i = 0; i < fields.length; i++) {
+                var field = fields[i];
+                if (field.Name.indexOf("ActiveRecord.", 0) != 0) {
+                    var varItem = new Option(field.Title, field.Name);
+                    form1.selSeriesField.options.add(varItem);
+
+                    var varItem2 = new Option(field.Title, field.Name);
+                    form1.selXField.options.add(varItem2);
+
+                    var varItemUp = new Option(field.Title, field.Name);
+                    form1.selUpSeries.options.add(varItemUp);
+
+                    var varItemDown = new Option(field.Title, field.Name);
+                    form1.selDownSeries.options.add(varItemDown);
+
+
+                }
+            }
+        }
+
+
+        function selDataSource_onchange() {
+            loadDataField(form1.selDataSource.value);
+            form1.lstSeries.options.length = 0;
+            //   if (form1.txtChartName.value == null || form1.txtChartName.value == "" || form1.txtChartName.value == "NewChart")
+            //      form1.txtChartName.value = form1.selDataSource.value;
+        }
+
+        function setFrameSize() {
+            if (parseInt(form1.txtChartHeight.value) > 100)
+                fraChart.frameElement.style.height = form1.txtChartHeight.value + "px";
+
+            if (parseInt(form1.txtChartWidth.value) > 100)
+                fraChart.frameElement.style.width = form1.txtChartWidth.value + "px";
+        }
+
+    </script>
+
+    <script type="text/javascript" language="javascript">
+
+        function ColorBox(boxName) {
+
+            var _this = this;
+
+            var ColorHex = new Array('00', '33', '66', '99', 'CC', 'FF')
+            var SpColorHex = new Array('FF0000', '00FF00', '0000FF', 'FFFF00', '00FFFF', 'FF00FF')
+            var current = null;
+
+            var colorDiv;
+            var colorInput = null;
+
+            initColorBox();
+
+            function initColorBox() {
+                var colorTable = ''
+                for (i = 0; i < 2; i++) {
+                    for (j = 0; j < 6; j++) {
+                        colorTable = colorTable + '<tr height=15>'
+                        colorTable = colorTable + '<td width=15 style="background-color:#000000">'
+                        if (i == 0) {
+                            colorTable = colorTable + '<td width=15 style="cursor:pointer;background-color:#' + ColorHex[j] + ColorHex[j] + ColorHex[j] + '" onclick="' + boxName + '.onColorClick(this.style.backgroundColor)">'
+                        }
+                        else {
+                            colorTable = colorTable + '<td width=15 style="cursor:pointer;background-color:#' + SpColorHex[j] + '" onclick="' + boxName + '.onColorClick(this.style.backgroundColor)">'
+                        }
+                        colorTable = colorTable + '<td width=15 style="background-color:#000000">'
+                        for (k = 0; k < 3; k++) {
+                            for (l = 0; l < 6; l++) {
+                                colorTable = colorTable + '<td width=15 style="cursor:pointer;background-color:#' + ColorHex[k + i * 3] + ColorHex[l] + ColorHex[j] + '" onclick="' + boxName + '.onColorClick(this.style.backgroundColor)">'
+                            }
+                        }
+                    }
+                }
+                colorTable = '<table border="0" cellspacing="0" cellpadding="0" style="border:1px #000000 solid;border-bottom:none;border-collapse: collapse;width:337px;" bordercolor="000000">'
+                        + '<tr height=20><td colspan=21 bgcolor=#ffffff style="font:12px tahoma;padding-left:2px;">'
+                        + '<span style="float:left;color:#999999;">颜色选择</span>'
+                        + '<span style="float:right;padding-right:3px;cursor:pointer;" onclick="' + boxName + '.closeColorBox()">×关闭</span>'
+                        + '</td></table>'
+                        + '<table border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse" bordercolor="000000" style="cursor:pointer;">'
+                        + colorTable + '</table>';
+
+                //<div id='colorpane' style='position: absolute; z-index: 999; display: none;'></div>
+                colorDiv = document.createElement("<div id='colorpane' style='position: absolute; z-index: 999; display: none;'>");
+
+                document.body.appendChild(colorDiv);
+                colorDiv.innerHTML = colorTable;
+
+                //      var current_x = document.getElementById("inputcolor").offsetLeft;
+                //      var current_y = document.getElementById("inputcolor").offsetTop;
+                //alert(current_x + "-" + current_y) 
+            }
+            function getElementLeft(element) {
+                var actualLeft = element.offsetLeft;
+                var current = element.offsetParent;
+                while (current !== null) {
+                    actualLeft += current.offsetLeft;
+                    current = current.offsetParent;
+                }
+                return actualLeft;
+            }
+
+            function getElementTop(element) {
+                var actualTop = element.offsetTop;
+                var current = element.offsetParent;
+                while (current !== null) {
+                    actualTop += current.offsetTop;
+                    current = current.offsetParent;
+                }
+                return actualTop;
+            }
+
+
+            this.onColorClick = function(color) {
+                if (colorInput != undefined && colorInput != null) {
+                    colorInput.value = color;
+                    colorInput.style.backgroundColor = color;
+                }
+                else {
+                    alert(color);
+                }
+                colorDiv.style.display = "none";
+            }
+
+            this.closeColorBox = function() {
+                colorDiv.style.display = "none";
+            }
+
+            this.show = function(el) {
+                colorInput = el;
+                colorDiv.style.display = "";
+                if (colorInput != undefined && colorInput != null) {
+                    var x = getElementLeft(colorInput);
+                    var y = getElementTop(colorInput) + colorInput.offsetHeight;
+                    colorDiv.style.left = x + "px";
+                    colorDiv.style.top = y + "px";
+                }
+                //  document.getElementById("colorpane").style.left = current_x + "px";
+                //  document.getElementById("colorpane").style.top = current_y + "px";               
+                //document.getElementById("colorpane").style.display = "";
+            }
+
+        }
+
+        function loadChartTypes() {
+            form1.selSeriesChartType.options.length = 0;
+
+            var req = new JoapRequest("ChartAdmin", "", "GetChartTypes");
+            var types = req.invoke();
+            if (!types) return;
+
+
+            for (var key in types) {
+                var name = types[key];
+                var varItem = new Option(name, key);
+                form1.selSeriesChartType.options.add(varItem);
+            }
+
+        }
+
+        function loadMarkerStyles() {
+            form1.selSeriesMarkType.options.length = 0;
+
+            var req = new JoapRequest("ChartAdmin", "", "GetMarkerStyles");
+            var types = req.invoke();
+            if (!types) return;
+
+
+            for (var key in types) {
+                var name = types[key];
+                var varItem = new Option(name, key);
+                form1.selSeriesMarkType.options.add(varItem);
+            }
+        }
+
+        var colorBox;
+
+        function Button4_onclick() {
+            colorBox.show(form1.txtSeriesColor);
+        }
+
+
+        function SaveSeries() {
+            var value = form1.lstSeries.value;
+            if (value == null || value == "") return;
+
+            var serItem = new Object();
+            serItem.ChartType = form1.selSeriesChartType.value;
+            serItem.Color = form1.txtSeriesColor.value;
+            serItem.LineWidth = form1.selSeriesLineWidth.value;
+            serItem.MarkerType = form1.selSeriesMarkType.value;
+            serItem.DownSeries = form1.selDownSeries.value;
+            serItem.UpSeries = form1.selUpSeries.value;
+            serItem.CreateAxisY = form1.chkSeriesCreateAxisY.checked;
+            serItem.UsingY2 = form1.chkSeriesUsingY2.checked;
+            serItem.IsFromY0 = form1.chkIsFromY0.checked;
+            //    serItem.Area = form1.txtChartArea.value;
+            gSeries[value] = serItem;
+        }
+
+        function LoadSeries() {
+            var value = form1.lstSeries.value;
+            if (value == null || value == "") return;
+
+            var serItem = gSeries[value];
+
+            if (serItem != undefined && serItem != null) {
+                form1.selSeriesChartType.value = serItem.ChartType;
+                form1.txtSeriesColor.value = serItem.Color;
+                form1.txtSeriesColor.style.backgroundColor = serItem.Color;
+                form1.selSeriesLineWidth.value = serItem.LineWidth;
+                form1.selSeriesMarkType.value = serItem.MarkerType;
+
+                form1.selDownSeries.value = serItem.DownSeries;
+                form1.selUpSeries.value = serItem.UpSeries;
+                form1.chkSeriesCreateAxisY.checked = serItem.CreateAxisY;
+                form1.chkSeriesUsingY2.checked = serItem.UsingY2;
+                form1.chkIsFromY0.checked = serItem.IsFromY0;
+
+                //  form1.txtChartArea.value = serItem.Area;
+            }
+        }
+
+        function findOption(options, itemValue) {
+            for (var i = 0; i < options.length; i++) {
+                var item = options[i];
+
+                if (item.value == itemValue)
+                    return item;
+
+            }
+            return null;
+        }
+
+        function Button2_onclick() {
+            if (form1.selSeriesField.value != "") {
+
+                var value = form1.selSeriesField.value;
+                var text = form1.selSeriesField.options[form1.selSeriesField.selectedIndex].text;
+
+                item = findOption(form1.lstSeries.options, value);
+                if (item == null) {
+                    var item = new Option(text, value);
+                    form1.lstSeries.options.add(item);
+                }
+                form1.lstSeries.value = value;
+                SaveSeries();
+
+                form1.hidVerb.value = RequestVerb.DoApply;
+                if (form1.fireEvent('onsubmit'))
+                    form1.submit();
+            }
+        }
+
+        function Button3_onclick() {
+            var i = form1.lstSeries.selectedIndex;
+            if (i >= 0) {
+                form1.hidVerb.value = RequestVerb.DoDeleteSeries;
+
+                if (form1.fireEvent('onsubmit'))
+                    form1.submit();
+
+                gSeries[form1.lstSeries.value] = undefined;
+                form1.lstSeries.remove(i);
+            }
+        }
+
+
+
+        function btnNewChart_onclick() {
+            var name = window.prompt("请输入名称(英文)", "");
+            if (!name) return;
+            var item = findOption(form1.txtChartName, name);
+            if (item != null) {
+                alert("图表已经存在");
+                return;
+            }
+            var item = new Option(name, name);
+            form1.txtChartName.add(item);
+            form1.txtChartName.value = name;
+        }
+
+        function lstSeries_onchange() {
+            LoadSeries();
+        }
+
+        function btnAppyChart_onclick() {
+            SaveSeries();
+            setFrameSize();
+            form1.hidVerb.value = RequestVerb.DoApply;
+            if (form1.fireEvent('onsubmit'))
+                form1.submit();
+        }
+
+        function txtChartName_onchange() {
+            loadChart(form1.txtChartName.value);
+            form1.hidVerb.value = RequestVerb.DoOpen;
+            if (form1.fireEvent('onsubmit'))
+                form1.submit();
+        }
+
+        function form1_onsubmit() {
+            if (!form1.txtChartName.value || form1.txtChartName.value == "") {
+                alert("请选择，或新建图表名称");
+                return false;
+            }
+            return true;
+        }
+
+
+        function btnSaveChart_onclick() {
+            SaveSeries();
+            setFrameSize();
+            form1.hidVerb.value = RequestVerb.DoSave;
+            if (form1.fireEvent('onsubmit'))
+                form1.submit();
+        }
+
+        function btnVlineColor_onclick() {
+            colorBox.show(form1.txtVLineColor);
+        }
+
+        function btnHLineColor_onclick() {
+            colorBox.show(form1.txtHLineColor);
+        }
+
+        function btnAddRang_onclick() {
+            var name = window.prompt("请输入指标名称", "");
+            if (name && name != "") {
+                item = findOption(form1.lstSeries, name);
+                if (item == null) {
+                    var item = new Option(name, name);
+                    form1.lstSeries.options.add(item);
+                }
+                form1.lstSeries.value = name;
+                form1.selSeriesChartType.value = "22";
+                SaveSeries();
+
+                form1.hidVerb.value = RequestVerb.DoApply;
+                if (form1.fireEvent('onsubmit'))
+                    form1.submit();
+            }
+
+        }
+
+        function btnChartBgColor_onclick() {
+            colorBox.show(form1.txtChartBgColor);
+        }
+
+        function btnAreaBgColor_onclick() {
+            colorBox.show(form1.txtAreaBgColor);
+        }
+
+        function btnDataInputPage_onclick() {
+            var path = window.showModalDialog(
+               "../comm/site_file_tree.html?v=" + new Date(),
+               "",
+               "scroll:no;status:no;center:yes;resizable:no;dialogWidth:400px;dialogHeight:450px;");
+
+            if (path) {
+                form1.elDataAdminPagePath.value = path;
+            }
+
+        }
+
+    </script>
+
+</head>
+<body>
+    <form id="form1" method="post" action="../../xj-service/ChartPort.aspx" target="Chart"
+    onsubmit="return form1_onsubmit()">
+    <input type="hidden" id="hidVerb" name="Verb" value="save" />
+    <table width="100%" border="0">
+        <tr>
+            <td>
+                <p class="Button">
+                    <span style="height: 200px;">图表名称(英文):
+                        <select style="width: 400px" id="txtChartName" name="ChartName" onchange="return txtChartName_onchange()">
+                        </select>
+                        <input id="btnNewChart" style="width: 43px" type="button" value="新建" onclick="return btnNewChart_onclick()"
+                            class="Button" />
+                        <input id="btnSaveChart" style="width: 45px" type="button" value="保存" onclick="return btnSaveChart_onclick()"
+                            class="Button" />
+                    </span>
+                </p>
+                <p class="Button">
+                    <span style="height: 200px;"><span style="height: 90px;"><span class="style2">显示标题:&nbsp;
+                        <input type="text" style="width: 242px" id="txtChartTitle" name="ChartTitle" />
+                        位置:
+                        <select name="ChartTitlePos" id="selChartTitlePos">
+                            <option value='1'>上左</option>
+                            <option value='2' selected="selected">上中</option>
+                            <option value='4'>上右</option>
+                            <option value='16'>中左</option>
+                            <option value='32'>正中</option>
+                            <option value='64'>中右</option>
+                            <option value='256'>下左</option>
+                            <option value='512'>下中</option>
+                            <option value='1024'>下右</option>
+                        </select>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span></span>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="TabHead">
+                    <div id="tabTagTBSZ" class="TabButton Act">
+                        <div class="BtnLeftBg">
+                            <div class="BtnRightBg">
+                                <p>
+                                    图表设置</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tabTagSJSZ" class="TabButton">
+                        <div class="BtnLeftBg">
+                            <div class="BtnRightBg">
+                                <p>
+                                    数据设置</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tabTagZBSZ" class="TabButton">
+                        <div class="BtnLeftBg">
+                            <div class="BtnRightBg">
+                                <p>
+                                    指标设置</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tabTagTBSM" class="TabButton">
+                        <div class="BtnLeftBg">
+                            <div class="BtnRightBg">
+                                <p>
+                                    图表说明</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="TabPage" id="tabPage_TBSZ" style="display: block">
+                    <p>
+                        指标图列:&nbsp;横排
+                        <input type="checkbox" style="width: 20px" id="chkLegenH" name="LegenH" />
+                        位置
+                        <select name="LegenPos" id="selLegenPos">
+                            <option value="0">上</option>
+                            <option value="1">右</option>
+                            <option value="2">下</option>
+                            <option value="3">左</option>
+                        </select>
+                        对齐
+                        <select name="LegenAlign" id="selLegenAlign">
+                            <option value="0">左</option>
+                            <option value="1">中</option>
+                            <option value="2">右</option>
+                        </select>
+                    </p>
+                    <p>
+                        宽度:
+                        <input type="text" style="width: 50px" id="txtChartWidth" name="ChartWidth" />
+                        高度:
+                        <input type="text" style="width: 50px" id="txtChartHeight" name="ChartHeight" />
+                    </p>
+                    <p>
+                        背景色:图表
+                        <input id="txtChartBgColor" style="width: 50px" type="text" name="BackColor" />
+                        <input id="btnChartBgColor" class="Button" style="border: 1px solid #000000; width: 19px"
+                            type="button" onclick="return btnChartBgColor_onclick()" />
+                        &nbsp;数据区
+                        <input type="text" style="width: 50px" id="txtAreaBgColor" name="AreaBgColor" />
+                        <input id="btnAreaBgColor" style="border: 1px solid #000000; width: 19px" type="button"
+                            class="Button" onclick="return btnAreaBgColor_onclick()" />
+                        显示为3D:
+                        <input id="chkChart3D" type="checkbox" style="width: 20px" name="Chart3D" />
+                    </p>
+                    <p>
+                        值范围:&nbsp;从
+                        <input id="txtFromValue" type="text" style="width: 50px" name="FromValue" />
+                        到
+                        <input id="txtToValue" type="text" style="width: 50px" name="ToValue" />
+                        &nbsp;</span></p>
+                    <p>
+                        纵网线:
+                        <input type="checkbox" name="VLineDisplay" id="chkVLineDisplay" style="width: 20px" />
+                        颜色
+                        <input type="text" name="VLineColor" id="txtVLineColor" style="width: 60px" />
+                        <input type="button" id="btnVlineColor" style="border: 1px solid #000000; width: 19px"
+                            class="Button" onclick="return btnVlineColor_onclick()" />
+                        线宽
+                        <select name="VLineWidth" id="selVLineWidth" style="width: 40px">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
+                        横网线:
+                        <input type="checkbox" name="HLineDisplay" id="chkHLineDisplay" style="width: 20px" />
+                        颜色
+                        <input type="text" name="HLineColor" id="txtHLineColor" style="width: 60px" />
+                        <input type="button" id="btnHLineColor" style="border: 1px solid #000000; width: 19px"
+                            class="Button" onclick="return btnHLineColor_onclick()" />
+                        线宽
+                        <select name="HLineWidth" id="selHLineWidth" style="width: 40px">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
+                    </p>
+                </div>
+                <div class="TabPage" id="tabPage_SJSZ">
+                    <p>
+                        数据源:
+                        <select id="selDataSource" style="width: 273px" name="DataSource" onchange="return selDataSource_onchange()">
+                            <option></option>
+                        </select>
+                        查询参数:
+                        <input type="text" id="txtSearchParam" name="SearchParams" style="width: 150px" />
+                        &nbsp;每页大小:
+                        <input id="txtPageSize" name="PageSize" style="width: 40px" type="text" />
+                    </p>
+                    <p>
+                        X轴数据:
+                        <select id="selXField" name="XField" style="width: 93px">
+                            <option></option>
+                        </select>
+                        XY交换
+                        <input id="chkXYReverse" name="XYReverse" type="checkbox" style="width: 20px" />
+                        X轴间隔:间隔单位
+                        <select id="selXIntervalUnit" name="XIntervalUnit" style="width: 80px">
+                            <option value='0'>自动</option>
+                            <option value='1'>每个</option>
+                            <option value='2'>每年</option>
+                            <option value='3'>每月</option>
+                            <option value='4'>每周</option>
+                            <option value='5'>每天</option>
+                            <option value='6'>每小时</option>
+                            <option value='7'>每分</option>
+                            <option value='8'>每秒</option>
+                            <option value='9'>每毫秒</option>
+                            <option value='10'>无</option>
+                        </select>
+                        间隔大小
+                        <input id="txtXInterval" name="XInterval" style="width: 30px" type="text" />
+                        显示格式:
+                        <input id="txtXLableFormat" name="XLableFormat" style="width: 100px" type="text" />
+                    </p>
+                    <p>
+                        数据维护页面:
+                        <input type="text" style="width: 300px" name="elDataAdminPagePath" id="elDataAdminPagePath" />
+                        <input style="width: 20px; height: 20px; text-indent: 0px" type="button" name="btnDataInputPage"
+                            id="btnDataInputPage" value="..." onclick="return btnDataInputPage_onclick()" />
+                    </p>
+                </div>
+                <div class="TabPage" id="tabPage_ZBSZ">
+                    <div class="LeftFlowPanel">
+                        <p>
+                            <select id="selSeriesField" name="D7" style="width: 150px">
+                                <option></option>
+                            </select>
+                        </p>
+                        <p>
+                            <input id="Button2" type="button" value="添加指标" style="width: 72px" onclick="return Button2_onclick()"
+                                class="Button" />
+                            <input id="Button3" type="button" value="删除指标" style="width: 70px" onclick="return Button3_onclick()"
+                                class="Button" />
+                        </p>
+                        <p>
+                            <select id="lstSeries" multiple="multiple" name="Series" style="width: 150px; height: 105px"
+                                onchange="return lstSeries_onchange()">
+                            </select>
+                        </p>
+                    </div>
+                    <div class="LeftFlowPanel">
+                        <p>
+                            指标图形:
+                            <select id="selSeriesChartType" name="SeriesChartType" style="width: 103px">
+                                <option></option>
+                            </select>
+                        </p>
+                        <p>
+                            指标颜色:
+                            <input id="txtSeriesColor" style="width: 60px" type="text" name="SeriesColor" />
+                            <input id="Button4" style="border: 1px solid #000000; width: 19px" type="button"
+                                onclick="return Button4_onclick()" class="Button" />
+                            &nbsp;&nbsp;&nbsp; 线宽:
+                            <select id="selSeriesLineWidth" name="SeriesLineWidth" style="width: 42px">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                            </select>
+                        </p>
+                        <p>
+                            标记形状:
+                            <select id="selSeriesMarkType" name="SeriesMarkType" style="width: 100px">
+                                <option></option>
+                            </select>
+                        </p>
+                        <p>
+                            上线指标:
+                            <select id="selUpSeries" name="UpSeries" style="width: 87px">
+                                <option></option>
+                            </select>
+                            下线指标:
+                            <select id="selDownSeries" name="DownSeries" style="width: 85px">
+                                <option></option>
+                            </select>
+                        </p>
+                        <p>
+                            从y0绘图
+                            <input id="chkIsFromY0" type="checkbox" class="CheckBox" name="IsFromY0" />
+                            &nbsp; 使用右Y轴
+                            <input id="chkSeriesUsingY2" name="SeriesUsingY2" style="width: 20px" type="checkbox" />
+                            &nbsp; 新建Y轴 </span><span style="width: 310px; height: 146px;">
+                                <input id="chkSeriesCreateAxisY" name="SeriesCreateAxisY" style="width: 20px" type="checkbox" />
+                        </p>
+                    </div>
+                    <div class="LeftFlowPanel">
+                        <p>
+                            <input id="btnAppyChart" style="width: 100px" type="button" value="确认指标设置" onclick="return btnAppyChart_onclick()"
+                                class="Button" />
+                        </p>
+                        <p>
+                            <input id="btnAddRang" type="button" value="添加范围指标" style="width: 100px" class="Button"
+                                onclick="return btnAddRang_onclick()" />
+                        </p>
+                    </div>
+                </div>
+                <div class="TabPage" id="tabPage_TBSM">
+                    <textarea id="txtChartText" name="ChartText" style="overflow-y: auto; width: 760px;
+                        height: 160px;"></textarea>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <iframe name="Chart" id="fraChart" marginheight="0" marginwidth="0" frameborder="0"
+                    height="300px" scrolling="No" src="Chart.aspx" width="800px"></iframe>
+            </td>
+        </tr>
+    </table>
+    </form>
+</body>
+</html>

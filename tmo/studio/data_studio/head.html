@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>导航条</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .Head
+        {
+            height: 80px;
+            width: 2000px;
+            background-color: #080C1A;
+            white-space: nowrap;
+        }
+        .Head .TitleBox
+        {
+            float: left;
+            height: 80px;
+            width: 240px;
+            background-image: url(images/title_bg.jpg);
+            background-repeat: no-repeat;
+            background-position: right top;
+        }
+        .Head .TitleBox .Logo
+        {
+            background-image: url(images/logo.jpg);
+            background-repeat: no-repeat;
+            background-position: 0px 0px;
+            height: 80px;
+            width: 240px;
+        }
+        .Head .HeadRight
+        {
+            margin: 0px;
+            background-image: url(images/title_right_bg.jpg);
+            background-repeat: no-repeat;
+            background-position: right top;
+            overflow: visible;
+            width: 700px;
+            float: left;
+            height: 75px;
+            background-color: #56628D;
+            white-space: nowrap;
+            top: 0px;
+        }
+        .Head #goHome
+        {
+            float: left;
+            height: 75px;
+            width: 75px;
+            text-align: center;
+        }
+        .Head #goHome img
+        {
+            margin-top: 6px;
+        }
+        .HeadRight div
+        {
+            background-repeat: no-repeat;
+            float: left;
+            height: 55px;
+            width: 55px;
+            margin: 10px 0px 0px 5px;
+            text-align: center;
+            color: #FFF;
+        }
+        .HeadRight .SelectButton
+        {
+            background-image: url(images/nav_button.png);
+            color: #333;
+        }
+        a
+        {
+            text-decoration: none;
+        }
+        a:focus
+        {
+            outline: none;
+            -moz-outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="Head">
+        <div class="TitleBox">
+            <div class="Logo">
+            </div>
+        </div>
+        <div class="HeadRight">
+            <div class="SelectButton">
+                <img src="images/gohome.png" width="40" height="40" alt="回首页" /><br />
+                新建连接
+            </div>
+            <div>
+                <img src="images/kspread.png" width="40" height="40" alt="回首页" /><br />
+                新建表
+            </div>
+            <div>
+                <img src="images/mail.png" width="40" height="40" alt="回首页" /><br />
+                新建查询
+            </div>
+            <div>
+                <img src="images/pda_mount.png" width="40" height="40" alt="回首页" /><br />
+                新建数据窗口
+            </div>
+        </div>
+        <div class="GoHome" id="goHome">
+            <a href="../index.html" target="_parent" hidefocus="true">
+                <img src="images/gohome.png" style="border:none;" width="40" height="40" alt="回首页" /><br />
+                回首页</a></div>
+    </div>
+</body>
+</html>

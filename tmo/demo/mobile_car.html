@@ -1,0 +1,228 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="../jquery.mobile/jquery.mobile-1.4.5.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script src="../jquery.mobile/jquery.mobile-1.4.5.min.js"></script>
+    <script type="text/javascript">
+
+        function checkInput() {
+            var input = $("#from").find("[type='text']");
+            for (var i = 0; i < input.length; i++) {
+                if ($(input[i]).val() == "") {
+                    var msg = $(input[i]).attr("placeholder");
+                    msg = " <label style='color:red'>请输入" + msg + "</label>"
+                    $("#msg").html(msg);
+                    $("#alert").click();
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        //生成订单
+        function addOrder() {
+
+            var ches = $("[name='goodsId']");
+            var address = $("#address").val();
+            var phone = $("#phone").val();
+            var userName = $("#fullname").val();
+            if (!check(ches)) {//如果没有选中商品
+                $("#msg").html("亲！您还没有选中商品哦");
+                $("#alert").click();
+                return;
+            }
+            if (!checkInput()) {//如果表单信息不完整
+                return;
+            }
+            var orderId = randNum(4);//这个为订单主键，订单详情要用id
+            var orderCard = randNum(12)//订单标识，一般是唯一的
+
+            var rest = $.rCall("ds.demo_order.insert", { row: { id: orderId, odareCard: orderCard, totalMoney: 45, address: address, userId: 1, phone: phone, userName: userName, createTime: getDate() } });//生成订单
+            for (var i = 0; i < ches.length; i++) {
+                var item = ches[i];
+                if (item.checked) {
+                    var id = $(item).parent().prev().html();//得到当前选中的Id
+                    var price = $(item).parents(".row").find(".price").html();//得到当前选中的商品价格
+
+                    $.rCall("ds.demo_orderDetail.insert", { row: { id: randNum(4), count: 1, price: price, goodsId: id, orderId: orderId } });//生成订单详情
+                }
+            }
+            if ($.getJsonStr(rest) != "null") {
+                $("#msg").html("<label data-icon='delete'>抱歉！系统繁忙，下单失败</label>");
+                $("#alert").click();
+            } else {
+                $("#msg").html("<label data-icon='check'>下单成功</label>");
+                $("#alert").click();
+
+            }
+        }
+        //生成指定长度的随机数
+        function randNum(n) {
+            var num = "";
+            for (var i = 0; i <= n; i++) {
+                num += Math.floor((Math.random() * 10 + 1)) + "";//生成随机数,作为主键,只供以测试
+            }
+            return num;
+        }
+        //判断当前有没有选中商品
+        function check(ches) {
+            for (var i = 0; i < ches.length; i++) {
+                var item = ches[i];
+                if (item.checked) {
+                    return true;
+                }
+
+            }
+            return false;
+        }
+        function getDate() {
+            var date = new Date();
+            var time = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+            return time;
+        }
+    </script>
+    <style>
+        .row {
+            margin: 4px;
+            padding: 4px;
+            height: 100px;
+            border-bottom: 2px solid #808080;
+        }
+         .addCor {
+             background-color:#808080;
+             padding:8px 0px 0px 8px;
+        }
+
+        .left_img {
+            float: left;
+            width: 25%;
+        }
+
+        .rig_cont ul {
+            list-style: none;
+        }
+
+        .rig_cont div {
+            margin: 3px;
+            height: 28px;
+            padding: 0px;
+            font-size: 18px;
+            
+        }
+        #inp {
+            background-color: #b4c1b4;
+        
+        }
+        .price {
+            color: #f00;
+            line-height: 23px;
+          
+        }
+    </style>
+</head>
+
+<body>
+    <div data-role="page" id="home" style="width: 100%; height: 100%" data-theme="b">
+        <div data-role="header">
+            <h3>在线订单系统</h3>
+        </div>
+        <div data-role="content" data-theme="d">
+
+            <div class="choice_list" wbo="dsdemo1.rows" name="list1" wbo-params="{ page:1,rows:8 }" view="jsonList">
+
+                <div data-role="listview" data-inset="true">
+                    <div name="list1.item" class="row">
+                        <div style="float: left; height: 100%; width: 45px;">
+                            <span name="list1.id" hidden="hidden"></span>
+                            <input style="float: left; height: 100px; position:initial" type="checkbox" value="" name="goodsId" />
+                        </div>
+                        <div class="left_img">
+                            <img name="list1.picture" height="80" width="80" />
+                        </div>
+                        <div class="rig_cont">
+                            <div><span name="list1.name"></span></div>
+                            <div><span name="list1.count"></span></div>
+                            <div>
+                                <strong name="list1.price" class="price"></strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div data-role="content" id="inp">
+            <div data-role="fieldcontain" id="from">
+                <label for="fullname">全名：</label>
+                <input type="text" name="fullname" id="fullname" placeholder="收货人姓名。。">
+                <label for="bday">地址：</label>
+                <input type="text" name="address" id="address" placeholder="您详细的收货地址。。">
+                <label for="phone">手机：</label>
+                <input type="text" name="phone" id="phone" placeholder="您的手机号码。。">
+            </div>
+            <input type="button" data-inline="true" value="提交" data-theme="e" onclick=" addOrder()()">
+        </div>
+        <div data-role="footer"  data-fullscreen="true"  data-position="fixed">
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="/demo/mobile_list.html" data-ajax="false" data-icon="home">菜单</a></li>
+                    <li><a href="/demo/mobile_car.html" data-ajax="false" class="ui-btn-active ui-state-persist" data-icon="info">购物车</a></li>
+                    <li><a href="/demo/mobile_order.html" data-ajax="false" data-icon="grid">订单</a></li>
+                    <li><a href="#" data-icon="star">我的</a></li>
+                </ul>
+            </div>
+        </div>
+        <a href="#pagetwo" hidden="hidden" id="alert" data-rel="dialog"></a>
+
+    </div>
+
+    <div data-role="page" hidden="hidden" id="pagetwo" data-overlay-theme="b">
+        <div data-role="header" data-theme="b">
+            <h1>订单提示</h1>
+        </div>
+        <div data-role="content" data-theme="a">
+            <div id="msg"></div>
+        </div>
+    </div>
+    <script>
+
+        $(function () {
+            $("#home").css({
+                "margin-left": 0,
+                "margin-top": 36
+            });
+            $(".row").hover(function () {
+                $(this).addClass("addCor");
+            }, function () {
+                $(this).removeClass("addCor");
+            })
+            footerTop();
+            $(window).resize(function () {
+                footerTop();
+
+            })
+        })
+
+
+        function footerTop() {
+            var marTop = $(window).height();
+            var height = $("#footer").height();
+            $("#inp").css({ "position": "fixed", "right": 0, "left": 0, "bottom": height+10 + "px" ,  opacity:0.9});
+           
+        }
+
+    </script>
+</body>
+
+
+</html>

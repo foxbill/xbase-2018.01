@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>甜蜜窝</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/jquery.mobile/themes/tmo.min.css" />
+    <link rel="stylesheet" href="/jquery.mobile/themes/jquery.mobile.icons.min.css" />
+    <link rel="stylesheet" href="/jquery.mobile/jquery.mobile.structure-1.4.5.min.css" />
+    <script type="text/javascript" src="/xbase.js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/jquery.mobile/jquery.mobile-1.4.5.min.js"></script>
+    <script type="text/javascript">
+       
+        var mCameraFiles;
+
+        function openIosCamera() {
+            ios: openCamera; //var cameraFiles=["a.png","b.png","a.png"];
+            ios: openCamera?a="";
+        }
+       
+
+        function openCamera() {
+            var sPath = Android.openCamera();
+            document.getElementById("path").innerHTML = sPath;
+        }
+        function openCameraIos() {
+            window.location.href = "ios:openCamera";
+        }
+    </script>
+</head>
+<body>
+    <input id="open_camera" type="submit" value="打开照相机android" onclick="openCamera()">
+    <input id="open_camera_ios" type="submit" value="打开照相机ios" onclick="openCameraIos()">
+    <div id="path"></div>
+</body>
+</html>

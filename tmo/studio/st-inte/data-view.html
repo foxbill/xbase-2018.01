@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <title>数据库管理</title>
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link href="../css/jqtree.css" rel="stylesheet" type="text/css" />
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <link href="css/studio.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/icon.css">
+    <!--    <link rel="stylesheet" type="text/css" href="../../easyui/demo/demo.css">-->
+    <!--<script type="text/javascript" src="../js/tab_control.js"></script>-->
+    <script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../js/tree.jquery.js" type="text/javascript"></script>
+    <!--    <script type="text/javascript" src="../../easyui/jquery.min.js"></script>-->
+    <script src="../../xbase.js/tab_control.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.form.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.jsonform.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../../easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../easyui/src/datagrid-scrollview.js"></script>
+    <script type="text/javascript" src="../../easyui/src/datagrid-filter.js"></script>
+    <script type="text/javascript" src="../../xbase.js/easyui.xbase.js"></script>
+    <script type="text/javascript">
+        var name = $.paramVal("name");
+        $(function () {
+            var reqName = !name ? "" : "." + name;
+            var grd = $.rCall("ExcelTransfer" + reqName + ".grid.wbo");
+            grd.url = "ExcelTransfer" + reqName + ".data.wbo";
+            //            grd.toobar = [{
+            //                iconCls: 'icon-edit',
+            //                handler: function () { alert('edit') }
+            //            }, '-', {
+            //                iconCls: 'icon-help',
+            //                handler: function () { alert('help') }
+            //            }];
+
+            $("#divGrid").datagrid(grd);
+            $('#divGrid').datagrid({
+                toolbar: [{
+                    text: "导入",
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        var ret = $.rCall("ExcelTransfer" + reqName + ".import.wbo");
+                        if (!(ret && ret.Err))
+                            $.messager.alert("导入数据", "数据导入完成", "info");
+                    }
+                }, '-', {
+                    text: "返回",
+                    iconCls: "icon-back",
+                    handler: function () { history.back(); }
+                }]
+            });
+        });
+    </script>
+</head>
+<body style="overflow: auto" class="easyui-layout">
+    <div region="center" border="false">
+        <div id="divGrid" fit="true">
+        </div>
+    </div>
+</body>
+</html>

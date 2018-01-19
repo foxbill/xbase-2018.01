@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script>
+            function submit_goods() {           
+                $.messager.progress();
+                $("#frmGoods").form("submit", {
+                    url: "shop_goods.form",
+                    onSubmit: function (param) {
+                        return true;
+                    },
+                    success: function (data) {
+                       
+                        $.messager.progress('close'); // hide progress bar while submit successfully  
+                        try {
+                            var data = eval('(' + data + ')');
+                        } catch (e) {
+                        }
+                        if (data && data.Err)
+                            $.messager.alert("保存商品", data.Err.Text, "error");
+                        else if (data)
+                            $.messager.alert("保存商品", data, "error");
+                        else {
+                            $.messager.alert("保存商品", "商品已被保存", "info");
+                        }
+                    }
+                });
+            }
+       
+
+    </script>
+</head>
+<body>
+    <div class="demo-info">
+        <div class="demo-tip icon-tip"></div>
+        <div>数据库--表单范例</div>
+    </div>
+
+  <form id="frmGoods" method="post" enctype="multipart/form-data">
+        <div class="panel">
+            <h2>商品</h2>
+            <div>
+                <p>
+                    商品照片<input type="file" name="picture" value="照片" />
+                </p>
+                <p>
+                    商品名称<input type="text" name="name" value="" />
+                </p>
+                <p>
+                    商品介绍<textarea name="summary"></textarea>
+                </p>
+                <p>
+                    商品类别<select name="category">
+                        <option value="2">日杂品</option>
+                        <option value="1">日用品</option>
+                        <option value="2">服装</option>
+                        <option value="2">家具</option>
+                    </select>
+                </p>
+            </div>
+            <div>
+                <input type="button" value="保存" onclick="submit_goods()" />
+            </div>
+        </div>
+    </form>
+</body>
+</html>

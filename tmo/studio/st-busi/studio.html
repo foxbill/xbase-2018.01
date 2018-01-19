@@ -1,0 +1,1410 @@
+﻿<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <meta http-equiv="X-UA-Compatible" content="IE=5" />
+    <title>xbase 界面开发平台平台 </title>
+    <script type="text/javascript" src="system.xjs"></script>
+    <script type="text/jscript" src="wbps.xjs"></script>
+    <script type="text/javascript" src="wjs.xjs"></script>
+    <script type="text/javascript" src="net_util.xjs"></script>
+    <script type="text/javascript" src="jquery-1.9.1.min.xjs"></script>
+    <script type="text/javascript" src="jquery-migrate-1.2.1.xjs"></script>
+    <script type="text/javascript" src="jquery.xbase.xjs"></script>
+    <script type="text/javascript" src="tab_control.xjs"></script>
+    <script type="text/javascript" src="jquery.xbase.form.xjs"></script>
+    <script type="text/javascript" src="jquery.xbase.jsonform.xjs"></script>
+    <script type="text/javascript" src="../../xbase.js/system/object.js"></script>
+    <script type="text/javascript" src="../../xbase.js/xdk/xdk4js.js"></script>
+    <script type="text/javascript" src="../../xbase.js/controls/listview.js"></script>
+    <script type="text/javascript" src="../../xbase.js/rangy/rangy-core.js"></script>
+    <script type="text/javascript" src="../../xbase.js/controls/html_editor.js"></script>
+    <script type="text/javascript" src="../../xbase.js/controls/wbdl_editor.js"></script>
+    <script type="text/javascript" src="../../xbase.js/controls/tab_control.js"></script>
+    <script type="text/javascript">
+        var WBPS_SCRIPT_ID = "wpbs";
+        var WBPS_SCRIPT_SRC = "wbps.xjs";
+
+    </script>
+    <script type="text/javascript">
+        //事件定义表单，处理程序
+        var gDataPropertyForm;
+        var gEventEditor;
+
+        function gEventEditor() {
+
+            var _el = null;
+            var _pageEditor;
+            var _events;
+
+
+            this.setPageEditor = function (wbdlEditor) {
+                _pageEditor = wbdlEditor;
+                wbdlEditor.attachEvent("onSelectObj", editor_SelectObj);
+                wbdlEditor.attachEvent("onLoadWbdl", editor_LoadWbdl);
+            }
+
+            this.getPageEditor = function () {
+                return _pageEditor;
+            }
+
+            this.getActiveElement = function () {
+                return _el;
+            }
+
+
+            function loadEventNames(element) {
+                elEventName.options.length = 0;
+                elEventName.options.add(new Option("鼠标单击", "onclick"));
+                elEventName.options.add(new Option("值改变", "onchange"));
+
+                if (element.tagName.toUpperCase() == "INPUT" && element.type.toLowerCase() == "text")
+                    elEventName.options.add(new Option("键入值", "onpropertychange"));
+            }
+
+            function editor_SelectObj(element) {
+                //  alert(element.tagName);
+                if (typeof (element) == "object" && element.tagName) {
+                    loadEventNames(element);
+                    _el = element;
+                    showEvent();
+                }
+            }
+
+            function editor_LoadWbdl(wbdl) {
+                // var events = wbdl.Events;
+                var flows = wbdl.ActionFlows;
+
+
+                //初始化任务下拉框
+                elActionFlow.options.length = 0;
+                var option = new Option("无", "");
+                elActionFlow.options.add(option);
+
+                if (flows) {
+                    for (var i = 0; i < flows.length; i++) {
+                        var flow = flows[i];
+                        var flowId = flow.Id;
+                        var flowTitle = flow.Title ? flow.Title : flowId;
+                        var option = new Option(flowTitle, flowId);
+                        elActionFlow.options.add(option);
+                    }
+                }
+
+                showEvent();
+
+            }
+
+            function showEvent() {
+
+                //  elEventName.value = "";
+                if (!_el) return;
+
+                var xdk = _pageEditor.getXdk();
+                var event = null;
+
+                try {
+                    event = xdk.getEvent(_el.name, elEventName.value);
+                } catch (e) {
+                    event = null;
+                }
+
+                if (!event) {
+                    elActionFlow.value = "";
+                    return;
+                }
+
+                elEventName.value = event.EventName;
+                elActionFlow.value = event.ActionFlow;
+
+            }
+
+            elEventName.onchange = function () {
+                showEvent();
+            }
+
+            elActionFlow.onchange = function () {
+                if (!_el) return;
+                if (!elEventName.value) return;
+
+                if (!_el.name) {
+                    alert("元素" + _el.tagName + "，没有指定名称(name)，不能定义事件，请在元素属性页为元素指定名称（name）。");
+                    return;
+                }
+                var xdk = _pageEditor.getXdk();
+
+                xdk.updateEvent(_el.name, elEventName.value, elActionFlow.value);
+            }
+
+            //    btnEditFlow.onclick = function() {
+            //var ret = showModalDialog("flow_editor.html?" + new Date(), null, "dialogWidth=795px;dialogHeight=557px; center=yes;help=yes;resizable=yes");
+            //    }
+
+            btnNewFlow.onclick = function () {
+                if (!_el || _el.tagName == "BODY") {
+                    alert("请选择要定义流程的元素。");
+                    return
+                }
+
+                if (!_el.name) {
+                    alert("元素" + _el.tagName + "，没有指定名称(name)，不能定义事件，请在元素属性页为元素指定名称（name）。");
+                    return
+                }
+
+                if (!elEventName.value) {
+                    alert("请指定鼠标事件。");
+                    return
+                }
+
+
+                var flowId = elActionFlow.value;
+                if (!flowId)
+                    flowId = _el.name + "." + elEventName.value;
+
+                var wbdlXdk = _pageEditor.getXdk();
+
+                var actionFlow = wbdlXdk.getActionFlow(flowId);
+
+                var isNew = false;
+
+                if (!actionFlow) {
+                    isNew = true;
+                    actionFlow = new Object();
+                    actionFlow.Id = flowId;
+                }
+
+                var args = new Object();
+                args.wbdlXdk = wbdlXdk;
+                args.actionFlow = actionFlow;
+
+                var ret = showModalDialog("flow_editor.html?" + Math.random(), args, "dialogWidth=800px;dialogHeight=600px; center=yes;help=yes;resizable=yes");
+
+                if (ret && isNew) {
+                    wbdlXdk.appendActionFlow(actionFlow);
+                    wbdlXdk.updateEvent(_el.name, elEventName.value, actionFlow.Id);
+                    var op = new Option(actionFlow.Title, actionFlow.Id);
+                    elActionFlow.add(op);
+                    elActionFlow.value = actionFlow.Id;
+                }
+            }
+        }
+
+        function getColIndex(tr, td) {
+            for (var i = 0; i < tr.cells.length; i++) {
+                if (tr.cells[i] == td)
+                    return i;
+            }
+            return -1;
+        }
+
+        function getRowIndex(table, tr) {
+            for (var i = 0; i < table.rows.length; i++) {
+                if (table.rows[i] == tr)
+                    return i;
+            }
+            return -1;
+        }
+
+                
+    </script>
+    <script language="javascript" type="text/javascript">
+
+        var g_Editor = null;
+        var g_WbdlXdk = null;
+        window.xdesignMode = true;
+        //        var g_newAction = null;
+        //初始化程序
+        onload = function () {
+            var frame = document.getElementById("mainFrame");
+
+            Page("ControlBox").requestInnerHTML("WbcBox.wbc");
+            window.menuControl = new TabControl([menuTag1, menuTag2, menuTag3, menuTag4, menuTag5, menuTag6],
+                                [menuTabPanel1, menuTabPanel2, menuTabPanel3, menuTabPanel4, menuTabPanel5, menuTabPanel6],
+                                "onmouseover", "Tag Act");
+            window.editTag = new TabControl([editorTag1, editorTag2],
+                                [frame, txtPageCode],
+                                "onclick", "TabTag2 Act");
+
+            window.olTab = new TabControl([olTabTag1, olTabTag2, olTabTag3],
+                                [tabElementPropertyList, tabElementDataPropertyForm, tabElementEventForm],
+                                "onclick", "OutLookTab Act", "OutLookTab");
+
+            window.olTab.switchDisplay = true;
+
+            window.editTag.onTabActive = function (tabTag) {
+                //var document = frame.document;
+
+                var doc = frame.contentDocument || frame.contentWindow.document;
+
+                switch (tabTag) {
+                    case editorTag2:
+                        txtPageCode.value = doc.documentElement.outerHTML;
+                        break;
+                    case editorTag1:
+                      //  doc.open();
+                      //  doc.write(txtPageCode.value);
+                        var xFile = makeHtmlFile();
+                        xFile.Data = txtPageCode.value;
+                        var url = $Wbo("SiteAdmin").invoke("SaveWHtmlFile", {
+                            wFile: xFile
+                        });
+                        g_Editor.changeUrl(url);
+                        break;
+                }
+                //document.body.innerHTML = txtPageCode.value;
+            }
+
+
+
+            var wbdlTree = null;
+
+
+            WbdlEditor.prototype.onReadyData = function (wbdl) {
+                //     rightFrame.window.buildWbdlTree(wbdl, this);
+                //     rightFrame.buildDsTree(wbdl);
+                g_WbdlXdk = new WbdlXdk(wbdl);
+            };
+
+            g_Editor = new WbdlEditor(frame, editorTools);
+            g_Editor.selBar = editorSelBar;
+            g_Editor.attachEvent("onChangeUrl", editor_OnUrlChange);
+            // g_Editor.setDataPropertyForm(leftWind.dataPropertyForm);
+
+            var elementPropertyList = new PropertyList(tabElementPropertyList);
+            g_Editor.setElementPropertyList(elementPropertyList);
+
+
+            gDataPropertyForm = new DataForm(tabElementDataPropertyForm);
+            gDataPropertyForm.addFieldElement(cmbDsId);
+            gDataPropertyForm.addFieldElement(cmbField);
+            gDataPropertyForm.addFieldElement(cmbAttr);
+            g_Editor.setDataPropertyForm(gDataPropertyForm)
+
+            //g_Editor.setEventPropertyForm(gEventEditor);
+            //    var leftWind = leftFrame.window;
+            gEventEditor = new gEventEditor();
+            gEventEditor.setPageEditor(g_Editor);
+
+            //            rightFrame.window.setEditor(g_Editor);
+            g_Editor.changeUrl("demo.html");
+        }
+        function editor_OnUrlChange(url) {
+            var frame = document.getElementById("mainFrame");
+            curFilePath.innerHTML = "当前文件：" + frame.contentWindow.location.pathname;
+            //txtPageCode.value = getFrameDoc().body.innerHTML;
+            //txtPageCode.value = getFrameDoc().documentElement.outerHTML;
+            //frame.contentDocument.body.innerHTML;
+        }
+    </script>
+    <!-- 表单控件图片结束 -->
+    <script language="javascript" type="text/javascript">
+
+        function btnInsertLink_onclick() {
+            var ret = showModalDialog("insert_link.html?" + new Date(), "", "dialogWidth=600px;dialogHeight=400px; center=yes;help=yes;resizable=no");
+            if (ret != null) {
+                g_Editor.insertLink(ret.id, ret.name, ret.href, ret.target);
+            }
+        }
+
+        //菜单配置
+        function btnWboMain_onclick() {
+            var ret = showModalDialog("page_wbo_man.html?" + new Date(), g_Editor.wbdl, "dialogWidth=500px;dialogHeight=300px; center=yes;help=yes;resizable=yes");
+        }
+
+        //html转普通字符
+        function htmlEncode(str) {
+            var div = document.createElement("DIV");
+            div.innerText = str;
+            return div.innerHTML;
+        }
+
+        //普通文本转Html
+        function htmlDecode(str) {
+            var div = document.createElement("DIV");
+            div.innerHTML = str;
+            return div.innerText;
+        }
+
+        /**
+        * 添加业务对象
+        */
+        function btnAddWbo_onclick() {
+            var ret = showModalDialog("append_ds.html?" + new Date(), g_Editor.wbdl, "dialogWidth=300px;dialogHeight=420px; center=yes;help=yes;resizable=yes");
+            if (!ret) return;
+            g_Editor.initDataForm();
+            //      rightFrame.buildDsTree(g_Editor.wbdl);
+        }
+
+        function btnAdvanceBind_onclick() {
+            var d = new Date();
+            var s = d.toLocaleDateString() + " " + d.toLocaleTimeString() + "  " + d.getMilliseconds();
+            var ret = showModalDialog("expert_databind.html?time=" + s, g_Editor, "dialogWidth=670px;dialogHeight=510px; center=yes;help=yes;resizable=no");
+        }
+
+
+        /**
+        * 添加活动流程
+        */
+        function editFlow(flowId) {
+
+            var acXdk = new ActionXdk();
+            var action = acXdk.action;
+
+            var ret = showModalDialog("shape.html?" + new Date(), [action, g_Editor.wbdl, true], "dialogWidth=795px;dialogHeight=557px; center=yes;help=yes;resizable=no");
+            if (ret && g_WbdlXdk) {
+                g_WbdlXdk.addAction(action);
+                g_Editor.doWbdlChange();
+            }
+        }
+
+        /**
+        * 编辑活动流程
+        */
+        function editAction(actionId) {
+            if (!g_WbdlXdk) {
+                alert("wbdl not ready");
+                return;
+            }
+
+            var action = g_WbdlXdk.getAction(actionId);
+            if (!action) {
+                alert("Action not find by actionId " + actionId);
+                return;
+            }
+
+            var newAction = eval("(" + obj2str(action) + ")");
+
+            var ret = showModalDialog("shape.html?" + new Date(), [newAction, g_Editor.wbdl], "dialogWidth=795px;dialogHeight=557px; center=yes;help=yes;resizable=no");
+
+            if (ret) {
+                g_WbdlXdk.replaceAction(action, newAction);
+            }
+        }
+
+        function btnUpLoad_onclick() {
+            showModalDialog("upload_zip.html?" + new Date(), window, "dialogWidth=795px;dialogHeight=557px; center=yes;help=yes;resizable=yes;unadorned=no");
+            //    rightFrame.buildFileTree();
+        }
+
+        function btnNew_onclick() {
+            g_Editor.changeUrl("demo.html");
+            g_Editor.wbdl = new Object();
+
+        }
+
+
+
+        function isNewFile(fileName) {
+            var demo = "demo.html";
+            if (!fileName || fileName == undefined || fileName == NaN)
+                fileName = document.getElementById("mainFrame").src;
+            if (fileName.lastIndexOf(demo, fileName.length - demo.length) > -1)
+                return true;
+            if (!fileName)
+                return true;
+            if (fileName.toLowerCase == "about:blank")
+                return true;
+        }
+
+
+        function selectFile() {
+
+            fileName = window.showModalDialog(
+               "../comm/site_file_tree.html?v=" + new Date(),
+                  window,
+                "scroll:no;status:no;center:yes;resizable:no;dialogWidth:400px;dialogHeight:450px;"
+            );
+
+            if (!fileName) {
+                return null;
+            }
+
+            if (fileName.substr(fileName.length - 5, 5).toLowerCase() != ".html"
+                     && fileName.substr(fileName.length - 4, 4).toLowerCase() != ".htm")
+                fileName += ".html";
+
+            if (fileExists(fileName)) {
+                if (!confirm(fileName + "文件已经存在，是否覆盖现有的文件?"))
+                    return null;
+            }
+
+            return fileName;
+        }
+
+        function fileExists(fileName) {
+            //FileExists(string fileVirPath)
+            var req = new JoapRequest("SiteAdmin", "", "FileExists");
+            req.addParamate("fileVirPath", fileName);
+            return req.invoke();
+        }
+
+        function checkScript() {
+            //var eScripts = mainFrame.document.getElementsByTagName("script");
+            var doc = getFrameDoc();
+            var eScripts = doc.getElementsByTagName("script");
+            for (var i = 0; i < eScripts.length; i++) {
+                var eScript = eScripts[i];
+                if (WBPS_SCRIPT_ID.toUpperCase() == eScript.id.toUpperCase()) {
+                    eScript.src = WBPS_SCRIPT_SRC;
+                    return true;
+                }
+            }
+
+            return false
+        }
+
+        function getFrameDoc() {
+            var doc = null;
+            try {
+                //ie
+                doc = mainFrame.document;
+            } catch (e) {
+            }
+            //ff,chrome
+            if (!doc || doc == undefined || doc == NaN) {
+                var frame = document.getElementById("mainFrame");
+                doc = frame.contentDocument;
+            }
+
+            return doc;
+        }
+
+        function makeHtmlFile() {
+            var doc = getFrameDoc();
+
+            if (!checkScript()) {
+                //var s = "<script type ='text/javascript'><\/script>";
+                var eScript = doc.createElement("script");
+                eScript.id = WBPS_SCRIPT_ID;
+                eScript.src = WBPS_SCRIPT_SRC;
+                eScript.type = "text/javascript";
+                doc.getElementsByTagName("head")[0].appendChild(eScript);
+            }
+
+            try {
+                doc.body.contentEditable = undefined;
+            } catch (e) {
+                doc.body.removeAttribute('contentEditable');
+            }
+
+            var html = doc.documentElement.outerHTML;
+
+            var xFile = new Object;
+
+
+            xFile.Data = html;
+            xFile.FileName = doc.location.pathname;
+            xFile.Charset = doc.charset;
+            xFile.IsNew = isNewFile(xFile.FileName);
+
+            if (!xFile.Charset)
+                xFile.Charset = doc.characterSet;
+
+            if (!xFile.Charset)
+                xFile.Charset = "";
+
+            return xFile;
+        }
+
+        function saveFileObject(xFile, isUpdateTree) {
+
+            if (!xFile.FileName) {
+                alert("文件名没有指定，不能保存");
+                return;
+            }
+
+            var req = new JoapRequest("SiteAdmin", "", "SaveFile");
+            req.addParamate("file", xFile);
+            var resp = req.invoke();
+
+            if (!resp) return;
+
+            var req = new JoapRequest("SiteAdmin", "", "SaveWbdl");
+            req.addParamate("pageFullName", xFile.FileName);
+            req.addParamate("wbdl", g_Editor.wbdl);
+            req.invoke();
+
+            if (isUpdateTree) {
+                g_Editor.changeUrl(xFile.FileName);
+                //        rightFrame.buildFileTree();
+            }
+
+            alert("文件已经保存");
+
+        }
+
+        function btnSaveAs_onclick() {
+            var xFile = makeHtmlFile();
+            xFile.FileName = selectFile();
+            if (!xFile.FileName) return;
+            saveFileObject(xFile, true);
+        }
+
+        function btnSave_onclick() {
+            if (isNewFile()) {
+                btnSaveAs_onclick();
+                return;
+            }
+            var xFile = makeHtmlFile();
+            saveFileObject(xFile, false);
+        }
+
+        function copySelection() {
+            alert(obj2str(g_Editor.wbdl));
+            alert(parseInt("234xxasdfasdf"));
+        }
+
+        function pasteSelection() {
+
+        }
+
+        function removeBox() {
+
+        }
+
+
+        function newText() {
+            g_Editor.insertInput();
+        };
+
+        function btnInsertTable_onclick() {
+            var ret = showModalDialog("table_property.html?" + new Date(), "", "dialogWidth=400px;dialogHeight=300px; center=yes;help=yes;resizable=no");
+            if (!ret) return;
+            g_Editor.insertTable(ret.col, ret.row);
+        };
+
+        function newSelect() {
+            g_Editor.insertSelect();
+        };
+
+        function newListBox() {
+            g_Editor.insertListBox();
+        };
+
+        function newButton() {
+            g_Editor.insertButton();
+        };
+
+
+        function newRadio() {
+            g_Editor.insertRadio();
+        };
+
+        function insertFile() {
+        };
+
+        function insertTextArea() {
+            g_Editor.insertText();
+        }
+
+        function newCheckbox() {
+            g_Editor.insertCheckBox();
+
+        };
+
+        function newImg() {
+            g_Editor.insertImage();
+
+        };
+
+        function newDiv() {
+            g_Editor.insertDiv();
+        };
+
+
+        function newFieldSet() {
+            g_Editor.insertFieldSet();
+        };
+
+        function newBox() {
+            g_Editor.insertIFrame();
+        };
+
+        function divPreview_onclick() {
+            var url = g_Editor.url;
+
+            if (url.indexOf("?", 0) > 0)
+                url = url + "&version=" + getDate();
+            else
+                url = url + "?version=" + getDate();
+
+            window.open(url);
+
+        }
+
+
+        function getDate() {
+            var date = new Date();
+            return date.toLocaleString() + "_" + date.getMilliseconds();
+        }
+
+        //编辑
+        function editTable(tableName) {
+            var ret = showModalDialog("../xdata_studio/xtable_field_list.htm?" + getDate(), "", "dialogWidth=800px;dialogHeight=600px; center=yes;help=yes;resizable=yes");
+            if (!ret) return;
+            //  g_Editor.insertTable(ret.col, ret.row);
+        }
+
+
+        //导航条隐藏打开
+        function divPropBoxSwitch_onclick() {
+            if (tabOutLookBar.style.display == "none") {
+                tabOutLookBar.style.display = "";
+                tdPageLeft.style.width = "220px";
+                //                divOlSwhich.style.display = "none";
+                tdMainBox.style.paddingLeft = "3px";
+                divPropBoxSwitch.className = "PropBoxSwitchButton";
+
+            }
+            else {
+                tabOutLookBar.style.display = "none";
+                //                divOlSwhich.style.display = "";
+                tdPageLeft.style.width = "0px";
+                tdMainBox.style.paddingLeft = "0px";
+                divPropBoxSwitch.className = "PropBoxSwitchButton Close";
+            }
+        }
+
+        //打开文件
+        function btnOpen_onclick() {
+            var fileName = window.showModalDialog(
+               "../comm/site_file_tree.html?v=" + new Date(),
+                window,
+               "scroll:no;status:no;center:yes;resizable:no;dialogWidth:400px;dialogHeight:450px;");
+
+            if (fileName) {
+                g_Editor.changeUrl(fileName);
+            }
+        }
+        //应用到整列
+        function btnApplayToCol_onclick() {
+            var element = gEventEditor.getActiveElement();
+            if (element.tagName.toUpperCase() != "TD" && element.tagName.toUpperCase() != "LI") {
+                alert("必须是<td>或<li>元素才能应用到整列");
+                return;
+            }
+            if (element.tagName.toUpperCase() == "TD") {
+
+                var tr = element.parentNode;
+                var table = tr.parentNode.parentNode;
+                var r = getRowIndex(table, tr);
+                var c = getColIndex(tr, element);
+                for (var i = r + 1; i < table.rows.length; i++) {
+                    var trItem = table.rows[i];
+                    var td = trItem.cells[c];
+                    td.name = element.name;
+                }
+            }
+
+        }
+
+
+        function btnLayoutInsertImage_onclick() {
+            g_Editor.insertImage();
+        }
+
+        function btnLayoutInsertDiv_onclick() {
+            g_Editor.insertDiv();
+        }
+
+        //插入Iframe
+        function btnLayoutInsertIframe_onclick() {
+            g_Editor.insertIFrame();
+        }
+
+
+
+    </script>
+    <link href="../css/style.css" rel="stylesheet" type="text/css">
+    <link href="css/studio.css" rel="stylesheet" type="text/css">
+</head>
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0">
+    <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0" class="LayoutTable">
+        <tr>
+            <td height="63" valign="top">
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" class="Title">
+                    <tr>
+                        <td width="350" height="60" valign="top">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td>
+                                        <div class="Logo">
+                                            <div class="Left">
+                                                <div class="Right">
+                                                    &nbsp;</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td width="120" valign="top" style="padding-top: 5px">
+                                        <button class="ToolBtn" id="btnNew" onClick="return btnNew_onclick()">
+                                            <img src="../images/fck_strip_r4_c1.gif" width="16" height="16" alt="新建" /></button>
+                                        <button class="ToolBtn" id="btnOpen" style="" onClick="return btnOpen_onclick()"
+                                            title="打开">
+                                            <img src="../images/openfile.gif" width="16" height="16" alt="打开" /></button>
+                                        <button class="ToolBtn" id="btnSave" onClick="btnSave_onclick()">
+                                            <img src="../images/fck_strip_r3_c1.gif" width="16" height="16" alt="保存" /></button>
+                                        <button class="ToolBtn" id="btnSaveAs" onClick="btnSaveAs_onclick()">
+                                            <img src="../images/fck_strip_r2_c1.gif" width="16" height="16" alt="另存为" /></button>
+                                        <button class="ToolBtn" id="btnUpLoad" onClick="return btnUpLoad_onclick()">
+                                            <img src="../images/fck_strip_r1_c1.gif" width="16" height="16" alt="上传" />
+                                        </button>
+                                        <button class="ToolBtn" id="btnCopy">
+                                            <img src="../images/fck_strip_r8_c1.gif" width="16" height="16" alt="复制" /></button>
+                                        <button class="ToolBtn" id="btnCut">
+                                            <img src="../images/fck_strip_r7_c1.gif" width="16" height="16" alt="剪切" />
+                                        </button>
+                                        <button class="ToolBtn" id="btnPaste">
+                                            <img src="../images/fck_strip_r9_c1.gif" width="16" height="16" alt="粘贴" /></button>
+                                        <button class="ToolBtn" id="btnUndo">
+                                            <img src="../images/fck_strip_r14_c1.gif" width="16" height="16" alt="撤消" /></button>
+                                        <button class="ToolBtn" id="btnRedo">
+                                            <img src="../images/fck_strip_r15_c1.gif" width="16" height="16" alt="重复" /></button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td valign="top" class="TitleBg">
+                            <div class="Menu">
+                                <div class="Left">
+                                    <div class="Right">
+                                        <div class="TabHead">
+                                            <div class="Tag Act" id="menuTag1">
+                                                常用
+                                            </div>
+                                            <div class="Tag" id="menuTag2">
+                                                布局
+                                            </div>
+                                            <div class="Tag" id="menuTag3">
+                                                表单
+                                            </div>
+                                            <div class="Tag" id="menuTag4">
+                                                数据
+                                            </div>
+                                            <div class="Tag" id="menuTag5">
+                                                文本
+                                            </div>
+                                            <div class="Tag" id="menuTag6">
+                                                控件
+                                            </div>
+                                        </div>
+                                        <div id="editorTools" class="EditorTools">
+                                            <div class="MenuTabPanel" style="display: block" id="menuTabPanel1">
+                                                <table border="0" cellpadding="0" cellspacing="0" class="ButtonBox">
+                                                    <tr>
+                                                        <td>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                        <td>
+                                                            <button class="MenuBtn" id="btnDelete">
+                                                                <img src="../images/fck_strip_r19_c1.gif" width="16" height="16" alt="删除" /><br />
+                                                                删除</button>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                        <td>
+                                                            <div class="ButtonSplite">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <button class="MenuBtn" id="btnInsertPicture">
+                                                                <img src="../images/fck_strip_r37_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                图片
+                                                            </button>
+                                                        </td>
+                                                        <td>
+                                                            <button class="MenuBtn" id="btnInsertLink" onClick="btnInsertLink_onclick()">
+                                                                <img src="../images/fck_strip_r35_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                链接</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertDiv">
+                                                                <img src="../images/fck_strip_r48_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                层</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertIframe">
+                                                                <img src="../images/fck_strip_r66_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                嵌入网页</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertTable" onClick="btnInsertTable_onclick()">
+                                                                <img src="../images/fck_strip_r39_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                表格</button>
+                                                        </td>
+                                                        <td>
+                                                            <button class="MenuBtn" id="btnInsertFlash">
+                                                                <img src="../images/fck_strip_r38_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                Flash</button>
+                                                        </td>
+                                                        <td>
+                                                            <button class="MenuBtn" id="btnInsertDate">
+                                                                <img src="../images/btn_date.gif" width="14" height="16" alt="新建" /><br />
+                                                                日期</button>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="MenuTabPanel" id="menuTabPanel2">
+                                                <table border="0" cellpadding="0" cellspacing="0" class="ButtonBox">
+                                                    <tr>
+                                                        <td>
+                                                            <button class="MenuBtn" id="btnLayoutInsertImage" onClick="return btnLayoutInsertImage_onclick()">
+                                                                <img src="../images/fck_strip_r37_c1.gif" width="16" height="16" alt="插入图片" /><br />
+                                                                图片
+                                                            </button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnLayoutInsertDiv" onClick="return btnLayoutInsertDiv_onclick()">
+                                                                <img src="../images/fck_strip_r48_c1.gif" width="16" height="16" alt="插入层" /><br />
+                                                                层</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnLayoutInsertIframe" onClick="return btnLayoutInsertIframe_onclick()">
+                                                                <img src="../images/fck_strip_r66_c1.gif" width="16" height="16" alt="插入Iframe" /><br />
+                                                                嵌入网页</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnLayoutInsertTable" onClick="btnInsertTable_onclick()">
+                                                                <img src="../images/fck_strip_r39_c1.gif" width="16" height="16" alt="插入表格" /><br />
+                                                                表格</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnLayoutInsertCol">
+                                                                <img src="../images/fck_strip_r64_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                插入列</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnLayoutInsertRow">
+                                                                <img src="../images/fck_strip_r58_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                插入行</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnLayoutDeleteCol">
+                                                                <img src="../images/fck_strip_r65_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                删除列</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnLayoutDeleteRow">
+                                                                <img src="../images/fck_strip_r63_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                删除行</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnLayoutMerge">
+                                                                <img src="../images/fck_strip_r60_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                合并</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnLayoutSplit">
+                                                                <img src="../images/fck_strip_r61_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                拆分</button>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="MenuTabPanel" id="menuTabPanel3">
+                                                <table border="0" cellpadding="0" cellspacing="0" class="ButtonBox">
+                                                    <tr>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertInput">
+                                                                <img src="../images/fck_strip_r51_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                输入框</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertHidden">
+                                                                <img src="../images/fck_strip_r56_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                隐藏域</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertTextArea">
+                                                                <img src="../images/fck_strip_r52_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                文本区</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertCheckBox">
+                                                                <img src="../images/fck_strip_r49_c1.gif" width="16" height="16" alt="复选框" /><br />
+                                                                复选框</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertRadio">
+                                                                <img src="../images/fck_strip_r50_c1.gif" width="16" height="16" alt="单选框" /><br />
+                                                                单选框</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertDropDown">
+                                                                <img src="../images/fck_strip_r53_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                下拉菜单</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertFile">
+                                                                <img src="../images/fck_strip_r6_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                文件域</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertInputImage">
+                                                                <img src="../images/fck_strip_r55_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                图象域</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertInputButton">
+                                                                <img src="../images/fck_strip_r54_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                按钮</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertLabel">
+                                                                <img src="../images/fck_strip_r46_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                标签</button>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="MenuTabPanel" id="menuTabPanel4">
+                                                <table border="0" cellpadding="0" cellspacing="0" class="ButtonBox">
+                                                    <tr>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnAddWbo" onClick="return btnAddWbo_onclick()">
+                                                                <img src="../images/database_add.gif" width="16" height="16" alt="新建" /><br />
+                                                                添加业务对象</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnWboMain" onClick="return btnWboMain_onclick()">
+                                                                <img src="../images/database_edit.gif" width="16" height="16" alt="新建" /><br />
+                                                                管理数据源</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertFieldInput">
+                                                                <img src="../images/fck_strip_r51_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                字段输入框</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertDataTable">
+                                                                <img src="../images/fck_strip_r39_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                数据列表</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertPagePrior">
+                                                                <img src="../images/fck_strip_r54_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                上一页</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertPageNext">
+                                                                <img src="../images/fck_strip_r54_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                下一页</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertRecPrior">
+                                                                <img src="../images/fck_strip_r54_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                上一条</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertRecNext">
+                                                                <img src="../images/fck_strip_r54_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                下一条</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertSaveData">
+                                                                <img src="../images/fck_strip_r54_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                保存</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertDeleteRec">
+                                                                <img src="../images/fck_strip_r54_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                删除记录</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertNewRec">
+                                                                <img src="../images/fck_strip_r54_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                新增记录</button>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="MenuTabPanel" id="menuTabPanel5">
+                                                <table border="0" cellpadding="0" cellspacing="0" class="ButtonBox">
+                                                    <tr>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnFont">
+                                                                <img src="../images/fck_strip_r45_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                字体</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnFontSize">
+                                                                <img src="../images/fck_strip_r24_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                字号</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnColor">
+                                                                <img src="../images/fck_strip_r46_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                颜色</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnBlod">
+                                                                <img src="../images/fck_strip_r20_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                粗体</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnItalic">
+                                                                <img src="../images/fck_strip_r21_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                斜体</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnUnderLine">
+                                                                <img src="../images/fck_strip_r22_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                下划线</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnStrictOut">
+                                                                <img src="../images/fck_strip_r23_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                删除线</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnIndent">
+                                                                <img src="../images/fck_strip_r29_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                增加缩进</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnOutdent">
+                                                                <img src="../images/fck_strip_r28_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                减少缩进</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnLeftAlign">
+                                                                <img src="../images/fck_strip_r30_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                左对齐</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnCenterAlign">
+                                                                <img src="../images/fck_strip_r31_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                中对齐</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnRightAlign">
+                                                                <img src="../images/fck_strip_r32_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                右对齐</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnJustAlign">
+                                                                <img src="../images/fck_strip_r33_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                两端对齐</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnOrderList">
+                                                                <img src="../images/fck_strip_r26_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                有序列表</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnList">
+                                                                <img src="../images/fck_strip_r27_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                无序列表</button>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button class="MenuBtn" id="btnInsertLine">
+                                                                <img src="../images/fck_strip_r40_c1.gif" width="16" height="16" alt="新建" /><br />
+                                                                插入直线</button>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="MenuTabPanel" id="menuTabPanel6">
+                                                <table border="0" cellpadding="0" cellspacing="0" class="ButtonBox">
+                                                    <tr>
+                                                        <td id="ControlBox" nowrap>
+                                                            <button class="MenuBtn" id="btnFont">
+                                                                <img src="../images/fck_strip_r45_c1.gif" width="16" height="16" alt="控件" /><br />
+                                                                字体</button>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td width="59" valign="top" class="HeadRightIcon">
+                            <a href="../index.html">
+                                <img src="../images/head_r_icon.jpg" alt="首页" width="59" height="60"></a>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td width="220" valign="top" id="tdPageLeft" class="Left">
+                            <table width="100%" border="0" cellpadding="0" cellspacing="0" class="OutLookBar"
+                                id="tabOutLookBar">
+                                <tr>
+                                    <td>
+                                        <div class="OutLookHead">
+                                            <div class="Left">
+                                                <div class="Right" id="LeftAngel">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="OutSplit">
+                                        </div>
+                                        <div class="OutLookTab Act" id="olTabTag1">
+                                            <div class="Left">
+                                                <div class="Right">
+                                                    元素属性</div>
+                                            </div>
+                                        </div>
+                                        <table id="tabElementPropertyList" width="100%" border="0" cellpadding="0" cellspacing="0"
+                                            class="OutLookItemList">
+                                            <tr id="tabElementPropertyList__ItemBody">
+                                                <td id="title" name="title" width="60" nowrap>
+                                                    ID
+                                                </td>
+                                                <td>
+                                                    <input id="value" name="value" type="text" class="Input10" />
+                                                    <input id="name" name="name" type="hidden" style="width: 80px" />
+                                                </td>
+                                                <td width="30">
+                                                    <input type="button" name="button" id="button" value="...">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td nowrap>
+                                                    元素
+                                                </td>
+                                                <td>
+                                                    <input name="textfield2" type="text" class="Input10" id="textfield2">
+                                                </td>
+                                                <td>
+                                                    <input type="button" name="button3" id="button3" value="...">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td nowrap>
+                                                    名称(name)
+                                                </td>
+                                                <td>
+                                                    <input name="textfield3" type="text" class="Input10" id="textfield3">
+                                                </td>
+                                                <td>
+                                                    <input type="button" name="button4" id="button4" value="...">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td nowrap>&nbsp;
+                                                    
+                                                </td>
+                                                <td>&nbsp;
+                                                    
+                                                </td>
+                                                <td>&nbsp;
+                                                    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td nowrap>&nbsp;
+                                                    
+                                                </td>
+                                                <td>&nbsp;
+                                                    
+                                                </td>
+                                                <td>&nbsp;
+                                                    
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div class="OutSplit">
+                                        </div>
+                                        <div class="OutLookTab" id="olTabTag2">
+                                            <div class="Left">
+                                                <div class="Right">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <table id="tabElementDataPropertyForm" width="100%" border="0" cellpadding="0" cellspacing="0"
+                                            class="OutLookItemList">
+                                            <tr>
+                                                <td width="60" nowrap>
+                                                    元素属性
+                                                </td>
+                                                <td>
+                                                    <select id="cmbAttr" name="D1">
+                                                        <option></option>
+                                                    </select>
+                                                </td>
+                                                <td width="30">
+                                                    <input type="button" name="button2" id="button2" value="...">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td nowrap>
+                                                    数据源
+                                                </td>
+                                                <td>
+                                                    <select id="cmbDsId" name="D2">
+                                                        <option></option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="button" name="button5" id="button5" value="...">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td nowrap>
+                                                    数据字段
+                                                </td>
+                                                <td>
+                                                    <select id="cmbField" name="D3">
+                                                        <option></option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="button" name="button6" id="button6" value="...">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3" nowrap>
+                                                    <input id="btnAdvanceBind" type="button" value="高级" onClick="btnAdvanceBind_onclick()" />
+                                                    <input id="btnApplayToCol" type="button" value="捆绑到整列" onClick="return btnApplayToCol_onclick()" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div class="OutSplit">
+                                        </div>
+                                        <div class="OutLookTab" id="olTabTag3">
+                                            <div class="Left">
+                                                <div class="Right">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <table id="tabElementEventForm" width="100%" border="0" cellpadding="0" cellspacing="0"
+                                            class="OutLookItemList">
+                                            <tr>
+                                                <td width="60" nowrap>
+                                                    事件
+                                                </td>
+                                                <td>
+                                                    <select id="elEventName" name="D1">
+                                                        <option></option>
+                                                    </select>
+                                                </td>
+                                                <td width="30">
+                                                    <input type="button" name="button2" id="button2" value="...">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td nowrap>
+                                                    活动
+                                                </td>
+                                                <td>
+                                                    <select id="elActionFlow" name="D2">
+                                                        <option></option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="button" name="button5" id="button5" value="...">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3" nowrap>
+                                                    <input id="btnNewFlow" type="button" value="编辑活动" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="OutLookHead" id="divOlSwhich" style="display: none">
+                                <div class="Left">
+                                    <div class="Right" id="LeftAngel2" onClick="return LeftAngel_onclick()">
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="MainPanel" id="tdMainBox">
+                            <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td height="28" class="TabHead2">
+                                        <div class="PropBoxSwitchButton" id="divPropBoxSwitch" style="" onClick="return divPropBoxSwitch_onclick()">
+                                        </div>
+                                        <div class="SmallImgButton" id="divPreview" style="background: url(../images/fck_strip_r66_c1.gif) no-repeat center;
+                                            cursor: pointer;" title="预览" onClick="return divPreview_onclick()">
+                                        </div>
+                                        <div class="TabTag2 Act" id="editorTag1" style="width: 40px">
+                                            <div class="Left">
+                                                <div class="Right">
+                                                    设计</div>
+                                            </div>
+                                        </div>
+                                        <div class="TabTag2" id="editorTag2" style="width: 40px">
+                                            <div class="Left">
+                                                <div class="Right">
+                                                    代码</div>
+                                            </div>
+                                        </div>
+                                        <div id="editorTag3" style="width: 300px; float: right; padding-top: 4px; color: #FFF;
+                                            padding-right: 10px; height: 24px">
+                                            <select name="dropDocType" id="dropDocType" style="float: right">
+                                                <option>无</option>
+                                                <option value="&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;">
+                                                    Html4.1 Transitional</option>
+                                                <option value="&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01//EN&quot; &quot;http://www.w3.org/TR/html4/strict.dtd&quot;&gt;">
+                                                    Html4.1 Strict</option>
+                                                <option value="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;">
+                                                    XHTML 1.0</option>
+                                                <option value="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;">
+                                                    XHTML 1.0 Strict</option>
+                                                <option value="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.1//EN&quot; &quot;http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd&quot;&gt;">
+                                                    XHTML 1.1</option>
+                                                <option value="&lt;!DOCTYPE html PUBLIC &quot;-//WAPFORUM//DTD XHTML Mobile 1.0//EN&quot; &quot;http://www.wapforum.org/DTD/xhtml-mobile10.dtd&quot;&gt;">
+                                                    XHTML Mobile 1.0</option>
+                                                <option value="&lt;!DOCTYPE HTML&gt;">Html5</option>
+                                            </select>
+                                            <span style="float: right; line-height: 22px;">文档类型&nbsp;</span></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <iframe id="mainFrame" frameborder="0" height="100%" width="100%" style="background-color: #FFF"
+                                            designmode="on" src="about:blank"></iframe>
+                                        <textarea id="txtPageCode" cols="45" rows="5" style="width: 100%; height: 100%; display: none;
+                                            overflow-y: auto; background-color: #CCF; border: none;"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="20" id="editorSelBar" style="background-color: #CCF">&nbsp;
+                                        
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td height="25" class="Foot">
+                <div class="Left">
+                    <div class="Right">
+                        <div class="FootLeftCol">
+                            版权所有：江苏甜蜜窝电子商务有限公司</div>
+                        <div id="curFilePath" class="StatuBarRight">
+                            文件：</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

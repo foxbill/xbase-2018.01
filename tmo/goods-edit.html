@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>附近</title>
+    <meta name="description" content="添加商品">
+    <meta name="keywords" content="添加商品">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script src="xbase.js/jquery-1.9.1.min.js"></script>
+    <script alt="" src="js/tmo.js"></script>
+    <link rel="stylesheet" href="css/tmo.css">
+    <link rel="stylesheet" href="css/shop.css">
+</head>
+<body class="bg3" style="padding: 0px; margin: 0px">
+    <ul class="product-list c4">
+        <li>
+            <img src="images/rybh/1.jpg" />
+        </li>
+        <li lastlistitem onclick="">
+            <img src="images/ui/more.png" />
+        </li>
+    </ul>
+    <form action="goods.post">
+    <div class="panel">
+        <h2>
+            商品</h2>
+        <div>
+            <p>
+                商品名称<input type="text" name="name" value="" /></p>
+            <p>
+                商品介绍<textarea name="summery"></textarea></p>
+            <p>
+                商品类别<input type="text" name="category" /></p>
+        </div>
+        <div>
+            <input type="button" value="确认" />
+        </div>
+    </div>
+    </form>
+</body>
+</html>

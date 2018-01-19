@@ -1,0 +1,200 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <title>数据库管理</title>
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link href="../css/jqtree.css" rel="stylesheet" type="text/css" />
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <link href="css/studio.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/icon.css">
+    <!--    <link rel="stylesheet" type="text/css" href="../../easyui/demo/demo.css">-->
+    <!--<script type="text/javascript" src="../../xbase.js/tab_control.js"></script>-->
+    <script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tree.jquery.js" type="text/javascript"></script>
+    <!--    <script type="text/javascript" src="../../easyui/jquery.min.js"></script>-->
+    <script src="../../xbase.js/tab_control.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.form.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.jsonform.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../../easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../easyui/src/datagrid-scrollview.js"></script>
+    <script type="text/javascript" src="../../easyui/src/datagrid-filter.js"></script>
+    <script type="text/javascript" src="../../xbase.js/easyui.xbase.js"></script>
+    <script type="text/javascript">
+
+
+        var dg;
+        var dsName = $.url.queryString["dsName"];
+
+
+
+        $(function () {
+            // $(dataTable).ah();
+            dg = $("#dataTable");
+            loadData();
+        });
+
+        function loadData() {
+            //            $("#dataTable").html("正在加载控件....");
+            //            $.post("ds.List.wbo?name=" + dsName, null,
+            $.post(dsName + ".grid", null,
+            function (data, status, xhr) {
+
+                if (status == "error") {
+                    alert("Error: " + xhr.status + ": " + xhr.statusText);
+                    return;
+                }
+
+                var obj = JSON.parse(data);
+
+                if (obj.Err) {
+                    alert(obj.Err.Text);
+                    return;
+                }
+
+                //  obj.view = scrollview;
+                //                obj.toolbar = [{
+                //                    iconCls: 'icon-edit',
+                //                    handler: function () { alert('edit') }
+                //                }, '-', {
+                //                    iconCls: 'icon-help',
+                //                    handler: function () { alert('help') }
+                //                }]
+
+                //                obj.onClickRow = function (index, row) {
+                //                       beginEdit(this, index);
+                //                }
+
+                //    obj.onResizeColumn = onResizeColumn;
+
+                // obj.loader = gridLoader;
+
+                obj.url = dsName + ".data";
+
+                dg.datagrid(obj);
+                if (obj.filterInputs && obj.filterInputs.length)
+                    dg.datagrid('enableFilter', obj.filterInputs);
+
+            });
+
+        }
+
+        function onResizeColumn(field, width) {
+            $.rCall("ds." + dsName + ".setFieldWidth.wbo", { field: field, width: width });
+            return width;
+        }
+
+        function doAppend() {
+            dg.datagrid('appendRow', {});
+        }
+
+
+        function doDelete() {
+            dg.datagrid('deleteSel');
+        }
+
+        function doSave() {
+            dg.datagrid('endEdit');
+            var insertRows = dg.datagrid('getChanges', 'inserted');
+            var updateRows = dg.datagrid('getChanges', 'updated');
+            var deleteRows = dg.datagrid('getChanges', 'deleted');
+
+
+            $.rCall(dsName + ".update",
+            {
+                insertRows: insertRows,
+                updateRows: updateRows,
+                deleteRows: deleteRows
+            });
+
+            dg.datagrid('acceptChanges');
+            dg.datagrid('reload');
+            alert("列表已经被保存");
+
+        }
+
+        function doCancel() {
+            dg.datagrid('rejectChanges');
+        }
+
+        function doSearch() {
+            dg.datagrid('doFilter');
+        }
+
+        function saveView() {
+            var cols = [];
+            var fields = dg.datagrid('getColumnFields');
+            for (var i = 0; i < fields.length; i++) {
+                var field = fields[i];
+                var opt = dg.datagrid('getColumnOption', field);
+                var col = {};
+                col.title = opt.title;
+                col.field = opt.field;
+                col.width = opt.width;
+                col.rowspan = opt.rowspan;
+                col.colspan = opt.colspan;
+                col.align = opt.align;
+                col.hidden = opt.hidden;
+                col.editor = opt.editor;
+                col.halign = opt.halign;
+                col.sortable = opt.sortable;
+                col.order = opt.order;
+                col.resizable = opt.resizable;
+                cols.push(col);
+            }
+            $.rCall("ds." + dsName + ".setColumns.wbo", { cols: cols });
+            $.messager.alert('info', '显示风格保存成功');
+            //alert("显示风格保存成功");
+        }
+
+        function doEdit() {
+            var row = dg.datagrid("getSelected");
+            if (!row) {
+                $.messager.alert("编辑记录", "请选择要编辑的记录", "info");
+                return;
+            }
+            var p = { xbase_ds_name: dsName };
+
+            for (var field in row) {
+                if (field.indexOf("pk_") == 0) {
+                    var f = field.substr("pk_".length)
+                    p[f] = row[field];
+                }
+            }
+            var s = $.param(p);
+            location = "form-view.html?" + s;
+        }
+
+        function setEditMode(chk) {
+            dg.datagrid("setEditMode", chk.checked);
+        }
+        
+
+    </script>
+    <script type="text/javascript">
+
+    </script>
+</head>
+<body style="overflow: auto" class="easyui-layout">
+    <div region="center" border="false">
+        <div id="dataTable" name="dataTable" toolbar="#tb" fit="true">
+        </div>
+        <div id="tb" style="padding: 2px; display: none">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="javascript:doAppend()">
+                增加</a> <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="javascript:doEdit()">
+                    编辑</a> <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="javascript:doDelete()">
+                        删除</a><a href="#" class="easyui-linkbutton" iconcls="icon-save" plain="true" onclick="javascript:doSave()">
+                            保存</a> <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="javascript:doCancel()">
+                                放弃</a> <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="javascript:saveView()">
+                                    保存显示</a> <span iconcls="icon-blank" style="border-right: solid #ccc 1px; margin-right: 5px;
+                                        line-height: 30px; height: 0px;">&nbsp</span><span>编辑模式:</span>
+            <input type="checkbox" style="vertical-align: middle" onclick="javascript:setEditMode(this)" />
+        </div>
+    </div>
+</body>
+</html>

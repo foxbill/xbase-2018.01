@@ -1,0 +1,119 @@
+﻿<!--<!DOCTYPE html>-->
+<html>
+<head>
+    <title>数据源管理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=4">-->
+    <link href="../css/jqtree.css" rel="stylesheet" type="text/css" />
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/metro/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/icon.css">
+    <style type="text/css">
+        .pop-box
+        {
+            display: none;
+            background: white;
+            border: solid 1px #6e8bde;
+        }
+        .pop-box h4
+        {
+            color: #FFF;
+            cursor: default;
+            height: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: left;
+            background-color: blue;
+            margin: 0px;
+        }
+    </style>
+    <script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="/easyui/jquery.easyui.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.form.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.jsonform.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var pCurUser;
+        var pCurRole;
+        function loadUsers() {
+            var users = $.rCall("UserAccount.getUsers", { groupId: null });
+            var treeData = [];
+            for (var i = 0; i < users.length; i++) {
+                var user = users[i];
+                treeData.push({ id: user.Id, text: user.DisplayName, user: user });
+            }
+
+            treeData.push({ id: "-1", text: "添加用户...", iconCls: "icon-add", user: null });
+
+            $(elUserTree).tree({
+                data: treeData,
+                onClick: function (node) {
+                    pCurUser = node.user;
+                    $("#ifrContent").loadIframe("user.html?" + $.param({ name: node.id }));
+                }
+            });
+        }
+
+        function selectUser(id) {
+            var node = $(elUserTree).tree("find", id);
+            $(elUserTree).tree("select", node.target);
+            $(node.target).click();
+        }
+
+        function selectRole(id) {
+            var node = $(elRoleTree).tree("find", id);
+            $(elRoleTree).tree("select", node.target);
+            $(node.target).click();
+        }
+
+        function loadRoles() {
+            var roles = $.rCall("RoleManager.getRoles");
+            var treeData = [];
+            for (var i = 0; i < roles.length; i++) {
+                var role = roles[i];
+                treeData.push({ id: role.Id, text: role.DisplayName, role: role });
+            }
+            treeData.push({ id: "-1", text: "添加角色...", iconCls: "icon-add", role: null });
+
+            $(elRoleTree).tree({
+                data: treeData,
+                onClick: function (node) {
+                    pCurRole = node.role;
+                    $("#ifrContent").loadIframe("role.html?" + $.param({ name: node.id }));
+                }
+            });
+
+        }
+
+        $(function () {
+            loadUsers();
+            loadRoles();
+        });   
+
+    </script>
+</head>
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" style="overflow-y: hidden;
+    margin: 0px">
+    <div id="elPage" class="easyui-layout" fit="true" style="height: 100%; width: 100%">
+        <div data-options="region:'west',split:true" title="用户和角色" style="width: 200px;">
+            <div id="aa" class="easyui-accordion" style="width: 300px; height: 200px;" data-options="fit:true,border:false">
+                <div title="用户管理" data-options="iconCls:'icon-save'" style="overflow: auto; padding: 3px;">
+                    <div id="elUserTree" fit="true">
+                    </div>
+                </div>
+                <div title="角色管理" data-options="iconCls:'icon-reload',selected:true" style="padding: 10px;">
+                    <div id="elRoleTree" fit="true">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-options="region:'center'" style="border: none; overflow: hidden">
+            <iframe id="ifrContent" src="user.html" name="Content" scrolling="no" class="autosize border0">
+            </iframe>
+        </div>
+    </div>
+</body>
+</html>

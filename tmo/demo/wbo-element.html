@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.jsonform.js"></script>
+     <style>
+        #demo span { color:blue;}
+    </style>
+</head>
+<body>
+    <div class="demo-info">
+        <div class="demo-tip icon-tip"></div>
+        <div>数据库--表记录元素捆绑范例</div>
+    </div>
+
+   <div id="demo" wbo="shop_goods.row" name="aaa1" wbo-params="{ pk:{ name: 'xxx1'} }">
+        <!-- 
+       wbo="数据表名.方法名"
+       name="对象别名（可任意取名）"
+       wbo-params=json格式的参数表 "{ paramName1:paramValue1,paramName2:paramValue2 }"
+    -->
+        <p>
+            商品名称:<span name="aaa1.name"></span>
+        </p>
+        <p>
+            店铺ID:<span name="aaa1.shop_id"></span>
+        </p>
+        <p>
+            类别Id：<span name="aaa1.category"></span>
+        </p>
+    </div>
+
+</body>
+</html>

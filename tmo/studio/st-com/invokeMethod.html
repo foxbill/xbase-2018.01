@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>测试方法</title>
+<script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="../../xbase.js/jquery.cookie.js" type="text/javascript"></script>
+<script src="../../xbase.js/tree.jquery.js" type="text/javascript"></script>
+<script src="../../xbase.js/json.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        //onload = initilize();
+
+        var invokeData;
+        var filedlist = null;
+
+        function initilize() {
+           // filedlist = new ListTable(document.getElementById("paramlist"));
+            invokeData = window.dialogArguments;
+            update(invokeData.funcentity);
+        }
+        function update(func) {
+            var fname = document.getElementById("funcname");
+            fname.innerHTML = func.MethodName;
+            var tab = document.getElementById("tb");
+            tab.innerHTML = "";
+            for (var i in func.ParamDefs) {
+                var row = document.createElement("tr");
+                var cell1 = document.createElement("td");
+                var param = func.ParamDefs[i];
+                var paraName = param.ParamName;
+                var paraType = param.DataType.substring(0, param.DataType.indexOf(','));
+                var paradesc = paraType + ':' + paraName;
+                cell1.innerHTML = '<input size=30 name="name" disabled="disabled" value="' + paradesc + '"/>';
+                row.appendChild(cell1);
+                var cell2 = document.createElement("td");
+                cell2.innerHTML = '<input type=text size=25 name="value" />';
+                row.appendChild(cell2);
+                tab.appendChild(row);
+            }
+        }
+        function beginInvoke() {
+            var paramString = "";
+            var tab = document.getElementById("tb");
+            var rowCount = tab.childNodes.length;
+            for (i = 0; i < rowCount; i++ ) {
+                if (paramString.length > 0) paramString += '\&';
+                var paradesc = document.getElementsByName("name")[i].value;
+   
+                var paraName = paradesc.substring(paradesc.indexOf(':')+1, paradesc.length);
+                var value = document.getElementsByName("value")[i].value;
+                paramString += paraName + '=' + value;
+            }
+
+            var cn = invokeData.classname.substring(invokeData.classname.indexOf('.')+1, invokeData.classname.length);alert(paramString);
+            $.post('http://localhost:49716/' + cn + '.' + invokeData.funcentity.MethodName+'.wbo?'+ paramString, "", function (json) {
+                
+                    var e = document.getElementById("result");
+                    e.value = json;
+            });
+        } 
+    </script>
+</head>
+
+<body onload="initilize()" style="padding: 0px; margin: 0px">
+    <div id="funcname">fun</div>
+     <table width="100%" id="paramlist" cellspacing="0" cellpadding="0" border="1px #6e6e6e solid;" style="border-collapse: collapse;">
+        
+            <tr bgcolor="#A4BDA2" align="center">
+                <td>参数 </td>
+                <td>值</td>
+            </tr>
+        <tbody id="tb">
+        </tbody>
+    </table>
+    <div>
+        <input type="button" value="调用" onclick="beginInvoke()"/>
+    </div>
+
+    <div>
+        <input type="text" id="result" disabled="disabled"/>
+    </div>
+</body>
+</html>

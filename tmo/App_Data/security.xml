@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SecuritySettingSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Id>15bb9024-a1de-410e-ac90-4f65d6b12bd4</Id>
+  <AdministratorObjects>
+    <string>/studio</string>
+    <string>DataExplore</string>
+  </AdministratorObjects>
+  <LoginPageUrl>/studio/login.html</LoginPageUrl>
+  <ConnectionName />
+</SecuritySettingSchema>

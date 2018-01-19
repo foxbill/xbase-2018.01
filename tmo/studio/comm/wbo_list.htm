@@ -1,0 +1,336 @@
+﻿<html>
+<head>
+    <title>用户管理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="../css/platform.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript" src="../../xbase.js/utils/net_util.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/system/system.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/system/wjs.js"></script>
+
+    <script type="text/jscript" src="../../xbase.js/controls/xlistview.js"></script>
+
+    <script type="text/jscript" src="../../xbase.js/controls/tab_control.js"></script>
+
+    <script type="text/javascript">
+
+        var gObjectTypeList;
+        var gObjectList;
+        var gTabPage;
+        window.returnValue = null;
+
+        window.onload = function() {
+            gObjectTypeList = new ListView(elObjectTypeList, elObjectTypeItem);
+            gObjectTypeList.activeItemCss = "OutLookItem activeItem";
+            gObjectTypeList.onRowClick = showObjectList;
+            getObjectTypeList();
+
+            gObjectList = new ListView(elObjectList, elObjectItem, elObjectListHead);
+            gObjectList.clear();
+
+
+            gObjectTypeList.setActiveIndex(0);
+
+        }
+
+        function getObjectTypeList() {
+
+            var req = new JoapRequest("WboAdmin", "", "GetObjectTypes");
+
+            var typeList = req.invoke();
+
+
+            gObjectTypeList.clear();
+
+            if (!typeList) return;
+
+            for (var i = 0; i < typeList.length; i++) {
+                var item = typeList[i];
+                var listItem = gObjectTypeList.addItem();
+                listItem.data = item;
+                if (!item.Title)
+                    item.Title = item.Id;
+                gObjectTypeList.setItemValue(listItem, "ObjectTypeTitle", item.Title);
+                gObjectTypeList.setItemValue(listItem, "ObjectTypeId", item.Id);
+                //                gUserList.setItemValue(listItem, "Memo", user.Memo);
+            }
+        }
+
+
+
+        function showObjectList(sender) {
+
+            var typeId = sender.data.Id;
+
+            var req = new JoapRequest("WboAdmin", "", "GetObjectList");
+            req.addParamate("objectType", typeId);
+
+            var objList = req.invoke();
+
+
+            gObjectList.clear();
+            if (!objList) return;
+
+            for (var i = 0; i < objList.length; i++) {
+                var item = objList[i];
+                var listItem = gObjectList.addItem();
+                listItem.data = item;
+                if (!item.Title)
+                    item.Title = item.Id;
+
+                gObjectList.setItemValue(listItem, "ObjectId", item.Id);
+                gObjectList.setItemValue(listItem, "ObjectTitle", item.Title);
+                gObjectList.setItemValue(listItem, "ObjectDescription", item.Description);
+                //                gUserList.setItemValue(listItem, "Memo", user.Memo);
+            }
+
+        }
+
+        function onOk() {
+            var ret = new Object();
+            ret.objType = gObjectTypeList.getValue("ObjectTypeId");
+            ret.objList = [];
+
+            var listItems = gObjectList.items;
+
+            for (var i = 0; i < listItems.length; i++) {
+                var listItem = listItems[i];
+                var sel = gObjectList.getItemValue(listItem, "ObjectSel");
+                if (sel) {
+                    var obj = new Object();
+                    obj.objId = gObjectList.getItemValue(listItem, "ObjectId");
+                    ret.objList.push(obj);
+                }
+                
+            }
+            
+            window.returnValue = ret;
+            close();
+       
+        }
+        function onCancel() {
+            window.returnValue = null;
+            close();
+        }
+
+    </script>
+
+</head>
+<body>
+    <table border="0" cellpadding="0" cellspacing="0" class="TableContent">
+        <tr valign="top">
+            <td nowrap="nowrap" class="TdLeft">
+                <div class="DivOutLookButton">
+                    <div class="DivMenuButtonLeft">
+                        <div class="DivMenuButtonRight">
+                            <p>
+                                对象类型</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="DivOutLookPanel">
+                    <div class="OutlookButtonBox" id="elObjectTypeList">
+                        <div class="OutLookItem" id="elObjectTypeItem">
+                            <img src="../images/users.jpg" alt="" width="22" height="22" align="middle"><span
+                                name="ObjectTypeTitle">办公室</span>
+                            <input type="hidden" name="ObjectTypeId" />
+                        </div>
+                        <div class="OutLookItem activeItem" >
+                            <img src="../images/users.jpg" alt="" width="22" height="22" align="middle"><span
+                                name="ObjectTypeTitle">办公室</span>
+                            <input type="hidden" name="ObjectTypeId" />
+                        </div>
+                    </div>
+                    <div class="OutLookControl">
+                    </div>
+                </div>
+            </td>
+            <td nowrap="nowrap" class="TdRight">
+                <div class="RndBox">
+                    <div class="RndTopLeft">
+                        <div class="RndTopRight">
+                            <div class="RndTopMid">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="RndContent">
+                        <div class="RndBoxTitle">
+                            <img src="../images/main_page_tag.jpg" alt="数据模块" width="52" height="30" align="absmiddle" />&nbsp;对象选择</div>
+                        <div style="height: 25px">
+                            <table width="330" border="0" cellpadding="0" cellspacing="0" class="TableButtonForm">
+                                <tr align="center" valign="middle">
+                                    <td width="110" height="30" align="left">
+                                        <span class="BottomBox">
+                                            <input type="button" name="newTable" id="newTable" value="确定" onclick="onOk()" />
+                                        </span>
+                                    </td>
+                                    <td width="110" height="30" align="left">
+                                        <span class="BottomBox">
+                                            <input type="button" name="newTable2" id="newTable2" value="取消" onclick="onCancel()" />
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="RndBtmLeft">
+                        <div class="RndBtmRight">
+                            <div class="RndBtmMid">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 5px; overflow: hidden;">
+                </div>
+                <div class="TabHead01">
+                    <div class="TabTag" id="divTagUserInfo">
+                        <div class="TitleLeft">
+                            <div class="TitleRight">
+                                <p>
+                                    可选对象</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="TabPageContainer">
+                    <div class="TabPage ActivePage" id="divPageUserList">
+                        <table class="ListTable" id="elObjectList" width="100%" border="0" cellspacing="0"
+                            cellpadding="0">
+                            <tr class="ListHead" id="elObjectListHead">
+                                <td name="ObjectSel" style="width: 27px">
+                                    选择
+                                </td>
+                                <td name="ObjectId">
+                                    对象Id
+                                </td>
+                                <td name="ObjectTitle">
+                                    显示名称
+                                </td>
+                                <td name="ObjectDescription">
+                                    对象用途
+                                </td>
+                            </tr>
+                            <tr id="elObjectItem">
+                                <td style="width: 27px">
+                                    <input type="checkbox" name="ObjectSel" />
+                                </td>
+                                <td name="ObjectId">&nbsp;
+                                    
+                                </td>
+                                <td name="ObjectTitle">&nbsp;
+                                    
+                                </td>
+                                <td name="ObjectDescription">
+                                </td>
+                            </tr>
+                            <tr class="activeItem">
+                                <td style="width: 27px">
+                                    <input type="checkbox" name="ObjectSel0" />
+                                </td>
+                                <td name="ObjectId">&nbsp;
+                                    
+                                </td>
+                                <td name="ObjectTitle">&nbsp;
+                                    
+                                </td>
+                                <td name="ObjectDescription">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="TabPage" id="divPageUserInfo">
+                        <table class="TableForm" width="500" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td width="80" nowrap>
+                                    用户名
+                                </td>
+                                <td width="110">
+                                    <input type="text" name="elUserName" id="elUserId" />
+                                    <input type="hidden" name="elOldUserId" id="elOldUserId" />
+                                </td>
+                                <td width="80" nowrap>
+                                    显示名称
+                                </td>
+                                <td width="110">
+                                    <input type="text" name="elUserName2" id="elDisplayName">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td nowrap>
+                                    口令
+                                </td>
+                                <td width="110">
+                                    <input type="password" name="elPassword" id="elPassword">
+                                </td>
+                                <td nowrap>
+                                    激活
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="elActive" id="elActive">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td nowrap>
+                                    口令确认
+                                </td>
+                                <td width="110">
+                                    <input type="password" name="elRePassword" id="elRePassword">
+                                </td>
+                                <td nowrap>
+                                    失效
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="elDisable" id="elDisable">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td nowrap>
+                                    电子邮件
+                                </td>
+                                <td width="110">
+                                    <input type="text" name="elEmail" id="elEmail">
+                                </td>
+                                <td nowrap>
+                                    电话
+                                </td>
+                                <td>
+                                    <input type="text" name="elMobile" id="elMobile">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="top" nowrap>
+                                    角色
+                                </td>
+                                <td colspan="3" rowspan="2" valign="top">
+                                    <textarea name="elMemo" id="elMemo"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="top" nowrap>&nbsp;
+                                    
+                                </td>
+                            </tr>
+                            <tr>
+                                <td nowrap>&nbsp;
+                                    
+                                </td>
+                                <td width="110">&nbsp;
+                                    
+                                </td>
+                                <td nowrap>&nbsp;
+                                    
+                                </td>
+                                <td>&nbsp;
+                                    
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

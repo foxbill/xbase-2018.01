@@ -1,0 +1,46 @@
+﻿body{font:12px/24px Tahoma, Geneva, sans-serif; color:#6e6e6e;  background:#485f7e url(../images/bg.jpg) no-repeat center 40px;}
+a{ color:#000;}
+a:hover{ color:#485f7e}
+
+
+#header{ height:49px; background:url(../images/login/topbg.png) repeat-x;}
+	#logo{ display:block; width:273px; height:27px; float:left; margin:6px 0 0 20px;}
+	#header span{ display:block; width:200px; float:right; text-align:center; margin:7px 0 0 0; color:#c8c8c8;}
+	#header span a{ padding:5px;}
+.content{
+	position:relative;
+	width:800px;
+	height:500px;
+	margin:20px auto;
+	background:url(../images/login/bg.jpg) no-repeat 50px 150px;
+}
+	#login-pannel{ position:absolute; top:100px; right:0; z-index:10; width:290px; height:324px; background:url(../images/login/shadow.jpg) no-repeat center bottom;}
+		#login{ padding:60px 20px 20px; background:#fff url(../images/login/loginbg.png) no-repeat 20px 20px;  border-radius:5px;}
+		#login li{ height:40px; _height:36px; font-size:14px; font-family:Tahoma, Geneva, sans-serif;}
+			#login label{ display:block; width:60px; float:left; color:#000;}
+			#login .inputs{ width:190px; float:left; position:relative;}
+			#login .itxt,#login .ipass{ font-weight:bold;}
+			#login .itxt,#login .ipass,#login .gotos,#login .iverification{ height:26px; line-height:26px; width:183px; padding-left:5px;font-size:14px; color:#485f7e; border:1px solid #c8c8c8; background:url(../images/login/input-bg.png) repeat-x}
+		#login .gotos{ position:relative; cursor:pointer;}
+			#login .gotos ul{ display:none; width:188px; position:absolute; top:-1px; left:-1px; z-index:1000; text-indent:5px; background:#fff url(../images/login/input-bg.png) repeat-x; border:1px solid #c8c8c8}
+			#login .gotos ul li{ height:30px; line-height:30px; cursor:pointer;}
+			#login .gotos li.hovers{ background:#eee;}
+			#login .gotos .choose-content{background:url(../images/login/aro.png) no-repeat 165px 10px;}
+		#login .gotos .current{ display:block !important;}
+		#login .iverification{ width:80px; vertical-align:middle;}
+		#login img{ vertical-align:middle}
+		#login .infos{ height:34px; font-size:12px; color:#000;}
+			#login .infos input{ vertical-align:middle;}
+			#login .infos a{ margin-left:20px; color:#485f7e}
+			#login .infos a:hover{ text-decoration:underline;}
+		#login .iver{ height:36px;}
+.formSub{ position:relative;}
+.loginbtn,.regbtn{ display:block; position:absolute; top:0; width:85px; height:32px; margin-right:10px; border:0; cursor:pointer; text-indent:-9999px; background:url(../images/login/subbtn.png) no-repeat;}
+.loginbtn{ background-position:0 0; left:0;}
+.loginbtnHover{background-position:0 -33px;}
+.regbtn{background-position:-86px 0; left:100px;}
+.regbtnHover{ background-position:-86px -33px;}
+		
+#footer{ color:#b4bbc6; text-align:center;}
+	#footer a{ margin:0 5px; text-decoration:underline; color:#b4bbc6;}
+	#footer a:hover{ color:#fff;}

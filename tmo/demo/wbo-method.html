@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript">
+
+        function btnTest_onclick() {
+            var ret = $.rCall("ClassEcho.echo", { name: "bill" });
+             $(div1).html(ret);
+        }
+    </script>
+</head>
+<body>
+    <div class="demo-info">
+        <div class="demo-tip icon-tip"></div>
+        <div>Js调用后台组件 ClassEcho.echo(name)方法。</div>
+    </div>
+
+    <input id="btnTest" type="button" value="调用ClassEcho.echo(name)" onclick="return btnTest_onclick()" /><br />
+    <p> 返回结果：</p>
+    <div id="div1"></div>
+</body>
+</html>

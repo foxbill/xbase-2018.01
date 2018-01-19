@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BCB9C322-E1C4-4A5E-BC7C-4312E9FE8F40}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>xbase.weixin</RootNamespace>
+    <AssemblyName>xbase.weixin</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Senparc.Weixin, Version=4.5.1.36506, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Senparc.Weixin.dll</HintPath>
+    </Reference>
+    <Reference Include="Senparc.Weixin.MP, Version=13.4.4.36507, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Senparc.Weixin.MP.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="ThoughtWorks.QRCode">
+      <HintPath>..\lib\ThoughtWorks.QRCode.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ContractTest.cs" />
+    <Compile Include="contract\OrderNotify.cs" />
+    <Compile Include="contract\OrderReq.cs" />
+    <Compile Include="contract\OrderResp.cs" />
+    <Compile Include="contract\PnUser.cs" />
+    <Compile Include="contract\TradeType.cs" />
+    <Compile Include="contract\WxBaseMsg.cs" />
+    <Compile Include="contract\WxBaseReq.cs" />
+    <Compile Include="contract\WxBaseResp.cs" />
+    <Compile Include="contract\WxReturnCode.cs" />
+    <Compile Include="contract\XmlUtil.cs" />
+    <Compile Include="EventService.cs" />
+    <Compile Include="LocationService.cs" />
+    <Compile Include="MD5Utils.cs" />
+    <Compile Include="messagehandler\CustomMessageContext.cs" />
+    <Compile Include="messagehandler\CustomMessageHandler.cs" />
+    <Compile Include="messagehandler\CustomMessageHandler_Events.cs" />
+    <Compile Include="OpenTicketHelper.cs" />
+    <Compile Include="pay\OrderNotifyPool.cs" />
+    <Compile Include="pay\WxPay.cs" />
+    <Compile Include="pay\PayUtil.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="users\UserContext.cs" />
+    <Compile Include="users\UserInfo.cs" />
+    <Compile Include="utilities\Server.cs" />
+    <Compile Include="MpMenuManage.cs" />
+    <Compile Include="WeiXinUtils.cs" />
+    <Compile Include="WxApi.cs" />
+    <Compile Include="WxApiUrl.cs" />
+    <Compile Include="WxConfigFile.cs" />
+    <Compile Include="WxEventCfg.cs" />
+    <Compile Include="XmlConvert.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="contract\uniorder-req.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\xbase\xbase.csproj">
+      <Project>{70854294-306b-493d-9264-87699d33a18b}</Project>
+      <Name>xbase</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,47 @@
+﻿[{
+	"id":1,
+	"text":"组件调用",
+	"children":[{
+		"id":11,
+		"demoUrl":"wbo.html",
+		"docUrl":"",
+		"text":"返回对象"
+    },{
+		"id":12,
+		"demoUrl":"wbo-prop.html",
+		"text":"组件属性访问"
+	},{
+		"id":13,
+		"demoUrl":"wbo-method.html",
+		"text":"调用方法"
+	},{
+		"id":14,
+		"demoUrl":"wbo-man.html",
+		"text":"对象实例管理"
+	}]
+},
+{
+	"id":1,
+  	"text":"数据库操作",
+	"children":[{
+		"id":11,
+		"demoUrl":"data-rec.html",
+		"text":"单行记录访问"
+    },{
+		"id":12,
+		"demoUrl":"data-list.html",
+		"text":"多行记录访问"
+	},{
+		"id":13,
+		"demoUrl":"data-page.html",
+		"text":"分页及翻页"
+	},{
+		"id":14,
+		"demoUrl":"data-add.html",
+		"text":"添加数据"
+	},{
+		"id":15,
+		"demoUrl":"data-adds.html",
+		"text":"批量添加数据"
+	}]
+}]

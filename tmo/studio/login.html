@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>首页</title>
+    <link href="style/r.css" rel="stylesheet" type="text/css" />
+    <link href="style/login.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/easyui/themes/default/easyui.css" />
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/c.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script type="text/javascript">
+        function login() {
+            var ret = $.rCall("Security.login", {
+                userId: elUser.value,
+                password: elPassword.value
+            });
+            if (ret && !ret.Err) {
+                $.messager.alert("用户登录", "登录成功", "info", function () {
+                    var url = $.rCall("Security.CheckingUrl")
+                    if (url)
+                        location = url;
+                });
+            }
+        }
+    </script>
+    <!--[if IE 6]>
+<script src="js/DD_belatedPNG.js" type="text/javascript"></script>
+<script type="text/javascript">DD_belatedPNG.fix('*');</script>
+<![endif]-->
+</head>
+<body>
+    <div class="c" id="header">
+        <a href="#" id="logo">
+            <img src="images/logob.png" /></a> <span><a href="#">注册</a> | <a href="#">帮助</a> | <a
+                href="#">建议反馈</a></span>
+    </div>
+    <div class="content">
+        <div id="login-pannel">
+            <ul id="login">
+                <li class="c">
+                    <label>
+                        用户名</label>
+                    <div class="inputs">
+                        <input type="text" class="itxt" id="elUser" />
+                    </div>
+                </li>
+                <li class="c">
+                    <label>
+                        密 码</label>
+                    <div class="inputs">
+                        <input type="password" class="ipass" id="elPassword" />
+                    </div>
+                </li>
+                <li class="c" style="position: relative; z-index: 100;">
+                    <label>
+                        登录到</label>
+                    <div class="inputs">
+                        <div class="gotos">
+                            <div class="choose-content">
+                                人事管理</div>
+                            <ul>
+                                <li>人事管理</li>
+                                <li>财务管理</li>
+                                <li>保险管理</li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li class="c iver">
+                    <label>
+                        验证码</label>
+                    <div class="inputs">
+                        <input type="text" class="iverification" />
+                        <img src="images/login/vdimgck.jpg" />
+                    </div>
+                </li>
+                <li class="c infos">
+                    <label>
+                        &nbsp;</label>
+                    <div class="inputs">
+                        <input type="checkbox" />
+                        保持登录 <a href="#">忘记密码?</a></div>
+                </li>
+                <li class="c">
+                    <label>
+                        &nbsp;</label>
+                    <div class="inputs formSub">
+                        <input type="submit" value="登 录" class="loginbtn" onclick="login()" /><input type="button"
+                            value="注 册" class="regbtn" />
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="r" id="footer">
+        Copyright © 2012 <a href="#">www.tianmiwo.com</a> 版权所有</div>
+</body>
+</html>

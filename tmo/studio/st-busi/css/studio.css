@@ -1,0 +1,20 @@
+﻿@charset "utf-8";
+.Menu .EditorTools {
+	height: 36px;
+}
+.PropBoxSwitchButton {
+	background-image: url(../../images/ar_left.gif);
+	background-repeat: no-repeat;
+	background-position: center;
+	float: left;
+	width: 30px;
+	cursor: pointer;
+}
+.PropBoxSwitchButton.Close {
+	background-image: url(../../images/arr_right.gif);
+	background-repeat: no-repeat;
+	background-position: center;
+	float: left;
+	width: 30px;
+	cursor: pointer;
+}

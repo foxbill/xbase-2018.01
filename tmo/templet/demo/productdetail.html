@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0 minimal-ui"/>
+	<link rel="stylesheet" href="boostrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="styles/style.css">
+	<link rel="stylesheet" href="styles/shopping.css">
+	<script src="scripts/jquery.min.2.1.js"></script>
+	<script src="boostrap/js/bootstrap.min.js"></script>
+	<script src="../../xbase.js/jquery.xbase.js"></script>
+	<script src="../../xbase.js/jquery.xbase.form.js"></script>
+	<script src="../../xbase.js/jquery.xbase.jsonform.js"></script>
+	<script src="scripts/main.js"></script>
+	<script src="scripts/shopping.js"></script>
+	<script src="scripts/geturlagurment.js"></script>
+	<script src="scripts/jk.date.js"></script>
+	<title>详情</title>
+	<style>
+		.comment-header{
+			border-radius: 100%;
+			height: 48px;
+			width:48px;
+		}
+		.comment-date{
+			font-size: 1.0rem;
+			color: gray;
+		}
+		.collect{
+			color:#FF7F24;
+		}
+		
+	</style>
+
+	<script>
+	var prodid;
+	$(function  () {
+		prodid=$.getUrlVar("prodid");
+		//alert(prodid);
+		initShoppingCart();
+
+		if(prodid!=undefined)
+          {
+	          	//productInfo.ctrl.reload({page: 1, rows: 1,filterRules:[{field:'productId',op:'equal',value:prodid }] });
+	          //	
+
+	          	productInfo.ctrl.load("dspt_product.data?productId="+prodid,{
+				page: 1,
+				rows: 1
+				});
+				commentinfo.ctrl.load("dspt_productComment.data?productId="+prodid,
+				{page: 1, rows:10}
+				);
+
+				prodOperates.ctrl.load("dspt_productOperate.data?productId="+prodid,
+				{page: 1, rows:1}
+				);
+          	}
+          	else
+          	{
+          		window.location.href="product.html";
+          	}
+
+          	var prodCollectId=$(".prodCollectId").val();
+          	if(prodCollectId!=undefined&&prodCollectId!="0")
+			{
+				$(".my-like").toggleClass("collect");
+			}
+
+	})
+
+
+	</script>
+</head>
+<body>
+		<div class="header">
+		<div class="navbar navbar-default"  >
+			<div class="container" >
+				<div class="navbody" >
+				<div class="navbar-header"  wbo="pt_company.data"  id="indextitle" name="indextitle" wbo-params="{ page:1,rows:1}">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<div name="titleRows" wbo-bind="indextitle.rows">
+						<div  name="titleRows.item" style="line-height: 50px;" class="clearfix ">
+							 <img src="" alt="" name="titleRows.Logo" class="nav-titlelogo" onerror="this.style.display='none'" >	
+							<a class="navbar-brand hidden-xs"  href="index.html" name="titleRows.HomeUrl"  wbo-attr="{'innerHTML':'Title'}">								
+							</a>		
+						</div>						
+					</div>
+					
+				</div>
+				<div>
+				<div class="navbar-collapse collapse navbar-responsive-collapse" wbo="pt_navbar.data"  id="indexnav" name="indexnav" wbo-params="{ page:1,rows:100}">
+					<ul class="nav navbar-nav" name="navRows" wbo-bind="indexnav.rows">
+						<li name="navRows.item" ><a href="index.html" name="navRows.Url" wbo-attr="{'innerHTML':'Name'}">首页</a></li>
+					</ul>
+					
+					<ul class="nav navbar-nav navbar-right">
+						<form class="navbar-form navbar-left hidden-xs">
+						<input type="text" class="form-control col-lg-8" placeholder="Search">
+					</form>
+					</ul>
+				</div><!-- /.nav-collapse -->
+			</div><!-- /.container -->
+			</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="middle nav-top">
+		<div class="container">
+			
+		<div class="view" wbo="dspt_product.data" name="productInfo" id="productInfo"  wbo-params="{ page:1,rows:1,filterRules: [{}]}" >
+		<div class="row" name="productInfoRows" wbo-bind="productInfo.rows">
+			<div name="productInfoRows.item">
+			<div class="col-md-4">
+				<div class="thumbnail"> 
+				<img src="images/allcar_01.jpg"  alt="" width="100%" name="productInfoRows.Picture">
+			</div>
+			</div>
+			<div class="col-md-6" >
+				<div class="view " id="productheader">
+					<input type="hidden" name="productInfoRows.ID" id="productId" >
+					<h3  name="productInfoRows.Name" id="product-title">IS250</h3>
+					<p><span>价格：</span>￥<span id="product-price" name="productInfoRows.CostPrice">360052</span></p>
+					<p><span>车型：</span><span  name="productInfoRows.Model">SUV</span></p>
+					<p><span>品牌：</span><span  name="productInfoRows.Brand">丰田</span></p>
+					<p><span>系列：</span><span  name="productInfoRows.Series">雷凌</span></p>
+					<p><span>数量：</span> <input type="number" name="points" class="product-num" value="1" min="1" max="10" /></p>
+					<p>
+						<a role="button" class="btn btn-primary" href="order.html">立刻购买</a>
+						<a role="button" href="javascript:;" class="btn btn-info addshopcart" onclick="AddShoppingCart()">加入购物车</a>					
+					</p>
+					<p class="hidden-xs">
+						<span class="glyphicon glyphicon-comment"> 4</span>
+						<span class="glyphicon glyphicon-heart"> 0</span>
+					</p>
+				</div>
+			</div>
+		</div>
+		</div>
+		</div>
+		<div class="view hidden" wbo="dspt_productOperate.data" name="prodOperates" id="prodOperates" wbo-params="{ page:1,rows:1,filterRules: [{}]}">
+			<div name="prodOperateRows" wbo-bind="prodOperates.rows">
+			<ul name="prodOperateRows.item">
+				<li><input type="hidden" name="prodOperateRows.goodCount" value="0"></li>
+				<li><input type="hidden" name="prodOperateRows.viewCount" value="0"></li>
+				<li><input type="hidden" name="prodOperateRows.collectCount" value="0"></li>
+				<li><input type="hidden" name="prodOperateRows.isCollect" class="prodCollectId" value="0"></li>
+			</ul>
+			</div>		
+			
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+		<ul id="detailTab" class="nav nav-tabs">
+   <li class="active">
+      <a href="#home" data-toggle="tab">
+         详细
+      </a>
+   </li>
+  
+   <li class="dropdown hidden">
+      <a href="#" id="myTabDrop1" class="dropdown-toggle" 
+         data-toggle="dropdown">配置 
+         <b class="caret"></b>
+      </a>
+      <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+         <li><a href="#jmeter" tabindex="-1" data-toggle="tab">技术参数</a></li>
+         <li><a href="#ejb" tabindex="-1" data-toggle="tab">外观配置</a></li>
+          <li><a href="#ejb1" tabindex="-1" data-toggle="tab">内饰配置</a></li>
+           <li><a href="#ejb2" tabindex="-1" data-toggle="tab">安全性能</a></li>
+            <li><a href="#ejb3" tabindex="-1" data-toggle="tab">舒适装备</a></li>
+      </ul>
+   </li>
+    <li><a href="#commentinfo" data-toggle="tab">评价</a></li>
+</ul>
+<div id="detailTabContent" class="tab-content">
+   <div class="tab-pane fade in active" id="home">
+      <p>W3Cschoool菜鸟教程是一个提供最新的web技术站点，本站免费提供了建站相关的技术文档，帮助广大web技术爱好者快速入门并建立自己的网站。菜鸟先飞早入行——学的不仅是技术，更是梦想。</p>
+   </div>
+   <div class="tab-pane fade" id="commentinfo" wbo="dspt_productComment.data" name="commentinfo">
+   	<div class="view" style="padding:10px;" name="commentinfoRows" wbo-bind="commentinfo.rows">
+      <div class="media" name="commentinfoRows.item">
+   <a class="pull-left" href="#">
+      <img class="media-object comment-header" src="images/default-header.png" 
+      alt="媒体对象" name="commentinfoRows.headimgurl" onerror="this.src='images/default-header.png'" >
+   </a>
+   <div class="media-body">
+      <h4 class="media-heading" name="commentinfoRows.Name">匿名</h4>
+      <span class="comment-date" name="commentinfoRows.CommentTime">5分钟前</span>
+      <p name="commentinfoRows.Summary">
+      这是一些示例文本。这是一些示例文本。 
+      这是一些示例文本。这是一些示例文本。
+	  这是一些示例文本。这是一些示例文本
+	</p>		
+   </div>
+</div>
+</div>
+   </div>
+   <div class="tab-pane fade" id="jmeter">
+      <p>jMeter 是一款开源的测试软件。它是 100% 纯 Java 应用程序，用于负载和性能测试。</p>
+   </div>
+   <div class="tab-pane fade" id="ejb">
+      <p>Enterprise Java Beans（EJB）是一个创建高度可扩展性和强大企业级应用程序的开发架构，部署在兼容应用程序服务器（比如 JBOSS、Web Logic 等）的 J2EE 上。
+      </p>
+   </div>
+</div></div>
+		</div>
+	</div>
+		</div>
+
+	
+
+	<div class="footer">
+		 <label class="suspend-btn visible-xs my-like"  style="left:auto;right:70px; padding-top:2px" title="收藏" for="tm">
+		<span class="glyphicon glyphicon-heart"></span>
+	</label>
+
+	<label class="suspend-btn shppping-cart sc-cart"    for="tm" title="购物车">
+		<span class="glyphicon glyphicon-shopping-cart"></span>	
+		<span class="product_add">0</span>	
+	</label>
+
+	<div class="shopping-cart-content" wbo="dspt_shoppingCart.data" id="shoppingcart" name="shoppingcart" wbo-params="{ page:1,rows:20,filterRules: [{ }]}">
+		<label class="suspend-btn shppping-cart1 sc-cart visible-xs"     title="购物车">
+		<span class="glyphicon glyphicon-shopping-cart"></span>	
+		<span class="product_add">0</span>	
+		</label>
+		<label for="" class="clearCart">
+			<span class="glyphicon glyphicon-trash"></span>
+			清空购物车
+		</label>
+		<ul class="list-group shopping-list" name="shoppingcartRows" wbo-bind="shoppingcart.rows" >
+			<li class="list-group-item  shopping-item-hidden hidden" data-prod-id="0" >
+			<input type="hidden"  class="data-prod-id">
+			<span class="prod-title" >IS250</span>
+			<div class="operater-num pull-right">
+			<button type="button" class="btn btn-default btn-xs minus-prod" role="button">-</button>
+			<input type="text" class="prod-num text-center" style="width:50px;" value="1" >
+			<button type="button" class="btn btn-default btn-xs add-prod" role="button">+</button>
+			</div>
+			<span class="prod-price pull-right" >5</span>
+			<span class="pull-right">￥</span>
+			</li>
+
+			<li class="list-group-item  shopping-item" data-prod-id="0" name="shoppingcartRows.item">
+			<input type="hidden" name="shoppingcartRows.ProductId" class="data-prod-id">
+			<span class="prod-title" name="shoppingcartRows.Name">IS250</span>
+			<div class="operater-num pull-right">
+			<button type="button" class="btn btn-default btn-xs minus-prod" role="button">-</button>
+			<input type="text" class="prod-num text-center" style="width:50px;" value="1" name="shoppingcartRows.sCount">
+			<button type="button" class="btn btn-default btn-xs add-prod" role="button">+</button>
+			</div>
+			<span class="prod-price pull-right"  name="shoppingcartRows.Total">5</span>
+			<span class="pull-right">￥</span>
+			</li>
+		</ul>
+		<p>￥<span class="total-price">0</span>
+			<a role="button" class="btn btn-info pull-right" href="order.html">购买</a></p>
+	</div>
+
+	 <label class="suspend-btn bg-mask" >
+	 </label>
+
+	<label for="" class="suspend-btn visible-xs backPrev" onclick="window.history.back(-1);" title="返回">
+		<span class="glyphicon glyphicon-chevron-left"></span>
+	</label>
+	</div>
+</body>
+</html>

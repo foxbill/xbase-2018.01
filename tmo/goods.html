@@ -1,0 +1,154 @@
+<!doctype html>
+<html manifest="index.appcache">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>添加商品-(v1.1)</title>
+    <meta name="description" content="添加商品">
+    <meta name="keywords" content="添加商品">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/easyui/themes/icon.css">
+    <link rel="stylesheet" href="css/tmo.css">
+    <link rel="stylesheet" href="css/shop.css">
+    <script type="text/javascript" src="/xbase.js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/js/tmo.js"></script>
+    <script type="text/javascript">
+
+        //     var gCurFileInput = null; ;
+        $(function () {
+            //window.gImages = $(eImages).jsonList(eImages);
+            $("input[type='text']").keydown(function (e) {
+                if (e.keyCode == 13) {
+                    e.keyCode = 9;
+                    return false;
+                }
+            });
+            //       gCurFileInput = document.getElementById("picture");
+            //       setCurFileInput();
+        });
+
+        function submit_goods() {
+            $.messager.progress();
+            $("#frmGoods").form("submit", {
+                url: "shop_goods.form",
+                onSubmit: function (param) {
+                    return true;
+                },
+                success: function (data) {
+                    $.messager.progress('close'); // hide progress bar while submit successfully  
+                    try {
+                        var data = eval('(' + data + ')');
+                    } catch (e) {
+                    }
+                    if (data && data.Err)
+                        $.messager.alert("保存商品", data.Err.Text, "error");
+                    else if (data)
+                        $.messager.alert("保存商品", data, "error");
+                    else {
+                        $.messager.alert("保存商品", "商品已被保存", "info");
+                    }
+                }
+            });
+        }
+
+
+        function showImage(url) {
+            var newItem = $(lastImage).clone();
+            newItem.attr("id", "");
+            newItem.find("img").attr("src", url);
+            $(lastImage).before(newItem);
+        }
+
+        function showImages(fileInput, urlCreater) {
+            for (var i = 0; i < fileInput.files.length; i++) {
+                var url = urlCreater.createObjectURL(fileInput.files[i]);
+                showImage(url);
+            }
+        }
+
+        function getFileUrl(fileInput) {
+
+            if (!fileInput.files.length)
+                return;
+
+            if (window.webkitURL) {
+                showImages(fileInput, window.webkitURL);
+            }
+            else if (window.FileReader) {
+                for (var i = 0; i < fileInput.files.length; i++) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        if (!e.target.result)
+                            return;
+                        showImage(e.target.result);
+                    }
+                    reader.readAsDataURL(fileInput.files[i]);
+                }
+            } else if (window.URL) {
+                showImages(fileInput, window.URL);
+            } else
+                $.messager.alert("请使用火狐、谷歌、或 IE10以上浏览器");
+
+        }
+
+
+
+        function addImage() {
+            var input = document.createElement("input");
+            elFileBox.appendChild(input);
+            $(input).attr("type", "file");
+            $(input).attr("multiple", "true");
+            $(input).attr("name", "picture");
+            $(input).change(function () {
+                getFileUrl(input)
+            });
+            $(input).click();
+        }
+
+        function formOnKeydown() {
+            var e = arguments[0] || window.event;
+            if (e.keyCode == 13) {
+                e.keyCode = 9;
+                return false;
+            }
+        }
+
+    </script>
+</head>
+<body class="bg3" style="padding: 0px; margin: 0px">
+    <ul class="product-list " avgchild="6" id="eImages">
+        <li id="lastImage" lastlistitem onclick="addImage()">
+            <img src="images/ui/more.png" />
+        </li>
+    </ul>
+    <form id="frmGoods" method="post" enctype="multipart/form-data" onkeydown="formOnKeydown();">
+    <div class="panel">
+        <h2>
+            商品</h2>
+        <div>
+            <p>
+                商品名称<input type="text" name="name" value="" /></p>
+            <p>
+                商品介绍<textarea name="summary"></textarea></p>
+            <p>
+                商品类别<select name="category">
+                    <option value="2">日杂品</option>
+                    <option value="1">日用品</option>
+                    <option value="2">服装</option>
+                    <option value="2">家具</option>
+                </select></p>
+        </div>
+        <div>
+            <input type="button" value="保存" onclick="submit_goods()" />
+        </div>
+    </div>
+    <div id="elFileBox" style="border: none; overflow: hidden; height: 0px">
+    </div>
+    </form>
+</body>
+</html>

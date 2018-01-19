@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0 minimal-ui"/>
+	<link rel="stylesheet" href="boostrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="styles/style.css">
+	<script src="scripts/jquery.min.2.1.js"></script>
+	<script src="boostrap/js/bootstrap.min.js"></script>
+	<script src="../../xbase.js/jquery.xbase.form.js"></script>
+	<script src="../../xbase.js/jquery.xbase.js"></script>
+	<script src="../../xbase.js/jquery.xbase.jsonform.js"></script>
+	<title>主页</title>
+	<style>
+
+	</style>
+
+	<script>
+	$(function  () {
+		// body...
+		$(".carousel-inner .item").each(function  (index,element) {
+			if(index==0)
+			{
+				$(this).addClass("active");
+
+			}else
+			{
+				var t=$(".carousel-point:last").clone().attr("data-slide-to",index).removeClass("active");
+				 $(".carousel-indicators").append(t);
+			//	 alert(index);
+			}
+		});
+	})
+	</script>
+</head>
+<body>
+	<div class="header">
+		<div class="navbar navbar-default"  >
+			<div class="container" >
+				<div class="navbody" >
+				<div class="navbar-header"  wbo="pt_company.data"  id="indextitle" name="indextitle" wbo-params="{ page:1,rows:1}">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<div name="titleRows" wbo-bind="indextitle.rows">
+						<div  name="titleRows.item" style="line-height: 50px;" class="clearfix ">
+							 <img src="" alt="" name="titleRows.Logo" class="nav-titlelogo" onerror="this.style.display='none'" >	
+							<a class="navbar-brand hidden-xs"  href="index.html" name="titleRows.HomeUrl"  wbo-attr="{'innerHTML':'Title'}">								
+							</a>		
+						</div>						
+					</div>
+					
+				</div>
+				<div>
+				<div class="navbar-collapse collapse navbar-responsive-collapse" wbo="pt_navbar.data"  id="indexnav" name="indexnav" wbo-params="{ page:1,rows:100}">
+					<ul class="nav navbar-nav" name="navRows" wbo-bind="indexnav.rows">
+						<li name="navRows.item" ><a href="index.html" name="navRows.Url" wbo-attr="{'innerHTML':'Name'}">首页</a></li>
+					</ul>
+					
+					<ul class="nav navbar-nav navbar-right">
+						<form class="navbar-form navbar-left hidden-xs">
+						<input type="text" class="form-control col-lg-8" placeholder="Search">
+					</form>
+					</ul>
+				</div><!-- /.nav-collapse -->
+			</div><!-- /.container -->
+			</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="search visible-xs">
+		<div class="container ">
+			<form class="navbar-form navbar-left">
+				<input type="text" class="form-control col-lg-8" placeholder="Search">
+			</form>
+		</div>
+	</div>
+	<div class="banner">
+		<div class="container">
+			<div class="view">
+				<div class="carousel slide" id="carousel-banner" wbo="pt_article.data"  id="bannerArt" name="bannerArt" wbo-params="{ page:1,rows:20,filterRules: [{ field: 'Type', op: 'equal', value: 2 }]}">
+					<ol class="carousel-indicators">
+						<li class="carousel-point active" data-slide-to="0" data-target="#carousel-banner"></li>
+					</ol>
+					<div class="carousel-inner" name="bannerRows" wbo-bind="bannerArt.rows" >
+						<div class="item" name="bannerRows.item"> 
+							<a href="" name="bannerRows.Url">
+							<img alt="" src="images/1.jpg" name="bannerRows.CoverPicture">
+							<div class="carousel-caption hidden-xs" contenteditable="true">
+								<h4 name="bannerRows.Title">棒球</h4>
+								<p name="bannerRows.Summary">棒球运动是一种以棒打球为主要特点，集体性、对抗性很强的球类运动项目，在美国、日本尤为盛行。</p>
+							</div>
+							</a>
+						</div>
+					</div>
+					<a data-slide="prev" href="#carousel-banner" class="left carousel-control" >‹</a> <a data-slide="next" href="#carousel-banner" class="right carousel-control" >›</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="middle">
+		<div class="container">
+			<div class="view" wbo="pt_article.data"  id="jumbotronArt" name="jumbotronArt" wbo-params="{ page:1,rows:1,filterRules: [{ field: 'Type', op: 'equal', value: 8 }]}">
+				<div name="jumbotronRows" wbo-bind="jumbotronArt.rows">
+				<div class="jumbotron"  name="jumbotronRows.item" >
+					<h2 name="jumbotronRows.Title">Hello, world!</h2>
+					<p name="jumbotronRows.Summary">This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+					<p><a class="btn btn-primary btn-large" name="jumbotronRows.Url">Learn more</a></p>
+				</div>
+				</div>
+			</div>
+
+			<div class="view"  wbo="pt_article.data"  id="viewArt" name="viewArt" wbo-params="{ page:1,rows:20 ,filterRules: [{}]}">
+				<div class="row" name="viewRows" wbo-bind="viewArt.rows">
+					<div class="col-md-4 column ui-sortable" style="" name="viewRows.item">			
+						<div class="box box-element">
+
+							<div class="view">
+								<h2 name="viewRows.Title">Heading</h2>
+								<p name="viewRows.Summary" style="height:100px;overflow:hidden;">Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>
+								<p><a class="btn" href="#" name="viewRows.Url" >View details »</a></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	<div class="footer"></div>
+	
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript">
+
+        //后台数据库访问 form
+        function btnTest_onclick() {
+            var id = $("[name='id']").val();
+            var name = $("[name='name']").val();
+            var summary = $("[naem='summary']").val();
+            var category = $("[name='category']").val();
+            var price = $("[name='price']").val();
+            var pic = $("[name='picture']").val() == "" ? " " : $("[name='picture']").val();
+            var res = $.rCall("ds.demo_goods.insert", { row: { id: id, name: name, summary: summary, category: category, price: price, picture: pic } });
+
+
+        }
+        function save() {
+            $("#ff").form('submit', {
+                url: "demo_goods.form",
+                success: function (ret) {
+                    alert(ret)
+                    if (ret && ret.Err)
+                        $.messager.alert("保存记录", ret.Err.Text);
+                    else
+                        $.messager.alert("保存记录", "保存成功");
+                }
+            });
+        }
+
+
+
+    </script>
+    <style type="text/css">
+        #table1 {
+            height: 33px;
+            width: 636px;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-info">
+        <div class="demo-tip icon-tip"></div>
+        <div>Js跟表单提交数据</div>
+    </div>
+    <form id="ff" method="post" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <td>商品Id</td>
+                <td>
+                    
+                    <input name="id" type="text"  value="" /></td>
+            </tr>
+            <tr>
+                <td>商品名</td>
+                <td>
+                    <input name="name" type="text" value="" /></td>
+            </tr>
+            <tr>
+                <td>概要</td>
+                <td>
+                    <input name="summary" type="text" /></td>
+            </tr>
+            <tr>
+                <td>分类</td>
+                <td>
+                    <input name="category" type="text" /></td>
+            </tr>
+            <tr>
+                <td>价格</td>
+                <td>
+                    <input name="price" type="text" /></td>
+            </tr>
+            <tr>
+                <td>图片</td>
+                <td>
+                    <input type="file" name="picture" />
+            </tr>
+        </table>
+         <input type="button" value="表单提交" onclick="save()" />
+    </form>
+    <input id="btnTest" type="button" value="js提交" onclick="return btnTest_onclick()" /><br /><!--js提交并没有处理图片上传,如果要用到图片上传，请用表单提交-->
+</body>
+</html>

@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <base target="_self" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!--<meta http-equiv="pragram" content="no-cache">-->
+    <!--<meta http-equiv="cache-control" content="no-cache, must-revalidate">-->
+    <title>添加数据源</title>
+    <style type="text/css">
+        body
+        {
+            font-size: 12px;
+        }
+    </style>
+    <link type="text/css" href="../../xbase.js/controls/tree/css/dtree.css" rel="stylesheet" />
+    <script type="text/javascript" src="../../xbase.js/controls/tree/tree.js"></script>
+    <script type="text/javascript" src="../../xbase.js/utils/net_util.js"></script>
+    <script type="text/javascript" src="wjs.xjs"></script>
+    <script type="text/javascript">
+
+        var pWind = window.dialogArguments;
+
+
+        window.returnValue = false;
+
+
+        FileTree.constructor = FileTree;
+        FileTree.prototype = new Tree();
+        FileTree.prototype.superMethod = function (methodName, args) { return Tree.prototype[methodName].call(this, args); };
+
+
+        function FileTree(objName) {
+            var _this = this;
+            Tree.call(this, objName);
+
+            var req = new JoapRequest("SiteAdmin", "", "GetSiteFileTree");
+            req.addParamate("path", "");
+            req.addParamate("fileExt", "*.html|*.htm");
+            var nodeData = req.invoke();
+            //qryTree = new Tree('qryTree');
+            var topNode = this.newNode(null, nodeData.Name, nodeData);
+
+            buildNode(topNode, nodeData);
+
+            function buildNode(upNode, upNodeData) {
+                if (!upNodeData.Nodes || upNodeData.Nodes.length < 1)
+                    return;
+
+                var childNodeDatas = upNodeData.Nodes;
+
+                for (var i = 0; i < childNodeDatas.length; i++) {
+                    var childNodeData = childNodeDatas[i];
+
+                    var childTreeNode = _this.newNode(upNode, childNodeData.Name, childNodeData);
+
+                    if (childNodeData.Attributes.NodeType == "dir") {
+                        childTreeNode.icon = _this.icon.folder;
+                        childTreeNode.iconOpen = _this.icon.folderOpen;
+                    }
+                    else {
+                        childTreeNode.icon = _this.icon.node;
+                        childTreeNode.iconOpen = _this.icon.node;
+                    }
+
+                    buildNode(childTreeNode, childNodeData);
+                }
+            }
+
+            this.getPath = function () {
+                var path = "";
+
+                if (this.activeNode) {
+                    path = this.activeNode.data.ID;
+                    if (this.activeNode.data.Attributes.NodeType == "file")
+                        path = path.substring(0, path.lastIndexOf("/"));
+                }
+
+                //                path= path.replace(/\\/g, "/");
+
+                //                if (path.substr(0, 1) != "/")
+                //                    path = "/" + path;
+
+                path += "/";
+                return path;
+            }
+        }
+
+        var tree = new FileTree("tree");
+
+        tree.NodeClick = function (node) {
+            if (node.data.Attributes.NodeType == "file")
+                inputFileName.value = node.name;
+            else
+                inputFileName.value = "";
+
+            spanPath.innerHTML = tree.getPath();
+        }
+
+        window.onload = function () {
+            dbExploreDiv.innerHTML = tree.toString();
+          //  inputFileName.value = "/";
+        }
+
+        function btnOk_onclick() {
+
+
+            if (!inputFileName.value) {
+                alert("请在目录中选择一个文件,或输入文件名");
+                return;
+            }
+
+            if (pWind.isNewFile(inputFileName.value)) {
+                alert("文件名无效");
+                return;
+            }
+            
+            var path = tree.getPath();
+            if (!path) path = "//";
+
+            window.returnValue = path + inputFileName.value;
+            window.close();
+        }
+
+        function btnCancel_onclick() {
+            window.returnValue = "";
+            window.close();
+        }
+
+    
+    </script>
+</head>
+<body style="overflow: hidden; text-align: center; background-color: #CCCCFF;">
+    <div style="margin: 0px auto 0px auto; width: 400px; overflow: hidden; text-align: left">
+        <div id="dbExploreDiv" style="width: 400px; height: 350px; overflow: auto; background-color: #FFFFFF;
+            border: solid 1px #333;">
+        </div>
+        <div style="width: 400px; border: solid 0px red; background-color: #CCCCFF;">
+            <div style="height: 30px; line-height: 30px">
+                目录路径:<span id="spanPath"></span>
+            </div>
+            <div style="">
+                文件名称:<input type="text" id="inputFileName" style="width: 300px" />
+            </div>
+            <div style="margin: 3px 0px 0px 5px">
+                <input type="button" id="btnOk" value="确定" onclick="return btnOk_onclick()" />&nbsp;
+                <input type="button" id="btnCancel" value="取消" onclick="return btnCancel_onclick()" />&nbsp;
+            </div>
+        </div>
+    </div>
+</body>
+</html>

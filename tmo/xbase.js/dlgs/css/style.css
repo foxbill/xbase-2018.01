@@ -1,0 +1,82 @@
+@charset "utf-8";
+body,td,th {
+	font-size: 12px;
+	color: #666;
+}
+
+body {
+	background-color: #FFF;
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+a {
+	font-size: 12px;
+	color: #666;
+}
+a:link {
+	text-decoration: none;
+}
+a:visited {
+	text-decoration: none;
+	color: #666;
+}
+a:hover {
+	text-decoration: none;
+	color: #666;
+}
+a:active {
+	text-decoration: none;
+	color: #666;
+}
+div {
+	overflow:hidden;
+}
+.MainPageTitleBox {
+	height: 27px;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #938E3B;
+	vertical-align: middle;
+	line-height: 27px;
+}
+.MainPageTitleBox img {
+	vertical-align: middle;
+}
+.BottomBox input {
+	background-image: url(../images/button.png);
+	height: 25px;
+	width: 81px;
+	color: #FFF;
+	border: none;
+}
+.PageFoot {
+	background-color: #080C1A;
+	height: 30px;
+	margin-top: 5px;
+	margin-right: 5px;
+	background-image: url(../images/statue_l.jpg);
+	background-repeat: no-repeat;
+	background-position: left;
+}
+.PageFoot .PageFootRight {
+	background-image: url(../images/statue_r.jpg);
+	background-repeat: no-repeat;
+	background-position: right;
+	height: 30px;
+	padding-left: 5px;
+	line-height: 30px;
+}
+
+div {
+    SCROLLBAR-FACE-COLOR: #080C1A; 
+    SCROLLBAR-HIGHLIGHT-COLOR: #090B14; 
+    SCROLLBAR-SHADOW-COLOR: #030611; 
+    SCROLLBAR-3DLIGHT-COLOR: #43538D; 
+    SCROLLBAR-ARROW-COLOR: #56628D; 
+    SCROLLBAR-TRACK-COLOR: #262508; 
+    SCROLLBAR-DARKSHADOW-COLOR: #1D1C0C; 
+    SCROLLBAR-BASE-COLOR: #191803; 
+
+}

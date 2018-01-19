@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9F45AF8F-985F-4F30-9311-E1EBD9B60907}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>xbase.math</RootNamespace>
+    <AssemblyName>xbase.math</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Expression.cs" />
+    <Compile Include="EExpressException.cs" />
+    <Compile Include="ExpNode.cs" />
+    <Compile Include="ExpNodeType.cs" />
+    <Compile Include="FunctionFactory.cs" />
+    <Compile Include="FunctionParser.cs" />
+    <Compile Include="InfixExp.cs" />
+    <Compile Include="OperatorFactory.cs" />
+    <Compile Include="OperatorRegList.cs" />
+    <Compile Include="Operators\Addition.cs" />
+    <Compile Include="Operators\And.cs" />
+    <Compile Include="Operators\Division.cs" />
+    <Compile Include="Operators\EOperatorException.cs" />
+    <Compile Include="Operators\EqualTo.cs" />
+    <Compile Include="Operators\GE.cs" />
+    <Compile Include="Operators\GreaterThan.cs" />
+    <Compile Include="Operators\IOperator.cs" />
+    <Compile Include="Operators\LE.cs" />
+    <Compile Include="Operators\LessThan.cs" />
+    <Compile Include="Operators\Multiplication.cs" />
+    <Compile Include="Operators\NotEqualTo.cs" />
+    <Compile Include="Operators\Operations.cs" />
+    <Compile Include="Operators\Or.cs" />
+    <Compile Include="Operators\Subtraction.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\xbase\xbase.csproj">
+      <Project>{70854294-306B-493D-9264-87699D33A18B}</Project>
+      <Name>xbase</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

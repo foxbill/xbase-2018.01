@@ -1,0 +1,77 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <title>数据库管理</title>
+    <!--<script type="text/javascript" src="../js/tab_control.js"></script>-->
+    <script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../js/tree.jquery.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tab_control.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.form.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.jsonform.js" type="text/javascript"></script>
+
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link href="../css/jqtree.css" rel="stylesheet" type="text/css" />
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <link href="css/studio.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+
+        $(function () {
+            loadData();
+        });
+
+        function loadData() {
+            var dsName = $.url.queryString["dsName"];
+            $("#dataTable").html("正在加载控件....");
+            $("#dataTable").load("VDataTable.disp?" + $.param({ name: dsName })
+            , { elementName: "dataTable" }
+            , function (data, status, xhr) {
+                if (status == "error") {
+                    alert("Error: " + xhr.status + ": " + xhr.statusText);
+                    return;
+                }
+                memTest.value = data;
+            });
+        }
+    </script>
+    <script type="text/javascript">
+
+    </script>
+    <link href="SpryAssets/SpryValidationCheckbox.css" rel="stylesheet" type="text/css">
+</head>
+<body style="overflow: auto" class="bg-white  pd3">
+    <table id="divDs" name="Ds" width="100%" height="100%" border="0">
+        <tr>
+            <td height="25">
+                <p>
+                    <input id="btnSaveTable" class="form-btn" type="button" value="保存" onclick="return btnSaveTable_onclick()" />
+                    <input id="btnAddField" class="form-btn" type="button" value="新增" onclick="return btnAddField_onclick()" />
+                    <input class="form-btn" id="btnOpenDs" type="button" value="删除" onclick="return btnOpenDs()" />
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td height="20">
+                <dl class="tabpage" style="margin-bottom: 0px">
+                    <dt class="fn-clear"><a href="#" id="tagField" class="act">表名</a>
+                        <div class="control">
+                            收缩</div>
+                    </dt>
+                </dl>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="pgField" style="display: block; border: none; overflow: auto">
+                    <div id="dataTable" name="dataTable">
+                        ...</div>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <textarea id="memTest" style="height:100%; width:100%">ddddd</textarea>
+</body>
+</html>

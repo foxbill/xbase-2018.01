@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0 minimal-ui" />
+    <link rel="stylesheet" href="../../boostrap/css/bootstrap.min.css">
+    <script src="../../xbase.js/jquery-1.9.1.min.js"></script>
+    <link href="../../temp/demo/styles/advert.css" rel="stylesheet" />
+    <link href="../../temp/demo/styles/style.css" rel="stylesheet" />
+    <script src="../../boostrap/js/bootstrap.min.js"></script>
+    <script src="../../temp/demo/scripts/jquery.touchSwipe.min.js"></script>
+    <script src="../../xbase.js/jquery.xbase.form.js"></script>
+    <script src="../../xbase.js/jquery.xbase.js"></script>
+    <script src="../../xbase.js/jquery.xbase.jsonform.js"></script>
+    <script src="../../easyui/jquery.easyui.min.js"></script>
+    <script src="../../temp/demo/scripts/advert.js"></script>
+    <script src="scripts/jk.uploadimg.js"></script>
+    <title>品牌故事</title>
+    <style>
+		
+</style>
+    <script>
+	
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="col-md-2 col-xs-2" >
+            <div wbo="dspt_advert.data" name="advertlist" id="advertlist" wbo-params="{ page:1,rows:20}" style="height: 950px; overflow: auto;">
+                <div name="advert" wbo-bind="advertlist.rows">
+                    <div class="col-sm-12">
+                        <div>
+                            <div class="thumbnail addAdvert">
+                                <img src="images/addpicture.png" alt="文案" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12" name="advert.item">
+                        <div>
+                            <div class="thumbnail">
+                                <div class=" hidden-xs" style="position: absolute">
+                                    <button type="button" onclick="removeAdvert(this)" class="btn btn-default btn-xs" style="color: red">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </div>
+                                <img name="advert.Img" ondrop="drop(event)" onclick="edit(this)" ondragover="allowDrop(event)" alt="文案" draggable="true" ondragstart="drag(event)">
+                                <input type="hidden" name="advert.Style" />
+                                <input type="hidden" name="advert.Background" />
+                                <input type="hidden" name="advert.pk_ID" />
+                                <input type="hidden" name="advert.ID" class="advertId" />
+                                <input type="hidden" name="advert.DefaultSort" />
+                                <input type="hidden" name="advert.Body" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div  class="col-sm-12" >
+                <button type="button"class="save btn btn-primary">
+                   保存
+                </button>
+            </div>
+
+            <h2 id="text"></h2>
+        </div>
+        <div class="col-md-10 col-xs-10 ">
+            <div class="adv-content container" wbo="dspt_advert.data" name="advertinfo" id="advertinfo" wbo-params="{ page:1,rows:20}">
+                <div class="row">
+                    <div class="col-md-12" style="overflow: hidden" name="advertRows" wbo-bind="advertinfo.rows">
+                        <section class="page advertItem word-wrap  cur" name="advertRows.item">
+                            <div class="hidden">
+                                <input type="hidden" name="advertRows.ID" class="advertId" />
+                            </div>
+                            <div name="advertRows.Url" class="page-body" wbo-attr="{'style':'Style','innerHTML':'Body'}">
+                            </div>
+                        </section>
+
+                    </div>
+                </div>
+                <div class="editBtn hidden" style="float: right">
+                    <button type="button" onclick="edit(this)" class="btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <img class="xiangxiatishi" src="images/prompt.png" />
+
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">编辑类型
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="editForm" method="post" role="form" enctype="multipart/form-data">
+                        <!--<div class="form-group field">
+                            <label for="prodname" class="col-sm-3 control-label label-title ">排序：</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="DefaultSort" placeholder="名称" />
+                            </div>
+                        </div>-->
+                        <!--<div class="form-group field">
+                            <label for="prodname" class="col-sm-3 control-label label-title ">样式：</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="Style" placeholder="样式" />
+                            </div>
+                        </div>-->
+
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-3 control-label label-title ">背景：</label>
+                            <div class="col-sm-8">
+                                <div id="backImg">
+                                    <img id="imgbackground" src="images/addpicture.png" onclick="addImage('#file_Img','#backImg')" onerror="this.src='images/addpicture.png'" style="max-width: 150px; max-height: 150px;" />
+                                </div>
+                                <input type="file" name="file_Img" id="file_Img" style="display: none;" />
+                                <input type="hidden" class="form-control" name="Img" placeholder="背景" />
+                            </div>
+                        </div>
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-3 control-label label-title ">内容：</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="Body" placeholder="内容" />
+                            </div>
+                        </div>
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-3 control-label label-title ">链接：</label>
+                            <div class="col-sm-8">
+                                <input type="url" class="form-control" name="Url" placeholder="外部链接" />
+                            </div>
+                        </div>
+                        <div class="hidden">
+                            <input type="hidden" class="form-control" name="Style" placeholder="样式" />
+                            <input type="hidden" class="form-control" name="Background" placeholder="背景" />
+                            <input type="hidden" class="form-control" name="DefaultSort" placeholder="排序" />
+                            <input type="hidden" name="Name" id="Name">
+                            <input type="hidden" name="Summary" id="Summary">
+                            <input type="hidden" name="CreateTime" id="CreateTime">
+                            <input type="hidden" name="Updater" id="Updater">
+                            <input type="hidden" name="UpdateTime" id="UpdateTime">
+                            <input type="hidden" name="pk_ID" id="pk_ID">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submit btn btn-primary">
+                        保存
+                    </button>                  
+                    <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+    </div>
+
+
+    <script>
+
+        var ds = "pt_advert";
+        var file;
+        var fileName;
+        $(function () {
+            //var obj = $(".editBtn.hidden").clone();
+            //obj.removeClass("hidden");
+            //$(".page-body").append(obj);
+            $("#file_Img").change(function () {
+                file = this;
+                fileName = "/datafiles/" + ds + "/" + $(this).attr("name") + "/";
+                return;
+            });
+            $(".submit").click(function () {
+                var url = "DataForm." + ds + ".post.wbo";
+                if (operate == "add") {
+                    url += "?action=add";
+                    $("#editForm [name='DefaultSort']").val(advertlist.ctrl.data().rows.length + 1);
+                }
+                var style = "";
+                if (file && file.files && file.files[0]) {
+                    style = "background-image: url(" + fileName + file.files[0].name + ");"
+                    $("#editForm [name='Style']").val(style);
+                    $("#editForm [name='Background']").val(style);
+                }
+                $("#editForm").form("submit", {
+                    url: url,
+                    onSubmit: function (param) {
+                        return true;
+                    },
+                    success: function (data) {
+                        if (data && data.Err)
+                            alert(data.Err.Text)
+                        else {
+                            alert("记录已被保存");
+                            refreshData();
+                        }
+                    }
+                })
+                $("#updateModal").modal("hide");
+
+            })
+
+            $(".addAdvert").click(function () {
+                operate = "add";
+                $("#updateModal").modal("show");
+            })
+
+            $(".save").click(function () {
+                if (!isModify) return;
+                var data = executeData();               
+                var result = $.rCall(ds + ".update", { updateRows: data, insertRows: [], deleteRows: [] });
+                if (result == null) {
+                    refreshData();
+                } else
+                    alert($.getJsonStr(result));
+                isModify = false;
+            })
+        })
+
+        var operate = "add";
+
+        function edit(e) {
+            var id = $(e).parents(".thumbnail").find(".advertId").val();
+            var row = $.rCall("pt_advert.row", { pk: { id: id } });
+            var startIndex = row.Style.indexOf("(") + 1;
+            var endIndex = row.Style.indexOf(")");
+            var url = row.Style.substring(startIndex, endIndex);
+            $("#imgbackground").attr("src", url);
+            //$("#imgbackground").attr("src", row.Background);
+            operate = "edit";
+            $("#editForm").form("load", row);
+            $("#updateModal").modal("show");
+        }
+
+        function removeAdvert(e) {
+            if (!confirm("确定要删除该文案吗？")) return;
+            var id = $(e).parents(".thumbnail").find(".advertId").val();
+            var result = $.rCall(ds + ".delete", { row: { pk_ID: id } });
+            if (result == null)
+                refreshData();
+            else
+                alert($.getJsonStr(result));
+
+        }
+
+        function refreshData() {
+            advertlist.ctrl.reload({ page: 1, rows: 100 });
+            advertinfo.ctrl.reload({ page: 1, rows: 100 });
+            initAdvert();
+        }
+
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        var agEv = undefined;
+        function drag(ev) {
+            agEv = ev;         
+            ev.dataTransfer.setData("Text", $(ev.target).parent().html());
+        }
+        var isModify = false;
+        function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("Text");
+            if (agEv == undefined || data == undefined)
+                return;
+            agEv.target.outerHTML = $(ev.target).parent().html();
+            agEv = undefined;
+            $(ev.target).parent().html(data);
+            isModify = true;
+        }
+
+       
+        function executeData() {
+            var data = advertlist.ctrl.data().rows;
+            for (var i = 0; i < data.length; i++) {
+                data[i].DefaultSort = i + 1;
+            }
+            return data;
+        }
+
+
+    </script>
+</body>
+</html>

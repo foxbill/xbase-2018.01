@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script>
+        $(function () {
+            $("#tr").treegrid({
+                url: 'v_sales.rows',//自己创建的视图名字“v_sales” json数据是[{"ck":"false","id":"3","name":"奶酪","sales":"100"}]
+                method: 'get',
+                rownumbers: true,
+                idField: 'id',
+                treeField: 'name',
+                columns: [[
+                        { field: 'name', title: '名称', width: 220, },
+                        { field: 'sales', title: '总销量', width: 100, formatter: showSales },
+                        { field: 'picture', title: '图片', width: 100, formatter: showImg },
+                        { field: 'stock', title: '商品库存', width: 150 }
+                ]],
+                onClickRow: function (row) {
+                    var level = $("#tr").treegrid("getLevel", row.id);//获取当前节点的深度
+                    var children = $("#tr").treegrid("getChildren", row.id);//获取当前节点的子节点
+                    if (level == 1 && children == 0) {
+                        var data = $.rCall("demo_goods.data", { page: 1, rows: 100, filterRules: [{ field: 'category', op: "equal", value: row.id }] });//根据父节点的Id返回自节点的数据
+                        util(row.id, data);
+                        $("#tr").treegrid("append", {
+                            parent: row.id,
+                            data: data.rows //因为json数据是{"total":5,"rows":[{"ck":"false","id":"3",....}]} 
+                        });
+                    };
+                    
+                }
+
+
+            });
+
+
+            $("#num").change(function () {
+                num = Number($(this).val());
+                var sales = $('[field="sales"]').children();
+                for (var i = 0; i < sales.length; i++) {
+                    var text = Number($(sales[i]).text());
+                    if (isNaN(text)) continue ;
+                    if (text >= num) {
+                        $(sales[i]).parent().parent().css("background-color", "#ccc")
+                        $(sales[i]).html('<strong style="color:red;">' + text + '</strong>')
+                    }
+                    else {
+                        $(sales[i]).parent().parent().css("background-color", "")
+                        $(sales[i]).html(text);
+                    }
+                }
+            });
+        })
+
+        var num = 300;
+        function showSales(val, row, index) {
+            var text = row.sales == undefined ? row.count : row.sales;//从数据源中判断要显示的文本   
+            if (text > num) //销量大于300的红色加粗
+                return '<strong style="color:red;">' + text + '</strong>';
+            else
+                return text;
+        }
+
+        function showImg(val, row, index) {
+            if(val!=undefined)
+                return "<img style='width:40px;height:40px' src='" + val + "'/>";
+        }
+       
+        //根基父节点处理一下子节点的idField
+        function util(parentId, data) {
+            for (var i = 0; i < data.rows.length; i++) {
+                data.rows[i].id = parentId + data.rows[i].id; //因为json数据是{"total":5,"rows":[{"ck":"false","id":"3",....}]}
+            }
+        }
+    </script>
+
+</head>
+<body>
+    <div class="demo-info">
+        <div class="demo-tip icon-tip"></div>
+        <div>easyui-TreeGrid 访问数据</div>
+        
+    </div>
+    <input id="num" class="easyui-numberbox" data-options="min:0,iconCls:'icon-search'" style=" width:150px" placeholder="销量大于300的红色加粗显示"  /> 
+    <div>
+        
+        <table id="tr">
+            
+        </table>
+
+    </div>
+   
+</body>
+</html>

@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0 minimal-ui" />
+    <link rel="stylesheet" href="/boostrap/css/bootstrap.min.css">
+    <script src="/xbase.js/jquery.min.js"></script>
+    <script src="/boostrap/js/bootstrap.min.js"></script>
+    <script src="/xbase.js/jquery.xbase.form.js"></script>
+    <script src="/xbase.js/jquery.xbase.js"></script>
+    <script src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script src="scripts/jk.date.js"></script>
+    <script src="scripts/getTreeId.js"></script>
+    <script src="scripts/jk.pagetool.js"></script>
+    <script src="scripts/jk.select.load.js"></script>
+    <title>品牌管理</title>
+    <style>
+        .art-content {
+            padding: 10px;
+        }
+
+        section {
+            padding: 10px 10px;
+            border: 1px solid #eee;
+            margin: 10px 0px;
+            background-color: white;
+        }
+
+        .art-date {
+            color: gray;
+            font-size: 1.2rem;
+        }
+
+        .art-img {
+            margin: 5px auto;
+        }
+
+        .art-content {
+            color: gray;
+        }
+
+        .art-tlt-font {
+            font-weight: bold;
+            font-size: 2.0rem;
+        }
+
+        .art-more {
+            font-weight: normal;
+            font-size: 1.2rem;
+        }
+
+        .artType-item-title {
+            cursor: pointer;
+        }
+
+        .artType-item-name {
+            width: 80%;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .sidebar-form {
+            max-width: 350px;
+            width: 100%;
+            margin-right: 30px;
+            margin-bottom: 10px;
+        }
+
+        .inputDisplay {
+            display: none;
+        }
+    </style>
+
+    <script>
+        $(function () {
+
+            //$(".art-edit").click(function () {
+            //    // body...
+            //    var ptd = $(this).parents(".artitem");
+            //    var obj = ptd.find(".artid");
+
+            //    var parmets = "xbase_ds_name=" + ds + "&ID=" + obj.val()
+            //    window.location.href = url + "?" + parmets;
+
+
+            //});
+
+            initSelect($("#ptype"), 0);
+
+            $(".art-del").click(function () {
+
+            });
+
+            $(".art-add").click(function () {
+                // body...
+                var parmets = "xbase_ds_name=" + ds + "&operator=add";
+                window.location.href = url + "?" + parmets;
+
+
+            });
+
+            //initPageTool(5,1);
+
+
+        })
+        var Type = "-1";
+        function selChange(obj, temp) {
+            var el = $(obj);
+
+            var slsattr = el.attr("wbo-select");
+
+            slsattr = eval("(" + slsattr + ")");
+
+            var frmhiden = slsattr.frmfield;
+
+            var v = el.find("option:selected").val();
+            Type = v;
+            $("#" + frmhiden).val(v);
+            if (v != -1) {
+
+                var nextid = slsattr.nxt;
+                if (nextid != undefined && nextid != "") {
+                    var nextobj = $("#" + nextid);
+                    initSelect(nextobj, v);
+                }
+
+            }
+        }
+
+
+    </script>
+</head>
+<body>
+    <div class="view" style="padding: 0px 20px;">
+        <p></p>
+
+        <div class="row">
+            <div class="col-md-3 col-xs-4 col-xm-3">
+
+
+                <!--<input type="checkbox" name="tm" id="tm" style="display: none;">-->
+
+
+                <div id="productBrand" wbo="pt_productBrand.data" name="productBrand" wbo-params="{ page:1,rows:20}">
+                    <div name="productBrandRows" wbo-bind="productBrand.rows">
+                        <div name="productBrandRows.item" class="panel-default respondlist">
+                            <div class="panel-heading" style="background-color: #555; color: #eee;">
+                                <div class="artType-item-name" onclick="getproductType(this)">
+                                    <span class="panel-title modelName" name="productBrandRows.Name">品牌
+                                    </span>
+                                    <input type="hidden" name="productBrandRows.ID" name="brandId" class="brandId" />
+                                </div>
+                                <div class="hidden-xs" style="float: right; cursor: pointer;">
+                                    <span class="glyphicon glyphicon-pencil" onclick="editBrand(this)"></span>
+                                </div>
+
+                            </div>
+
+                            <div class="childenItem" style="display: none">
+                            </div>
+
+                        </div>
+                        <div class="panel-default respondlist text-center">
+                            <div class="panel-heading btn-primary">
+                                <h3 class="panel-title glyphicon glyphicon-plus " style="cursor: pointer; font-size: 20px" onclick="addBrand()">添加品牌</h3>
+                                <input type="hidden" name="typeId" />
+                            </div>
+                            <div class="childenItem" style="display: none">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="list-group" style="display: none" id="productType" name="productType" wbo="dspt_productType.data" wbo-params="{ page:1,rows:20}">
+                    <div name="productTypeRows" wbo-bind="productType.rows">
+                        <div class="list-group-item artType-item-title" name="productTypeRows.item">
+                            <div class="artType-item-name" onclick="getSeriesChilden(this)">
+                                <span name="productTypeRows.Name" class="modelName"></span>
+                                <input type="hidden" name="productTypeRows.ID" class="typeId" />
+                                <input type="hidden" name="productTypeRows.brandId" name="brandId" class="brandId" />
+
+                            </div>
+                            <div class="hidden-xs " style="float: right">
+                                <span class="hidden glyphicon glyphicon-pencil" onclick="edit(this)"></span>
+                                <span class="glyphicon glyphicon-remove" onclick="removeType(this)"></span>
+                            </div>
+                            <div class="childenItem" style="display: none">
+                            </div>
+                        </div>
+                        <a class="list-group-item artType-item-title active text-center" onclick="addProductType(this)">
+                            <span class="artType-item-name" data-type="0" style="font-size: 20px">+添加产品类型</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="list-group" style="display: none" id="productSeries" name="productSeries" wbo="pt_productSeries.data" wbo-params="{ page:1,rows:20}">
+                    <div name="productSeriesRows" wbo-bind="productSeries.rows">
+                        <div class="list-group-item artType-item-title" name="productSeriesRows.item">
+                            <div class="artType-item-name" onclick="getSeriesChilden(this)">
+                                <span name="productSeriesRows.Name" class="seriesName"></span>
+                                <input type="hidden" name="productSeriesRows.ID" class="seriesId" />
+                                <input type="hidden" name="productSeriesRows.Depth" class="depth" />
+                                <input type="hidden" name="productSeriesRows.BrandId" class="brandId" />
+                                <input type="hidden" name="productSeriesRows.ParentId" class="parentId" />
+                                <input type="hidden" name="productSeriesRows.TypeId" class="typeId" />
+                            </div>
+                            <div class="hidden-xs" style="float: right">
+                                <span class="glyphicon glyphicon-pencil" onclick="edit(this)"></span>
+                            </div>
+                            <div class="childenItem" style="display: none">
+                            </div>
+                        </div>
+                        <a class="list-group-item artType-item-title active text-center" onclick="addSeries(this)">
+                            <span class="artType-item-name" data-type="0" style="font-size: 20px">+添加系列</span>
+                        </a>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="col-md-9 col-xs-9"></div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">添加类型
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-2 control-label label-title ">名称：</label>
+                            <div class="col-sm-10">
+                                <select name="typeName" class="form-control inputDisplay" id="ptype" wbo-select="{'tar':'pt_productType','frmfield':'Type','filter':'ParentId'}" onchange="selChange(this,'temp')">
+                                </select>
+                                <input type="text" class="form-control" name="typeValue" placeholder="名称类型" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="addNew btn btn-info"  >
+                        添加新类型
+                    </button>
+                    <button type="button" class="submit btn btn-primary">
+                        提交
+                    </button>
+                    <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">编辑类型
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-2 control-label label-title ">名称：</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="typeValue" placeholder="名称类型" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submit btn btn-primary">
+                        修改
+                    </button>
+                    <button type="button" class="delete btn btn-danger">
+                        删除
+                    </button>
+                    <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+    </div>
+
+</body>
+
+<script>
+    $(function () {
+        //var total = articlelist.ctrl.data().total;
+        //initPage(total);
+        //$(".list-group").slideUp();
+
+    })
+
+    function removeType(e) {
+        if (!confirm("确定要删除该数据吗？")) return;
+        var obj = $(e).parent().siblings(".artType-item-name");
+        var typeId = obj.find(".typeId").val();
+        var brandId = obj.find(".brandId").val();
+        var data = $.rCall("pt_brandType.data", { page: 1, rows: 20, filterRules: [{ field: 'productTypeId', op: 'equal', value: typeId }, { field: 'brandId', op: 'equal', value: brandId }] });
+        if (data.rows == "") return;
+        var result = $.rCall("pt_brandType.delete", { rows: data.rows });
+        if (result == null)
+            $(e).parent().parent().remove();
+        else
+            alert($.getJsonStr(result));
+
+    }
+
+    function getproductType(e) {
+        var obj = $(e).parents(".respondlist").children(".childenItem");
+        var style = obj.attr("style");
+        if (style == undefined || style == "display: block;"||style=="") {
+            $(e).parents(".respondlist").find(".childenItem").slideUp();
+            return;
+        }
+        var data = obj.html().trim();
+        if (data != "") {
+        }
+        else {
+            var typeId = $(e).children(".brandId").val();
+            productType.ctrl.load("dspt_productType.data?brandId=" + typeId);
+            var html = $("#productType").html();
+            obj.attr("data-modelId", typeId);
+            obj.html(html);
+        }
+        $(e).parents(".respondlist").siblings().children(".childenItem").slideUp();
+        obj.slideDown();
+
+    }
+
+    function editBrand(e) {
+        var obj = $(e).parent().siblings(".artType-item-name");
+        var typeName = obj.find(".modelName").html();
+        var brandId = obj.find(".brandId").val();
+        $("#updateModal [name='typeValue']").val(typeName);
+        $("#updateModal .submit").attr("onclick", "updateBrand('" + brandId + "')");
+        $("#updateModal .delete").attr("onclick", "delBrand('" + brandId + "')");
+        $("#updateModal").modal("show");
+    }
+    function updateBrand(brandId) {
+        var input = $("#updateModal [name='typeValue']");
+        if ($(input).val() == "") {
+            $(input).parent().parent().addClass("has-error");
+            return;
+        }
+        $(input).parent().parent().removeClass("has-error");
+        var rowDate = $.rCall("pt_productBrand.row", { pk: { id: brandId } });
+        rowDate.Name = $(input).val();
+        var result = $.rCall("pt_productBrand.update", { row: rowDate });
+        if (result == null) {
+            productBrand.ctrl.reload({ page: 1, rows: 1000 });
+        } else {
+            alert($.getJsonStr(result));
+        }
+        $("#updateModal [name='typeValue']").val("");
+        $("#updateModal").modal("hide");
+    }
+
+    function delBrand(brandId) {
+        if (confirm("确定要删除该类型吗？")) {
+            var result = $.rCall("pt_productBrand.delete", { row: { pk_ID: brandId } });
+            if (result == null) {
+                //var res = deleteModel(brandId);
+                //if (res == null) {
+                //    productBrand.ctrl.reload({ page: 1, rows: 1000 });
+                //} else
+                //    alert($.getJsonStr(res));
+
+            } else {
+                alert($.getJsonStr(result));
+            }
+            $("#updateModal [name='typeValue']").val("");
+            $("#updateModal").modal("hide");
+        }
+    }
+
+    function edit(e) {
+        var obj = $(e).parent().siblings(".artType-item-name");
+        var seriesId = obj.find(".seriesId").val();
+        var modelName = obj.find(".seriesName").html();
+        var typeId = obj.find(".typeId").val();
+        var parentId = obj.find(".parentId").val();
+        var brandId = obj.find(".brandId").val();
+
+        //var depth = obj.find(".depth").val();
+        //alert("ID：" + modelId + "名称：" + modelName);
+        $("#updateModal [name='typeValue']").val(modelName);
+        $("#updateModal .submit").attr("onclick", "updateSeries('" + seriesId + "','" + typeId + "','" + brandId + "','" + parentId + "')");
+        $("#updateModal .delete").attr("onclick", "delSeries('" + seriesId + "','" + typeId + "','" + brandId + "','" + parentId + "')");
+        $("#updateModal").modal("show");
+
+    }
+
+
+
+    function delSeries(seriesId, typeId, brandId, parentId) {
+        if (confirm("确定要删除该类型吗？")) {
+            var result = $.rCall("pt_productSeries.delete", { row: { pk_ID: seriesId } });
+            if (result == null) {
+                deleteSeriesChil(seriesId);
+                refreshProductSeries(brandId, typeId, parentId);
+            } else {
+                alert($.getJsonStr(result));
+            }
+            $("#updateModal [name='typeValue']").val("");
+            $("#updateModal").modal("hide");
+        }
+    }
+
+    function deleteSeriesChil(parentId) {
+        var data = $.rCall("pt_productSeries.data", { page: 1, rows: 10000, filterRules: [{ field: 'ParentId', op: 'equal', value: parentId }] })
+        var result = $.rCall("pt_productSeries.delete", { rows: data.rows });
+        return result;
+    }
+
+    function updateSeries(seriesId, typeId, brandId, parentId) {
+        var input = $("#updateModal [name='typeValue']");
+        if ($(input).val() == "") {
+            $(input).parent().parent().addClass("has-error");
+            return;
+        }
+        $(input).parent().parent().removeClass("has-error");
+        var rowDate = $.rCall("pt_productSeries.row", { pk: { id: seriesId } });
+        rowDate.Name = $(input).val();
+        var result = $.rCall("pt_productSeries.update", { row: rowDate });
+        if (result == null) {
+            refreshProductSeries(brandId, typeId, parentId);
+        } else {
+            alert($.getJsonStr(result));
+        }
+        $("#updateModal [name='typeValue']").val("");
+        $("#updateModal").modal("hide");
+    }
+
+    function addBrand() {
+        //$("#myModal input").removeClass("inputDisplay").siblings().addClass("inputDisplay");
+        $("#myModal input").slideDown().siblings().slideUp();
+        $("#myModal .submit").attr("onclick", "submitBrand()");
+        $("#myModal .addNew").addClass("inputDisplay");
+        $("#myModal").modal("show");
+    }
+
+    function addProductType(e) {
+        var obj = $(e).parent().parent(".childenItem").siblings();
+        var brandId = obj.find(".brandId").val();
+        obj.attr("data-brandId", brandId);
+        $("#myModal select").slideDown().siblings().slideUp();
+        //$("#myModal select").removeClass("inputDisplay").siblings().addClass("inputDisplay");
+        $("#myModal .submit").attr("onclick", "submitProductType('" + brandId + "')");
+        $("#myModal .addNew").attr("onclick", "addNewType('" + brandId + "')");
+        $("#myModal .addNew").removeClass("inputDisplay");
+        $("#myModal").modal("show");
+    }
+
+    function submitProductType(brandId) {
+        if (isSelTypeShow) {
+            if (Type == "-1")
+                return;
+        } else {
+            var input = $("#myModal [name='typeValue']");
+            if ($(input).val() == "") {
+                $(input).parent().parent().addClass("has-error");
+                return;
+            }
+            $(input).parent().parent().removeClass("has-error");
+            var createTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
+            var res = $.rCall("ds.pt_productType.insert", { row: { Name: $(input).val(), ParentId: 0, CreateTime: createTime } });
+            var data = $.rCall("pt_productType.data", { page: 1, rows: 1, filterRules: [{ field: 'Name', op: 'equal', value: $(input).val() }, { field: 'CreateTime', op: 'equal', value: createTime }] });
+            if (data.rows == "") return;
+            Type = data.rows[0].ID;
+        }
+        var result = $.rCall("ds.pt_brandType.insert", { row: { brandId: brandId, productTypeId: Type } });
+        // var result = null;
+        if (result == null) {
+            productType.ctrl.load("dspt_productType.data?brandId=" + brandId);
+            var html = $("#productType").html();
+            var obj = $("[data-brandId='" + brandId + "']");
+            obj.siblings(".childenItem").html(html);
+        } else {
+            alert($.getJsonStr(result));
+        }
+        $("#myModal [name='typeValue']").val("");
+        $("#myModal").modal("hide");
+    }
+    var isSelTypeShow = true;
+    function addNewType(brandId) {
+        if (isSelTypeShow) {
+            $("#myModal input").slideDown().siblings().slideUp();
+            $("#myModal .addNew").html("返回");
+        } else {
+            $("#myModal select").slideDown().siblings().slideUp();
+            $("#myModal .addNew").html("添加新类型");
+
+        }
+        isSelTypeShow = !isSelTypeShow;
+    }
+
+    function submitBrand() {
+        var input = $("#myModal [name='typeValue']");
+        if ($(input).val() == "") {
+            $(input).parent().parent().addClass("has-error");
+            return;
+        }
+        $(input).parent().parent().removeClass("has-error");
+
+        var result = $.rCall("ds.pt_productBrand.insert", { row: { Name: $(input).val(), ParentId: 0 } })
+        if (result == null) {
+            productBrand.ctrl.reload({ page: 1, rows: 20 });
+        } else {
+            alert($.getJsonStr(result));
+        }
+        $("#myModal [name='typeValue']").val("");
+        $("#myModal").modal("hide");
+    }
+
+    function addSeries(e) {
+        var obj = $(e).parent().parent(".childenItem").siblings();
+        var brandId = obj.find(".brandId").val();
+        var seriesId = obj.find(".seriesId").val();
+        var typeId = obj.find(".typeId").val();
+        var depth = obj.find(".depth").val();
+        var parentId = obj.find(".parentId").val();
+
+        seriesId = seriesId ? seriesId : "1";
+        depth = depth ? depth : "0";
+        depth = Number(depth) + 1;
+        parentId = parentId ? seriesId : "0";
+        //alert("当前Id:"+seriesId+ "父节点：" + parentId + "类型：" + typeId + "深度：" + depth+"品牌："+brandId);
+        $("#myModal .submit").attr("onclick", "submitSeriesType('" + brandId + "','" + typeId + "','" + depth + "','" + parentId + "')");
+        $("#myModal .addNew").addClass("inputDisplay");
+        $("#myModal input").slideDown().siblings().slideUp();
+
+        $("#myModal").modal("show");
+    }
+
+    function submitSeriesType(brandId, typeId, depth, parentId) {
+        //alert("父节点：" + parentId + "类型：" + typeId + "深度：" + depth);
+        var input = $("#myModal [name='typeValue']");
+        if ($(input).val() == "") {
+            $(input).parent().parent().addClass("has-error");
+            return;
+        }
+        $(input).parent().parent().removeClass("has-error");
+        var result = $.rCall("ds.pt_productSeries.insert", { row: { TypeId: typeId, BrandId: brandId, Name: $(input).val(), Depth: depth, ParentId: parentId } });
+        if (result == null) {
+            refreshProductSeries(brandId, typeId,parentId);
+        } else {
+            alert($.getJsonStr(result));
+        }
+        $("#myModal [name='typeValue']").val("");
+        $("#myModal").modal("hide");
+
+    }
+
+    function getSeriesChilden(el) {
+        var content = $(el).parent().children(".childenItem");
+        var style = content.attr("style");
+        if (style == undefined || style == "display: block;"||style=="") {
+            $(el).parents(".list-group-item").find(".childenItem").slideUp();
+            return;
+        }
+        var data = content.html().trim();
+        if (data != "") {
+        }
+        else {
+            var BrandId = $(el).find(".brandId").val();
+            var TypeId = $(el).find(".typeId").val();
+            var ParentId = $(el).find(".seriesId").val();
+            var param = {};
+            if (!ParentId)
+                param = { page: 1, rows: 20, filterRules: [{ field: 'TypeId', op: 'equal', value: TypeId }, { field: 'BrandId', op: 'equal', value: BrandId }] };
+            else
+                param = { page: 1, rows: 20, filterRules: [{ field: 'TypeId', op: 'equal', value: TypeId }, { field: 'BrandId', op: 'equal', value: BrandId }, { field: 'ParentId', op: 'equal', value: ParentId }] }
+            productSeries.ctrl.reload(param);
+            //alert($.getJsonStr(productSeries.ctrl.data()))
+            var html = $("#productSeries").html();
+            //alert($.getJsonStr(productSeries.ctrl.data().total) + "html:" + html);
+            // alert(html);
+            ParentId = ParentId?ParentId:"";
+            content.attr("data-SeriesId", BrandId + TypeId + ParentId);
+            content.html(html);
+        }
+        $(el).parents(".list-group-item").siblings().children(".childenItem").slideUp();
+        content.slideDown();
+    }
+
+    function refreshproductType(parentId, typeId) {
+        productType.ctrl.reload({ page: 1, rows: 20, filterRules: [{ field: 'TypeId', op: 'equal', value: typeId }, { field: 'ParentId', op: 'equal', value: parentId }] });
+        var html = $("#productType").html();
+        return html;
+    }
+
+    function refreshProductSeries(brandId, typeId,parentId) {
+        if (parentId=="1")
+            param = { page: 1, rows: 20, filterRules: [{ field: 'TypeId', op: 'equal', value: typeId }, { field: 'BrandId', op: 'equal', value: brandId }] };
+        else
+            param = { page: 1, rows: 20, filterRules: [{ field: 'TypeId', op: 'equal', value: typeId }, { field: 'BrandId', op: 'equal', value: brandId }, { field: 'ParentId', op: 'equal', value: parentId }] }
+        productSeries.ctrl.reload(param);
+        var html = $("#productSeries").html();
+        parentId = parentId == "0" ? "" : parentId;
+        var obj = $("[data-SeriesId='" + brandId + typeId + parentId+"']");
+        obj.html(html);
+    }
+</script>
+
+</html>

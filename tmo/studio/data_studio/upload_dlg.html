@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>上传文件</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <script type="text/javascript">
+        var p = window.dialogArguments;
+        function btnUpload_onclick() {
+            var sp = "";
+            for (var pname in p) {
+                sp += pname + "=" + p[pname] + "&";
+            }
+            uploadForm.action = "/xj-service/DataFileUpload.aspx?" + sp;
+            uploadForm.submit();
+        }
+
+        function btnCancel_onclick() {
+            close();
+        }
+        window.onunload = function() {
+            window.returnValue = false;
+
+            var retField = ResultFrame.window.document.getElementById("retResult");
+
+            if (retField) {
+                // window.returnValue = retField.value == "true";
+                window.returnValue = ResultFrame.window.document.getElementById("Image1").src;
+            }
+        }
+    </script>
+
+</head>
+<body>
+    <form id="uploadForm" method="post" action="/xj-service/DataFileUpload.aspx" enctype="multipart/form-data"
+    target="ResultFrame" onsubmit="return false">
+    <p>
+        <input name="file1" id="File1" type="file" /></p>
+    <p>
+        <input id="btnUpload" type="button" value="提交" onclick="return btnUpload_onclick()" />&nbsp;&nbsp;&nbsp;&nbsp;
+        <input id="btnCancel" type="button" value="退出" onclick="return btnCancel_onclick()" /></p>
+    </form>
+    <iframe name="ResultFrame" frameborder="0" scrolling="no" src="" style="height: 400px;
+        width: 400px"></iframe>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>甜蜜窝</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="icon" type="image/png" href="tmo/assets/i/favicon.png">
+    <link rel="stylesheet" href="tmo/assets/css/amazeui.min.css">
+    <link rel="stylesheet" href="tmo/assets/css/app.css">
+    <link rel="stylesheet" href="css/tmo.css">
+
+    <script src="tmo/assets/js/jquery.min.js"></script>
+    <script src="tmo/assets/js/amazeui.js"></script>
+    <script src="tmo/assets/js/handlebars.min.js"></script>
+    <script src="tmo/assets/js/amazeui.widgets.helper.js"></script>
+    <script type="text/javascript">
+        var v = "?v=0.0.0.13";
+
+        window.onload = function () {
+            $("#content").height($(window).height() - 98);
+        }
+        window.onresize = onload;
+
+        function goto(url) {
+            url += v;
+            var iframe = document.getElementById("content");
+            $("#content").one("load", function () {
+                $(headerTitle).html(($("title", iframe.contentWindow.document).html()));
+            });
+            iframe.src = url;
+        }
+        function chat() {
+            window.location = "chat.html" + v;
+        }
+    </script>
+    <style>
+        .am-header-fixed
+        {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 1010;
+        }
+    </style>
+</head>
+<body style="overflow-y: hidden">
+    <!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 不提供支持。 请 <a
+  href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
+    <header data-am-widget="header" class="am-header  am-header-default am-header-fixed color1">
+        <div class="am-header-left am-header-nav">
+            <a href="tel:18601860186"
+                class=""><img src="images/icon1/iphone.png"  style="width:30px; height:30px"   alt="电话" /></a>
+        </div>
+        <h1 class="header-title color3" id="headerTitle" >
+            甜蜜窝</h1>
+        <div class="am-header-right am-header-nav">
+            <a href="#user-link" class=""><i class="am-header-icon am-icon-user"></i></a><a href="#cart-link"
+                class=""><i class="am-header-icon am-icon-shopping-cart"></i></a>
+        </div>
+    </header>
+    <iframe id="content" src="tmo.html" style="width: 100%; height: 100%"></iframe>
+    <div data-am-widget="navbar" class="am-navbar am-cf  color3" style=" height:60px; padding-top:10px; border-top:1px solid #DDD" id="">
+        <ul class="am-navbar-nav am-cf am-avg-sm-4">
+            <li><a href="#" onclick="goto('xx.html')">
+                <img src="images/icon1/notepad.png" alt="信息" />
+                <span class="am-navbar-label">消息</span> </a></li>
+            <li><a href="#" onclick="goto('txl.html')">
+                <img src="images/icon1/iphone.png" alt="通讯录" />
+                <span class="am-navbar-label">通讯录</span> </a></li>
+            <li><a href="#" onclick="goto('gc.html')">
+                <img src="images/icon1/home.png" alt="商城" />
+                <span class="am-navbar-label">商城</span> </a></li>
+            <li><a href="#" onclick="goto('tmo.html')">
+                <img src="images/icon1/icq.png" alt="微商志" />
+                <span class="am-navbar-label">微商志</span> </a></li>
+            <li><a href="#" onclick="goto('me.html')">
+                <img src="images/icon1/male.png" alt="我的" />
+                <span class="am-navbar-label">我的</span> </a></li>
+        </ul>
+    </div>
+</body>
+</html>

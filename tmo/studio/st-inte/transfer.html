@@ -1,0 +1,312 @@
+﻿<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <title>数据库管理</title>
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link href="../css/jqtree.css" rel="stylesheet" type="text/css" />
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <link href="css/studio.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/icon.css">
+    <!--<script type="text/javascript" src="../../xbase.js/tab_control.js"></script>-->
+    <script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tree.jquery.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tab_control.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.form.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.jsonform.js" type="text/javascript"></script>
+    <script src="../../easyui/jquery.easyui.min.js" type="text/javascript" ></script>
+    <script type="text/javascript">
+
+        var name = $.paramVal("name");
+        var gTansferForm;
+
+        $(function () {
+            loadTable();
+        });
+
+        function loadTable() {
+            var ret = $.rCall("DataExplore.getConnections.wbo", null);
+            $("[name = 'TableDef.connName']").options(ret);
+            $("#elName").valu(name);
+            var reqName = !!name ? "." + name + ".wbo" : ".wbo";
+            var ret = $.rCall("ExcelTransfer" + reqName);
+            var types = $.rCall("DataExplore.getFieldTypes.wbo", { connName: ret.connName })
+            $("[name='TableDef.ColumnMaps.Type']").options(types);
+
+            if (ret && ret.Err)
+                divTableForm.innerHTML = ret.Err.Text;
+            gTansferForm = $(divTableForm).jsonForm(ret);
+
+        }
+
+        function btnDelTrans_onclick() {
+            $.messager.confirm("删除传输", "是否要删除传输'" + name + "'?", function (r) {
+                if (r) {
+                    $.rCall("ExcelTransfer." + name + ".del");
+                    parent.deleteSelNode();
+                }
+
+            });
+        }
+
+        function btnSaveTable_onclick() {
+            var newName = $(elName).valu();
+            if (!newName) {
+                $.messager.alert("请输入传输名称");
+                return;
+            }
+            var data = gTansferForm.getData();
+            $.rCall("ExcelTransfer." + name + ".keep", { newName: newName, wboJSON: data });
+            parent.loadTree();
+        }
+
+        function btnAddField_onclick() {
+            var list = gTansferForm.ColumnMaps;
+            list.addItem();
+        }
+
+        function btnDelField_onclick(el) {
+            var list = el.row.list;
+            list.removeItem(el.row);
+        }
+
+        function btnDataView_onclick() {
+            window.location = "data-view.html?" + $.param({ name: name });
+        }
+
+        function btnImportFile_onclick() {
+            $("#dlg").dialog({
+                title: "导入文件",
+                modal: true,
+                closed: true,
+                iconCls: 'icon-save',
+                buttons: [{
+                    text: '导入',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        var action = !name ? "ExcelTransfer.importFile.wbo" : "ExcelTransfer." + name + ".importFile.wbo";
+                        $("#frmImportFile").form("submit", {
+                            url: action,
+                            success: function (data) {
+                                var json = $.parseJSON(data);
+                                if (json && json.Err) {
+                                    $.messager.alert('Info', json.Err.Text, 'info');
+                                    return;
+                                }
+                                $("#dlg").dialog("close");
+                            }
+                        });
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $("#dlg").dialog("close");
+                    }
+                }]
+            });
+            $("#dlg").dialog("open");
+        }
+
+    </script>
+</head>
+<body style="overflow: auto" class="easyui-layout bg-white">
+    <div style="height: 30px; padding: 1px; border: none; border-bottom: solid 1px #ccc"
+        data-options="region:'north'">
+        <a class="easyui-linkbutton" id="btnSaveTable" type="button" onclick="return btnSaveTable_onclick()">
+            保存编辑</a><a class="easyui-linkbutton" id="btnAddField1" type="button" onclick="return btnAddField_onclick()">添加列</a><a
+                class="easyui-linkbutton" id="btnDelTrans" type="button" onclick="return btnDelTrans_onclick()">删除传输</a><a
+                    class="easyui-linkbutton" id="btnImportFile" type="button" onclick="return btnImportFile_onclick()">文件导入</a><a
+                        class="easyui-linkbutton" id="btnDataView" type="button" onclick="return btnDataView_onclick()">数据预览</a>
+    </div>
+    <div id="divTableForm" name="TableDef" class="easyui-layout" data-options="region:'center'"
+        style="border: none">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'north'" style="height: 63px; border: none; border-bottom: solid 1px #ccc">
+                <table border="0" cellspacing="1" class="dataform" istemplate="1">
+                    <tr>
+                        <td>
+                            传输名
+                        </td>
+                        <td>
+                            <input type="text" id="elName" value="" class="w60" />
+                        </td>
+                        <td>
+                            文件名
+                        </td>
+                        <td>
+                            <span name="TableDef.fileName"></span>
+                        </td>
+                        <td>
+                            sheet
+                        </td>
+                        <td>
+                            <input type="text" name="TableDef.sheetName" id="inptId0" value="" class="w60" />
+                        </td>
+                        <td>
+                            表头行号
+                        </td>
+                        <td>
+                            <input type="text" name="TableDef.headRowNo" id="inptId" value="" class="w30" />
+                        </td>
+                        <td>
+                            数据行号
+                        </td>
+                        <td>
+                            <input type="text" name="TableDef.dataRowNo" class="w30" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            导入连接
+                        </td>
+                        <td>
+                            <select id="Select1" name="TableDef.connName">
+                                <option></option>
+                            </select>
+                        </td>
+                        <td>
+                            导入表
+                        </td>
+                        <td>
+                            <input type="text" name="TableDef.tableName" id="Text1" value="" />
+                        </td>
+                        <td>
+                            &nbsp;
+                        </td>
+                        <td>
+                            &nbsp;
+                        </td>
+                        <td>
+                            &nbsp;
+                        </td>
+                        <td>
+                            &nbsp;
+                        </td>
+                        <td>
+                            &nbsp;
+                        </td>
+                        <td>
+                            &nbsp;
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div data-options="region:'center'" style="border: none">
+                <div id="divTab" class="easyui-tabs" data-options="fit:true" style="border: none;
+                    background: #fff">
+                    <div title="列配置">
+                        <table border="0" cellpadding="0" cellspacing="1" class="datalist" name="TableDef.ColumnMaps"
+                            id="divMethodList">
+                            <tr align="center" list="hr" obj="TableDef.ColumnMaps">
+                                <th class="hc">
+                                    key
+                                </th>
+                                <th class="hc">
+                                    Excel列号
+                                </th>
+                                <th class="hc">
+                                    导入字段
+                                </th>
+                                <th class="hc">
+                                    字段标题
+                                </th>
+                                <th class="hc">
+                                    字段类型
+                                </th>
+                                <th class="hc">
+                                    长度
+                                </th>
+                                <th class="hc">
+                                    精度
+                                </th>
+                                <th class="hc">
+                                    默认值
+                                </th>
+                                <th class="hc">
+                                    备注
+                                </th>
+                                <th class="hc">
+                                    标识
+                                </th>
+                                <th class="hc">
+                                    非重复
+                                </th>
+                                <th class="hc">
+                                    必填
+                                </th>
+                                <th class="hc">
+                                    添加
+                                </th>
+                                <th class="hc">
+                                    删除
+                                </th>
+                            </tr>
+                            <tbody>
+                                <tr list="ir" obj="TableDef.ColumnMaps">
+                                    <td class="ic" name="TableDef.ColumnMaps">
+                                        <input type="hidden" name="TableDef.ColumnMaps.OldName" />
+                                        <input type="checkbox" name="TableDef.ColumnMaps.IsPriKey" id="TableDef.ColumnMaps.IsPriKey" />
+                                    </td>
+                                    <td class="ic" name="TableDef.ColumnMaps">
+                                        <input type="text" class="w60" name="TableDef.ColumnMaps.ExcelColNum" id="TableDef.ColumnMaps.ExcelColNum" />
+                                    </td>
+                                    <td class="ic" name="TableDef.ColumnMaps">
+                                        <input type="text" name="TableDef.ColumnMaps.Name" id="TableDef.ColumnMaps.Name" />
+                                    </td>
+                                    <td class="ic">
+                                        <input type="text" name="TableDef.ColumnMaps.Title" />
+                                    </td>
+                                    <td class="ic">
+                                        <select id="TableDef.ColumnMaps.Type" name="TableDef.ColumnMaps.Type">
+                                            <option></option>
+                                        </select>
+                                    </td>
+                                    <td class="ic" name="d">
+                                        <input name="TableDef.ColumnMaps.Length" type="text" value="50" class="w30" id="TableDef.ColumnMaps.Length" />
+                                    </td>
+                                    <td class="ic" name="e">
+                                        <input name="TableDef.ColumnMaps.Procesion" type="text" value="0" class="w30" id="TableDef.ColumnMaps.Procesion" />
+                                    </td>
+                                    <td class="ic" name="e">
+                                        <input name="TableDef.ColumnMaps.DefaultValue" type="text" id="TableDef.ColumnMaps.DefaultValue" />
+                                    </td>
+                                    <td class="ic" name="e">
+                                        <input type="text" name="TableDef.ColumnMaps.Description" />
+                                    </td>
+                                    <td class="ic" name="e">
+                                        <input type="checkbox" name="TableDef.ColumnMaps.IsIdentity" id="TableDef.ColumnMaps.IsIdentity" />
+                                    </td>
+                                    <td class="ic" name="e">
+                                        <input type="checkbox" name="TableDef.ColumnMaps.IsUnique" />
+                                    </td>
+                                    <td class="ic" name="e">
+                                        <input type="checkbox" name="TableDef.ColumnMaps.NotNull" />
+                                    </td>
+                                    <td class="ic" name="e">
+                                        <input name="TableDef.ColumnMaps.operate" type="button" class="list-btn" id="btnAddField"
+                                            value="+" onclick="return btnAddField_onclick(this)" style="padding: 0px">
+                                    </td>
+                                    <td class="ic" name="e">
+                                        <input name="TableDef.ColumnMaps.operate" type="button" class="list-btn" id="btnDelField"
+                                            value="-" onclick="return btnDelField_onclick(this)" style="padding: 0px">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="dlg" style="width: 400px; height: 150px; padding: 10px;">
+        <form id="frmImportFile" method="post" enctype="multipart/form-data">
+        请选择Excel文件：<br />
+        <input class="easyui-filebox" type="file" id="elFile" name="file" />
+        </form>
+    </div>
+</body>
+</html>

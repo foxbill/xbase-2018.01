@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0 minimal-ui" />
+    <link rel="stylesheet" href="/boostrap/css/bootstrap.min.css">
+    <script src="/xbase.js/jquery.min.js"></script>
+    <script src="/boostrap/js/bootstrap.min.js"></script>
+    <script src="/xbase.js/jquery.xbase.form.js"></script>
+    <script src="/xbase.js/jquery.xbase.js"></script>
+    <script src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script src="scripts/getTreeId.js"></script>
+    <script src="scripts/jk.pagetool.js"></script>
+    <title>商品类别</title>
+    <style>
+        .art-content {
+            padding: 10px;
+        }
+
+        section {
+            padding: 10px 10px;
+            border: 1px solid #eee;
+            margin: 10px 0px;
+            background-color: white;
+        }
+
+        .art-date {
+            color: gray;
+            font-size: 1.2rem;
+        }
+
+        .art-img {
+            margin: 5px auto;
+        }
+
+        .art-content {
+            color: gray;
+        }
+
+        .art-tlt-font {
+            font-weight: bold;
+            font-size: 2.0rem;
+        }
+
+        .art-more {
+            font-weight: normal;
+            font-size: 1.2rem;
+        }
+
+        .artType-item-title {
+            cursor: pointer;
+        }
+
+        .artType-item-name {
+            width: 80%;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .sidebar-form {
+            max-width: 350px;
+            width: 100%;
+            margin-right: 30px;
+            margin-bottom: 10px;
+        }
+
+        .customFileitem {
+        }
+
+        .fields div {
+            margin-bottom: 5px;
+        }
+
+        .fields .fieldName {
+            text-align: right;
+            margin: 5px 0px;
+        }
+
+        .fields .fieldValue {
+            margin: 5px 0px;
+        }
+
+            .fields .fieldValue span {
+                margin: 5px 0px;
+            }
+    </style>
+
+    <script>
+        $(function () {
+
+            //$(".art-edit").click(function () {
+            //    // body...
+            //    var ptd = $(this).parents(".artitem");
+            //    var obj = ptd.find(".artid");
+
+            //    var parmets = "xbase_ds_name=" + ds + "&ID=" + obj.val()
+            //    window.location.href = url + "?" + parmets;
+
+
+            //});
+
+            $(".art-del").click(function () {
+
+            });
+
+            $(".art-add").click(function () {
+                // body...
+                var parmets = "xbase_ds_name=" + ds + "&operator=add";
+                window.location.href = url + "?" + parmets;
+
+
+            });
+            //bindFieldValue(1);
+            //initPageTool(5,1);
+
+
+        })
+
+        var url = "articleEdit.html";
+        var ds = "pt_article";
+
+
+
+        function edit(e) {
+            var ptd = $(e).parents(".artitem");
+            var obj = ptd.find(".artid");
+            var parmets = "xbase_ds_name=" + ds + "&ID=" + obj.val()
+            window.location.href = url + "?" + parmets;
+
+        }
+
+        function delPt(e) {
+            if (confirm("您确定要删除该项？")) {
+                if (ds != undefined && ds != "") {
+                    var ptd = $(e).parents(".artitem");
+                    var obj = ptd.find(".artid");
+                    //alert(row.ID);
+                    alert(Number(obj.val()))
+                    var res = $.rCall(ds + ".delete", { row: { pk_ID: Number(obj.val()) } });
+                    if (!res) {
+                        alert("删除成功");
+                        //refresh();
+                        ptd.remove();
+
+                    }
+                }
+
+            }
+        }
+
+        function bindFieldValue(TypeId) {
+            prodCustomField.ctrl.load("dspt_productCustomField.data?RelativeId=" + TypeId);
+            var html = $(".customType.hidden").clone();
+            var obj = $(html).removeClass("hidden");
+            $("[name='prodCustomValueRows']").append(obj);
+           
+
+        }
+
+    </script>
+</head>
+<body>
+    <div class="view" style="padding: 0px 20px;">
+        <p></p>
+
+        <div class="row">
+            <div class="col-md-3 col-xs-12 col-xm-6">
+
+
+                <!--<input type="checkbox" name="tm" id="tm" style="display: none;">-->
+
+
+                <div id="productType" wbo="pt_productType.data" name="productType" wbo-params="{ page:1,rows:20}">
+                    <div name="productTypeRows" wbo-bind="productType.rows">
+                        <div name="productTypeRows.item" class="panel-default respondlist">
+                            <div class="panel-heading" style="background-color: #555; color: #eee;">
+                                <div class="artType-item-name" onclick="getModelType(this)">
+                                    <span class="panel-title modelName" name="productTypeRows.Name">车型
+                                    </span>
+                                    <input type="hidden" name="productTypeRows.ID" name="typeId" class="typeId" />
+                                </div>
+                                <div class="hidden-xs" style="float: right; cursor: pointer;">
+                                    <span class="glyphicon glyphicon-pencil" onclick="editType(this)"></span>
+                                </div>
+
+
+                            </div>
+
+                            <div class="childenItem" style="display: none">
+                            </div>
+
+                        </div>
+                        <div class="panel-default respondlist text-center">
+                            <div class="panel-heading btn-primary">
+                                <h3 class="panel-title glyphicon glyphicon-plus " style="cursor: pointer; font-size: 20px" onclick="addType()"></h3>
+                                <input type="hidden" name="typeId" />
+                            </div>
+                            <div class="childenItem" style="display: none">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="list-group" style="display: none" id="modelType" name="modelType" wbo="pt_productModel.data" wbo-params="{ page:1,rows:20}">
+                    <div name="modelTypeRows" wbo-bind="modelType.rows">
+                        <div class="list-group-item artType-item-title" name="modelTypeRows.item">
+                            <div class="artType-item-name" onclick="getModelChilden(this)">
+                                <span name="modelTypeRows.Name" class="modelName"></span>
+                                <input type="hidden" name="modelTypeRows.ID" class="modelId" />
+                                <input type="hidden" name="modelTypeRows.TypeId" class="typeId" />
+                                <input type="hidden" name="modelTypeRows.ParentId" class="parentId" />
+                                <input type="hidden" name="modelTypeRows.Depth" class="depth" />
+                            </div>
+                            <div class="hidden-xs" style="float: right">
+                                <span class="glyphicon glyphicon-pencil" onclick="edit(this)"></span>
+                            </div>
+                            <div class="childenItem" style="display: none">
+                            </div>
+                        </div>
+                        <a class="list-group-item artType-item-title active text-center" onclick="addModalType(this)">
+                            <span class="artType-item-name" data-type="0" style="font-size: 20px">+</span>
+                        </a>
+                    </div>
+                </div>
+
+
+
+            </div>
+            <div class="col-md-6 col-xs-12">
+
+                <div class="row fields" wbo="dspt_productCustomField.data" name="prodCustomField" id="prodCustomField" wbo-params="{ page: 1,rows:10}">
+                    <div wbo-bind="prodCustomField.rows" name="prodCustomFieldRows">
+                        <div wbo-bind="prodCustomFieldRows.item" class="customFileitem">
+                            <div class="col-md-3 fieldName col-xs-3">
+                                <span name="prodCustomFieldRows.Display" class="customFileName">颜色</span>：
+                                <input type="hidden" class="customFileId" name="prodCustomFieldRows.ID" value="0">
+                                <input type="hidden" class="customFileValue" value="0">
+                            </div>
+                            <div class="col-md-8 col-xs-7 fieldValue panel panel-default" wbo="dspt_productCustomFieldValue.data" name="prodCustomValue" id="prodCustomValue" wbo-embed="prodCustomFieldRows" wbo-query="{FieldId:'prodCustomFieldRows.ID'}" wbo-params="{ page: 1,rows:10}">
+                                <div wbo-bind="prodCustomValue.rows" name="prodCustomValueRows">
+                                    <div class="col-md-3 col-xs-3 customType " style="cursor:pointer"  wbo-bind="prodCustomValueRows.item" onclick="fieldClick(this)">
+                                        <span name="prodCustomValueRows.Value" class="customType-content label label-info" wbo-attr="{'style':'prodCustomValueRows.Style'}">红色</span>
+                                        <input type="hidden" name="prodCustomValueRows.ID" class="customvalueid" value="-1">
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="col-md-1 col-xs-1 fieldValue">                               
+                                    <div class="col-md-1 col-xs-1 customType " onclick="removeField(this)">
+                                       <button type="button" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+                                        <input type="hidden" name="prodCustomValueRows.ID" class="customvalueid" value="-1">
+                                    </div>
+                                
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="customFileitem">
+                        <div class="col-md-3 col-xs-3 fieldName">
+                            <span class="customFileName">属性</span>：                              
+                        </div>
+                        <div class="customType addField col-md-8 col-xs-7 panel panel-default">
+                            <button type="button" class="btn btn-primary btn-xs" onclick="addField(this)"><span class="glyphicon glyphicon-plus"></span>添加商品属性</button>
+                            <input type="hidden" class="customvalueid" value="0">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="customType hidden col-md-3 col-xs-3 " onclick="fieldClick(this)">
+                    <button type="button" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
+                    <input type="hidden" class="customvalueid" value="-1">
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">添加类型
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-2 control-label label-title ">名称：</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="typeValue" placeholder="名称类型" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submit btn btn-primary">
+                        提交
+                    </button>
+                    <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">编辑类型
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-2 control-label label-title ">名称：</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="typeValue" placeholder="名称类型" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submit btn btn-primary">
+                        修改
+                    </button>
+                    <button type="button" class="delete btn btn-danger">
+                        删除
+                    </button>
+                    <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+
+
+    </div>
+
+    <div class="modal fade" id="myModal_field" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="H1">添加颜色
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-2 control-label label-title ">颜色：</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="FieldValue" placeholder="颜色" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submit btn btn-primary">
+                        提交
+                    </button>
+                    <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="updateModal_field" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">修改属性
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-2 control-label label-title ">颜色：</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="FieldValue" placeholder="颜色" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submit btn btn-primary">
+                        修改
+                    </button>
+                    <button type="button" class="delete btn btn-danger">
+                        删除
+                    </button>
+                    <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+    </div>
+</body>
+
+<script>
+    $(function () {
+        //var total = articlelist.ctrl.data().total;
+        //initPage(total);
+        //$(".list-group").slideUp();
+
+    })
+
+    //属性 start
+    var Type = "-1";
+    function fieldClick(e) {
+        //Type = $("#ptype").find("option:selected").val();
+        //if (Type == "-1") {
+        //    alert("请选择商品类别");
+        //    return;
+        //}
+        $(e).addClass("active").siblings().removeClass("active");
+        var customvalueid = $(e).find(".customvalueid").val();
+        var p = $(e).parents(".customFileitem");
+        var body = $(e).find(".customType-content").html();
+        var name = $(p).find(".customFileName").html();
+        var fieldId = $(p).find(".customFileId");
+        if (customvalueid == "-1") {
+            initModal(name, "", fieldId.val());
+        } else {
+            initUpdateModal(name, body, customvalueid);
+        }
+
+    }
+
+    function removeField(e) {
+        if (!confirm("确定删除该属性？")) return;
+        var p = $(e).parents(".customFileitem");
+        var fieldId = $(p).find(".customFileId").val();
+       
+        var result = $.rCall("pt_productCustomField.delete", { row: { pk_ID: fieldId } });
+        if (result == null) {
+            var data = $.rCall("pt_productCustomFieldValue.data", { page: 1, rows: 1000, filterRules: [{ field: 'RelativeId', op: 'equal', value: Type }, { field: 'FieldId', op: 'equal', value: fieldId }] })
+            if (data.rows != "")
+            {
+                var res = $.rCall("pt_productCustomFieldValue.delete", { rows: data.rows });
+            }
+            bindFieldValue(Type);
+        } else {
+            alert($.getJsonStr(result));
+        }
+       
+    }
+
+    function initModal(title, body, fieldId) {
+        $("#myModal_field .modal-title").html("添加" + title);
+        $("#myModal_field .label-title").html(title + ":");
+        var input = $("#myModal_field [name='FieldValue']").attr("placeholder", title);
+        $("#myModal_field .submit").attr("onclick", "submitFieldValue('" + fieldId + "')");
+        $("#myModal_field").modal("show");
+    }
+    function initUpdateModal(title, body, fieldId) {
+        $("#updateModal_field .modal-title").html("编辑" + title);
+        $("#updateModal_field .label-title").html(title + ":");
+        var input = $("#updateModal_field [name='FieldValue']").attr("placeholder", title);
+        $("#updateModal_field [name='FieldValue']").val(body);
+        $("#updateModal_field .submit").attr("onclick", "UpdateFieldValue('" + fieldId + "')");
+        $("#updateModal_field .delete").attr("onclick", "deleteFieldValue('" + fieldId + "')");
+        $("#updateModal_field").modal("show");
+    }
+
+    function UpdateFieldValue(fieldId) {
+        var input = $("#updateModal_field [name='FieldValue']");
+        if ($(input).val() == "") {
+            $(input).parent().parent().addClass("has-error");
+            return;
+        }
+        $(input).parent().parent().removeClass("has-error");
+        //{ page: 1, rows: 1, filterRules: [{ field: "ID", op: 'equal', value: fieldId }] }
+        var rowData = $.rCall("pt_productCustomFieldValue.row", { pk: { ID: fieldId } });
+        rowData.Value = $(input).val();
+        var result = $.rCall("pt_productCustomFieldValue.update", { row: rowData });
+        if (result == null) {
+            bindFieldValue(Type);
+        } else {
+            alert($.getJsonStr(result));
+        }
+        $(input).val("");
+        $("#updateModal_field").modal("hide");
+    }
+
+    function deleteFieldValue(fieldId) {
+        if (!confirm("确定删除该属性吗？"))
+            return;
+        var result = $.rCall("pt_productCustomFieldValue.delete", { row: { pk_ID: fieldId } });
+        if (result == null) {
+            bindFieldValue(Type);
+        } else {
+            alert($.getJsonStr(result));
+        }
+        $("#updateModal_field").modal("hide");
+
+    }
+
+    function submitFieldValue(fieldId) {
+
+        var input = $("#myModal_field [name='FieldValue']");
+        if ($(input).val() == "") {
+            $(input).parent().parent().addClass("has-error");
+            return;
+        }
+        $(input).parent().parent().removeClass("has-error");
+        var fieldValue = $(input).val();
+        var rowData = { RelativeId: Type, FieldId: fieldId, Value: fieldValue, Extra: 0 };
+        var result = $.rCall("ds.pt_productCustomFieldValue.insert", { row: rowData });
+        if (result == null) {
+            bindFieldValue(Type);
+        } else {
+            alert($.getJsonStr(result));
+        }
+        $(input).val("");
+        $("#myModal_field").modal("hide");
+    }
+
+    function addField(e) {
+        if (Type == "-1") {
+            alert("请选择商品类别");
+            return;
+        }
+        initModal("属性", "")
+        $("#myModal_field .submit").attr("onclick", "submitField()");
+       //$("#fieldModal").modal("show");
+    }
+
+    function submitField() {
+        var input = $("#myModal_field [name='FieldValue']");
+        if ($(input).val() == "") {
+            $(input).parent().parent().addClass("has-error");
+            return;
+        }
+        $(input).parent().parent().removeClass("has-error");
+        var fieldValue = $(input).val();
+        var rowData = { RelativeId: Type, Field: null, Display: fieldValue, DelFlag: 0 };
+        var result = $.rCall("ds.pt_productCustomField.insert", { row: rowData });
+        if (result == null) {
+            bindFieldValue(Type);
+        } else {
+            alert($.getJsonStr(result));
+        }
+        $(input).val("");
+        $("#myModal_field").modal("hide");
+    }
+
+    //属性end
+
+
+    function getModelType(e) {
+        var obj = $(e).parents(".respondlist").children(".childenItem");
+        var style = obj.attr("style");
+        if (style == undefined || style == "display: block;" || style == "") {
+            $(e).parents(".respondlist").find(".childenItem").slideUp();
+            return;
+        }
+        Type = $(e).children(".typeId").val();
+        var data = obj.html().trim();
+        if (data != "") {
+        }
+        else {
+                    
+            modelType.ctrl.reload({ page: 1, rows: 20, filterRules: [{ field: 'TypeId', op: 'equal', value: Type }, { field: 'ParentId', op: 'equal', value: Type }] });
+            var html = $("#modelType").html();
+            obj.attr("data-modelId", Type);
+            obj.html(html);
+        }
+        bindFieldValue(Type);
+
+        $(e).parents(".respondlist").siblings().children(".childenItem").slideUp();
+        obj.slideDown();
+
+    }
+
+    function editType(e) {
+        var obj = $(e).parent().siblings(".artType-item-name");
+        var modelName = obj.find(".modelName").html();
+        var modelId = obj.find(".typeId").val();
+        $("#updateModal [name='typeValue']").val(modelName);
+        $("#updateModal .submit").attr("onclick", "updateType('" + modelId + "')");
+        $("#updateModal .delete").attr("onclick", "delType('" + modelId + "')");
+        $("#updateModal").modal("show");
+    }
+    function updateType(modelId) {
+        var input = $("#updateModal [name='typeValue']");
+        if ($(input).val() == "") {
+            $(input).parent().parent().addClass("has-error");
+            return;
+        }
+        $(input).parent().parent().removeClass("has-error");
+        var rowDate = $.rCall("pt_productType.row", { pk: { id: modelId } });
+        rowDate.Name = $(input).val();
+        var result = $.rCall("pt_productType.update", { row: rowDate });
+        if (result == null) {
+            productType.ctrl.reload({ page: 1, rows: 1000 });
+        } else {
+            alert($.getJsonStr(result));
+        }
+        $("#updateModal [name='typeValue']").val("");
+        $("#updateModal").modal("hide");
+    }
+
+    function delType(modelId) {
+        if (confirm("确定要删除该类型吗？")) {
+            var result = $.rCall("pt_productType.delete", { row: { pk_ID: modelId } });
+            if (result == null) {
+                var res = deleteModel(modelId);
+                if (res == null) {
+                    productType.ctrl.reload({ page: 1, rows: 1000 });
+                } else
+                    alert($.getJsonStr(res));
+
+            } else {
+                alert($.getJsonStr(result));
+            }
+            $("#updateModal [name='typeValue']").val("");
+            $("#updateModal").modal("hide");
+        }
+    }
+
+    function edit(e) {
+        var obj = $(e).parent().siblings(".artType-item-name");
+        var modelId = obj.find(".modelId").val();
+        var modelName = obj.find(".modelName").html();
+        var typeId = obj.find(".typeId").val();
+
+        var parentId = obj.find(".parentId").val();
+
+        //var depth = obj.find(".depth").val();
+        //alert("ID：" + modelId + "名称：" + modelName);
+        $("#updateModal [name='typeValue']").val(modelName);
+        $("#updateModal .submit").attr("onclick", "updateModel('" + modelId + "','" + typeId + "','" + parentId + "')");
+        $("#updateModal .delete").attr("onclick", "delModel('" + modelId + "','" + typeId + "','" + parentId + "')");
+        $("#updateModal").modal("show");
+
+    }
+
+
+
+    function delModel(modelId, typeId, parentId) {
+        if (confirm("确定要删除该类型吗？")) {
+            var result = $.rCall("pt_productModel.delete", { row: { pk_ID: modelId } });
+            if (result == null) {
+                var res = deleteModel(modelId);
+                if (res == null) {
+                    var html = refreshModelType(parentId, typeId);
+                    $("[data-modelId='" + parentId + "']").html(html);
+                } else
+                    alert($.getJsonStr(res));
+            } else {
+                alert($.getJsonStr(result));
+            }
+            $("#updateModal [name='typeValue']").val("");
+            $("#updateModal").modal("hide");
+        }
+    }
+
+    function deleteModel(parentId) {
+        var data = $.rCall("pt_productModel.data", { page: 1, rows: 10000, filterRules: [{ field: 'ParentId', op: 'equal', value: parentId }] })
+        var result = $.rCall("pt_productModel.delete", { rows: data.rows });
+        return result;
+    }
+
+    function updateModel(modelId, typeId, parentId) {
+        var input = $("#updateModal [name='typeValue']");
+        if ($(input).val() == "") {
+            $(input).parent().parent().addClass("has-error");
+            return;
+        }
+        $(input).parent().parent().removeClass("has-error");
+        var rowDate = $.rCall("pt_productModel.row", { pk: { id: modelId } });
+        rowDate.Name = $(input).val();
+        var result = $.rCall("pt_productModel.update", { row: rowDate });
+        if (result == null) {
+            var html = refreshModelType(parentId, typeId);
+            $("[data-modelId='" + parentId + "']").html(html);
+        } else {
+            alert($.getJsonStr(result));
+        }
+        $("#updateModal [name='typeValue']").val("");
+        $("#updateModal").modal("hide");
+    }
+
+    function addType() {
+        $("#myModal .submit").attr("onclick", "submitType()");
+        $("#myModal").modal("show");
+    }
+
+    function submitType() {
+        var input = $("#myModal [name='typeValue']");
+        if ($(input).val() == "") {
+            $(input).parent().parent().addClass("has-error");
+            return;
+        }
+        $(input).parent().parent().removeClass("has-error");
+
+        var result = $.rCall("ds.pt_productType.insert", { row: { Name: $(input).val(), ParentId: 0 } })
+        if (result == null) {
+            productType.ctrl.reload({ page: 1, rows: 20 });
+        } else {
+            alert($.getJsonStr(result));
+        }
+        $("#myModal [name='typeValue']").val("");
+        $("#myModal").modal("hide");
+    }
+
+    function addModalType(e) {
+        var obj = $(e).parent().parent(".childenItem").siblings();
+        var parentId = obj.find(".modelId").val();
+
+        var typeId = obj.find(".typeId").val();
+        var depth = obj.find(".depth").val();
+        //var parentId = obj.find(".parentId").val();
+        parentId = parentId ? parentId : typeId;
+        depth = depth ? depth : 0;
+        depth = Number(depth) + 1;
+        $("#myModal .submit").attr("onclick", "submitModalType('" + parentId + "','" + typeId + "','" + depth + "')");
+        $("#myModal").modal("show");
+    }
+
+    function submitModalType(parentId, typeId, depth) {
+        //alert("父节点：" + parentId + "类型：" + typeId + "深度：" + depth);
+        var input = $("#myModal [name='typeValue']");
+        if ($(input).val() == "") {
+            $(input).parent().parent().addClass("has-error");
+            return;
+        }
+        $(input).parent().parent().removeClass("has-error");
+        var id = GetTreeID("pt_productModel.data", parentId);
+        var result = $.rCall("ds.pt_productModel.insert", { row: { ID: id, TypeId: typeId, Sort: 1, Name: $(input).val(), Depth: depth, ParentId: parentId } });
+        if (result == null) {
+            var html = refreshModelType(parentId, typeId);
+            $("[data-modelId='" + parentId + "']").html(html);
+        } else {
+            alert($.getJsonStr(result));
+        }
+        $("#myModal [name='typeValue']").val("");
+        $("#myModal").modal("hide");
+
+    }
+
+    function getModelChilden(el) {
+        var content = $(el).parent().children(".childenItem");
+        var style = content.attr("style");
+        if (style == undefined || style == "display: block;" || style == "") {
+            $(el).parents(".list-group-item").find(".childenItem").slideUp();
+            return;
+        }
+        var data = content.html().trim();
+        if (data != "") {
+        }
+        else {
+            var ParentId = $(el).find(".modelId").val();
+            var TypeId = $(el).find(".typeId").val();
+            modelType.ctrl.reload({ page: 1, rows: 20, filterRules: [{ field: 'TypeId', op: 'equal', value: TypeId }, { field: 'ParentId', op: 'equal', value: ParentId }] });
+            //alert($.getJsonStr(modelType.ctrl.data()))
+            var html = $("#modelType").html();
+            //alert(html);
+            content.attr("data-modelId", ParentId);
+            content.html(html);
+        }
+        $(el).parents(".list-group-item").siblings().children(".childenItem").slideUp();
+        content.slideDown();
+    }
+
+    function refreshModelType(parentId, typeId) {
+        modelType.ctrl.reload({ page: 1, rows: 20, filterRules: [{ field: 'TypeId', op: 'equal', value: typeId }, { field: 'ParentId', op: 'equal', value: parentId }] });
+        var html = $("#modelType").html();
+        return html;
+    }
+</script>
+
+</html>

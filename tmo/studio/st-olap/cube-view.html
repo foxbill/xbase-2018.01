@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tree.jquery.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tab_control.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.form.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.jsonform.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    	var name = $.paramVal("name");
+    	var query = {queryAxises: [{
+						        name: 'x',
+						        cubeName: 'sd',
+						        dimensionName: 'fdsf',
+						        hierarchyName: 'class',
+						        memberPath: ['0', '100']
+					    },{
+						        name: 'y',
+						        cubeName: 'sd',
+						        dimensionName: 'Datas',
+						        hierarchyName: 'date',
+						        memberPath: ['2015']
+					    }],
+					    measures:{axiseName:'z', measuresNames:['df']},
+					    sliceAxis: {
+					        name: '',
+					        cubeName: '',
+					        dimentionName: '',
+					        hericyName: '',
+					        path: ['中国', '广东']
+					    }
+					   }
+
+
+    	$(function(){
+    		var reqName = !name ? "Cube.Child.wbo" : "Cube." + name + ".Child.wbo";
+            var grid = $.rCall(reqName, { query: query });
+    	});
+    </script>
+</head>
+<body>
+
+</body>
+</html>

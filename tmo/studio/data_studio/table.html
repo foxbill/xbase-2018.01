@@ -1,0 +1,561 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>控制面板</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        body
+        {
+            padding: 5px;
+        }
+        .RndBox .RndTopLeft
+        {
+            background-image: url(images/main_lt.jpg);
+            background-repeat: no-repeat;
+            background-position: 0px 0px;
+        }
+        .RndBox .RndTopLeft .RndTopRight
+        {
+            background-image: url(images/main_rt.jpg);
+            background-repeat: no-repeat;
+            background-position: right top;
+        }
+        .RndBox .RndTopLeft .RndTopRight .RndTopMid
+        {
+            margin-right: 5px;
+            margin-left: 5px;
+            border-top-width: 1px;
+            border-top-style: solid;
+            border-top-color: #938E3B;
+            height: 5px;
+        }
+        .RndBox .RndContent
+        {
+            border-right-width: 1px;
+            border-left-width: 1px;
+            border-right-style: solid;
+            border-left-style: solid;
+            border-right-color: #938E3B;
+            border-left-color: #938E3B;
+        }
+        .RndBox .RndBtmLeft
+        {
+            background-image: url(images/main_lb.jpg);
+            background-repeat: no-repeat;
+            background-position: left top;
+        }
+        .RndBox .RndBtmLeft .RndBtmRight
+        {
+            background-image: url(images/main_rb.jpg);
+            background-repeat: no-repeat;
+            background-position: right top;
+        }
+        .RndBox .RndBtmLeft .RndBtmRight .RndBtmMid
+        {
+            height: 5px;
+            margin-right: 5px;
+            margin-left: 5px;
+            border-bottom-width: 1px;
+            border-bottom-style: solid;
+            border-bottom-color: #938E3B;
+        }
+        .RndBox .RndContent
+        {
+            padding-right: 5px;
+            padding-left: 5px;
+        }
+        #tags
+        {
+            padding-right: 0px;
+            padding-left: 0px;
+            padding-bottom: 0px;
+            margin: 0px 0px 0px 10px;
+            width: 900px;
+            padding-top: 0px;
+            height: 20px;
+            clear: left;
+        }
+        #tags LI
+        {
+            float: left;
+            margin-right: 1px;
+            list-style-type: none;
+            height: 25px;
+            background-repeat: no-repeat;
+            background-position: left bottom;
+        }
+        #tags LI A
+        {
+            padding-right: 10px;
+            padding-left: 10px;
+            float: left;
+            padding-bottom: 0px;
+            color: #000;
+            line-height: 25px;
+            padding-top: 0px;
+            height: 25px;
+            text-decoration: none;
+            background-repeat: no-repeat;
+            background-position: right bottom; /*            blr:expression(this.onFocus=this.blur());            */
+        }
+        #tags LI a:focus
+        {
+            outline: none;
+            -moz-outline: none;
+        }
+        #tags LI.emptyTag
+        {
+            background: none transparent scroll repeat 0% 0%;
+            width: 4px;
+        }
+        #tags LI.selectTag
+        {
+            background-image: url(images/tag_left.jpg);
+            background-repeat: no-repeat;
+            background-position: left bottom;
+            margin-bottom: 0px;
+            position: relative;
+            height: 25px;
+        }
+        #tags LI.selectTag A
+        {
+            background-repeat: no-repeat;
+            background-position: right top;
+            background-image: url(images/tag_right.jpg);
+            color: #000;
+            line-height: 25px;
+            height: 25px;
+            margin-left: 5px;
+        }
+        #tagContent
+        {
+            border-right: #938E3B 1px solid;
+            padding-right: 1px;
+            border-top: #938E3B 1px solid;
+            padding-left: 1px;
+            padding-bottom: 1px;
+            border-left: #938E3B 1px solid;
+            padding-top: 1px;
+            border-bottom: #938E3B 1px solid;
+            background-color: #fff;
+            clear: left;
+        }
+        .tagContent
+        {
+            border-right: #938E3B 1px solid;
+            padding-right: 1px;
+            border-top: #938E3B 1px solid;
+            padding-left: 1px;
+            padding-bottom: 1px;
+            border-left: #938E3B 1px solid;
+            padding-top: 1px;
+            border-bottom: #938E3B 1px solid;
+            background-color: #fff;
+            clear: left;
+            padding-right: 10px;
+            display: none;
+            padding-left: 10px;
+            padding-bottom: 10px;
+            color: #474747;
+            padding-top: 10px;
+            height: 350px;
+        }
+        #tagContent DIV.selectTag
+        {
+            display: block;
+        }
+        #con
+        {
+            margin-top: 10px;
+        }
+    </style>
+
+    <script type="text/javascript" src="system.xjs"></script>
+
+    <script language="javascript" type="text/javascript" src="js/xdk4j.js"></script>
+
+    <script language="javascript" type="text/javascript" src="js/controls/tablelist.js"></script>
+
+    <script language="javascript" type="text/javascript" src="js/controls/tab_page.js"></script>
+
+    <script type="text/javascript" src="js/controls/dialog.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/utils/net_util.js"></script>
+
+    <script type="text/javascript" src="wjs.xjs"></script>
+
+    <script type="text/javascript">
+        var schema;
+        var isNewSchema = false;
+        var G_FieldList = null;
+        var G_TabPage = null;
+        //    var g_XTable = null;
+        var g_tableName = "";
+
+        function initialize() {
+
+            G_TabPage = new TabPage();
+            G_TabPage.AddTab("Tab_DataList", "DataListDiv");
+            G_TabPage.AddTab("Tab_FieldList", "FieldListDiv");
+            G_TabPage.AddTab("Tab_Command", "CommandDiv");
+            G_TabPage.AddTab("Tab_UserCommand", "UserCommandDiv");
+            G_TabPage.AddTab("Tab_Reference", "ReferenceDiv");
+
+            var urlRequest = DomUtils.getUrlRequest();
+            var tableName = urlRequest["TableName"];
+            if (!tableName || tableName == undefined)
+                return;
+
+            g_tableName = tableName;
+            var req = new JoapRequest();
+            req.setObjCls("DbManager");
+            req.setMethod("GetTableSchema");
+            req.addParamate("tableFullName", tableName);
+            var resp = req.commit();
+
+            if (resp) {
+                var tableSchema = resp.RetData.Data;
+                setData(tableSchema);
+            }
+        }
+
+        function postData() {
+            tableSchema = schema;
+            updateData(tableSchema);
+            if (tableSchema.Id == "") {
+                alert("请输入XTable的ID！");
+                return;
+            }
+
+            var req = new JoapRequest();
+            req.setObjCls("DbManager");
+            req.setMethod("UpdateTableSchema");
+            req.addParamate("tableFullName", g_tableName);
+            req.addParamate("schema", tableSchema);
+
+            var resp = req.commit();
+            //         schema = resp.RetData.Data;
+        }
+
+        function updateData(tableSchema) {
+            if (tableSchema == null) return;
+
+            tableSchema.Title = tableTitle.value;
+            tableSchema.PageSize = txtPageSize.value;
+            tableSchema.IsAutoNewLine = chkAutoNewLine.checked;
+
+            CommandFrame.window.updateData(tableSchema);
+            fieldsFrame.window.updateData(tableSchema);
+        }
+
+        //    var tableSchema;
+
+        function setData(tableSchema) {
+            //            g_XTable = xTable;
+            schema = tableSchema;
+
+            //       isNewSchema = false;
+            //           debugger;
+            //           schema = xTable;
+            tableName.innerHTML = schema.Id;
+            tableTitle.value = schema.Title;
+            txtPageSize.value = schema.PageSize;
+            chkAutoNewLine.checked = schema.IsAutoNewLine;
+
+            elementReadyRun(CommandFrame.window.document, function() {
+                CommandFrame.window.setData(schema);
+            });
+            elementReadyRun(fieldsFrame.window.document, function() {
+                fieldsFrame.window.setData(schema);
+            });
+            elementReadyRun(UserCommandFrame.window.document, function() {
+                UserCommandFrame.window.setData(schema);
+            });
+            elementReadyRun(ReferenceFrame.window.document, function() {
+                ReferenceFrame.window.setData(schema);
+            });
+
+            elementReadyRun(DataListFrame.window.document, function() {
+                var req = new JoapRequest("Table", g_tableName);
+                var resp = req.commit();
+                if (resp != null) {
+                    var table = resp.ObjData.Data;
+                    DataListFrame.window.setData(table);
+                }
+            });
+        }
+
+        function DeleteRow(node) {
+            var rowNo = G_FieldList.GetCellObjectRowNo(node);
+            if (schema.Fields[rowNo - 1]) {
+                schema.Fields[rowNo - 1] = null;
+
+                for (var i = rowNo - 1; i < schema.Fields.length - 1; i++) {
+                    schema.Fields[i] = schema.Fields[i + 1];
+                }
+                schema.Fields.length -= 1;
+            }
+            G_FieldList.DeleteRow(rowNo);
+        }
+
+        function AddFields() {
+
+            UpdateData(schema);
+
+            if (schema.Id == "") {
+                alert("请输入XTable的ID！");
+                return;
+            }
+            if (schema == null) {
+                alert("当前没有列表被选中，请在列表目上选择要编辑的列表！");
+                return;
+            }
+            if (schema.SelectCommand == null || schema.SelectCommand == "") {
+                alert("列表数据源还没有配置，请先配置列表数据源！");
+                return;
+            }
+
+
+            XDialog.ShowDlg("datafields.htm?sql=" + schema.SelectCommand, G_FieldList, 600, 400);
+        }
+
+        //edit Lookup of selected field
+        function LinkLookup(node) {
+            UpdateData(schema);
+
+            var rowNo = G_FieldList.GetCellObjectRowNo(node);
+
+            XDialog.ShowDlg("field_lookupTable.html?fieldId=" + schema.Fields[rowNo - 1].Id, schema, 800, 600);
+        }
+
+        //edit validation of the selected field
+        function editFieldValid(node) {
+            UpdateData(schema);
+
+            var rowNo = G_FieldList.GetCellObjectRowNo(node);
+
+            XDialog.ShowDlg("field_validation.html?fieldId=" + schema.Fields[rowNo - 1].Id, schema, 800, 600);
+        }
+
+        //update to server
+        function UpdateTable() {
+            //check reference schema
+            for (var i = 0; i < schema.References.length; i++) {
+                var reference = schema.References[i];
+
+                //check ID
+                if (reference.Id == "") {
+                    alert("模板引用中存在ID为空的结构！");
+                    return;
+                }
+
+                //check maps
+                var fields = new Array();
+                for (var j = 0; j < reference.Maps.length; j++) {
+                    for (var k = 0; k < fields.length; k++) {
+                        if (fields[k] == reference.Maps[j].Id) {
+                            alert("模板引用" + reference.Id + "的字段对应列表中，本表字段" + fields[k] + "重复！");
+                            return;
+                        }
+                    }
+                    fields.push(reference.Maps[j].Id);
+                }
+            }
+
+            //check lookups
+            for (var i = 0; i < schema.LookupFields.length; i++) {
+                var lookup = schema.LookupFields[i];
+
+                //check ID
+                if (lookup.Id == "") {
+                    alert("查询引用中存在ID为空的结构！");
+                    return;
+                }
+
+                //check maps
+                var fields = new Array();
+                for (var j = 0; j < lookup.LookupMap.length; j++) {
+                    for (var k = 0; k < fields.length; k++) {
+                        if (fields[k] == lookup.LookupMap[j].Id) {
+                            alert("查询引用" + lookup.Id + "的字段对应列表中，本表字段" + fields[k] + "重复！");
+                            return;
+                        }
+                    }
+                    fields.push(lookup.LookupMap[i].Id);
+                }
+            }
+
+            //check fields and validations
+            var fieldIds = new Array();
+            for (var i = 0; i < schema.Fields.length; i++) {
+                for (var j = 0; j < fieldIds.length; j++) {
+                    if (fieldIds[j] == schema.Fields[i].Id) {
+                        alert("字段" + fieldIds[j] + "重复！");
+                        return;
+                    }
+                }
+                fieldIds.push(schema.Fields[i].Id);
+
+                //check validations
+                if (schema.Fields[i].Valids) {
+                    var validationIds = new Array();
+                    for (var j = 0; j < schema.Fields[i].Valids.length; j++) {
+
+                        for (var k = 0; k < validationIds.length; k++) {
+                            if (validationIds[k] == schema.Fields[i].Valids[j].Id) {
+                                alert("验证方法名" + validationIds[k] + "重复！");
+                                return;
+                            }
+                        }
+
+                        validationIds.push(schema.Fields[i].Valids[j].Id);
+
+                        var methodIds = new Array();
+                        for (var k = 0; k < schema.Fields[i].Valids[j].Parameters.length; k++) {
+                            for (var l = 0; l < methodIds.length; l++) {
+                                if (methodIds[l] == schema.Fields[i].Valids[j].Parameters[k].Id) {
+                                    alert("验证方法" + schema.Fields[i].Valids[j].Id + "的参数值" + methodIds[l] + "重复！");
+                                    return;
+                                }
+                            }
+
+                            methodIds.push(schema.Fields[i].Valids[j].Parameters[k].Id);
+                        }
+                    }
+                }
+            }
+
+            //check schema
+            if (schema.Id == "") {
+                alert("XTable ID为空，不能保存！");
+                return;
+            }
+
+            //            if (schema.KeyField == "") {
+            //                alert("XTable的主键字段未指定！");
+            //                return;
+            //            }
+
+            //upload           
+            PostData(schema);
+        }
+
+        //create a new XTable schema
+        function newTableSchema() {
+            var ret = new Object();
+            ret.Id = "";
+            ret.SelectCommand = "";
+            ret.InsertCommand = "";
+            ret.UpdateCommand = "";
+            ret.DeleteCommand = "";
+
+            ret.References = [];
+            ret.LookupFields = [];
+            ret.Fields = [];
+            isNewSchema = true;
+            return ret;
+
+        }
+
+        //new XTable
+        function newDataList() {
+            schema = newTableSchema();
+            SetData(schema);
+            G_TabPage.SelectTab(Tab_Command);
+            isNewSchema = true;
+            CommandFrame.window.Input_Id.readOnly = false;
+
+        }
+    </script>
+
+    <script type="text/javascript">
+
+        function createQuery_onclick() {
+            var args = new Object();
+            var dlgRet = window.showModalDialog("name_caption_dlg.html", args,
+               "dialogHeight:200px;dialogWidth:450px;center:yes;resizable:yes;scroll:no");
+            if (dlgRet == null) return;
+
+            schema.Title = dlgRet.caption;
+            if (schema.Title == null || schema.Title == "")
+                schema.Title = dlgRet.id;
+            var req = new JoapRequest("DbManager", null, "UpdateTableSchema");
+            req.addParamate("tableFullName", dlgRet.id);
+            req.addParamate("schema", schema);
+            req.invoke();
+
+        }
+        function setCommandParams() {
+            var ret = window.showModalDialog("query_param.html", schema, "dialogWidth:800px;dialogHeight:600px;center:yes;resizable:yes;scroll:auto");
+        }
+    </script>
+
+</head>
+<body onload="initialize();">
+    <div class="RndBox">
+        <div class="RndTopLeft">
+            <div class="RndTopRight">
+                <div class="RndTopMid">
+                </div>
+            </div>
+        </div>
+        <div class="RndContent">
+            <div class="MainPageTitleBox">
+                <img src="images/sjmk.jpg" width="126" height="27" alt="数据模块" />&nbsp;首页</div>
+            <p>
+                <strong>名称：</strong><span id="tableName"></span><strong>中文名称：</strong>
+                <input type="text" id="tableTitle" name="tableTitle" style="vertical-align: middle" />
+                &nbsp;&nbsp; 每页行数
+                <input type="text" id="txtPageSize" name="tableTitle0" style="width: 20px" />
+                &nbsp;&nbsp;空记录时自动加新行
+                <input type="checkbox" id="chkAutoNewLine" name="chkAutoNewLine" />
+            </p>
+            <div class="BottomBox">
+                <input type="button" name="newTable" id="newTable" value="保存配置" onclick="postData()" />
+                <input type="button" name="createQuery" id="createQuery" value="创建查询表" onclick="return createQuery_onclick()" />
+                <input type="button" name="newTable" id="appendRelation" value="查询参数" onclick="setCommandParams()" />
+                <input type="button" name="newTable" id="setColunm" value="设置列属性" />
+            </div>
+        </div>
+        <div class="RndBtmLeft">
+            <div class="RndBtmRight">
+                <div class="RndBtmMid">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="con">
+        <ul id="tags">
+            <li class="selectTag" id="Tab_DataList"><a href="javascript:void(0)" hidefocus="true">
+                数据维护</a> </li>
+            <li id="Tab_FieldList"><a href="javascript:void(0)" hidefocus="true">字段维护</a> </li>
+            <li id="Tab_Command"><a href="javascript:void(0)" hidefocus="true">数据源维护</a> </li>
+            <li id="Tab_UserCommand"><a href="javascript:void(0)" hidefocus="true">自定义命令</a>
+            
+            </li>
+            <li id="Tab_Reference"><a href="javascript:void(0)" hidefocus="true">引用表配置</a> </li>
+        </ul>
+        <div class="tagContent" id="DataListDiv">
+            <iframe frameborder="0" class="Tab_Frame" width="100%" height="100%" name="DataListFrame"
+                id="DataListFrame" src="xtable_datalist.htm"></iframe>
+        </div>
+        <div class="tagContent" id="FieldListDiv">
+            <iframe frameborder="0" class="Tab_Frame" marginheight="0" marginwidth="0" width="100%"
+                height="100%" name="fieldsFrame" id="fieldsFrame" src="xtable_fields.htm"></iframe>
+        </div>
+        <div class="tagContent" id="CommandDiv">
+            <iframe frameborder="0" class="Tab_Frame" width="100%" height="100%" name="CommandFrame"
+                id="CommandFrame" src="xtable_command.htm"></iframe>
+        </div>
+        <div class="tagContent" id="UserCommandDiv">
+            <iframe frameborder="0" class="Tab_Frame" width="100%" height="100%" name="UserCommandFrame"
+                id="UserCommandFrame" src="xtable_urser_command.htm"></iframe>
+        </div>
+        <div class="tagContent" id="ReferenceDiv">
+            <iframe frameborder="0" class="Tab_Frame" width="100%" height="100%" name="ReferenceFrame"
+                id="ReferenceFrame" src="xtable_reference.htm"></iframe>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0 minimal-ui" />
+    <link rel="stylesheet" href="/boostrap/css/bootstrap.min.css">
+    <script src="/xbase.js/jquery.min.js"></script>
+    <script src="/boostrap/js/bootstrap.min.js"></script>
+    <script src="/xbase.js/jquery.xbase.form.js"></script>
+    <script src="/xbase.js/jquery.xbase.js"></script>
+    <script src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script src="scripts/jk.pagetool.js"></script>
+    <script src="scripts/jk.date.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+
+    <title>文章类型管理</title>
+    <style>
+        .art-content {
+            padding: 10px;
+        }
+
+        section {
+            padding: 10px 10px;
+            border: 1px solid #eee;
+            margin: 10px 0px;
+            background-color: white;
+        }
+
+        .art-date {
+            color: gray;
+            font-size: 1.2rem;
+        }
+
+        .art-img {
+            margin: 5px auto;
+        }
+
+        .art-content {
+            color: gray;
+        }
+
+        .art-tlt-font {
+            font-weight: bold;
+            font-size: 2.0rem;
+        }
+
+        .art-more {
+            font-weight: normal;
+            font-size: 1.2rem;
+        }
+
+        .artType-item-title {
+            cursor: pointer;
+        }
+
+        .artType-item-name {
+            width: 100%;
+            display: inline-block;
+        }
+
+        .sidebar-form {
+            max-width: 350px;
+            width: 100%;
+            margin-right: 30px;
+            margin-bottom: 10px;
+        }
+    </style>
+
+    <script>
+        $(function () {
+
+            //$(".art-edit").click(function () {
+            //    // body...
+            //    var ptd = $(this).parents(".artitem");
+            //    var obj = ptd.find(".artid");
+
+            //    var parmets = "xbase_ds_name=" + ds + "&ID=" + obj.val()
+            //    window.location.href = url + "?" + parmets;
+
+            //});
+
+
+            $(".art-adds").click(function () {
+                // body...
+                var parmets = "xbase_ds_name=" + ds + "&operator=add";
+                window.location.href = url + "?" + parmets;
+
+
+            });
+
+            //initPageTool(5,1);
+        })
+        var user = $.rCall("LoginUser");      
+        var url = "articleTypeEdit.html";
+        var ds = "pt_articleType";
+        var operator = "add";
+        function edit(e) {
+            var ptd = $(e).parents(".artitem");
+            var obj = ptd.find(".artid");
+            var objds = $.rCall(ds + ".data", { page: 1, rows: 1, filterRules: [{ field: 'ID', op: 'equal', value: obj.val() }] });
+            var data = objds.rows[0];
+            $("#pk_ID").val(data.ID);
+            $("#typeForm").form('load', data);
+            $("#myModal .modal-title").html("修改文章类型");
+            operator = "update";
+            $('#myModal').modal('show')
+        }
+
+        function delPt(e) {
+            if (confirm("您确定要删除该项？")) {
+                if (ds != undefined && ds != "") {
+                    var ptd = $(e).parents(".artitem");
+                    var obj = ptd.find(".artid");
+                    //alert(row.ID);
+                    var res = $.rCall(ds + ".delete", { row: { pk_ID: obj.val() } });
+                    if (!res) {
+                        alert("删除成功");
+                        //refresh();
+                        ptd.remove();
+
+                    }
+                }
+
+            }
+        }
+
+        function add() {
+
+            var url = "DataForm." + ds + ".post.wbo?action=add";
+            var date = new Date();
+            var createTime = date.Format("yyyy-MM-dd hh:mm:ss");
+            if (operator != "add") {
+                url = "DataForm." + ds + ".post.wbo?action=edit";
+            }
+            $("#typeForm").form("submit", {
+                url: url,
+                onSubmit: function (param) {
+                    param.CreateTime = createTime;
+                    param.Creater = user.Id;
+                    param.UpdateTime = createTime;
+                },
+                success: function (data) {
+                    if (data && data.Err)
+                        alert(data.Err.Text)
+                    else {
+                        alert("记录已被保存");
+                        //  loadForm();
+
+                        //window.history.back(-1);
+                        $('#myModal').modal('hide')
+                        operator = "add";
+                        $("#myModal .modal-title").html("添加文章类型");
+                        articleTypes.ctrl.reload({ page: page, rows: pageSize, filterRules: [{ field: 'Name', op: 'notequal', value: value }] });
+                    }
+                }
+            })
+           
+        }
+
+
+        
+
+
+    </script>
+</head>
+<body>
+    <div class="view" style="padding: 0px 20px;">
+        <p></p>
+
+        <div class="view">
+            <table class="table table-hover" wbo="pt_articleType.data" id="articleTypes" name="articleTypes" wbo-params="{ page:1,rows:20}">
+                <caption>
+                    <form action="#" method="get" class="sidebar-form pull-left">
+                        <div class="input-group">
+
+                            <input type="text" name="query" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                                <button type="button" onclick="search()" class="btn btn-default">提交</button>
+                            </span>
+                        </div>
+                    </form>
+                    <button role="button" class="btn btn-info pull-left art-add" data-toggle="modal"
+                        data-target="#myModal">
+                        添加类型</button>
+                </caption>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>文章类型</th>
+                        <th class="hidden-xs">类型摘要</th>
+                        <th class="hidden-xs">创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody name="articleTypeRows" wbo-bind="articleTypes.rows">
+                    <tr name="articleTypeRows.item" class="artitem">
+                        <td>
+                            <input type="hidden" name="articleTypeRows.ID" class="artid">
+                            <input type="checkbox" name="" id="">
+                        </td>
+                        <td name="articleTypeRows.Name"></td>
+                        <td class="hidden-xs" name="articleTypeRows.Summary" style="width: 40%;">Bangalore</td>
+                        <td class="hidden-xs" name="articleTypeRows.CreateTime"></td>
+                        <td>
+                            <button class="btn btn-primary art-edit" role="button" onclick="edit(this)"><span class="glyphicon glyphicon-edit"></span></button>
+                            <button class="btn btn-danger art-del" role="button" onclick="delPt(this)"><span class="glyphicon glyphicon-remove"></span></button>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+            <div style="height: 50px">
+                <div class="" style="margin-left: 15px;">
+                    <ul class="pagination ">
+                        <li><a href="#">&laquo;</a></li>
+                        <li><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#">&raquo;</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" data-backdrop="static" aria-hidden="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">添加文章类型
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" id="typeForm" action="/" method="post">
+                        <input type="text" class="form-control hidden" name="pk_ID" id="pk_ID" placeholder="">
+                        <div class="form-group">
+                            <label for="name">类型：</label>
+                            <input type="text" class="form-control" name="Name" id="Name" placeholder="文章类型">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="closeModal" class="btn btn-default"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                    <button type="button" onclick="add()" class="btn btn-primary">
+                        提交
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
+    </div>
+</body>
+    <script>
+        $(function () {
+            search();
+            var total = articleTypes.ctrl.data().total;
+            initPage(total);
+        })
+
+        function initPage(total) {
+            $("ul.pagination").pageTool({
+                datatotal: total, currnum: 1, pagesize: pageSize, jumpPageFunc: function (num) {
+                    articleTypes.ctrl.reload({ page: num, rows: pageSize, filterRules: [{ field: 'Name', op: 'contains', value: value }] });
+                    page = num;                
+                }
+            });
+        }
+        var page = 1;
+        var pageSize = 20;
+        var value = "";
+        function search() {
+            value = $("[name='query']").val();
+            articleTypes.ctrl.reload({ page: 1, rows: pageSize, filterRules: [{ field: 'Name', op: 'contains', value: value }] });
+            var total = articleTypes.ctrl.data().total;
+            initPage(total);
+        }
+</script>
+</html>

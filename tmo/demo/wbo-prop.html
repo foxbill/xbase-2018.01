@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript">
+
+        function btnTest_onclick() {
+            var age = $.rCall("ClassEcho.Age");
+            $(div1).html(age);
+        }
+    </script>
+</head>
+<body>
+    <div class="demo-info">
+        <div class="demo-tip icon-tip"></div>
+        <div>Js调用后台组件 ClassEcho.age属性。</div>
+    </div>
+
+    <input id="btnTest" type="button" value="调用ClassEcho.age属性" onclick="return btnTest_onclick()" /><br />
+    <p> 返回结果：</p>
+    <div id="div1"></div>
+</body>
+</html>

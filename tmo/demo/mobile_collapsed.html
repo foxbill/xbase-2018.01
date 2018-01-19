@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="../jquery.mobile/jquery.mobile-1.4.5.css" rel="stylesheet" />
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script src="../jquery.mobile/jquery.mobile-1.4.5.min.js"></script>
+
+    <script type="text/javascript">
+
+
+        $(function () {
+            var div_width = $("#home").css("width").replace("px", "");
+            var div_height = $("#home").css("height").replace("px", "");           
+            $("#home").css({
+                "margin-left": 0,
+                "margin-top": 36
+            });
+
+            //var list = $.rCall("shop_goods.data",{page:1, rows:8 , filterRules:[{field:'category',op:'equal',value:2 }]});
+
+        })
+
+
+    </script>
+
+</head>
+
+<body>
+  
+        <div data-role="page" id="home" style="width: 100%; height: 100%" data-theme="b">
+            <div data-role="header">
+                <h1>可折叠集合</h1>
+            </div>
+
+            <div data-role="content">
+                <div data-role="collapsible-set">
+                    <div data-role="collapsible">
+                        <h3>日用品</h3>
+                        <div wbo="shop_goods.data" wbo-params="{page:1, rows:8 ,filterRules:[{field:'category',op:'equal',value:1 }]}" name="list1">
+                            <div name="list1.rows">
+                                <div name="list1.rows.item" >
+                                    <img name="list1.rows.picture" width="60" height="60" />
+                                    <a name="list1.rows.name" style="line-height:50px"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div data-role="collapsible">
+                        <h3>服装</h3>
+                        <div wbo="shop_goods.data" wbo-params="{page:1, rows:8 ,filterRules:[{field:'category',op:'equal',value:2 }]}" name="list3">
+                            <div name="list3.rows">
+                                <div name="list3.rows.item" >
+                                    <img name="list3.rows.picture" width="60" height="60" />
+                                    <a name="list3.rows.name" style="line-height:50px"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div data-role="collapsible">
+                        <h3>点击我 - 我可以折叠！</h3>
+                        <p>我是可折叠的内容。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div data-role="footer">
+                <h1>可折叠集合</h1>
+            </div>
+        </div>      
+</body>
+</html>

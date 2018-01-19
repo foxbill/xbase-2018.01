@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="../jquery.mobile/jquery.mobile-1.4.5.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script src="../jquery.mobile/jquery.mobile-1.4.5.min.js"></script>
+    <script type="text/javascript">
+
+
+        $(function () {
+            $("#home").css({
+                "margin-left": 0,
+                "margin-top": 36
+            });
+            $(".row").hover(function () {
+                $(this).addClass("addCor");
+            }, function () {
+                $(this).removeClass("addCor");
+            })
+           
+           
+            
+        })
+
+
+        function addCar(e) {
+            //用户Id根据当前登录的用户Id,表的主键id是不能重复的,不然新增报错,一下只是测试
+            var rets = $.rCall("ds.demo_car.insert", { row: { id: randNum(5), count: 1, price: e.data.price, goodsId: e.data.id, userId: 1 } });
+
+            var ret = $.getJsonStr(rets);
+            if (ret != "null") {
+                $("#msg").html("操作失败")
+            }
+            else {
+                $("#msg").html("操作成功")
+            }
+            $("#alert").click();
+
+        }
+       
+
+        //生成指定长度的随机数
+        function randNum(n) {
+            var num = "";
+            for (var i = 0; i <= n; i++) {
+                num += Math.floor((Math.random() * 10 + 1)) + "";//生成随机数,作为主键,只供以测试
+            }
+            return num;
+        }
+
+        function colse() {
+            $("#pagetwo").css("display", "none");
+        }
+
+    </script>
+    <style>
+        .row {
+            margin: 4px;
+            padding: 4px;
+            height: 100px;
+            border-bottom: 2px solid #808080;
+            
+            
+        }
+
+        .addCor {
+            background-color: #808080;
+            padding: 8px 0px 0px 8px;
+           
+        }
+
+        .left_img {
+            float: left;
+            width: 25%;
+        }
+
+        .rig_cont ul {
+            list-style: none;
+        }
+
+        .rig_cont div {
+            margin: 3px;
+            height: 28px;
+            padding: 0px;
+            font-size: 18px;
+        }
+
+        .price {
+            color: #f00;
+            line-height: 23px;
+        }
+    </style>
+</head>
+
+<body>
+    <div data-role="page" id="home" style="width: 100%; height: 100%" data-theme="b">
+        <div data-role="header">
+            <h3>在线订单系统</h3>
+        </div>
+        <div data-role="content">
+
+            <div class="choice_list" wbo="demo_goods.rows" name="list1" wbo-params="{ page:1,rows:8 }" view="jsonList">
+
+                <div data-role="listview" data-inset="true">
+                    <div name="list1.item" class="row">
+                        <div class="left_img">
+                            <img name="list1.picture" height="80" width="80" />
+                        </div>
+                        <div class="rig_cont">
+                            <div><span name="list1.name"></span></div>
+                            <div><span name="list1.summary"></span></div>
+                            <div>
+                                <strong name="list1.price" class="price"></strong>
+                                <a style="margin: 0px; float: right;" name="list1.operate" href="#" onclick="addCar(this)" data-role="button" data-mini="true">加入购物车</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <a href="#pagetwo" data-rel="popup" id="alert" data-position-to="window" hidden="hidden" ></a>
+            <div data-role="popup" id="pagetwo" data-tolerance="30,15">
+                <h4>添加购物车提示</h4>
+                <p id="msg"></p>
+                <a href="#" onclick="colse()" data-role="button" data-mini="true">确定</a>
+            </div>
+        </div>
+
+        <div data-role="footer" data-fullscreen="true" data-position="fixed">
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#" class="ui-btn-active ui-state-persist" data-ajax="false" data-icon="home">菜单</a></li>
+                    <li><a href="/demo/mobile_car.html" data-ajax="false" data-icon="info">购物车</a></li>
+                    <li><a href="/demo/mobile_order.html" data-icon="grid" data-ajax="false">订单</a></li>
+                    <li><a href="#" data-icon="star">我的</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+
+</body>
+
+</html>

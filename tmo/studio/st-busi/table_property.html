@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+
+    <script type="text/javascript">
+
+        function ok_onclick() {
+            var obj = new Object();
+            obj.row = row_count.value;
+            obj.col = col_count.value;
+            window.returnValue = obj;
+
+            close();
+        }
+
+        function cancel_onclick() {
+            window.returnValue = null;
+            close();
+        }
+
+    </script>
+
+</head>
+<body>
+    <center>
+        表格属性设置：<br />
+        <br />
+        <br />
+        行数:<input type="text" id="row_count" />
+        <br />
+        列数:<input type="text" id="col_count" />
+        <br />
+        <br />
+        <br />
+        <input type="button" id="ok" value="确定" onclick="return ok_onclick()" />
+        <input type="button" id="cancel" value="取消" onclick="return cancel_onclick()" />
+    </center>
+</body>
+</html>

@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>上传文件</title>
+    <script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tree.jquery.js" type="text/javascript"></script>
+    <link href="../css/jqtree.css" rel="stylesheet" type="text/css" />
+    <base target="_self" />
+    <script type="text/javascript">
+
+        a = window.dialogArguments;
+
+        function submit() {
+            $.post("WboMan.RegComponent.wbo", { src: iUrl.value }, function (data) {
+                returnValue = false;
+                var ret = $.parseJSON(data);
+                if (ret && ret.Err)
+                    alert(ret.Err.ErrText);
+                else {
+                    alert("注册成功");
+                    returnValue = true;
+                    close();
+                }
+
+            });
+        }
+    </script>
+</head>
+<body>
+    <table width="100%" style="height: 300">
+        <tr>
+            <td align="center" valign="middle">
+                <input type="text" size="100" id="iUrl" />
+                <input id="upl" type="submit" value="提交" onclick="submit()" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <iframe name="Ret"></iframe>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

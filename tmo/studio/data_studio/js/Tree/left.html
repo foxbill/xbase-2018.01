@@ -1,0 +1,31 @@
+﻿<html>
+<head>
+    <title>Left</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="StyleSheet" href="Css/dtree.css" type="text/css">
+
+    <script type="text/javascript" src="Js/dtree.js"></script>
+
+    <script type="text/javascript">
+        a = new dTree('a');
+        a.config.useCookies = false;
+        a.add(1, -1, '', '');
+        a.add(1, -1, '罪犯信息管理与审批', '#');
+        a.add(402, 1, '录音文件管理', '#');
+        a.add(403, 1, '通话计费管理', '#');
+        a.add(404, 1, '控制信息查看', '#');
+        a.add(405, 1, '系统设置', '#');
+
+        a.add(411, 401, '罪犯基础信息管理', 'PhoneManage/Prisoner/prisonerlist.htm');
+        a.add(412, 401, '亲情电话拨打审批', 'PhoneManage/Prisoner/examineList.htm');
+    </script>
+
+</head>
+<body>
+
+    <script type="text/javascript">
+        document.write(a);
+    </script>
+
+</body>
+</html>

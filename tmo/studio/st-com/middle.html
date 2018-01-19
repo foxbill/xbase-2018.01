@@ -1,0 +1,107 @@
+﻿<html>
+<head>
+    <title>无标题文档</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <link href="css/studio.css" rel="stylesheet" type="text/css" />
+    <link href="../css/jqtree.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .OutlookPanel
+        {
+            background-color: White; /*#56628D*/
+            width: 234px;
+            margin-left: 3px; /* height:300px;*/
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+    <script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tree.jquery.js" type="text/javascript"></script>
+    <script src="../../xbase.js/json.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../../xbase.js/tab_control.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(tabOutLookBar).ah();
+            $(tree1).ah();
+            loadTree();
+        })
+
+        function loadTree() {
+            $.post("WboMan.getWboNodes.wbo?~v=" + $.timeVer(), function (json) {
+                var nodes = JSON.parse(json);
+                if (nodes.Err) {
+                    $('#tree1').text(nodes.Err.Text);
+                    return;
+                }
+                $('#tree1').tree({
+                    data: nodes,
+                    dragAndDrop: false,
+                    autoOpen: 0,
+                    selectable: true
+                });
+            });
+            //tree1.style.
+            $('#tree1').bind('tree.select', function (event) {
+                // The clicked node is 'event.node'
+                var node = event.node
+                if (node != null) {
+                    var frame = document.getElementById("mainFrame");
+                    frame.src = "wbo-edit.html?wbo=" + node.name;
+                }
+            });
+        }
+    </script>
+    <!-- 表单控件图片结束 -->
+</head>
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" style="overflow: hidden">
+    <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td width="220" valign="top" id="tdPageLeft" class="Left">
+                <table width="100%" height="100%" border="0" cellspacing="1" class="lm" id="tabOutLookBar">
+                    <tr>
+                        <td class="lmh" height="30px">
+                            <div class="OutLookHead">
+                                <div class="Left">
+                                    <div class="Right" id="LeftAngel">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="OutSplit">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div id="tree1" style="height: 300px; overflow-y: auto; background-color: #FFF">
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td class="MainPanel" id="tdMainBox">
+                <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="1">
+                    <tr>
+                        <td height="28" class="TabHead2">
+                            <div class="PropBoxSwitchButton" id="divPropBoxSwitch" style="" onclick="return divPropBoxSwitch_onclick()">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <iframe id="mainFrame" frameborder="0" height="100%" width="100%" style="background-color: #FFF"
+                                src="wbo-edit.html"></iframe>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <p>
+        &nbsp;
+    </p>
+</body>
+</html>

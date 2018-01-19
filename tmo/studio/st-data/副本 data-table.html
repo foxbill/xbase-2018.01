@@ -1,0 +1,2639 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <title>数据库管理</title>
+    <!--<script type="text/javascript" src="../../xbase.js/tab_control.js"></script>-->
+    <script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tree.jquery.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tab_control.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.form.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.jsonform.js" type="text/javascript"></script>
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link href="../css/jqtree.css" rel="stylesheet" type="text/css" />
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <link href="css/studio.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+
+        $(function () {
+            loadData();
+        });
+
+        function loadData() {
+            var dsName = $.url.queryString["dsName"];
+            $("#dataTable").html("正在加载控件....");
+            $("#dataTable").load("VDataTable.disp?" + $.param({ name: dsName })
+            , { elementName: "dataTable" }
+            , function (data, status, xhr) {
+                if (status == "error") {
+                    alert("Error: " + xhr.status + ": " + xhr.statusText);
+                    return;
+                }
+                memTest.value = data;
+            });
+        }
+    </script>
+    <script type="text/javascript">
+
+    </script>
+    <link href="SpryAssets/SpryValidationCheckbox.css" rel="stylesheet" type="text/css">
+</head>
+<body style="overflow: auto" class="bg-white  pd3">
+    <table border="1">
+        <th name='dataTable.head'>
+            <td name='dataTable.ID'>
+                ID
+            </td>
+            <td name='dataTable.fcSys_MID'>
+                fcSys_MID
+            </td>
+            <td name='dataTable.fcSys_FilePurview'>
+                fcSys_FilePurview
+            </td>
+            <td name='dataTable.fcSys_TYPE'>
+                fcSys_TYPE
+            </td>
+            <td name='dataTable.f_Attach'>
+                f_Attach
+            </td>
+            <td name='dataTable.f_Image'>
+                f_Image
+            </td>
+            <td name='dataTable.f_OutFile'>
+                f_OutFile
+            </td>
+            <td name='dataTable.fcSys_Sign'>
+                fcSys_Sign
+            </td>
+            <td name='dataTable.f_Owner'>
+                f_Owner
+            </td>
+            <td name='dataTable.f_SPLB'>
+                f_SPLB
+            </td>
+            <td name='dataTable.f_SPXL'>
+                f_SPXL
+            </td>
+            <td name='dataTable.f_SPMC'>
+                f_SPMC
+            </td>
+            <td name='dataTable.f_SPBM'>
+                f_SPBM
+            </td>
+            <td name='dataTable.f_SPTM'>
+                f_SPTM
+            </td>
+            <td name='dataTable.f_MJLS'>
+                f_MJLS
+            </td>
+            <td name='dataTable.f_GG'>
+                f_GG
+            </td>
+            <td name='dataTable.f_XH'>
+                f_XH
+            </td>
+            <td name='dataTable.f_JJDW'>
+                f_JJDW
+            </td>
+            <td name='dataTable.f_LJDW'>
+                f_LJDW
+            </td>
+            <td name='dataTable.f_CBJ'>
+                f_CBJ
+            </td>
+            <td name='dataTable.f_PFJJ'>
+                f_PFJJ
+            </td>
+            <td name='dataTable.f_PFLJ'>
+                f_PFLJ
+            </td>
+            <td name='dataTable.f_KCSX'>
+                f_KCSX
+            </td>
+            <td name='dataTable.f_KCXX'>
+                f_KCXX
+            </td>
+            <td name='dataTable.f_JXSL'>
+                f_JXSL
+            </td>
+            <td name='dataTable.f_BZQX'>
+                f_BZQX
+            </td>
+            <td name='dataTable.f_JDRQ'>
+                f_JDRQ
+            </td>
+            <td name='dataTable.f_XGRQ'>
+                f_XGRQ
+            </td>
+            <td name='dataTable.f_GYSMC'>
+                f_GYSMC
+            </td>
+            <td name='dataTable.f_GYSBM'>
+                f_GYSBM
+            </td>
+            <td name='dataTable.f_SPZL'>
+                f_SPZL
+            </td>
+            <td name='dataTable.f_KCSL'>
+                f_KCSL
+            </td>
+            <td name='dataTable.f_KCJS'>
+                f_KCJS
+            </td>
+            <td name='dataTable.f_KCLS'>
+                f_KCLS
+            </td>
+            <td name='dataTable.NetPCID'>
+                NetPCID
+            </td>
+            <td name='dataTable.fcSys_UID'>
+                fcSys_UID
+            </td>
+            <td name='dataTable.f_SPBH'>
+                f_SPBH
+            </td>
+            <td name='dataTable.f_KCJE'>
+                f_KCJE
+            </td>
+            <td name='dataTable.f_YJJ'>
+                f_YJJ
+            </td>
+            <td name='dataTable.f_XLR'>
+                f_XLR
+            </td>
+            <td name='dataTable.f_SFTJ'>
+                f_SFTJ
+            </td>
+            <td name='dataTable.f_YSCB'>
+                f_YSCB
+            </td>
+            <td name='dataTable.f_SCRQ'>
+                f_SCRQ
+            </td>
+            <td name='dataTable.f_SPSCRQ'>
+                f_SPSCRQ
+            </td>
+            <td name='dataTable.f_JYLSJ'>
+                f_JYLSJ
+            </td>
+            <td name='dataTable.f_GHJ'>
+                f_GHJ
+            </td>
+            <td name='dataTable.f_CSLSJ'>
+                f_CSLSJ
+            </td>
+            <td name='dataTable.f_ZDGHJ'>
+                f_ZDGHJ
+            </td>
+            <td name='dataTable.f_BZ'>
+                f_BZ
+            </td>
+            <td name='dataTable.fcSys_Lock'>
+                fcSys_Lock
+            </td>
+            <td name='dataTable.f_LRBL'>
+                f_LRBL
+            </td>
+            <td name='dataTable.f_PFLRBL'>
+                f_PFLRBL
+            </td>
+            <td name='dataTable.f_SPGJJ'>
+                f_SPGJJ
+            </td>
+            <td name='dataTable.f_QS'>
+                f_QS
+            </td>
+            <td name='dataTable.f_LS'>
+                f_LS
+            </td>
+            <td name='dataTable.f_SPPJJ'>
+                f_SPPJJ
+            </td>
+            <td name='dataTable.f_ZDR'>
+                f_ZDR
+            </td>
+            <td name='dataTable.f_JYLSBJ'>
+                f_JYLSBJ
+            </td>
+            <td name='dataTable.f_SCRQXF'>
+                f_SCRQXF
+            </td>
+            <td name='dataTable.f_DLSJG'>
+                f_DLSJG
+            </td>
+            <td name='dataTable.DL'>
+                DL
+            </td>
+            <td name='dataTable.f_DLSJGGJJ'>
+                f_DLSJGGJJ
+            </td>
+            <td name='dataTable.f_DZ'>
+                f_DZ
+            </td>
+            <td name='dataTable.f_SPPJDJ'>
+                f_SPPJDJ
+            </td>
+            <td name='dataTable.f_SPPJBJ'>
+                f_SPPJBJ
+            </td>
+            <td name='dataTable.SPPJ'>
+                SPPJ
+            </td>
+            <td name='dataTable.f_ZDGHDJ'>
+                f_ZDGHDJ
+            </td>
+            <td name='dataTable.ZDGHLS'>
+                ZDGHLS
+            </td>
+            <td name='dataTable.f_ZGGHLS'>
+                f_ZGGHLS
+            </td>
+            <td name='dataTable.f_DZHML'>
+                f_DZHML
+            </td>
+            <td name='dataTable.f_DZHDJ'>
+                f_DZHDJ
+            </td>
+            <td name='dataTable.f_JYTJLSDJ'>
+                f_JYTJLSDJ
+            </td>
+            <td name='dataTable.f_JYTJLSBJ'>
+                f_JYTJLSBJ
+            </td>
+            <td name='dataTable.JYTJLSDJ'>
+                JYTJLSDJ
+            </td>
+            <td name='dataTable.f_DZHDDJ1'>
+                f_DZHDDJ1
+            </td>
+            <td name='dataTable.f_DZHZDML'>
+                f_DZHZDML
+            </td>
+            <td name='dataTable.f_DZHBJ'>
+                f_DZHBJ
+            </td>
+            <td name='dataTable.f_ZTJZJCJ'>
+                f_ZTJZJCJ
+            </td>
+            <td name='dataTable.f_ZTJZJCJ1'>
+                f_ZTJZJCJ1
+            </td>
+            <td name='dataTable.f_ZTJZJGJCJ'>
+                f_ZTJZJGJCJ
+            </td>
+            <td name='dataTable.f_ZTJZJGJCJ1'>
+                f_ZTJZJGJCJ1
+            </td>
+            <td name='dataTable.f_CD'>
+                f_CD
+            </td>
+            <td name='dataTable.f_ZXTM'>
+                f_ZXTM
+            </td>
+            <td name='dataTable.f_ZBTM'>
+                f_ZBTM
+            </td>
+            <td name='dataTable.f_JZPZJGXX'>
+                f_JZPZJGXX
+            </td>
+            <td name='dataTable.f_FYZB'>
+                f_FYZB
+            </td>
+        </th>
+        <tbody>
+            <tr pk='{}' name='dataTable.row'>
+                <td name='dataTable.ID'>
+                    7728
+                </td>
+                <td name='dataTable.fcSys_MID'>
+                </td>
+                <td name='dataTable.fcSys_FilePurview'>
+                </td>
+                <td name='dataTable.fcSys_TYPE'>
+                    2
+                </td>
+                <td name='dataTable.f_Attach'>
+                </td>
+                <td name='dataTable.f_Image'>
+                </td>
+                <td name='dataTable.f_OutFile'>
+                </td>
+                <td name='dataTable.fcSys_Sign'>
+                </td>
+                <td name='dataTable.f_Owner'>
+                    黄涛
+                </td>
+                <td name='dataTable.f_SPLB'>
+                    一邦
+                </td>
+                <td name='dataTable.f_SPXL'>
+                    袋装糖果8.5元/包
+                </td>
+                <td name='dataTable.f_SPMC'>
+                    一邦450g爽喉宝
+                </td>
+                <td name='dataTable.f_SPBM'>
+                    YB450gSHB
+                </td>
+                <td name='dataTable.f_SPTM'>
+                    6940665799991
+                </td>
+                <td name='dataTable.f_MJLS'>
+                    24
+                </td>
+                <td name='dataTable.f_GG'>
+                    24.00
+                </td>
+                <td name='dataTable.f_XH'>
+                    450g
+                </td>
+                <td name='dataTable.f_JJDW'>
+                    个
+                </td>
+                <td name='dataTable.f_LJDW'>
+                    袋
+                </td>
+                <td name='dataTable.f_CBJ'>
+                    5.5
+                </td>
+                <td name='dataTable.f_PFJJ'>
+                    175.2
+                </td>
+                <td name='dataTable.f_PFLJ'>
+                    7.3
+                </td>
+                <td name='dataTable.f_KCSX'>
+                    20
+                </td>
+                <td name='dataTable.f_KCXX'>
+                    1
+                </td>
+                <td name='dataTable.f_JXSL'>
+                    0
+                </td>
+                <td name='dataTable.f_BZQX'>
+                    360
+                </td>
+                <td name='dataTable.f_JDRQ'>
+                    2002/6/23 0:00:00
+                </td>
+                <td name='dataTable.f_XGRQ'>
+                    2004/10/30 4:24:56
+                </td>
+                <td name='dataTable.f_GYSMC'>
+                    湖北一邦食品有限公司
+                </td>
+                <td name='dataTable.f_GYSBM'>
+                    HBYBSPYXGS
+                </td>
+                <td name='dataTable.f_SPZL'>
+                </td>
+                <td name='dataTable.f_KCSL'>
+                    0
+                </td>
+                <td name='dataTable.f_KCJS'>
+                    0
+                </td>
+                <td name='dataTable.f_KCLS'>
+                    0
+                </td>
+                <td name='dataTable.NetPCID'>
+                </td>
+                <td name='dataTable.fcSys_UID'>
+                    D21F2DD5-4286-4DCB-B0AC-CBB70FF91A12
+                </td>
+                <td name='dataTable.f_SPBH'>
+                </td>
+                <td name='dataTable.f_KCJE'>
+                    0
+                </td>
+                <td name='dataTable.f_YJJ'>
+                    5.5
+                </td>
+                <td name='dataTable.f_XLR'>
+                    43.2
+                </td>
+                <td name='dataTable.f_SFTJ'>
+                    ×
+                </td>
+                <td name='dataTable.f_YSCB'>
+                </td>
+                <td name='dataTable.f_SCRQ'>
+                </td>
+                <td name='dataTable.f_SPSCRQ'>
+                    2008-11
+                </td>
+                <td name='dataTable.f_JYLSJ'>
+                    8.5
+                </td>
+                <td name='dataTable.f_GHJ'>
+                    7.3
+                </td>
+                <td name='dataTable.f_CSLSJ'>
+                    6
+                </td>
+                <td name='dataTable.f_ZDGHJ'>
+                    7
+                </td>
+                <td name='dataTable.f_BZ'>
+                </td>
+                <td name='dataTable.fcSys_Lock'>
+                    √
+                </td>
+                <td name='dataTable.f_LRBL'>
+                    0.246575
+                </td>
+                <td name='dataTable.f_PFLRBL'>
+                    0.214285714285
+                </td>
+                <td name='dataTable.f_SPGJJ'>
+                    7.3
+                </td>
+                <td name='dataTable.f_QS'>
+                    有
+                </td>
+                <td name='dataTable.f_LS'>
+                    0.3529411
+                </td>
+                <td name='dataTable.f_SPPJJ'>
+                </td>
+                <td name='dataTable.f_ZDR'>
+                </td>
+                <td name='dataTable.f_JYLSBJ'>
+                    8.5
+                </td>
+                <td name='dataTable.f_SCRQXF'>
+                    2012/8/1 0:00:00
+                </td>
+                <td name='dataTable.f_DLSJG'>
+                    7
+                </td>
+                <td name='dataTable.DL'>
+                    0.214285714285
+                </td>
+                <td name='dataTable.f_DLSJGGJJ'>
+                    7
+                </td>
+                <td name='dataTable.f_DZ'>
+                </td>
+                <td name='dataTable.f_SPPJDJ'>
+                    7.3
+                </td>
+                <td name='dataTable.f_SPPJBJ'>
+                    7.3
+                </td>
+                <td name='dataTable.SPPJ'>
+                    0.2465753
+                </td>
+                <td name='dataTable.f_ZDGHDJ'>
+                    7
+                </td>
+                <td name='dataTable.ZDGHLS'>
+                    0.1764705
+                </td>
+                <td name='dataTable.f_ZGGHLS'>
+                    0.1411764
+                </td>
+                <td name='dataTable.f_DZHML'>
+                </td>
+                <td name='dataTable.f_DZHDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSBJ'>
+                </td>
+                <td name='dataTable.JYTJLSDJ'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHDDJ1'>
+                </td>
+                <td name='dataTable.f_DZHZDML'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHBJ'>
+                </td>
+                <td name='dataTable.f_ZTJZJCJ'>
+                    8.5
+                </td>
+                <td name='dataTable.f_ZTJZJCJ1'>
+                    1
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ'>
+                    7.3
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ1'>
+                    1
+                </td>
+                <td name='dataTable.f_CD'>
+                    湖北省汉川市
+                </td>
+                <td name='dataTable.f_ZXTM'>
+                </td>
+                <td name='dataTable.f_ZBTM'>
+                </td>
+                <td name='dataTable.f_JZPZJGXX'>
+                </td>
+                <td name='dataTable.f_FYZB'>
+                </td>
+            </tr>
+            <tr pk='{}' name='dataTable.row'>
+                <td name='dataTable.ID'>
+                    7765
+                </td>
+                <td name='dataTable.fcSys_MID'>
+                </td>
+                <td name='dataTable.fcSys_FilePurview'>
+                </td>
+                <td name='dataTable.fcSys_TYPE'>
+                    2
+                </td>
+                <td name='dataTable.f_Attach'>
+                </td>
+                <td name='dataTable.f_Image'>
+                </td>
+                <td name='dataTable.f_OutFile'>
+                </td>
+                <td name='dataTable.fcSys_Sign'>
+                </td>
+                <td name='dataTable.f_Owner'>
+                    系统管理员
+                </td>
+                <td name='dataTable.f_SPLB'>
+                    孺牛
+                </td>
+                <td name='dataTable.f_SPXL'>
+                    散装糖果
+                </td>
+                <td name='dataTable.f_SPMC'>
+                    孺牛500g
+                </td>
+                <td name='dataTable.f_SPBM'>
+                    RN500g
+                </td>
+                <td name='dataTable.f_SPTM'>
+                    6920837088689
+                </td>
+                <td name='dataTable.f_MJLS'>
+                    20
+                </td>
+                <td name='dataTable.f_GG'>
+                    20.00
+                </td>
+                <td name='dataTable.f_XH'>
+                    500g
+                </td>
+                <td name='dataTable.f_JJDW'>
+                    箱
+                </td>
+                <td name='dataTable.f_LJDW'>
+                    袋
+                </td>
+                <td name='dataTable.f_CBJ'>
+                    9.05
+                </td>
+                <td name='dataTable.f_PFJJ'>
+                    200
+                </td>
+                <td name='dataTable.f_PFLJ'>
+                    10
+                </td>
+                <td name='dataTable.f_KCSX'>
+                </td>
+                <td name='dataTable.f_KCXX'>
+                    1
+                </td>
+                <td name='dataTable.f_JXSL'>
+                    0
+                </td>
+                <td name='dataTable.f_BZQX'>
+                    360
+                </td>
+                <td name='dataTable.f_JDRQ'>
+                    2002/7/16 0:00:00
+                </td>
+                <td name='dataTable.f_XGRQ'>
+                    2004/10/30 4:24:57
+                </td>
+                <td name='dataTable.f_GYSMC'>
+                    上海孺牛食品公司王关菊4033610003155859
+                </td>
+                <td name='dataTable.f_GYSBM'>
+                    SHRNSPGS
+                </td>
+                <td name='dataTable.f_SPZL'>
+                </td>
+                <td name='dataTable.f_KCSL'>
+                    0
+                </td>
+                <td name='dataTable.f_KCJS'>
+                    0
+                </td>
+                <td name='dataTable.f_KCLS'>
+                    0
+                </td>
+                <td name='dataTable.NetPCID'>
+                </td>
+                <td name='dataTable.fcSys_UID'>
+                    FB7156EB-88E7-4CD2-8629-35876C59A129
+                </td>
+                <td name='dataTable.f_SPBH'>
+                </td>
+                <td name='dataTable.f_KCJE'>
+                    0
+                </td>
+                <td name='dataTable.f_YJJ'>
+                    8.65
+                </td>
+                <td name='dataTable.f_XLR'>
+                    19
+                </td>
+                <td name='dataTable.f_SFTJ'>
+                    ×
+                </td>
+                <td name='dataTable.f_YSCB'>
+                    0.4
+                </td>
+                <td name='dataTable.f_SCRQ'>
+                </td>
+                <td name='dataTable.f_SPSCRQ'>
+                    2008-2
+                </td>
+                <td name='dataTable.f_JYLSJ'>
+                </td>
+                <td name='dataTable.f_GHJ'>
+                    10
+                </td>
+                <td name='dataTable.f_CSLSJ'>
+                    8
+                </td>
+                <td name='dataTable.f_ZDGHJ'>
+                    10
+                </td>
+                <td name='dataTable.f_BZ'>
+                </td>
+                <td name='dataTable.fcSys_Lock'>
+                    ×
+                </td>
+                <td name='dataTable.f_LRBL'>
+                    0.095
+                </td>
+                <td name='dataTable.f_PFLRBL'>
+                    0.095
+                </td>
+                <td name='dataTable.f_SPGJJ'>
+                    10
+                </td>
+                <td name='dataTable.f_QS'>
+                    有
+                </td>
+                <td name='dataTable.f_LS'>
+                    0
+                </td>
+                <td name='dataTable.f_SPPJJ'>
+                </td>
+                <td name='dataTable.f_ZDR'>
+                </td>
+                <td name='dataTable.f_JYLSBJ'>
+                </td>
+                <td name='dataTable.f_SCRQXF'>
+                </td>
+                <td name='dataTable.f_DLSJG'>
+                    10
+                </td>
+                <td name='dataTable.DL'>
+                    0.095
+                </td>
+                <td name='dataTable.f_DLSJGGJJ'>
+                    10
+                </td>
+                <td name='dataTable.f_DZ'>
+                </td>
+                <td name='dataTable.f_SPPJDJ'>
+                    10
+                </td>
+                <td name='dataTable.f_SPPJBJ'>
+                    10
+                </td>
+                <td name='dataTable.SPPJ'>
+                    0.095
+                </td>
+                <td name='dataTable.f_ZDGHDJ'>
+                    10
+                </td>
+                <td name='dataTable.ZDGHLS'>
+                    0
+                </td>
+                <td name='dataTable.f_ZGGHLS'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHML'>
+                </td>
+                <td name='dataTable.f_DZHDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSBJ'>
+                </td>
+                <td name='dataTable.JYTJLSDJ'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHDDJ1'>
+                </td>
+                <td name='dataTable.f_DZHZDML'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHBJ'>
+                </td>
+                <td name='dataTable.f_ZTJZJCJ'>
+                    0
+                </td>
+                <td name='dataTable.f_ZTJZJCJ1'>
+                    0
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ'>
+                    10
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ1'>
+                    1
+                </td>
+                <td name='dataTable.f_CD'>
+                </td>
+                <td name='dataTable.f_ZXTM'>
+                </td>
+                <td name='dataTable.f_ZBTM'>
+                </td>
+                <td name='dataTable.f_JZPZJGXX'>
+                </td>
+                <td name='dataTable.f_FYZB'>
+                </td>
+            </tr>
+            <tr pk='{}' name='dataTable.row'>
+                <td name='dataTable.ID'>
+                    7967
+                </td>
+                <td name='dataTable.fcSys_MID'>
+                </td>
+                <td name='dataTable.fcSys_FilePurview'>
+                </td>
+                <td name='dataTable.fcSys_TYPE'>
+                    2
+                </td>
+                <td name='dataTable.f_Attach'>
+                </td>
+                <td name='dataTable.f_Image'>
+                </td>
+                <td name='dataTable.f_OutFile'>
+                </td>
+                <td name='dataTable.fcSys_Sign'>
+                </td>
+                <td name='dataTable.f_Owner'>
+                    黄燕
+                </td>
+                <td name='dataTable.f_SPLB'>
+                    富信
+                </td>
+                <td name='dataTable.f_SPXL'>
+                    散装糖果20.8元/kg
+                </td>
+                <td name='dataTable.f_SPMC'>
+                    富信散双喜奶糖
+                </td>
+                <td name='dataTable.f_SPBM'>
+                    FXSSXNT
+                </td>
+                <td name='dataTable.f_SPTM'>
+                    1
+                </td>
+                <td name='dataTable.f_MJLS'>
+                    4
+                </td>
+                <td name='dataTable.f_GG'>
+                    4.00
+                </td>
+                <td name='dataTable.f_XH'>
+                    2500g
+                </td>
+                <td name='dataTable.f_JJDW'>
+                    箱
+                </td>
+                <td name='dataTable.f_LJDW'>
+                    包
+                </td>
+                <td name='dataTable.f_CBJ'>
+                    27.125
+                </td>
+                <td name='dataTable.f_PFJJ'>
+                    140
+                </td>
+                <td name='dataTable.f_PFLJ'>
+                    35
+                </td>
+                <td name='dataTable.f_KCSX'>
+                    50
+                </td>
+                <td name='dataTable.f_KCXX'>
+                    1
+                </td>
+                <td name='dataTable.f_JXSL'>
+                    0
+                </td>
+                <td name='dataTable.f_BZQX'>
+                    360
+                </td>
+                <td name='dataTable.f_JDRQ'>
+                    2003/9/9 3:37:01
+                </td>
+                <td name='dataTable.f_XGRQ'>
+                    2004/10/30 4:24:59
+                </td>
+                <td name='dataTable.f_GYSMC'>
+                    广东省揭阳市福多多食品有限公司（富信）
+                </td>
+                <td name='dataTable.f_GYSBM'>
+                    GDSJYSFDDSPYXGSFX
+                </td>
+                <td name='dataTable.f_SPZL'>
+                </td>
+                <td name='dataTable.f_KCSL'>
+                    190
+                </td>
+                <td name='dataTable.f_KCJS'>
+                    47
+                </td>
+                <td name='dataTable.f_KCLS'>
+                    2
+                </td>
+                <td name='dataTable.NetPCID'>
+                </td>
+                <td name='dataTable.fcSys_UID'>
+                    CA6B3597-A2BB-4441-AAF5-96AD896CC8CA
+                </td>
+                <td name='dataTable.f_SPBH'>
+                </td>
+                <td name='dataTable.f_KCJE'>
+                    5153.75
+                </td>
+                <td name='dataTable.f_YJJ'>
+                    25
+                </td>
+                <td name='dataTable.f_XLR'>
+                    31.5
+                </td>
+                <td name='dataTable.f_SFTJ'>
+                    √
+                </td>
+                <td name='dataTable.f_YSCB'>
+                    2.125
+                </td>
+                <td name='dataTable.f_SCRQ'>
+                </td>
+                <td name='dataTable.f_SPSCRQ'>
+                    2009-2
+                </td>
+                <td name='dataTable.f_JYLSJ'>
+                    20.8
+                </td>
+                <td name='dataTable.f_GHJ'>
+                    35
+                </td>
+                <td name='dataTable.f_CSLSJ'>
+                    15
+                </td>
+                <td name='dataTable.f_ZDGHJ'>
+                    35
+                </td>
+                <td name='dataTable.f_BZ'>
+                </td>
+                <td name='dataTable.fcSys_Lock'>
+                    ×
+                </td>
+                <td name='dataTable.f_LRBL'>
+                    0.225
+                </td>
+                <td name='dataTable.f_PFLRBL'>
+                    0.225
+                </td>
+                <td name='dataTable.f_SPGJJ'>
+                    14
+                </td>
+                <td name='dataTable.f_QS'>
+                    有
+                </td>
+                <td name='dataTable.f_LS'>
+                    0.47836538461538
+                </td>
+                <td name='dataTable.f_SPPJJ'>
+                </td>
+                <td name='dataTable.f_ZDR'>
+                </td>
+                <td name='dataTable.f_JYLSBJ'>
+                    52
+                </td>
+                <td name='dataTable.f_SCRQXF'>
+                    2012/9/1 0:00:00
+                </td>
+                <td name='dataTable.f_DLSJG'>
+                    32.5
+                </td>
+                <td name='dataTable.DL'>
+                    0.165384615
+                </td>
+                <td name='dataTable.f_DLSJGGJJ'>
+                    13
+                </td>
+                <td name='dataTable.f_DZ'>
+                </td>
+                <td name='dataTable.f_SPPJDJ'>
+                    16.8
+                </td>
+                <td name='dataTable.f_SPPJBJ'>
+                    42
+                </td>
+                <td name='dataTable.SPPJ'>
+                    0.35416666666666
+                </td>
+                <td name='dataTable.f_ZDGHDJ'>
+                    14
+                </td>
+                <td name='dataTable.ZDGHLS'>
+                    0
+                </td>
+                <td name='dataTable.f_ZGGHLS'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHML'>
+                </td>
+                <td name='dataTable.f_DZHDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSBJ'>
+                </td>
+                <td name='dataTable.JYTJLSDJ'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHDDJ1'>
+                </td>
+                <td name='dataTable.f_DZHZDML'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHBJ'>
+                </td>
+                <td name='dataTable.f_ZTJZJCJ'>
+                    52
+                </td>
+                <td name='dataTable.f_ZTJZJCJ1'>
+                    1
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ'>
+                    35
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ1'>
+                    1
+                </td>
+                <td name='dataTable.f_CD'>
+                    广东省揭阳市
+                </td>
+                <td name='dataTable.f_ZXTM'>
+                </td>
+                <td name='dataTable.f_ZBTM'>
+                </td>
+                <td name='dataTable.f_JZPZJGXX'>
+                </td>
+                <td name='dataTable.f_FYZB'>
+                </td>
+            </tr>
+            <tr pk='{}' name='dataTable.row'>
+                <td name='dataTable.ID'>
+                    8159
+                </td>
+                <td name='dataTable.fcSys_MID'>
+                </td>
+                <td name='dataTable.fcSys_FilePurview'>
+                </td>
+                <td name='dataTable.fcSys_TYPE'>
+                    2
+                </td>
+                <td name='dataTable.f_Attach'>
+                </td>
+                <td name='dataTable.f_Image'>
+                </td>
+                <td name='dataTable.f_OutFile'>
+                </td>
+                <td name='dataTable.fcSys_Sign'>
+                </td>
+                <td name='dataTable.f_Owner'>
+                    张忠平
+                </td>
+                <td name='dataTable.f_SPLB'>
+                    富信
+                </td>
+                <td name='dataTable.f_SPXL'>
+                    散装糖果23元/kg
+                </td>
+                <td name='dataTable.f_SPMC'>
+                    富信散雅牛奶糖(双扭)
+                </td>
+                <td name='dataTable.f_SPBM'>
+                    FXSYNNT(SN)
+                </td>
+                <td name='dataTable.f_SPTM'>
+                    1
+                </td>
+                <td name='dataTable.f_MJLS'>
+                    6
+                </td>
+                <td name='dataTable.f_GG'>
+                    6.00
+                </td>
+                <td name='dataTable.f_XH'>
+                    2500g
+                </td>
+                <td name='dataTable.f_JJDW'>
+                    箱
+                </td>
+                <td name='dataTable.f_LJDW'>
+                    盒
+                </td>
+                <td name='dataTable.f_CBJ'>
+                    29.125
+                </td>
+                <td name='dataTable.f_PFJJ'>
+                    225
+                </td>
+                <td name='dataTable.f_PFLJ'>
+                    37.5
+                </td>
+                <td name='dataTable.f_KCSX'>
+                    30
+                </td>
+                <td name='dataTable.f_KCXX'>
+                    1
+                </td>
+                <td name='dataTable.f_JXSL'>
+                    0
+                </td>
+                <td name='dataTable.f_BZQX'>
+                    360
+                </td>
+                <td name='dataTable.f_JDRQ'>
+                    2003/12/15 9:50:44
+                </td>
+                <td name='dataTable.f_XGRQ'>
+                    2004/10/30 4:24:59
+                </td>
+                <td name='dataTable.f_GYSMC'>
+                    广东省揭阳市福多多食品有限公司（富信）
+                </td>
+                <td name='dataTable.f_GYSBM'>
+                    GDSJYSFDDSPYXGSFX
+                </td>
+                <td name='dataTable.f_SPZL'>
+                </td>
+                <td name='dataTable.f_KCSL'>
+                    0
+                </td>
+                <td name='dataTable.f_KCJS'>
+                    0
+                </td>
+                <td name='dataTable.f_KCLS'>
+                    0
+                </td>
+                <td name='dataTable.NetPCID'>
+                </td>
+                <td name='dataTable.fcSys_UID'>
+                    8D447330-42BB-4E02-A978-3A65B4B4B198
+                </td>
+                <td name='dataTable.f_SPBH'>
+                </td>
+                <td name='dataTable.f_KCJE'>
+                    0
+                </td>
+                <td name='dataTable.f_YJJ'>
+                    27
+                </td>
+                <td name='dataTable.f_XLR'>
+                    50.25
+                </td>
+                <td name='dataTable.f_SFTJ'>
+                    ×
+                </td>
+                <td name='dataTable.f_YSCB'>
+                    2.125
+                </td>
+                <td name='dataTable.f_SCRQ'>
+                </td>
+                <td name='dataTable.f_SPSCRQ'>
+                    2008-12
+                </td>
+                <td name='dataTable.f_JYLSJ'>
+                    23
+                </td>
+                <td name='dataTable.f_GHJ'>
+                    37.5
+                </td>
+                <td name='dataTable.f_CSLSJ'>
+                    18
+                </td>
+                <td name='dataTable.f_ZDGHJ'>
+                    37.5
+                </td>
+                <td name='dataTable.f_BZ'>
+                </td>
+                <td name='dataTable.fcSys_Lock'>
+                    ×
+                </td>
+                <td name='dataTable.f_LRBL'>
+                    0.2233333
+                </td>
+                <td name='dataTable.f_PFLRBL'>
+                    0.223333333
+                </td>
+                <td name='dataTable.f_SPGJJ'>
+                    15
+                </td>
+                <td name='dataTable.f_QS'>
+                    有
+                </td>
+                <td name='dataTable.f_LS'>
+                    0.49347826
+                </td>
+                <td name='dataTable.f_SPPJJ'>
+                </td>
+                <td name='dataTable.f_ZDR'>
+                </td>
+                <td name='dataTable.f_JYLSBJ'>
+                    57.5
+                </td>
+                <td name='dataTable.f_SCRQXF'>
+                </td>
+                <td name='dataTable.f_DLSJG'>
+                    37.5
+                </td>
+                <td name='dataTable.DL'>
+                    0.223333333
+                </td>
+                <td name='dataTable.f_DLSJGGJJ'>
+                    15
+                </td>
+                <td name='dataTable.f_DZ'>
+                </td>
+                <td name='dataTable.f_SPPJDJ'>
+                    19.3
+                </td>
+                <td name='dataTable.f_SPPJBJ'>
+                    48.25
+                </td>
+                <td name='dataTable.SPPJ'>
+                    0.3963730569
+                </td>
+                <td name='dataTable.f_ZDGHDJ'>
+                    15
+                </td>
+                <td name='dataTable.ZDGHLS'>
+                    0.347826
+                </td>
+                <td name='dataTable.f_ZGGHLS'>
+                    0.347826
+                </td>
+                <td name='dataTable.f_DZHML'>
+                </td>
+                <td name='dataTable.f_DZHDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSBJ'>
+                </td>
+                <td name='dataTable.JYTJLSDJ'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHDDJ1'>
+                </td>
+                <td name='dataTable.f_DZHZDML'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHBJ'>
+                </td>
+                <td name='dataTable.f_ZTJZJCJ'>
+                    57.5
+                </td>
+                <td name='dataTable.f_ZTJZJCJ1'>
+                    1
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ'>
+                    37.5
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ1'>
+                    1
+                </td>
+                <td name='dataTable.f_CD'>
+                    广东省揭阳市
+                </td>
+                <td name='dataTable.f_ZXTM'>
+                </td>
+                <td name='dataTable.f_ZBTM'>
+                </td>
+                <td name='dataTable.f_JZPZJGXX'>
+                </td>
+                <td name='dataTable.f_FYZB'>
+                </td>
+            </tr>
+            <tr pk='{}' name='dataTable.row'>
+                <td name='dataTable.ID'>
+                    8209
+                </td>
+                <td name='dataTable.fcSys_MID'>
+                </td>
+                <td name='dataTable.fcSys_FilePurview'>
+                </td>
+                <td name='dataTable.fcSys_TYPE'>
+                    2
+                </td>
+                <td name='dataTable.f_Attach'>
+                </td>
+                <td name='dataTable.f_Image'>
+                </td>
+                <td name='dataTable.f_OutFile'>
+                </td>
+                <td name='dataTable.fcSys_Sign'>
+                </td>
+                <td name='dataTable.f_Owner'>
+                    张忠平
+                </td>
+                <td name='dataTable.f_SPLB'>
+                    一邦
+                </td>
+                <td name='dataTable.f_SPXL'>
+                    散装糖果23元/kg
+                </td>
+                <td name='dataTable.f_SPMC'>
+                    一邦小芝麻可可奶糖{金黄单扭}
+                </td>
+                <td name='dataTable.f_SPBM'>
+                    YBXZMKKNT{JHDN}
+                </td>
+                <td name='dataTable.f_SPTM'>
+                    1
+                </td>
+                <td name='dataTable.f_MJLS'>
+                    6
+                </td>
+                <td name='dataTable.f_GG'>
+                    6.00
+                </td>
+                <td name='dataTable.f_XH'>
+                    2500g
+                </td>
+                <td name='dataTable.f_JJDW'>
+                    箱
+                </td>
+                <td name='dataTable.f_LJDW'>
+                    包
+                </td>
+                <td name='dataTable.f_CBJ'>
+                    32.5
+                </td>
+                <td name='dataTable.f_PFJJ'>
+                    247.5
+                </td>
+                <td name='dataTable.f_PFLJ'>
+                    41.25
+                </td>
+                <td name='dataTable.f_KCSX'>
+                    20
+                </td>
+                <td name='dataTable.f_KCXX'>
+                    1
+                </td>
+                <td name='dataTable.f_JXSL'>
+                    0
+                </td>
+                <td name='dataTable.f_BZQX'>
+                    360
+                </td>
+                <td name='dataTable.f_JDRQ'>
+                    2004/2/14 3:38:28
+                </td>
+                <td name='dataTable.f_XGRQ'>
+                    2004/10/30 4:25:00
+                </td>
+                <td name='dataTable.f_GYSMC'>
+                    湖北一邦食品有限公司
+                </td>
+                <td name='dataTable.f_GYSBM'>
+                    HBYBSPYXGS
+                </td>
+                <td name='dataTable.f_SPZL'>
+                </td>
+                <td name='dataTable.f_KCSL'>
+                    0
+                </td>
+                <td name='dataTable.f_KCJS'>
+                    0
+                </td>
+                <td name='dataTable.f_KCLS'>
+                    0
+                </td>
+                <td name='dataTable.NetPCID'>
+                </td>
+                <td name='dataTable.fcSys_UID'>
+                    5208C532-D7DB-425A-B5A0-B7F4E760006E
+                </td>
+                <td name='dataTable.f_SPBH'>
+                </td>
+                <td name='dataTable.f_KCJE'>
+                    0
+                </td>
+                <td name='dataTable.f_YJJ'>
+                    32.5
+                </td>
+                <td name='dataTable.f_XLR'>
+                    52.5
+                </td>
+                <td name='dataTable.f_SFTJ'>
+                    ×
+                </td>
+                <td name='dataTable.f_YSCB'>
+                </td>
+                <td name='dataTable.f_SCRQ'>
+                </td>
+                <td name='dataTable.f_SPSCRQ'>
+                    2008-12
+                </td>
+                <td name='dataTable.f_JYLSJ'>
+                    23
+                </td>
+                <td name='dataTable.f_GHJ'>
+                    41.25
+                </td>
+                <td name='dataTable.f_CSLSJ'>
+                    18
+                </td>
+                <td name='dataTable.f_ZDGHJ'>
+                    41.25
+                </td>
+                <td name='dataTable.f_BZ'>
+                </td>
+                <td name='dataTable.fcSys_Lock'>
+                    ×
+                </td>
+                <td name='dataTable.f_LRBL'>
+                    0.2121212
+                </td>
+                <td name='dataTable.f_PFLRBL'>
+                    0.212121212
+                </td>
+                <td name='dataTable.f_SPGJJ'>
+                    16.5
+                </td>
+                <td name='dataTable.f_QS'>
+                    有
+                </td>
+                <td name='dataTable.f_LS'>
+                    0.4347826
+                </td>
+                <td name='dataTable.f_SPPJJ'>
+                </td>
+                <td name='dataTable.f_ZDR'>
+                </td>
+                <td name='dataTable.f_JYLSBJ'>
+                    57.5
+                </td>
+                <td name='dataTable.f_SCRQXF'>
+                    2011/11/2 0:00:00
+                </td>
+                <td name='dataTable.f_DLSJG'>
+                    41.25
+                </td>
+                <td name='dataTable.DL'>
+                    0.212121212
+                </td>
+                <td name='dataTable.f_DLSJGGJJ'>
+                    16.5
+                </td>
+                <td name='dataTable.f_DZ'>
+                </td>
+                <td name='dataTable.f_SPPJDJ'>
+                    19.3
+                </td>
+                <td name='dataTable.f_SPPJBJ'>
+                    48.25
+                </td>
+                <td name='dataTable.SPPJ'>
+                    0.32642487
+                </td>
+                <td name='dataTable.f_ZDGHDJ'>
+                    16.5
+                </td>
+                <td name='dataTable.ZDGHLS'>
+                    0.28260869
+                </td>
+                <td name='dataTable.f_ZGGHLS'>
+                    0.28260869
+                </td>
+                <td name='dataTable.f_DZHML'>
+                </td>
+                <td name='dataTable.f_DZHDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSBJ'>
+                </td>
+                <td name='dataTable.JYTJLSDJ'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHDDJ1'>
+                </td>
+                <td name='dataTable.f_DZHZDML'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHBJ'>
+                </td>
+                <td name='dataTable.f_ZTJZJCJ'>
+                    57.5
+                </td>
+                <td name='dataTable.f_ZTJZJCJ1'>
+                    1
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ'>
+                    41.25
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ1'>
+                    1
+                </td>
+                <td name='dataTable.f_CD'>
+                    湖北省汉川市
+                </td>
+                <td name='dataTable.f_ZXTM'>
+                </td>
+                <td name='dataTable.f_ZBTM'>
+                </td>
+                <td name='dataTable.f_JZPZJGXX'>
+                </td>
+                <td name='dataTable.f_FYZB'>
+                </td>
+            </tr>
+            <tr pk='{}' name='dataTable.row'>
+                <td name='dataTable.ID'>
+                    8210
+                </td>
+                <td name='dataTable.fcSys_MID'>
+                </td>
+                <td name='dataTable.fcSys_FilePurview'>
+                </td>
+                <td name='dataTable.fcSys_TYPE'>
+                    2
+                </td>
+                <td name='dataTable.f_Attach'>
+                </td>
+                <td name='dataTable.f_Image'>
+                </td>
+                <td name='dataTable.f_OutFile'>
+                </td>
+                <td name='dataTable.fcSys_Sign'>
+                </td>
+                <td name='dataTable.f_Owner'>
+                    张忠平
+                </td>
+                <td name='dataTable.f_SPLB'>
+                    一邦
+                </td>
+                <td name='dataTable.f_SPXL'>
+                    散装糖果23元/kg
+                </td>
+                <td name='dataTable.f_SPMC'>
+                    一邦小芝麻可可奶糖(粉红单扭)
+                </td>
+                <td name='dataTable.f_SPBM'>
+                    YBXZMKKNT(FHDN)
+                </td>
+                <td name='dataTable.f_SPTM'>
+                    1
+                </td>
+                <td name='dataTable.f_MJLS'>
+                    6
+                </td>
+                <td name='dataTable.f_GG'>
+                    6.00
+                </td>
+                <td name='dataTable.f_XH'>
+                    2500g
+                </td>
+                <td name='dataTable.f_JJDW'>
+                    箱
+                </td>
+                <td name='dataTable.f_LJDW'>
+                    包
+                </td>
+                <td name='dataTable.f_CBJ'>
+                    32.5
+                </td>
+                <td name='dataTable.f_PFJJ'>
+                    247.5
+                </td>
+                <td name='dataTable.f_PFLJ'>
+                    41.25
+                </td>
+                <td name='dataTable.f_KCSX'>
+                    20
+                </td>
+                <td name='dataTable.f_KCXX'>
+                    1
+                </td>
+                <td name='dataTable.f_JXSL'>
+                    0
+                </td>
+                <td name='dataTable.f_BZQX'>
+                    360
+                </td>
+                <td name='dataTable.f_JDRQ'>
+                    2004/2/14 15:40:04
+                </td>
+                <td name='dataTable.f_XGRQ'>
+                    2004/10/30 16:25:00
+                </td>
+                <td name='dataTable.f_GYSMC'>
+                    湖北一邦食品有限公司
+                </td>
+                <td name='dataTable.f_GYSBM'>
+                    HBYBSPYXGS
+                </td>
+                <td name='dataTable.f_SPZL'>
+                </td>
+                <td name='dataTable.f_KCSL'>
+                    0
+                </td>
+                <td name='dataTable.f_KCJS'>
+                    0
+                </td>
+                <td name='dataTable.f_KCLS'>
+                    0
+                </td>
+                <td name='dataTable.NetPCID'>
+                </td>
+                <td name='dataTable.fcSys_UID'>
+                    5FE671DC-CA61-4F20-9013-3A8660CAB143
+                </td>
+                <td name='dataTable.f_SPBH'>
+                </td>
+                <td name='dataTable.f_KCJE'>
+                    0
+                </td>
+                <td name='dataTable.f_YJJ'>
+                    32.5
+                </td>
+                <td name='dataTable.f_XLR'>
+                    52.5
+                </td>
+                <td name='dataTable.f_SFTJ'>
+                    ×
+                </td>
+                <td name='dataTable.f_YSCB'>
+                </td>
+                <td name='dataTable.f_SCRQ'>
+                </td>
+                <td name='dataTable.f_SPSCRQ'>
+                    2008-12
+                </td>
+                <td name='dataTable.f_JYLSJ'>
+                    23
+                </td>
+                <td name='dataTable.f_GHJ'>
+                    41.25
+                </td>
+                <td name='dataTable.f_CSLSJ'>
+                    18
+                </td>
+                <td name='dataTable.f_ZDGHJ'>
+                    41.25
+                </td>
+                <td name='dataTable.f_BZ'>
+                </td>
+                <td name='dataTable.fcSys_Lock'>
+                    ×
+                </td>
+                <td name='dataTable.f_LRBL'>
+                    0.2121212
+                </td>
+                <td name='dataTable.f_PFLRBL'>
+                    0.212121212
+                </td>
+                <td name='dataTable.f_SPGJJ'>
+                    16.5
+                </td>
+                <td name='dataTable.f_QS'>
+                    有
+                </td>
+                <td name='dataTable.f_LS'>
+                    0.4347826
+                </td>
+                <td name='dataTable.f_SPPJJ'>
+                </td>
+                <td name='dataTable.f_ZDR'>
+                </td>
+                <td name='dataTable.f_JYLSBJ'>
+                    57.5
+                </td>
+                <td name='dataTable.f_SCRQXF'>
+                    2011/11/2 0:00:00
+                </td>
+                <td name='dataTable.f_DLSJG'>
+                    41.25
+                </td>
+                <td name='dataTable.DL'>
+                    0.212121212
+                </td>
+                <td name='dataTable.f_DLSJGGJJ'>
+                    16.5
+                </td>
+                <td name='dataTable.f_DZ'>
+                </td>
+                <td name='dataTable.f_SPPJDJ'>
+                    19.3
+                </td>
+                <td name='dataTable.f_SPPJBJ'>
+                    48.25
+                </td>
+                <td name='dataTable.SPPJ'>
+                    0.32642487
+                </td>
+                <td name='dataTable.f_ZDGHDJ'>
+                    16.5
+                </td>
+                <td name='dataTable.ZDGHLS'>
+                    0.28260869
+                </td>
+                <td name='dataTable.f_ZGGHLS'>
+                    0.28260869
+                </td>
+                <td name='dataTable.f_DZHML'>
+                </td>
+                <td name='dataTable.f_DZHDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSBJ'>
+                </td>
+                <td name='dataTable.JYTJLSDJ'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHDDJ1'>
+                </td>
+                <td name='dataTable.f_DZHZDML'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHBJ'>
+                </td>
+                <td name='dataTable.f_ZTJZJCJ'>
+                    57.5
+                </td>
+                <td name='dataTable.f_ZTJZJCJ1'>
+                    1
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ'>
+                    41.25
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ1'>
+                    1
+                </td>
+                <td name='dataTable.f_CD'>
+                    湖北省汉川市
+                </td>
+                <td name='dataTable.f_ZXTM'>
+                </td>
+                <td name='dataTable.f_ZBTM'>
+                </td>
+                <td name='dataTable.f_JZPZJGXX'>
+                </td>
+                <td name='dataTable.f_FYZB'>
+                </td>
+            </tr>
+            <tr pk='{}' name='dataTable.row'>
+                <td name='dataTable.ID'>
+                    8211
+                </td>
+                <td name='dataTable.fcSys_MID'>
+                </td>
+                <td name='dataTable.fcSys_FilePurview'>
+                </td>
+                <td name='dataTable.fcSys_TYPE'>
+                    2
+                </td>
+                <td name='dataTable.f_Attach'>
+                </td>
+                <td name='dataTable.f_Image'>
+                </td>
+                <td name='dataTable.f_OutFile'>
+                </td>
+                <td name='dataTable.fcSys_Sign'>
+                </td>
+                <td name='dataTable.f_Owner'>
+                    张忠平
+                </td>
+                <td name='dataTable.f_SPLB'>
+                    一邦
+                </td>
+                <td name='dataTable.f_SPXL'>
+                    散装糖果23元/kg
+                </td>
+                <td name='dataTable.f_SPMC'>
+                    一邦小芝麻可可奶糖{绿单扭}
+                </td>
+                <td name='dataTable.f_SPBM'>
+                    YBXZMKKNT{LDN}
+                </td>
+                <td name='dataTable.f_SPTM'>
+                    1
+                </td>
+                <td name='dataTable.f_MJLS'>
+                    6
+                </td>
+                <td name='dataTable.f_GG'>
+                    6.00
+                </td>
+                <td name='dataTable.f_XH'>
+                    2500g
+                </td>
+                <td name='dataTable.f_JJDW'>
+                    箱
+                </td>
+                <td name='dataTable.f_LJDW'>
+                    包
+                </td>
+                <td name='dataTable.f_CBJ'>
+                    32.5
+                </td>
+                <td name='dataTable.f_PFJJ'>
+                    247.5
+                </td>
+                <td name='dataTable.f_PFLJ'>
+                    41.25
+                </td>
+                <td name='dataTable.f_KCSX'>
+                    20
+                </td>
+                <td name='dataTable.f_KCXX'>
+                    1
+                </td>
+                <td name='dataTable.f_JXSL'>
+                    0
+                </td>
+                <td name='dataTable.f_BZQX'>
+                    360
+                </td>
+                <td name='dataTable.f_JDRQ'>
+                    2004/2/14 3:41:36
+                </td>
+                <td name='dataTable.f_XGRQ'>
+                    2004/10/30 4:25:00
+                </td>
+                <td name='dataTable.f_GYSMC'>
+                    湖北一邦食品有限公司
+                </td>
+                <td name='dataTable.f_GYSBM'>
+                    HBYBSPYXGS
+                </td>
+                <td name='dataTable.f_SPZL'>
+                </td>
+                <td name='dataTable.f_KCSL'>
+                    0
+                </td>
+                <td name='dataTable.f_KCJS'>
+                    0
+                </td>
+                <td name='dataTable.f_KCLS'>
+                    0
+                </td>
+                <td name='dataTable.NetPCID'>
+                </td>
+                <td name='dataTable.fcSys_UID'>
+                    7CA51547-E48B-4067-98A4-BF5233A71C2C
+                </td>
+                <td name='dataTable.f_SPBH'>
+                </td>
+                <td name='dataTable.f_KCJE'>
+                    0
+                </td>
+                <td name='dataTable.f_YJJ'>
+                    32.5
+                </td>
+                <td name='dataTable.f_XLR'>
+                    52.5
+                </td>
+                <td name='dataTable.f_SFTJ'>
+                    ×
+                </td>
+                <td name='dataTable.f_YSCB'>
+                </td>
+                <td name='dataTable.f_SCRQ'>
+                </td>
+                <td name='dataTable.f_SPSCRQ'>
+                    2008-12
+                </td>
+                <td name='dataTable.f_JYLSJ'>
+                    23
+                </td>
+                <td name='dataTable.f_GHJ'>
+                    41.25
+                </td>
+                <td name='dataTable.f_CSLSJ'>
+                    18
+                </td>
+                <td name='dataTable.f_ZDGHJ'>
+                    41.25
+                </td>
+                <td name='dataTable.f_BZ'>
+                </td>
+                <td name='dataTable.fcSys_Lock'>
+                    ×
+                </td>
+                <td name='dataTable.f_LRBL'>
+                    0.2121212
+                </td>
+                <td name='dataTable.f_PFLRBL'>
+                    0.212121212
+                </td>
+                <td name='dataTable.f_SPGJJ'>
+                    16.5
+                </td>
+                <td name='dataTable.f_QS'>
+                    有
+                </td>
+                <td name='dataTable.f_LS'>
+                    0.4347826
+                </td>
+                <td name='dataTable.f_SPPJJ'>
+                </td>
+                <td name='dataTable.f_ZDR'>
+                </td>
+                <td name='dataTable.f_JYLSBJ'>
+                    57.5
+                </td>
+                <td name='dataTable.f_SCRQXF'>
+                    2011/11/2 0:00:00
+                </td>
+                <td name='dataTable.f_DLSJG'>
+                    41.25
+                </td>
+                <td name='dataTable.DL'>
+                    0.212121212
+                </td>
+                <td name='dataTable.f_DLSJGGJJ'>
+                    16.5
+                </td>
+                <td name='dataTable.f_DZ'>
+                </td>
+                <td name='dataTable.f_SPPJDJ'>
+                    19.3
+                </td>
+                <td name='dataTable.f_SPPJBJ'>
+                    48.25
+                </td>
+                <td name='dataTable.SPPJ'>
+                    0.32642487
+                </td>
+                <td name='dataTable.f_ZDGHDJ'>
+                    16.5
+                </td>
+                <td name='dataTable.ZDGHLS'>
+                    0.28260869
+                </td>
+                <td name='dataTable.f_ZGGHLS'>
+                    0.28260869
+                </td>
+                <td name='dataTable.f_DZHML'>
+                </td>
+                <td name='dataTable.f_DZHDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSBJ'>
+                </td>
+                <td name='dataTable.JYTJLSDJ'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHDDJ1'>
+                </td>
+                <td name='dataTable.f_DZHZDML'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHBJ'>
+                </td>
+                <td name='dataTable.f_ZTJZJCJ'>
+                    57.5
+                </td>
+                <td name='dataTable.f_ZTJZJCJ1'>
+                    1
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ'>
+                    41.25
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ1'>
+                    1
+                </td>
+                <td name='dataTable.f_CD'>
+                    湖北省汉川市
+                </td>
+                <td name='dataTable.f_ZXTM'>
+                </td>
+                <td name='dataTable.f_ZBTM'>
+                </td>
+                <td name='dataTable.f_JZPZJGXX'>
+                </td>
+                <td name='dataTable.f_FYZB'>
+                </td>
+            </tr>
+            <tr pk='{}' name='dataTable.row'>
+                <td name='dataTable.ID'>
+                    8813
+                </td>
+                <td name='dataTable.fcSys_MID'>
+                </td>
+                <td name='dataTable.fcSys_FilePurview'>
+                </td>
+                <td name='dataTable.fcSys_TYPE'>
+                    2
+                </td>
+                <td name='dataTable.f_Attach'>
+                </td>
+                <td name='dataTable.f_Image'>
+                </td>
+                <td name='dataTable.f_OutFile'>
+                </td>
+                <td name='dataTable.fcSys_Sign'>
+                </td>
+                <td name='dataTable.f_Owner'>
+                    黄涛
+                </td>
+                <td name='dataTable.f_SPLB'>
+                    果宝
+                </td>
+                <td name='dataTable.f_SPXL'>
+                    果宝果冻布丁
+                </td>
+                <td name='dataTable.f_SPMC'>
+                    果宝25g乳酸布丁{巧克力}
+                </td>
+                <td name='dataTable.f_SPBM'>
+                    GB25gRSBD{QKL}
+                </td>
+                <td name='dataTable.f_SPTM'>
+                    1
+                </td>
+                <td name='dataTable.f_MJLS'>
+                    5
+                </td>
+                <td name='dataTable.f_GG'>
+                    5.00
+                </td>
+                <td name='dataTable.f_XH'>
+                    5000g
+                </td>
+                <td name='dataTable.f_JJDW'>
+                    箱
+                </td>
+                <td name='dataTable.f_LJDW'>
+                    kg
+                </td>
+                <td name='dataTable.f_CBJ'>
+                    4.8
+                </td>
+                <td name='dataTable.f_PFJJ'>
+                    32.5
+                </td>
+                <td name='dataTable.f_PFLJ'>
+                    6.5
+                </td>
+                <td name='dataTable.f_KCSX'>
+                </td>
+                <td name='dataTable.f_KCXX'>
+                    1
+                </td>
+                <td name='dataTable.f_JXSL'>
+                </td>
+                <td name='dataTable.f_BZQX'>
+                    360
+                </td>
+                <td name='dataTable.f_JDRQ'>
+                    2004/3/23 1:00:19
+                </td>
+                <td name='dataTable.f_XGRQ'>
+                    2004/10/30 4:25:05
+                </td>
+                <td name='dataTable.f_GYSMC'>
+                    揭阳市富牛食品工业有限公司
+                </td>
+                <td name='dataTable.f_GYSBM'>
+                    JYSFNSPGYYXGS
+                </td>
+                <td name='dataTable.f_SPZL'>
+                </td>
+                <td name='dataTable.f_KCSL'>
+                    0
+                </td>
+                <td name='dataTable.f_KCJS'>
+                    0
+                </td>
+                <td name='dataTable.f_KCLS'>
+                    0
+                </td>
+                <td name='dataTable.NetPCID'>
+                </td>
+                <td name='dataTable.fcSys_UID'>
+                    CDF7393C-E234-4A94-861B-647D24D4D043
+                </td>
+                <td name='dataTable.f_SPBH'>
+                </td>
+                <td name='dataTable.f_KCJE'>
+                    0
+                </td>
+                <td name='dataTable.f_YJJ'>
+                    4.8
+                </td>
+                <td name='dataTable.f_XLR'>
+                    8.5
+                </td>
+                <td name='dataTable.f_SFTJ'>
+                    ×
+                </td>
+                <td name='dataTable.f_YSCB'>
+                </td>
+                <td name='dataTable.f_SCRQ'>
+                </td>
+                <td name='dataTable.f_SPSCRQ'>
+                    2009-9
+                </td>
+                <td name='dataTable.f_JYLSJ'>
+                </td>
+                <td name='dataTable.f_GHJ'>
+                    6.5
+                </td>
+                <td name='dataTable.f_CSLSJ'>
+                    8
+                </td>
+                <td name='dataTable.f_ZDGHJ'>
+                    5.8
+                </td>
+                <td name='dataTable.f_BZ'>
+                </td>
+                <td name='dataTable.fcSys_Lock'>
+                    ×
+                </td>
+                <td name='dataTable.f_LRBL'>
+                    0.261538
+                </td>
+                <td name='dataTable.f_PFLRBL'>
+                    0.172413
+                </td>
+                <td name='dataTable.f_SPGJJ'>
+                    6.5
+                </td>
+                <td name='dataTable.f_QS'>
+                    有
+                </td>
+                <td name='dataTable.f_LS'>
+                    0
+                </td>
+                <td name='dataTable.f_SPPJJ'>
+                </td>
+                <td name='dataTable.f_ZDR'>
+                </td>
+                <td name='dataTable.f_JYLSBJ'>
+                </td>
+                <td name='dataTable.f_SCRQXF'>
+                    2012/11/1 0:00:00
+                </td>
+                <td name='dataTable.f_DLSJG'>
+                    5.6
+                </td>
+                <td name='dataTable.DL'>
+                    0.142857
+                </td>
+                <td name='dataTable.f_DLSJGGJJ'>
+                    5.6
+                </td>
+                <td name='dataTable.f_DZ'>
+                </td>
+                <td name='dataTable.f_SPPJDJ'>
+                </td>
+                <td name='dataTable.f_SPPJBJ'>
+                </td>
+                <td name='dataTable.SPPJ'>
+                    0
+                </td>
+                <td name='dataTable.f_ZDGHDJ'>
+                    5.8
+                </td>
+                <td name='dataTable.ZDGHLS'>
+                    0
+                </td>
+                <td name='dataTable.f_ZGGHLS'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHML'>
+                </td>
+                <td name='dataTable.f_DZHDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSBJ'>
+                </td>
+                <td name='dataTable.JYTJLSDJ'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHDDJ1'>
+                </td>
+                <td name='dataTable.f_DZHZDML'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHBJ'>
+                </td>
+                <td name='dataTable.f_ZTJZJCJ'>
+                    0
+                </td>
+                <td name='dataTable.f_ZTJZJCJ1'>
+                    0
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ'>
+                    6.5
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ1'>
+                    1
+                </td>
+                <td name='dataTable.f_CD'>
+                    广东省揭阳市（揭东区）
+                </td>
+                <td name='dataTable.f_ZXTM'>
+                </td>
+                <td name='dataTable.f_ZBTM'>
+                </td>
+                <td name='dataTable.f_JZPZJGXX'>
+                </td>
+                <td name='dataTable.f_FYZB'>
+                </td>
+            </tr>
+            <tr pk='{}' name='dataTable.row'>
+                <td name='dataTable.ID'>
+                    8815
+                </td>
+                <td name='dataTable.fcSys_MID'>
+                </td>
+                <td name='dataTable.fcSys_FilePurview'>
+                </td>
+                <td name='dataTable.fcSys_TYPE'>
+                    2
+                </td>
+                <td name='dataTable.f_Attach'>
+                </td>
+                <td name='dataTable.f_Image'>
+                </td>
+                <td name='dataTable.f_OutFile'>
+                </td>
+                <td name='dataTable.fcSys_Sign'>
+                </td>
+                <td name='dataTable.f_Owner'>
+                    黄涛
+                </td>
+                <td name='dataTable.f_SPLB'>
+                    果宝
+                </td>
+                <td name='dataTable.f_SPXL'>
+                    果宝果冻布丁
+                </td>
+                <td name='dataTable.f_SPMC'>
+                    果宝25g果肉果冻{香橙}
+                </td>
+                <td name='dataTable.f_SPBM'>
+                    GB25gGRGD{XC}
+                </td>
+                <td name='dataTable.f_SPTM'>
+                    1
+                </td>
+                <td name='dataTable.f_MJLS'>
+                    5
+                </td>
+                <td name='dataTable.f_GG'>
+                    5.00
+                </td>
+                <td name='dataTable.f_XH'>
+                    5000g
+                </td>
+                <td name='dataTable.f_JJDW'>
+                    箱
+                </td>
+                <td name='dataTable.f_LJDW'>
+                    kg
+                </td>
+                <td name='dataTable.f_CBJ'>
+                    4.8
+                </td>
+                <td name='dataTable.f_PFJJ'>
+                    32.5
+                </td>
+                <td name='dataTable.f_PFLJ'>
+                    6.5
+                </td>
+                <td name='dataTable.f_KCSX'>
+                </td>
+                <td name='dataTable.f_KCXX'>
+                    1
+                </td>
+                <td name='dataTable.f_JXSL'>
+                </td>
+                <td name='dataTable.f_BZQX'>
+                    360
+                </td>
+                <td name='dataTable.f_JDRQ'>
+                    2004/3/23 1:01:47
+                </td>
+                <td name='dataTable.f_XGRQ'>
+                    2004/10/30 4:25:05
+                </td>
+                <td name='dataTable.f_GYSMC'>
+                    揭阳市富牛食品工业有限公司
+                </td>
+                <td name='dataTable.f_GYSBM'>
+                    JYSFNSPGYYXGS
+                </td>
+                <td name='dataTable.f_SPZL'>
+                </td>
+                <td name='dataTable.f_KCSL'>
+                    0
+                </td>
+                <td name='dataTable.f_KCJS'>
+                    0
+                </td>
+                <td name='dataTable.f_KCLS'>
+                    0
+                </td>
+                <td name='dataTable.NetPCID'>
+                </td>
+                <td name='dataTable.fcSys_UID'>
+                    A1C89121-E26B-40B9-809E-ADCE41E8C352
+                </td>
+                <td name='dataTable.f_SPBH'>
+                </td>
+                <td name='dataTable.f_KCJE'>
+                    0
+                </td>
+                <td name='dataTable.f_YJJ'>
+                    4.8
+                </td>
+                <td name='dataTable.f_XLR'>
+                    8.5
+                </td>
+                <td name='dataTable.f_SFTJ'>
+                    ×
+                </td>
+                <td name='dataTable.f_YSCB'>
+                </td>
+                <td name='dataTable.f_SCRQ'>
+                </td>
+                <td name='dataTable.f_SPSCRQ'>
+                    2009-9
+                </td>
+                <td name='dataTable.f_JYLSJ'>
+                </td>
+                <td name='dataTable.f_GHJ'>
+                    6.5
+                </td>
+                <td name='dataTable.f_CSLSJ'>
+                    8
+                </td>
+                <td name='dataTable.f_ZDGHJ'>
+                    5.8
+                </td>
+                <td name='dataTable.f_BZ'>
+                </td>
+                <td name='dataTable.fcSys_Lock'>
+                    ×
+                </td>
+                <td name='dataTable.f_LRBL'>
+                    0.261538
+                </td>
+                <td name='dataTable.f_PFLRBL'>
+                    0.172413
+                </td>
+                <td name='dataTable.f_SPGJJ'>
+                    6.5
+                </td>
+                <td name='dataTable.f_QS'>
+                    有
+                </td>
+                <td name='dataTable.f_LS'>
+                    0
+                </td>
+                <td name='dataTable.f_SPPJJ'>
+                </td>
+                <td name='dataTable.f_ZDR'>
+                </td>
+                <td name='dataTable.f_JYLSBJ'>
+                </td>
+                <td name='dataTable.f_SCRQXF'>
+                    2012/11/1 0:00:00
+                </td>
+                <td name='dataTable.f_DLSJG'>
+                    5.6
+                </td>
+                <td name='dataTable.DL'>
+                    0.142857
+                </td>
+                <td name='dataTable.f_DLSJGGJJ'>
+                    5.6
+                </td>
+                <td name='dataTable.f_DZ'>
+                </td>
+                <td name='dataTable.f_SPPJDJ'>
+                </td>
+                <td name='dataTable.f_SPPJBJ'>
+                </td>
+                <td name='dataTable.SPPJ'>
+                    0
+                </td>
+                <td name='dataTable.f_ZDGHDJ'>
+                    5.8
+                </td>
+                <td name='dataTable.ZDGHLS'>
+                    0
+                </td>
+                <td name='dataTable.f_ZGGHLS'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHML'>
+                </td>
+                <td name='dataTable.f_DZHDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSBJ'>
+                </td>
+                <td name='dataTable.JYTJLSDJ'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHDDJ1'>
+                </td>
+                <td name='dataTable.f_DZHZDML'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHBJ'>
+                </td>
+                <td name='dataTable.f_ZTJZJCJ'>
+                    0
+                </td>
+                <td name='dataTable.f_ZTJZJCJ1'>
+                    0
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ'>
+                    6.5
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ1'>
+                    1
+                </td>
+                <td name='dataTable.f_CD'>
+                    广东省揭阳市（揭东区）
+                </td>
+                <td name='dataTable.f_ZXTM'>
+                </td>
+                <td name='dataTable.f_ZBTM'>
+                </td>
+                <td name='dataTable.f_JZPZJGXX'>
+                </td>
+                <td name='dataTable.f_FYZB'>
+                </td>
+            </tr>
+            <tr pk='{}' name='dataTable.row'>
+                <td name='dataTable.ID'>
+                    8819
+                </td>
+                <td name='dataTable.fcSys_MID'>
+                </td>
+                <td name='dataTable.fcSys_FilePurview'>
+                </td>
+                <td name='dataTable.fcSys_TYPE'>
+                    2
+                </td>
+                <td name='dataTable.f_Attach'>
+                </td>
+                <td name='dataTable.f_Image'>
+                </td>
+                <td name='dataTable.f_OutFile'>
+                </td>
+                <td name='dataTable.fcSys_Sign'>
+                </td>
+                <td name='dataTable.f_Owner'>
+                    黄涛
+                </td>
+                <td name='dataTable.f_SPLB'>
+                    果宝
+                </td>
+                <td name='dataTable.f_SPXL'>
+                    果宝果冻布丁
+                </td>
+                <td name='dataTable.f_SPMC'>
+                    果宝35g方型果肉果冻{草莓}
+                </td>
+                <td name='dataTable.f_SPBM'>
+                    GB35gFXGRGD{CM}
+                </td>
+                <td name='dataTable.f_SPTM'>
+                    1
+                </td>
+                <td name='dataTable.f_MJLS'>
+                    5
+                </td>
+                <td name='dataTable.f_GG'>
+                    5.00
+                </td>
+                <td name='dataTable.f_XH'>
+                    5000g
+                </td>
+                <td name='dataTable.f_JJDW'>
+                    箱
+                </td>
+                <td name='dataTable.f_LJDW'>
+                    kg
+                </td>
+                <td name='dataTable.f_CBJ'>
+                    4.8
+                </td>
+                <td name='dataTable.f_PFJJ'>
+                    32.5
+                </td>
+                <td name='dataTable.f_PFLJ'>
+                    6.5
+                </td>
+                <td name='dataTable.f_KCSX'>
+                </td>
+                <td name='dataTable.f_KCXX'>
+                    1
+                </td>
+                <td name='dataTable.f_JXSL'>
+                </td>
+                <td name='dataTable.f_BZQX'>
+                    360
+                </td>
+                <td name='dataTable.f_JDRQ'>
+                    2004/3/23 1:05:48
+                </td>
+                <td name='dataTable.f_XGRQ'>
+                    2004/10/30 4:25:06
+                </td>
+                <td name='dataTable.f_GYSMC'>
+                    揭阳市富牛食品工业有限公司
+                </td>
+                <td name='dataTable.f_GYSBM'>
+                    JYSFNSPGYYXGS
+                </td>
+                <td name='dataTable.f_SPZL'>
+                </td>
+                <td name='dataTable.f_KCSL'>
+                    0
+                </td>
+                <td name='dataTable.f_KCJS'>
+                    0
+                </td>
+                <td name='dataTable.f_KCLS'>
+                    0
+                </td>
+                <td name='dataTable.NetPCID'>
+                </td>
+                <td name='dataTable.fcSys_UID'>
+                    DFB81D4D-C021-4E39-BC27-4EB30BCCA19B
+                </td>
+                <td name='dataTable.f_SPBH'>
+                </td>
+                <td name='dataTable.f_KCJE'>
+                    0
+                </td>
+                <td name='dataTable.f_YJJ'>
+                    4.8
+                </td>
+                <td name='dataTable.f_XLR'>
+                    8.5
+                </td>
+                <td name='dataTable.f_SFTJ'>
+                    ×
+                </td>
+                <td name='dataTable.f_YSCB'>
+                </td>
+                <td name='dataTable.f_SCRQ'>
+                </td>
+                <td name='dataTable.f_SPSCRQ'>
+                    2009-9
+                </td>
+                <td name='dataTable.f_JYLSJ'>
+                </td>
+                <td name='dataTable.f_GHJ'>
+                    6.5
+                </td>
+                <td name='dataTable.f_CSLSJ'>
+                    8
+                </td>
+                <td name='dataTable.f_ZDGHJ'>
+                    5.8
+                </td>
+                <td name='dataTable.f_BZ'>
+                </td>
+                <td name='dataTable.fcSys_Lock'>
+                    ×
+                </td>
+                <td name='dataTable.f_LRBL'>
+                    0.261538
+                </td>
+                <td name='dataTable.f_PFLRBL'>
+                    0.172413
+                </td>
+                <td name='dataTable.f_SPGJJ'>
+                    6.5
+                </td>
+                <td name='dataTable.f_QS'>
+                    有
+                </td>
+                <td name='dataTable.f_LS'>
+                    0
+                </td>
+                <td name='dataTable.f_SPPJJ'>
+                </td>
+                <td name='dataTable.f_ZDR'>
+                </td>
+                <td name='dataTable.f_JYLSBJ'>
+                </td>
+                <td name='dataTable.f_SCRQXF'>
+                    2012/11/1 0:00:00
+                </td>
+                <td name='dataTable.f_DLSJG'>
+                    5.6
+                </td>
+                <td name='dataTable.DL'>
+                    0.142857
+                </td>
+                <td name='dataTable.f_DLSJGGJJ'>
+                    5.6
+                </td>
+                <td name='dataTable.f_DZ'>
+                </td>
+                <td name='dataTable.f_SPPJDJ'>
+                </td>
+                <td name='dataTable.f_SPPJBJ'>
+                </td>
+                <td name='dataTable.SPPJ'>
+                    0
+                </td>
+                <td name='dataTable.f_ZDGHDJ'>
+                    5.8
+                </td>
+                <td name='dataTable.ZDGHLS'>
+                    0
+                </td>
+                <td name='dataTable.f_ZGGHLS'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHML'>
+                </td>
+                <td name='dataTable.f_DZHDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSDJ'>
+                </td>
+                <td name='dataTable.f_JYTJLSBJ'>
+                </td>
+                <td name='dataTable.JYTJLSDJ'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHDDJ1'>
+                </td>
+                <td name='dataTable.f_DZHZDML'>
+                    0
+                </td>
+                <td name='dataTable.f_DZHBJ'>
+                </td>
+                <td name='dataTable.f_ZTJZJCJ'>
+                    0
+                </td>
+                <td name='dataTable.f_ZTJZJCJ1'>
+                    0
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ'>
+                    6.5
+                </td>
+                <td name='dataTable.f_ZTJZJGJCJ1'>
+                    1
+                </td>
+                <td name='dataTable.f_CD'>
+                    广东省揭阳市（揭东区）
+                </td>
+                <td name='dataTable.f_ZXTM'>
+                </td>
+                <td name='dataTable.f_ZBTM'>
+                </td>
+                <td name='dataTable.f_JZPZJGXX'>
+                </td>
+                <td name='dataTable.f_FYZB'>
+                </td>
+            </tr>
+            <tbody>
+    </table>
+</body>
+</html>

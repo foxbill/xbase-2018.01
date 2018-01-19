@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>微信菜单编辑</title>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script type="text/javascript" src="js/wxmenu.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $(divMenu).jsonList(testMxMenu.menu.button);
+            $('.dropdown-toggle').dropdown()
+        });
+    </script>
+</head>
+<body>
+    <div class="container" style="width: 560px; height: 743px; border: 1px solid 0; padding: 0px 90px 0px 87px; background: url(images/iphone.jpg) no-repeat 0px -300px">
+        <!--菜单设置表单-->
+        <div class="row" style="height: 305px; background-color: #fff; border-radius: 5px 5px; margin: 20px 0px 2px 0px;">
+            <div class="input-group" style="margin: 8px">
+                <span class="input-group-addon" id="basic-addon3">菜单名称</span>
+                <input type="text" class="form-control" id="basic-url" value="菜单一" aria-describedby="basic-addon3">
+            </div>
+            <div class="input-group" style="margin: 8px">
+                <span class="input-group-addon" id="Span1">操作类型</span>
+                <input type="text" class="form-control" id="Text1" aria-describedby="basic-addon3">
+            </div>
+            <div class="input-group" style="margin: 8px">
+                <span class="input-group-addon" id="Span3">菜单键码</span>
+                <input type="text" class="form-control" id="Text3" aria-describedby="basic-addon3">
+            </div>
+            <div class="input-group" style="margin: 8px">
+                <span class="input-group-addon" id="Span2">菜单连接</span>
+                <input type="text" class="form-control" id="Text2" aria-describedby="basic-addon3">
+            </div>
+            <div style="padding:10px 8px">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary"   >保存菜单 </button>
+                 </div>
+                <!-- /btn-group -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-danger" >删除菜单</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="height: 222px"></div>
+
+        <!--模拟微信菜单-->
+        <div class="row">
+            <div class="btn-group btn-group-justified" id="divMenu" name="menu" role="group" aria-label="..." >
+                <div class="btn-group dropup"  wbo-bind="menu.item">
+                    <button type="button" class="btn btn-default dropdown-toggle" wbo-bind="menu.name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        菜单一 <span class="caret"></span>
+                    </button>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">子菜单</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">子菜单</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">子菜单</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">子菜单</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">子菜单</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

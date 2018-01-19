@@ -1,0 +1,405 @@
+﻿<html>
+<head>
+    <title>活动流程图</title><link type="text/css" rel="stylesheet" href="ECOTree.css" />
+    <xml:namespace ns="urn:schemas-microsoft-com:vml" prefix="v" />
+    <style type="text/css">
+        v\:*
+        {
+            behavior: url(#default#VML);
+        }
+        .copy
+        {
+            font-family: "Verdana";
+            font-size: 10px;
+            color: #CCCCCC;
+        }
+    </style>
+
+    <script type="text/javascript" src="../../xbase.js/system/system.js"></script>
+
+    <script type="text/javascript" src="flow_tree.js"></script>
+
+    <script type="text/javascript">
+        var flowData = {
+            Id: "aaa",
+            Title: "",
+            Description: "",
+            Actions: [
+               {
+                   Id: "1",
+                   Title: "ac1",
+                   MethodName: "",
+                   DataSourceId: "",
+                   RunAt: 0,
+                   Props: [],
+                   ClientScript: "",
+                   Decisions: [],
+                   Actions: []
+               },
+               {
+                   Id: "2",
+                   Title: "ac2",
+                   MethodName: "",
+                   DataSourceId: "",
+                   RunAt: 0,
+                   Props: [],
+                   ClientScript: "",
+                   Decisions: [
+                               { Target: "aaa", TargetValue: "1", Actions: 3 },
+                               { Target: "bbb", TargetValue: "1", Actions: 6 },
+                               { Target: "ccc", TargetValue: "1", GotoStep: 7 }
+                              ],
+                   Actions: [
+                               {
+                                   Id: "1",
+                                   Title: "决策1",
+                                   MethodName: "",
+                                   DataSourceId: "control.if",
+                                   RunAt: 0,
+                                   Props: [],
+                                   ClientScript: "",
+                                   Decisions: [],
+                                   Actions: [
+                                  {
+                                      Id: "1",
+                                      Title: "决策活动",
+                                      MethodName: "",
+                                      DataSourceId: "control.if",
+                                      RunAt: 0,
+                                      Props: [],
+                                      ClientScript: "",
+                                      Decisions: [],
+                                      Actions: []
+                                  }
+                                   ]
+                               },
+                               {
+                                   Id: "1",
+                                   Title: "决策2",
+                                   MethodName: "",
+                                   DataSourceId: "control.if",
+                                   RunAt: 0,
+                                   Props: [],
+                                   ClientScript: "",
+                                   Decisions: [],
+                                   Actions: []
+
+                               }
+                            ]
+
+               },
+               {
+                   Id: "3",
+                   Title: "",
+                   MethodName: "",
+                   DataSourceId: "",
+                   RunAt: 0,
+                   Props: [],
+                   ClientScript: "",
+                   Decisions: []
+               },
+               {
+                   Id: "4",
+                   Title: "",
+                   MethodName: "",
+                   DataSourceId: "",
+                   RunAt: 0,
+                   Props: [],
+                   ClientScript: "",
+                   Decisions: []
+               },
+               {
+                   Id: "5",
+                   Title: "",
+                   MethodName: "",
+                   DataSourceId: "",
+                   RunAt: 0,
+                   Props: [],
+                   ClientScript: "",
+                   Decisions: [
+                               { Target: "aaa", TargetValue: "1", GotoStep: 5 },
+                               { Target: "bbb", TargetValue: "1", GotoStep: 6 }
+                              ]
+               },
+               {
+                   Id: "6",
+                   Title: "",
+                   MethodName: "",
+                   DataSourceId: "",
+                   RunAt: 0,
+                   Props: [],
+                   ClientScript: "",
+                   Decisions: []
+               },
+               {
+                   Id: "7",
+                   Title: "",
+                   MethodName: "",
+                   DataSourceId: "",
+                   RunAt: 0,
+                   Props: [],
+                   ClientScript: "",
+                   Decisions: []
+               },
+               {
+                   Id: "8",
+                   Title: "",
+                   MethodName: "",
+                   DataSourceId: "",
+                   RunAt: 0,
+                   Props: [],
+                   ClientScript: "",
+                   Decisions: []
+               },
+               {
+                   Id: "9",
+                   Title: "",
+                   MethodName: "",
+                   DataSourceId: "",
+                   RunAt: 0,
+                   Props: [],
+                   ClientScript: "",
+                   Decisions: []
+               },
+               {
+                   Id: "10",
+                   Title: "",
+                   MethodName: "",
+                   DataSourceId: "",
+                   RunAt: 0,
+                   Props: [],
+                   ClientScript: "",
+                   Decisions: []
+               }
+            ]
+        }
+
+
+
+    </script>
+
+    <script type="text/javascript">
+
+        var fo = null;
+        var flowVender = null;
+
+        var CTL_NAME = {
+            CTL: "control.",
+            IF: "control.if",
+            WHILE: "control.while"
+        }
+        function FlowVender(canvasElement) {
+            fo = new ECOTree("fo", canvasElement);
+            var _flowData = flowData;
+            var actId = 0;
+            var nid = 1;
+            var pnid = -1;
+            var _this = this;
+            this.node = null;
+            this.flow = null;
+            this.action = null;
+
+            this.setData = function(flowData) {
+                _flowData = flowData;
+                this.flow = flowData;
+
+                if (!flowData.Actions)
+                    flowData.Actions = [];
+
+                if (flowData.Actions.length)
+                    this.action = flowData.Actions[0];
+
+                this.draw();
+            }
+
+            this.getTree = function() {
+                return fo;
+            }
+
+            this.draw = function() {
+                actId = 0;
+                nid = 1;
+                pnid = -1;
+
+                if (!_flowData) alert("flowData 没有设置，不能显示流程");
+
+                fo = new ECOTree("fo", canvasElement);
+
+                fo.onNodeClick = function(node) {
+
+                    if (_this.node == node)
+                        return;
+                    
+                    if (_this.node && _this.onExitNode)
+                        _this.onExitNode(_this.node);
+
+                    _this.node = node;
+                    _this.action = node.act;
+
+                    if (_this.onSelectNode)
+                        _this.onSelectNode(node);
+                };
+
+                fo.config.colorStyle = ECOTree.CS_NODE;
+                fo.config.nodeFill = ECOTree.NF_FLAT;
+                fo.config.useTarget = false;
+                fo.config.selectMode = ECOTree.SL_SINGLE;
+                fo.config.defaultNodeWidth = 80;
+                fo.config.defaultNodeHeight = 60;
+                fo.config.iSubtreeSeparation = 20;
+                fo.config.iSiblingSeparation = 15;
+                fo.config.iLevelSeparation = 30;
+
+                if (_flowData.Actions && _flowData.Actions.length) {
+                    var node = drawAction(_flowData.Actions[0], null);
+                    for (var i = 1; i < _flowData.Actions.length; i++) {
+                        var action = _flowData.Actions[i];
+                        node = drawAction(action, node, null);
+                    }
+                }
+                fo.UpdateTree();
+            }
+
+            function drawAction(action, pnode, pAction) {
+                var title = !action.Title ? action.Id : action.Title;
+                var node = fo.addChild(pnode, title);
+                node.meta = { act: action, pAct: pAction };
+                if (action.DataSourceId && action.DataSourceId.indexOf(CTL_NAME.CTL, 0) == 0)
+                    node.c = "blue";
+                if (action == _this.action) {
+                    node.isSelected = true;
+                    _this.node = node;
+                }
+                if (action.Actions && action.Actions.length) {
+                    var spnode = node;
+                    for (var i = 0; i < action.Actions.length; i++) {
+                        var subAction = action.Actions[i];
+                        var spnode = drawAction(subAction, spnode, action);
+                        if (subAction.DataSourceId.indexOf(CTL_NAME.CTL, 0) == 0)
+                            spnode = node;
+                    }
+                }
+                return node;
+
+            }
+        }
+
+        FlowVender.prototype.onSelectNode = function(node) { }
+        FlowVender.prototype.onExitNode = function(node) { }
+
+        FlowVender.prototype.add = function(actType) {
+            if (!actType) actType = "";
+            var title = "新活动";
+            switch (actType) {
+                case CTL_NAME.IF:
+                    {
+                        title = "决策";
+                        break;
+                    }
+                case CTL_NAME.WHILE:
+                    {
+                        title = "条件循环";
+                        break;
+                    }
+            }
+            var newAction = {
+                Id: "6",
+                Title: title,
+                MethodName: "",
+                DataSourceId: actType,
+                RunAt: 0,
+                Props: [],
+                ClientScript: "",
+                Decisions: []
+            };
+
+
+            if (!this.flow) {
+                alert("流程对象没有设置，不能添加活动");
+                return;
+            }
+
+            var flowData = this.flow;
+            if (!flowData.Actions)
+                flowData.Actions = [];
+
+            var node = this.node;
+            if (!node) {
+                this.flow.Actions.push(newAction);
+                this.draw();
+                return;
+            }
+
+            var meta = null;
+            var selAction = null;
+            var pAction = null;
+            if (node.meta) {
+                meta = node.meta;
+                selAction = meta.act;
+                if (meta && meta.pAct)
+                    pAction = meta.pAct;
+            }
+
+
+            if (selAction && (actType.indexOf(CTL_NAME.CTL) == 0 || selAction.DataSourceId.indexOf(CTL_NAME.CTL) == 0)) {
+                if (!selAction.Actions)
+                    selAction.Actions = [];
+                if (selAction.Actions.length)
+                    selAction.Actions.insert(newAction, 0);
+                else
+                    selAction.Actions.push(newAction);
+
+            } else if (pAction && pAction.DataSourceId && pAction.DataSourceId.indexOf(CTL_NAME.CTL) == 0) {
+                var i = pAction.Actions.indexOf(selAction);
+                pAction.Actions.insertAfter(newAction, i);
+            }
+            else {
+                var i = flowData.Actions.indexOf(selAction);
+                if (i > -1)
+                    flowData.Actions.insertAfter(newAction, i);
+                else
+                    flowData.Actions.push(newAction);
+            }
+            this.action = newAction;
+            this.draw();
+        }
+
+        FlowVender.prototype.deleteAction = function() {
+            if (!this.node) return;
+            var node = this.node;
+            this.node = null;
+            this.action = null;
+            var action = node.meta.act;
+            var paction = node.meta.pAct;
+            if (paction)
+                paction.Actions.removeItem(action)
+            else if (action) {
+                this.flow.Actions.removeItem(action);
+            } else {
+                return;
+            }
+            this.draw();
+        }
+
+        FlowVender.prototype.updateNode = function(node) {
+            if (!node)
+                node = this.node;
+            var tree = this.getTree();
+            if (node.meta && node.meta.act)
+                tree.setNodeTitle(node.id, node.meta.act.Title, tree);
+        }
+
+        window.onload = function() {
+            flowVender = new FlowVender("flowCanvas");
+            //    flowVender.setData(flowData);
+        }
+        
+       
+    </script>
+
+</head>
+<body  style="background-color:#FFF">
+    <div id="flowCanvas">
+    </div>
+</body>
+</html>

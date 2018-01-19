@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+    <title>查询参数设置</title>
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <link href="css/studio.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/icon.css" />
+    <script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../../easyui/jquery.easyui.min.js"></script>
+    <!--
+    <script type="text/javascript" src="../../easyui/src/datagrid-scrollview.js"></script>
+    <script type="text/javascript" src="../../easyui/src/datagrid-filter.js"></script>
+    -->
+    <script type="text/javascript" src="../../xbase.js/easyui.xbase.js"></script>
+    <script language="javascript" type="text/javascript">
+
+        var rows = window.dialogArguments;
+
+        if (!rows)
+            rows = [];
+
+        window.returnValue = null;
+
+        var dirOptions = $.rCall("ParameterDirectionCaptions.captions.wbo", null);
+        var dbTypeOptions = $.rCall("DbTypeCaptions.captions.wbo", null);
+
+
+        $(function () {
+            $('#tabParamGrid').datagrid({
+                //            url: 'datagrid_data.json',
+                title: "命令参数设置",
+                toolbar: "#tb",
+                singleSelect: true,
+                data: {
+                    total: rows.length,
+                    rows: rows
+                },
+                columns: [[
+                    { field: 'Id', title: '参数名称', width: 100, editor: "text" }
+                  , { field: 'DefaultValue', title: '默认值', width: 100, align: 'left', editor: "text" }
+
+                  , {
+                      field: 'DataType',
+                      title: '参数类型',
+                      width: 100,
+                      editor: {
+                          type: "combobox",
+                          options: {
+                              url: "DsExplore.getDbTypes.wbo",
+                              valueField: "value",
+                              textField: "text"
+                          }
+                      },
+                      formatter: function (value, row) {
+                          //alert(value);
+                          return dbTypeOptions[value];
+                      }
+                  }
+
+                  , {
+                      field: 'Direction',
+                      title: '输入输出',
+                      width: 100,
+                      editor: {
+                          type: "combobox",
+                          options: {
+                              url: "DsExplore.getParameterDirections.wbo",
+                              valueField: "value",
+                              textField: "text"
+                          }
+                      },
+                      formatter: function (value, row) {
+                          //alert(value);
+                          return dirOptions[value];
+                      }
+                  }
+               ]]
+            });
+            $('#tabParamGrid').datagrid("setEditMode", true);
+        })
+
+
+        function doAppend() {
+            var row = {
+                Id: "",
+                DataType: 1,
+                DefaultValue: "",
+                Direction: 1
+            };
+
+            $('#tabParamGrid').datagrid('appendRow', row);
+            var editIndex = $('#tabParamGrid').datagrid('getRows').length - 1;
+            //.datagrid('selectRow', editIndex)
+            $('#tabParamGrid').datagrid('beginEdit', editIndex);
+        }
+
+        function doOk() {
+            close();
+        }
+
+        function doDelete() {
+            $('#tabParamGrid').datagrid("deleteSel");
+        }
+
+        onunload = function () {
+            $('#tabParamGrid').datagrid('endEdit');
+            window.returnValue = $('#tabParamGrid').datagrid("getRows");
+        }
+  
+    </script>
+</head>
+<body>
+    <table id="tabParamGrid">
+    </table>
+    <div id="tb" style="padding: 2px">
+        <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="javascript:doAppend()">
+            增加</a> <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="javascript:doDelete()">
+                删除</a><a href="#" class="easyui-linkbutton" iconcls="icon-save" plain="true" onclick="javascript:doOk()">
+                    确认</a>
+    </div>
+</body>
+</html>

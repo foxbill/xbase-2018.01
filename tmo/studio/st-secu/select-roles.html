@@ -1,0 +1,100 @@
+﻿<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <title>数据库管理</title>
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/metro/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="/studio/css/main.css">
+    <!--<script type="text/javascript" src="../../xbase.js/tab_control.js"></script>-->
+    <script src="../../xbase.js/jquery.min.js" type="text/javascript"></script>
+    <script src="../../easyui/jquery.easyui.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.form.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.jsonform.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var pUserId = $.paramVal("userId");
+        var pUserRoles = $.rCall("UserAccount.getUserRoles", {
+            userId: pUserId
+        });
+
+        $(function () {
+            loadRoleTree();
+        });
+
+        function roleInUser(roleId) {
+            for (var i = 0; i < pUserRoles.length; i++) {
+                var role = pUserRoles[i];
+                if (role.Id == roleId)
+                    return true;
+            }
+            return false;
+        }
+
+        function loadRoleTree() {
+
+            var roles = $.rCall("RoleManager.getRoles");
+            if (roles && roles.Err) return;
+            var treeData = [];
+            for (var i = 0; i < roles.length; i++) {
+                var role = roles[i];
+                var checked = roleInUser(role.Id);
+                treeData.push({ id: role.Id, text: role.DisplayName, role: role, checked: checked });
+            }
+            $(elTreeRole).tree({
+                data: treeData,
+                checkbox: true,
+                fit: true,
+                onCheck: function (node, checked) {
+                    if (checked) {
+                        $.rCall("UserAccount.appendUserRole", {
+                            userId: pUserId,
+                            roleId: node.id
+                        });
+                    }
+                    else {
+                        $.rCall("UserAccount.deleteUserRole", {
+                            userId: pUserId,
+                            roleId: node.id
+                        });
+                    }
+                }
+            });
+        }
+
+        function goBack() {
+            location = "user.html?" + $.param({ name: pUserId, v: $.timeVer() })
+        }
+
+        //效率太低暂时未用
+        function save() {
+            var nodes = $(elTreeRole).tree('getChecked');
+            var ids = [];
+            for (var i = 0; i < nodes.length; i++) {
+                ids.push(nodes[i].id);
+            }
+            var userRoles = { userId: pUserId, RoleIds: ids };
+            var ret = $.rCall("UserAccount.appendRoles", {
+                userRoleIds: userRoles
+            });
+            if (ret && !ret.Err) {
+                $.messager.alert("选择用户角色", "保存完成", "info");
+            }
+        }
+    </script>
+</head>
+<body class="easyui-layout no-margin-body">
+    <div style="height: 30px; padding: 2px;" data-options="region:'north'" title="">
+        <div class="x-toolbar-title">
+            选择角色</div>
+        <a class="easyui-linkbutton" style="margin: 0px 0px; height: 22px" onclick="goBack()">
+            返回</a>
+    </div>
+    <div class="easyui-layout" data-options="region:'center'" style="padding: 10px">
+        <div id="elTreeRole">
+        </div>
+    </div>
+</body>
+</html>

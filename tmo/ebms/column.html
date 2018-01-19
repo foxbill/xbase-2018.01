@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0 minimal-ui" />
+    <link rel="stylesheet" href="/boostrap/css/bootstrap.min.css">
+    <script src="/xbase.js/jquery.min.js"></script>
+    <script src="/boostrap/js/bootstrap.min.js"></script>
+    <script src="/xbase.js/jquery.xbase.form.js"></script>
+    <script src="/xbase.js/jquery.xbase.js"></script>
+    <script src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script src="scripts/getTreeId.js"></script>
+    <script src="scripts/jk.date.js"></script>
+    <script src="../../easyui/jquery.easyui.min.js"></script>
+    <script src="scripts/jk.pagetool.js"></script>
+    <title>栏目管理</title>
+    <style>
+        .art-content {
+            padding: 10px;
+        }
+
+        section {
+            padding: 10px 10px;
+            border: 1px solid #eee;
+            margin: 10px 0px;
+            background-color: white;
+        }
+
+        .art-date {
+            color: gray;
+            font-size: 1.2rem;
+        }
+
+        .art-img {
+            margin: 5px auto;
+        }
+
+        .art-content {
+            color: gray;
+        }
+
+        .art-tlt-font {
+            font-weight: bold;
+            font-size: 2.0rem;
+        }
+
+        .art-more {
+            font-weight: normal;
+            font-size: 1.2rem;
+        }
+
+        .artType-item-title {
+            cursor: pointer;
+        }
+
+        .artType-item-name {
+            width: 80%;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .sidebar-form {
+            max-width: 350px;
+            width: 100%;
+            margin-right: 30px;
+            margin-bottom: 10px;
+        }
+    </style>
+
+    <script>
+        $(function () {
+
+
+
+        })
+
+
+
+
+    </script>
+</head>
+<body>
+    <div class="view" style="padding: 0px 20px;">
+        <p></p>
+
+        <div class="row">
+            <div class="col-md-3 col-xs-4 col-xm-3">
+
+                <!--<input type="checkbox" name="tm" id="tm" style="display: none;">-->
+                <div class="list-group" data-id="deptList" wbo="Hierarchy.column.drillMembers.call" wbo-ctrl="jsonList">
+                    <div class="list-group-item artType-item-title " wbo-bind="head">栏目</div>
+                    <a class="list-group-item artType-item-title active text-center" wbo-bind="operate" onclick="addCategory(this)">
+                        <span class="artType-item-name" data-type="0" style="font-size: 20px">+</span>
+                    </a>
+                    <div class="list-group-item artType-item-title dataItem" wbo-bind="item">
+                        <div class="artType-item-name" onclick="getCategoryChilden(this)" wbo-bind="operate">
+                            <span wbo-bind="text" class="deptName"></span>
+
+                        </div>
+                        <div class="hidden-xs" style="float: right">
+                            <span class="glyphicon glyphicon-pencil" onclick="edit(this)" wbo-bind="operate"></span>
+                        </div>
+                        <div class="childenItem" style="display: none" wbo-bind="Hierarchy.column.drillMembers" wbo-ctrl="jsonList">
+                            <a class="list-group-item artType-item-title active text-center" wbo-bind="operate" onclick="addCategory(this)">
+                                <span class="artType-item-name" data-type="0" style="font-size: 20px">+</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-md-9 col-xs-9"></div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">添加类型
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-2 control-label label-title ">名称：</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="deptValue" placeholder="类型名称" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submit btn btn-primary">
+                        提交
+                    </button>
+                    <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">编辑类型
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="editForm" method="post" role="form">
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-3 control-label label-title ">名称：</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="Name" placeholder="名称" />
+                            </div>
+                        </div>
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-3 control-label label-title ">类型：</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" name="Type">
+                                    <option value="-1">请选择</option>
+                                    <option value="0">新闻栏目</option>
+                                    <option value="1">文章栏目</option>
+                                    <option value="2">商品栏目</option>
+                                </select>
+                                <!--<input type="text" class="form-control" name="Type" placeholder="类型名称" />-->
+                            </div>
+                        </div>
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-3 control-label label-title ">描述：</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="Description" placeholder="描述" />
+                            </div>
+                        </div>
+
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-3 control-label label-title ">关键字：</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="Keywords" placeholder="栏目Url" />
+                            </div>
+                        </div>
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-3 control-label label-title ">栏目Url：</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="Url" placeholder="栏目Url" />
+                            </div>
+                        </div>
+                        <div class="form-group field">
+                            <label for="prodname" class="col-sm-3 control-label label-title ">显示条数：</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" name="MaxCount" placeholder="显示条数" />
+                            </div>
+                        </div>
+                        <div class="hidden">
+                            <input type="hidden" name="Templist" id="Templist">
+                            <input type="hidden" name="Temparticle" id="Temparticle">
+                            <input type="hidden" name="IsHidden" id="IsHidden">
+                            <input type="hidden" name="TopId" id="TopId">
+                            <input type="hidden" name="ParentId" id="ParentId">
+                            <input type="hidden" name="DelFlag" id="DelFlag">
+                            <input type="hidden" name="CreateTime" id="CreateTime">
+                            <input type="hidden" name="Updater" id="Updater">
+                            <input type="hidden" name="UpdateTime" id="UpdateTime">
+                            <input type="hidden" name="pk_ID" id="pk_ID">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submit btn btn-primary">
+                        修改
+                    </button>
+                    <button type="button" class="delete btn btn-danger">
+                        删除
+                    </button>
+                    <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                        关闭
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+    </div>
+
+</body>
+
+<script>
+    $(function () {
+        //var total = articlelist.ctrl.data().total;
+        //initPage(total);
+        //$(".list-group").slideUp();
+
+    })
+
+
+    var ds = "pt_category";
+    var CompanyId = "1";
+
+
+    function edit(e) {
+        ctrl = e.ctrl ? e.ctrl : e.dataForm;
+        var jq = ctrl.jq();
+        var row = ctrl.data();
+        var rowData = $.rCall(ds + ".row", { pk: { ID: row.id } });
+        $("#editForm").form('load', rowData);
+        $("#updateModal .submit").html("修改");
+        $("#updateModal .submit").attr("onclick", "updateCategory()");
+        $("#updateModal .delete").removeClass("hidden");
+        $("#updateModal .delete").attr("onclick", "delCategory()");
+        $("#updateModal").modal("show");
+
+    }
+
+
+
+    function delCategory() {
+        if (ctrl == undefined) return;
+        var jq = ctrl.jq()
+        var row = ctrl.data();
+        if (confirm("确定要删除该类型吗？")) {
+            var result = $.rCall(ds + ".delete", { row: { pk_ID: row.id } });
+            if (result == null) {
+                var res = delCategoryChilden(row.id);
+                if (res == null) {
+                    jq.remove();
+                } else
+                    alert($.getJsonStr(res));
+            } else {
+                alert($.getJsonStr(result));
+            }
+            $("#updateModal [name='Name']").val("");
+            $("#updateModal").modal("hide");
+        }
+    }
+
+    function delCategoryChilden(parentId) {
+        var data = $.rCall(ds + ".data", { page: 1, rows: 10000, filterRules: [{ field: 'TopId', op: 'equal', value: parentId }] })
+        var result = $.rCall(ds + ".delete", { rows: data.rows });
+        return result;
+    }
+
+    function updateCategory() {
+        if (ctrl == undefined) return;
+        var jq = ctrl.jq()
+        var row = ctrl.data();
+        var input = $("#updateModal [name='Name']");
+        if ($(input).val() == "") {
+            $(input).parent().parent().addClass("has-error");
+            return;
+        }
+        $(input).parent().parent().removeClass("has-error");
+        $("#editForm").form("submit", {
+            url: "DataForm." + ds + ".post.wbo",
+            onSubmit: function (param) {
+                return true;
+            },
+            success: function (data) {
+                if (data && data.Err)
+                    alert(data.Err.Text)
+                else {
+                    alert("记录已被保存");
+                    jq.children().children(".deptName").html($(input).val());
+                    //window.history.back(-1);
+                    $("#editForm").form('reset');
+                }
+            }
+        })
+       
+           
+       
+        $("#updateModal [name='typeValue']").val("");
+        $("#updateModal").modal("hide");
+    }
+
+    var ctrl = undefined;
+    function addCategory(e) {
+        ctrl = e.ctrl ? e.ctrl : e.dataForm;
+        $("#updateModal .submit").attr("onclick", "submitCategory()");
+        $("#updateModal .delete").addClass("hidden");
+        $("#updateModal .submit").html("提交");
+        $("#updateModal").modal("show");
+    }
+
+    function submitCategory() {
+        var TopId = "0";
+        var parentId = "0";
+        if (ctrl == undefined) {
+
+        }
+        else {
+            var row = ctrl.data();
+            parentId = row.id;
+            TopId = row.attr.TopId == "0" ? parentId : row.attr.TopId;
+        }
+        var input = $("#myModal [name='Name']");
+        if ($(input).val() == "") {
+            $(input).parent().parent().addClass("has-error");
+            return;
+        }
+        $(input).parent().parent().removeClass("has-error");
+        $("#ParentId").val(parentId);
+        $("#TopId").val(TopId);
+
+        $("#editForm").form("submit", {
+            url: "DataForm." + ds + ".post.wbo?action=add",
+            onSubmit: function (param) {
+                return true;
+            },
+            success: function (data) {
+                if (data && data.Err)
+                    alert(data.Err.Text)
+                else {
+                    alert("记录已被保存");
+                    refreshCategory(ctrl);
+                   // window.history.back(-1);
+                }
+            }
+        })
+        $("#editForm").form('reset');
+
+        //var result = $.rCall("ds." + ds + ".insert", { row: { MaxCount: MaxCount, Type:TypeValue, FSort: 1, Name: $(input).val(), TopId: depth + 1,Description:Description, ParentId: parentId } });
+        //if (result == null) {
+
+        //} else {
+        //    alert($.getJsonStr(result));
+        //}
+        $("#updateModal [name='Name']").val("");
+        $("#updateModal").modal("hide");
+
+    }
+
+
+
+
+    function getCategoryChilden(el) {
+        var ctrl = el.ctrl ? el.ctrl : el.dataForm;
+        var jq = ctrl.jq()
+        var row = ctrl.data();
+        //url = row.attr.url
+        //if (url) {
+        //    document.getElementById('ifrDemo').src = url;
+        //    //$(ifrDemo).attr('src', url);
+        //    return;
+        //}
+
+        if (jq.attr("drilled") == "false" || jq.attr("drilled") == undefined) {
+            var node = jq.clone();
+            var path = null;
+            if (row.path)
+                path = row.path.split(",");
+            var children = rCall("Hierarchy.column.drillMembers", { memberPath: path });
+            //jq.addClass("active");
+            jq.attr("drilled", true);
+            for (var i = 0; i < children.length; i++) {
+                var subNode = node.clone();
+                jq.children(".childenItem").append(subNode);
+                subNode.jsonForm(children[i]);
+            }
+        }
+
+        var content = $(el).parent().children(".childenItem");
+        var style = content.attr("style");
+        if (style == undefined || style == "display: block;" || style == "") {
+            $(el).parent(".list-group-item").find(".childenItem").slideUp();
+            return;
+        }
+        $(el).parent(".list-group-item").siblings().children(".childenItem").slideUp();
+        content.slideDown();
+    }
+
+    function refreshCategory(ctrl) {
+        var path = null;
+        var jq = null;
+        if (!ctrl) {
+            location.reload();
+            return;
+        } else {
+            jq = ctrl.jq()
+            var row = ctrl.data();
+            if (row.path)
+                path = row.path.split(",");
+        }
+        var children = rCall("Hierarchy.column.drillMembers", { memberPath: path });
+        jq.children(".childenItem").find("div").remove();
+        var node = jq.clone();
+        for (var i = 0; i < children.length; i++) {
+            var subNode = node.clone();
+
+            subNode.jsonForm(children[i]);
+            subNode.attr("drilled", false);
+            jq.children(".childenItem").append(subNode);
+        }
+        jq.children().find(".childenItem").hide();
+
+        ctrl = undefined;
+    }
+
+    function initSelect(obj) {
+
+    }
+</script>
+
+</html>

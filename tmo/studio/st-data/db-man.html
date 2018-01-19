@@ -1,0 +1,175 @@
+﻿<html>
+<head>
+    <title>数据库管理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=4">-->
+    <link href="../css/jqtree.css" rel="stylesheet" type="text/css" />
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <link href="css/studio.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .pop-box
+        {
+            display: none;
+            background: white;
+            border: solid 1px #6e8bde;
+        }
+        .pop-box h4
+        {
+            color: #FFF;
+            cursor: default;
+            height: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: left;
+            background-color: blue;
+            margin: 0px;
+        }
+    </style>
+    <script type="text/javascript" src="../../xbase.js/tab_control.js"></script>
+    <script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tree.jquery.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <script language="javascript" type="text/javascript">
+
+        var g_Editor = null;
+        var g_WbdlXdk = null;
+        var gCurConn = null;
+        var gTree;
+        var snid = 1;
+        //初始化程序
+        onload = function () {
+            //            window.olTab = new TabControl([olConnTag],
+            //                                [connPropertyList],
+            //                                "onclick", "OutLookTab Act", "OutLookTab");
+            //            window.olTab.switchDisplay = true;
+            gTree = $(connTree);
+            gTree.bind('tree.select', function (event) {
+                var node = event.node;
+                if (!node) return;
+                snid = node.id;
+
+                if (!node || node == undefined)
+                    return;
+                var conn = node.attr.conn;
+
+                switch (node.nodeType) {
+                    case 1:
+                        parent.window.connName = conn;
+                        document.getElementById("ifrContent").src = "table.html?name=" + encodeURIComponent(node.name) + "&connName=" + encodeURIComponent(conn);
+                        break;
+                    case 2:
+                        parent.window.connName = conn;
+                        document.getElementById("ifrContent").src = "view.html?viewName=" + encodeURIComponent(node.name) + "&connName=" + encodeURIComponent(conn);
+                        break;
+                    case 3:
+                        parent.window.connName = conn;
+                        document.getElementById("ifrContent").src = "sp.html?spName=" + encodeURIComponent(node.name) + "&connName=" + encodeURIComponent(conn);
+                        break;
+                    case 6:
+                        parent.window.connName = conn;
+                        //                      frames["Content"].window.connName = conn;
+                        document.getElementById("ifrContent").src = "conn-edit.html?name=" + encodeURIComponent(node.name) + "&connName=" + encodeURIComponent(conn);
+                        break;
+                    default:
+                        ;
+                }
+
+            })
+
+            loadDataTree();
+            $(tabOutLookBar).ah();
+            gTree.autoHight();
+        }
+
+        function loadDataTree() {
+            var v = $.timeVer();
+            $.getJSON("DataExplore.getTree.wbo?v=" + v, null, function (json) {
+                if (json.Err) {
+                    $('#connTree').text(json.Err.Text);
+                    return;
+                }
+                // treeJson = json;
+                gTree.tree({
+                    data: json,
+                    dragAndDrop: false,
+                    autoOpen: 0,
+                    selectable: true
+                });
+
+                var node = gTree.tree('getNodeById', snid);
+                gTree.tree('selectNode', node);
+
+            })
+
+        }
+
+        //切换又导航条显示
+        function divPropBoxSwitch_onclick() {
+            if (tabOutLookBar.style.display == "none") {
+                tabOutLookBar.style.display = "";
+                tdPageLeft.style.width = "220px";
+                tdMainBox.style.paddingLeft = "3px";
+                divPropBoxSwitch.className = "PropBoxSwitchButton";
+
+            }
+            else {
+                tabOutLookBar.style.display = "none";
+                tdPageLeft.style.width = "0px";
+                tdMainBox.style.paddingLeft = "0px";
+                divPropBoxSwitch.className = "PropBoxSwitchButton Close";
+            }
+        }
+               
+    </script>
+</head>
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" style="overflow-y: hidden;
+    margin: 0px">
+    <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0x" style="padding: 0px;
+        margin: 0px">
+        <tr>
+            <td width="200" valign="top" id="tdPageLeft" class="Left">
+                <table width="100%" height="100%" border="0" cellspacing="1" class="lm" id="tabOutLookBar" style="height:100%">
+                    <tr  height=30>
+                        <td class="lmh">
+                            <div class="OutLookHead">
+                                <div class="Left">
+                                    <div class="Right" id="LeftAngel">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="OutSplit">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="tree-panel" id="connTree">
+                                正在加载数据....
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="OutLookHead" id="divOlSwhich" style="display: none">
+                    <div class="Left">
+                        <div class="Right" id="LeftAngel2" onClick="return LeftAngel_onclick()">
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="MainPanel" id="tdMainBox" valign="top">
+                <table width="100%" height="100%" border="0" cellspacing="1">
+                    <tr>
+                        <td valign="top" style="background-color: #FFF;">
+                            <iframe src="table.html" id="ifrContent" name="Content" class="autosize border0">
+                            </iframe>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

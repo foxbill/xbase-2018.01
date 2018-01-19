@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>ImageCrop-Download by http://www.bvbsoft.com </title>
+    <script src="js/ImageCopper.js" language="javascript" type="text/javascript"></script>
+    <style type="text/css">
+        div {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        img {
+            margin: 0;
+            padding: 0;
+        }
+
+        span {
+            color: #FF0000;
+            font-weight: bold;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+    </style>
+    <script language="javascript" type="text/javascript">
+        function ShowValue(x, y, h, w, i) {
+            document.getElementById("Demo" + i + "_Left").innerHTML = x;
+            document.getElementById("Demo" + i + "_Top").innerHTML = y;
+            document.getElementById("Demo" + i + "_Width").innerHTML = w;
+            document.getElementById("Demo" + i + "_Height").innerHTML = h;
+        }
+    </script>
+</head>
+<body style="margin: 0; padding: 0; font-size: 14px;">
+    <div style="width: 90%; margin: 0px auto 0 auto; font-size: 12px; line-height: 22px; font-weight: bold;">
+        Demo1:随意拖动位置和大小.<br />
+        Left:<span id="Demo1_Left">0</span> Top:<span id="Demo1_Top">0</span> Width:<span id="Demo1_Width">0</span> Height:<span id="Demo1_Height">0</span><br />
+        <img alt="demo1" src="images/demo1.jpg" onload="new ImageCopper(this,null,function(x,y,w,h){ShowValue(x,y,w,h,1)});" /><br />
+        <br />
+        Demo2:随意拖动位置,锁定尺寸大小.<br />
+        Left:<span id="Demo2_Left">0</span> Top:<span id="Demo2_Top">0</span> Width:<span id="Demo2_Width">0</span> Height:<span id="Demo2_Height">0</span><br />
+        <img alt="demo2" src="images/demo2.jpg" onload="new ImageCopper(this,{Locked : true,Left : 280, Top : 100},function(x,y,w,h){ShowValue(x,y,w,h,2)});" /><br />
+        <br />
+        Demo3:随意拖动位置,保持尺寸宽高比.<br />
+        Left:<span id="Demo3_Left">0</span> Top:<span id="Demo3_Top">0</span> Width:<span id="Demo3_Width">0</span> Height:<span id="Demo3_Height">0</span><br />
+        <img alt="demo3" src="images/demo3.jpg" onload="new ImageCopper(this,{LockRate : true,Left : 250, Top : 30},function(x,y,w,h){ShowValue(x,y,w,h,3)});" />
+    </div>
+</body>
+</html>

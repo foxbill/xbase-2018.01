@@ -1,0 +1,629 @@
+﻿<html xmlns:v="urn:schemas-microsoft-com:vml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="pragram" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+<meta http-equiv="expires" content="0" />
+<link rel="stylesheet" href="css/default1.css" type="text/css" />
+<link type="text/css" href="css/dialog.css" rel="stylesheet" />
+<link type="text/css" href="css/dialog.css" rel="stylesheet" />
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<!-- 表单控件图片开始 -->
+<title>无标题文档</title>
+<script type="text/javascript" src="system.xjs"></script>
+<script type="text/javascript" src="net_util.xjs"></script>
+<script type="text/javascript" src="wjs.xjs"></script>
+<script type="text/javascript" src="../../xbase.js/controls/xlistview.js"></script>
+<script type="text/javascript" src="../../xbase.js/controls/tab_control.js"></script>
+<script language="javascript" type="text/javascript">
+
+        var CTL_NAME = {
+            CTL: "control.",
+            IF: "control.if",
+            WHILE: "control.while"
+        }
+
+        //        var activeAction = null;
+        var JS_SCRIPT_ID = "JsScript";
+        window.returnValue = false;
+        var gFlowVender = null;
+        var g_WbdlXdk = null;
+        var g_PropList = null;
+        var g_ParamList = null;
+        var g_ActionPrototype = null;
+        var g_ActiveActionNode = null;
+        var g_DecisionForm = null;
+
+
+
+        window.onload = function() {
+            gHT = new TabControl([olTabTag1, olTabTag2, olTabTag3],
+                                [tabActionObject, elPropList, tabAction],
+                                "onclick", "OutLookTab Act","OutLookTab");
+            gHT.switchDisplay = true;								
+
+            g_WbdlXdk = window.dialogArguments.wbdlXdk;
+            g_PropList = new ListView(elPropList, elPropItem);
+            g_ParamList = new ListView(elParamList, elParamItem);
+          //  g_DecisionForm = new DecisionForm();
+
+            var actionFlow = window.dialogArguments.actionFlow;
+            var flowId = actionFlow.Id;
+
+
+            elFlowId.value = actionFlow.Id ? actionFlow.Id : "";
+            elFlowTitle.value = actionFlow.Title ? actionFlow.Title : actionFlow.Id;
+            loadActionObj();
+
+            elMethodName.onchange = loadParamsSchema;
+            elActionObject.onchange = loadActionObjSchema;
+
+            gFlowVender = flowCanvas.window.flowVender;
+            //    gFlowVender.attachEvent(gFlowVender.events.OnSelectAction, selectAction);
+            //    gFlowVender.attachEvent(gFlowVender.events.OnExitAction, exitAction);
+            gFlowVender.setData(actionFlow);
+            gFlowVender.onSelectNode = onFlowVender_SelectNode;
+            gFlowVender.onExitNode = onFlowVender_ExitNode;
+            if (gFlowVender.action)
+                getAction(gFlowVender.action);
+        }
+
+        window.onbeforeunload = function(e) {
+
+            e = e || event;
+
+            window.returnValue = false;
+
+            var flow = gFlowVender.flow;
+
+            if (!flow.Actions || !flow.Actions.length)
+                return;
+
+            if (gFlowVender && gFlowVender.node && gFlowVender.node.meta && gFlowVender.node.meta.act) {
+                setAction(gFlowVender.node.meta.act);
+            }
+
+            if (!elFlowTitle.value) {
+                //                alert("请输入，任务名称");
+                e.returnValue = "请输入，任务名称";
+                return "请输入，任务名称";
+            }
+            if (!elFlowId) {
+                //                alert("请输入，任务Id");
+                e.returnValue = "请输入，任务名称";
+                return "请输入，任务名称";
+            }
+
+            flow.Id = elFlowId.value;
+            flow.Title = elFlowTitle.value;
+            window.returnValue = true;
+
+        }
+
+        function onFlowVender_SelectNode(node) {
+            getAction(node.meta.act);
+        }
+
+        function onFlowVender_ExitNode(node) {
+            if (node && node.meta)
+                setAction(node.meta.act);
+        }
+
+        function loadActionObj() {
+
+            elActionObject.options.length = 0;
+
+            var objs = g_WbdlXdk.getDataSources();
+            if (!objs || !objs.length) return;
+
+            for (var i = 0; i < objs.length; i++) {
+                var obj = objs[i];
+                var opt = new Option(obj.Title, obj.Id);
+                elActionObject.options.add(opt);
+            }
+            var opt = new Option("Js脚本", JS_SCRIPT_ID);
+            elActionObject.options.add(opt);
+            var opt = new Option("决策", CTL_NAME.IF);
+            elActionObject.options.add(opt);
+            var opt = new Option("循环", CTL_NAME.WHILE);
+            elActionObject.options.add(opt);
+
+            //            if (objs.length > 0) {
+            loadActionObjSchema();
+            //            }
+
+        }
+
+        //装载活动对象骨架
+        function loadActionObjSchema() {
+
+            elMethodName.options.length = 0;
+            g_PropList.clear();
+
+            if (elActionObject.value == JS_SCRIPT_ID) {
+                divJsScript.style.display = "";
+				tabObjectSetting.style.display="none"
+                return;
+            }
+            divJsScript.style.display = "none";
+			tabObjectSetting.style.display=""
+			
+            var dataObj = g_WbdlXdk.getDataSource(elActionObject.value);
+            if (!dataObj) return;
+
+            var objType = dataObj.DataType;
+
+            var req = new JoapRequest("WboAdmin", "", "GetWboPrototype");
+            req.addParamate("objectType", objType);
+            var objsc = req.invoke();
+            if (!objsc) return;
+
+            g_ActionPrototype = objsc;
+            var methods = objsc.Methods;
+
+            //            elMethodName.options.length = 0;
+            var op = new Option("", "");
+            elMethodName.options.add(op);
+
+            for (var i = 0; i < methods.length; i++) {
+                var m = methods[i];
+                var op = new Option(m.Title, m.Id);
+                elMethodName.options.add(op);
+            }
+
+            var properties = objsc.Properties;
+            //            g_PropList.clear();
+            for (var i = 0; i < properties.length; i++) {
+                var p = properties[i];
+                var listItem = g_PropList.addItem();
+                g_PropList.setItemValue(listItem, "PropName", p.Title);
+                g_PropList.setItemValue(listItem, "PropId", p.Id);
+            }
+        }
+        //获取方法原型
+        function getMethodSchema() {
+
+            if (!g_ActionPrototype) return;
+
+            var ms = g_ActionPrototype.Methods;
+
+            if (!ms)
+                return null;
+
+            for (var i = 0; i < ms.length; i++) {
+                var m = ms[i];
+                if (m.Id == elMethodName.value)
+                    return m;
+            }
+            return null;
+        }
+        //装载方法参数
+        function loadParamsSchema() {
+
+            g_ParamList.clear();
+
+            var m = getMethodSchema();
+            if (!m) return;
+
+            var params = m.Params;
+            if (!params) return;
+
+
+            for (var i = 0; i < params.length; i++) {
+                var param = params[i];
+                var listItem = g_ParamList.addItem();
+                g_ParamList.setItemValue(listItem, "ParamName", param.Title);
+                g_ParamList.setItemValue(listItem, "ParamId", param.Id);
+            }
+
+        }
+
+
+        //设置当前选中活动的值
+        function setAction(action) {
+
+            //            var action = actionNode.actionData;
+            action.DataSourceId = elActionObject.value;
+
+            //            g_DecisionForm.saveData();
+            if (!action) return;
+            if (action.DataSourceId == JS_SCRIPT_ID) {
+                action.RunAt = 1;
+                action.ClientScript = txtaJsScript.value;
+                action.Title = "执行Js脚本";
+                gFlowVender.updateNode();
+                return;
+            }
+
+            action.RunAt = 0;
+            action.MethodName = elMethodName.value;
+
+            action.Title = "";
+            if (elActionObject.selectedIndex > -1)
+                action.Title = elActionObject.options[elActionObject.selectedIndex].text;
+            if (elMethodName.selectedIndex > -1)
+                action.Title += "." + elMethodName.options[elMethodName.selectedIndex].text;
+
+
+
+            var n = g_PropList.getCount();
+            var props = [];
+            for (var i = 0; i < n; i++) {
+
+                var item = g_PropList.getItem(i);
+                var prop = new Object;
+                prop.Name = g_PropList.getItemValue(item, "PropId");
+                prop.Value = g_PropList.getItemValue(item, "PropValue");
+                //   prop.Title = g_PropList.getItemValue(item, "PropName");
+                if (prop.Value)
+                    props.push(prop);
+            }
+            action.Props = props;
+
+            var n = g_ParamList.getCount();
+            var params = [];
+            for (var i = 0; i < n; i++) {
+                var item = g_ParamList.getItem(i);
+                var param = new Object;
+
+                param.Id = g_ParamList.getItemValue(item, "ParamId");
+                param.Value = g_ParamList.getItemValue(item, "ParamValue");
+                param.Title = g_ParamList.getItemValue(item, "ParamName");
+                params.push(param);
+
+            }
+            action.Parameters = params;
+            action.ReturnValue = elActionReturn.value;
+            gFlowVender.updateNode();
+            //     actionNode.refresh();
+
+        }
+
+        //显示当前选中活动的值
+        function getAction(action) {
+            //            g_DecisionForm.setData(action);
+            if (action.RunAt == 1) {
+                elActionObject.value = JS_SCRIPT_ID;
+                txtaJsScript.value = action.ClientScript;
+                loadActionObjSchema();
+                return;
+            }
+            else
+                elActionObject.value = action.DataSourceId;
+
+
+
+
+            loadActionObjSchema();
+
+
+            var props = action.Props;
+            if (props && props.length > 0) {
+                for (var i = 0; i < props.length; i++) {
+                    var prop = props[i];
+                    var item = g_PropList.getItemByField("PropId", prop.Name);
+                    g_PropList.setItemValue(item, "PropValue", prop.Value);
+                }
+            }
+
+
+            elMethodName.value = action.MethodName;
+            loadParamsSchema();
+
+
+            var params = action.Parameters;
+            if (params && params.length > 0) {
+                for (var i = 0; i < params.length; i++) {
+                    var param = params[i];
+                    var item = g_ParamList.getItemByField("ParamId", param.Id);
+                    g_ParamList.setItemValue(item, "ParamValue", param.Value);
+                }
+            }
+
+            elActionReturn.value = action.ReturnValue ? action.ReturnValue : "";
+            //       elMethodName.value = action.MethodName;
+            //       loadParamsSchema();            
+
+        }
+
+        function divInsertAction_onclick() {
+            gFlowVender.add()
+            if (gFlowVender.action)
+                getAction(gFlowVender.action);
+        }
+
+        function divInsertIf_onclick() {
+            gFlowVender.add(CTL_NAME.IF)
+            if (gFlowVender.action)
+                getAction(gFlowVender.action);
+        }
+
+        function divInsertWhile_onclick() {
+            gFlowVender.add(CTL_NAME.WHILE);
+            if (gFlowVender.action)
+                getAction(gFlowVender.action);
+        }
+
+        function divDeleteAction_onclick() {
+            gFlowVender.deleteAction();
+        }
+
+        function divSaveFlow_onclick() {
+            window.close();
+        }
+
+        function btnApplayActionClick() {
+            if (gFlowVender && gFlowVender.action) {
+                setAction(gFlowVender.action);
+            }
+        }
+
+
+        function DecisionForm() {
+            var _Decisions = null;
+            var _listView = new ListView(tabDecision, trDecisionItem, trDecisionHead);
+
+            function loadTarget(listItem) {
+                var properties = g_ActionPrototype.Properties;
+                var select = _listView.getItemElement(listItem, "selTarget");
+                select.options.length = 0;
+                //            g_PropList.clear();
+                var op = new Option("", "");
+                select.add(op);
+                for (var i = 0; i < properties.length; i++) {
+                    var p = properties[i];
+                    var op = new Option(p.Title, p.Id);
+                    select.add(op);
+                }
+                var op = new Option("返回值", "ReturnValue");
+                select.add(op);
+            }
+
+            this.setData = function(action) {
+                _listView.clear();
+
+                if (!action) return;
+                if (!action.Decisions) action.Decisions = [];
+
+                _Decisions = action.Decisions;
+                for (var i = 0; i < _Decisions.length; i++) {
+                    var item = _listView.addItem();
+                    loadTarget(item);
+                    var deci = _Decisions[i];
+                    item.data = deci;
+                    _listView.setItemValue(item, "selTarget", deci.Target);
+                    _listView.setItemValue(item, "txtTargetValue", deci.TargetValue);
+                    _listView.setItemValue(item, "txtGotoStep", deci.GotoStep);
+                }
+            }
+
+            this.saveData = function() {
+                var items = _listView.items;
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+                    var deci = item.data;
+
+                    var target = _listView.getItemValue(item, "selTarget");
+                    var targetValue = _listView.getItemValue(item, "txtTargetValue");
+                    var gotoStep = ""; //_listView.getItemValue(item, "txtGotoStep");
+                    if (target) {
+                        deci.Target = target;
+                        deci.TargetValue = targetValue;
+                        deci.GotoStep = gotoStep;
+                    } else {
+                        _Decisions.removeItem(deci);
+                    }
+                }
+
+            }
+
+            this.addItem = function() {
+                var item = _listView.addItem();
+                item.data = new Object();
+                loadTarget(item);
+                _Decisions.push(item.data);
+            }
+
+            this.deleteItem = function(item) {
+                _Decisions.removeItem(item.data);
+                _listView.deleteItem(item);
+            }
+        }
+
+        function delDecision(sender) {
+            g_DecisionForm.deleteItem(sender.parentNode.parentNode);
+        }
+
+        function addDecision() {
+            g_DecisionForm.addItem();
+        }
+        
+    </script>
+</head>
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" style="overflow: visible">
+<!-- 主框架-->
+<table border="0" width="100%" height="100%" cellpadding="0" cellspacing="0" class="LayoutTable">
+    <tr>
+        <td height="63" valign="top" nowrap="nowrap">
+            <table width="100%"  height="60" border="0" cellpadding="0" cellspacing="0" class="Title">
+                <tr>
+                    <td width="120" height="60" valign="top">
+                        <div class="Logo">
+                            <div class="Left">
+                                <div class="Right">
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td valign="top" class="TitleBg">
+                        <div class="Menu">
+                            <div class="Left">
+                                <div class="Right">
+                                    <div class="TabHead">
+                                        <div class="Tag Act" id="menuTag1">
+                                            插入
+                                        </div>
+                                    </div>
+                                    <div id="editorTools" class="EditorTools">
+                                        <div class="MenuTabPanel" style="display: block" id="menuTabPanel1">
+                                            <table border="0" cellpadding="0" cellspacing="0" class="ButtonBox">
+                                                <tr>
+                                                    <td>
+                                                        <button class="MenuBtn"  style="" id="divInsertAction" onClick="return divInsertAction_onclick()"> <img src="../images/036.gif" width="16" height="16" alt="插入活动" /><br />
+                                                        活动 </button>
+                                                    </td>
+                                                    <td>
+                                                        <button class="MenuBtn" id="divInsertIf" onClick="return divInsertIf_onclick()"> <img src="../images/095.gif" width="16" height="16" alt="插入判断" /><br />
+                                                        判断 </button>
+                                                    </td>
+                                                    <td>
+                                                        <button class="MenuBtn" id="divInsertWhile" onClick="return divInsertWhile_onclick()"> <img src="../images/067.gif" width="16" height="16" alt="插入循环" /><br />
+                                                        循环</button>
+                                                    </td>
+                                                    <td>
+                                                        <button class="MenuBtn"  id="divDeleteAction" onClick="return divDeleteAction_onclick()"> <img src="../images/103.gif" width="16" height="16" alt="删除活动" /><br />
+                                                        删除活动</button>
+                                                    </td>
+                                                    <td>
+                                                        <button class="MenuBtn" id="divSaveFlow"  onClick="return divSaveFlow_onclick()"> <img src="../images/086.gif" width="16" height="16" alt="保存流程" /><br />
+                                                        保存退出</button>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td width="59" valign="top" class="HeadRightIcon">&nbsp;</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr >
+        <td nowrap="nowrap" >
+            <table width="100%"  height="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td width="230" valign="top">
+                        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                            <tbody>
+                                <tr>
+                                    <td height="28" valign="top">
+                                        <div class="OutLookHead">
+                                            <div class="Left">
+                                                <div class="Right" id="LeftAngel">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="C_Left_03">
+                                        <div class="OutLookTab Act" id="olTabTag1">
+                                            <div class="Left">
+                                                <div class="Right">
+                                                    活动对象
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <table width="100%" cellpadding="0" cellspacing="0" id="tabActionObject" datarow="0">
+                                            <tr>
+                                                <td nowrap="nowrap" class="PadingFormS" id="title" name="title">
+                                                    <select name="value" class="AutoWidthInput" id="elActionObject">
+                                                        <option value=""></option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                <table width="100%" cellpadding="0" cellspacing="0" id="divJsScript" datarow="0">
+                                          <tr>
+                                            <td nowrap="nowrap" class="PadingFormS" id="title2" name="title">
+                                              <textarea name="txtaJsScript" wrap="off" id="txtaJsScript" style="height: 300px; width: 100%; overflow: auto"></textarea>
+                                            </td>
+                                          </tr>
+                                      </table>
+                                <table width="100%" border="0" id="tabObjectSetting">
+                                  <tr>
+                                    <td><div class="OutLookTab" id="olTabTag2">
+                                      <div class="Left">
+                                        <div class="Right">对象属性</div>
+                                      </div>
+                                    </div>
+                                      <table width="100%" cellpadding="0" cellspacing="0" id="elPropList">
+                                        <tr id="elPropItem">
+                                          <td name="PropName" nowrap="nowrap">页号 </td>
+                                          <td><input name="PropValue" type="text" class="AutoWidthInput" style="width: 80px" />
+                                            <input type="hidden" name="PropId" /></td>
+                                        </tr>
+                                      </table>
+                                      <div class="OutSplit"></div>
+                                      <div class="OutLookTab" id="olTabTag3">
+                                        <div class="Left">
+                                          <div class="Right">活动方法 </div>
+                                        </div>
+                                      </div>
+                                      <table  id="tabAction" class="ActionSetPage" cellspacing="0" cellpadding="0" border="0" visible="false">
+                                        <tbody>
+                                          <tr>
+                                            <td class="Left_Item02" style="height: 31px"><table id="EventPropertyForm" cellpadding="0" cellspacing="0">
+                                              <tr>
+                                                <td width="40%">活动 </td>
+                                                <td width="60%"><select name="elMethodName" id="elMethodName" style="width: auto">
+                                                  <option value=""></option>
+                                                </select></td>
+                                              </tr>
+                                            </table></td>
+                                          </tr>
+                                          <tr>
+                                            <td class="Left_Item02" align="center" style="font-weight: bold; height: 28px;">选项 </td>
+                                          </tr>
+                                          <tr>
+                                            <td class="Left_Item02"><table id="elParamList" cellpadding="0" cellspacing="0">
+                                              <tr id="elParamItem">
+                                                <td width="40%" name="ParamName">活动 </td>
+                                                <td width="60%"><input type="text" id="Select2" name="ParamValue" style="width: 80px" value="" />
+                                                  <input type="hidden" id="Text1" name="ParamId" value="" /></td>
+                                              </tr>
+                                            </table></td>
+                                          </tr>
+                                          <tr>
+                                            <td class="Left_Item02" align="left" valign="middle">返回值
+                                              <input type="text" id="elActionReturn" /></td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    <p>&nbsp;</p></td>
+                                  </tr>
+                                </table></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                  </td>
+                    <td valign="top" class="MainPanel">
+                        <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td height="28" class="TabHead2">任务ID
+                                    <input id="elFlowId" type="text" />
+显示名称
+<input id="elFlowTitle" type="text" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <iframe name="flowCanvas" frameborder="0" style="border: solid #999 1px" src="flow_canvas.html" width="100%" height="100%"></iframe>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <!--编辑器-->
+    <tr height="30px" style="background-color: #CCCCCC">
+        <td class="copy">昆明万云科技有限公司 &copy;2010-2013 </td>
+    </tr>
+</table>
+</body>
+</html>

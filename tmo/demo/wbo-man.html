@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript">
+
+        function btnTest_onclick() {
+            var json = {};
+            json.Company = $(txtCompany).val();
+            json.Name = $(txtName).val();
+            json.Age = $(txtAge).val();
+            json.Department = $(txtDepartment).val();
+            var person = $.rCall("ClassEcho.keep", { newName: $(txtInstName).val(), wboJSON: json });
+        }
+
+        function listInst() {
+            var names = $.rCall("ClassEcho.dir");
+            $(ulInsts).html("");
+            for (var i = 0; i < names.length; i++) {
+                var li = document.createElement("li");
+                ulInsts.appendChild(li);
+                li.style.cursor = "pointer";
+                $(li).html(names[i]);
+                $(li).click(function (e) {
+                    var name = $(e.target).html();
+                    var wbo = $.rCall("ClassEcho." + name);
+                    $(txtInstName).val(name);
+                    $(txtCompany).val(wbo.Company);
+                    $(txtName).val(wbo.Name);
+                    $(txtAge).val(wbo.Age);
+                    $(txtDepartment).val(wbo.Department);
+                });
+            }
+        }
+
+
+
+    </script>
+</head>
+<body>
+    <div class="demo-info">
+        <div class="demo-tip icon-tip"></div>
+        <div>Js保存后端组件对象，并显示被保存的对象</div>
+    </div>
+
+    <table>
+        <tr>
+            <td>实例名</td>
+            <td>
+                <input id="txtInstName" type="text" value="" /></td>
+        </tr>
+        <tr>
+            <td>姓名</td>
+            <td>
+                <input id="txtName" type="text" value="张三" /></td>
+        </tr>
+        <tr>
+            <td>年龄</td>
+            <td>
+                <input id="txtAge" type="text" value="48" /></td>
+        </tr>
+        <tr>
+            <td>公司</td>
+            <td>
+                <input id="txtCompany" type="text" value="百度" /></td>
+        </tr>
+        <tr>
+            <td>部门</td>
+            <td>
+                <input id="txtDepartment" type="text" value="产品部" /></td>
+        </tr>
+    </table>
+    <input id="btnTest" type="button" value="保存实例" onclick="return btnTest_onclick()" />
+    <input id="btnList" type="button" value="查看实例" onclick="return listInst()" />
+
+    保存的实例： 
+    <ul id="ulInsts">
+    </ul>
+
+</body>
+</html>

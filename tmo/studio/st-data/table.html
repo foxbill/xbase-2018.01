@@ -1,0 +1,393 @@
+﻿<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <title>数据库管理</title>
+    <!--<script type="text/javascript" src="../../xbase.js/tab_control.js"></script>-->
+    <script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tree.jquery.js" type="text/javascript"></script>
+    <script src="../../xbase.js/tab_control.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.form.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.jsonform.js" type="text/javascript"></script>
+    <script src="../../easyui/jquery.easyui.min.js" type="text/javascript"></script>
+    <link href="../css/global.css" rel="stylesheet" type="text/css" />
+    <link href="../css/jqtree.css" rel="stylesheet" type="text/css" />
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <link href="css/studio.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/icon.css">
+    <script language="javascript" type="text/javascript">
+
+        var name = $.paramVal("name");
+        var oper = $.paramVal("oper");
+        var connName = $.paramVal("connName");
+        var dsName = !!connName ? connName + "." + name : name;
+
+        var tbForm;
+        var triggerList;
+        var consList;
+
+        window.onload = function () {
+
+            var types = $.rCall("DataExplore.getFieldTypes", { connName: connName });
+            $("[name='TableDef.FieldDefs.Type']").options(types);
+
+
+            var tab = new TabControl([aField, aTriger, aCons], [ddField, ddTriger, ddCons], "onclick", "act");
+            tab.onTabActive = function (tabTag) {
+                if (tabTag == aTriger) {
+                    $.post("DataExplore.getTriggerNames.wbo", { connName: connName, tableName: name }, function (data) {
+                        var ret = $.parseJSON(data);
+                        if (ret.Err)
+                            divTableForm.innerHTML = ret.Err.Text;
+
+                        if (triggerList)
+                            triggerList.setData(ret);
+                        else
+                            triggerList = $(tbTrigger).jsonList(ret);
+                    })
+                }
+                else if (tabTag == aCons) {
+                    $.post("DataExplore.getConstraintNames.wbo", { connName: connName, tableName: name }, function (data) {
+                        var ret = $.parseJSON(data);
+                        if (ret.Err)
+                            divTableForm.innerHTML = ret.Err.Text;
+                        if (!consList)
+                            consList = $(tbCons).jsonList(ret);
+                        else
+                            consList.setData(ret);
+                    })
+
+                }
+            }
+
+            if (oper && oper == "new")
+                newTable();
+            else if (name && connName) {
+                loadTable();
+            }
+
+        }
+
+        function newTable() {
+            if (!connName) {
+                alert("没有选择连接，不能创建表，请在左边的数据目录中选择连接");
+                return;
+            }
+            if (!name)
+                $.messager.prompt("新建表", "请输入表名", function (name) {
+                    if (!name)
+                        return;
+                    var ret = $.rCall("DataExplore.createTable.wbo", { tableName: name });
+                    if (ret && ret.Err)
+                        divTableForm.innerHTML = ret.Err.Text;
+                    else
+                        tbForm = $(divTableForm).jsonForm(ret);
+                });
+
+
+
+            //异步调用
+            //            $.post("DataExplore.createTable.wbo", { tableName: name }, function (data) {
+            //                var ret = $.parseJSON(data);
+            //                if (ret && ret.Err)
+            //                    divTableForm.innerHTML = ret.Err.Text;
+            //                tbForm = $(divTableForm).jsonForm(ret);
+            //            })
+
+
+            //同步调用
+
+
+        }
+
+        function loadTable() {
+            $.post("DataExplore.getTableDef.wbo", { connName: connName, tableName: name }, function (data) {
+                var ret = $.parseJSON(data);
+                if (ret && ret.Err)
+                    divTableForm.innerHTML = ret.Err.Text;
+                tbForm = $(divTableForm).jsonForm(ret);
+            })
+        }
+    </script>
+    <script type="text/javascript">
+
+        function spDeleteTrigger_onclick(el) {
+            var form = el.dataForm;
+            var triggerName = form.getData();
+            $.messager.confirm("删除触发器", "是否要删除触发器：" + triggerName, function (r) {
+                if (r)
+                    $.rCall("DataExplore.deleteTrigger.wbo", { connName: connName, triggerName: triggerName });
+            });
+        }
+
+        function btnAddTrigger_onclick() {
+            //  trName = el.dataForm.getData();
+            //window.showModalDialog("trigger.html", { connName: encodeURIComponent(connName), tableName: encodeURIComponent(name), triggerName: "newTriggerName" }, "center:yes;resizable:yes");
+            window.showModalDialog("trigger.html", { connName: connName, tableName: name, triggerName: "newTriggerName" }, "center:yes;resizable:yes");
+        }
+
+        function spEditTrigger_onclick(el) {
+            trName = el.dataForm.getData();
+            window.showModalDialog("trigger.html", { connName: connName, tableName: name, triggerName: trName }, "center:yes;resizable:yes");
+        }
+
+        function btnSaveTable_onclick() {
+            var tableDef = tbForm.getData();
+            $.post("DataExplore.modifyTable.wbo", { connName: connName, tableDef: JSON.stringify(tableDef) }, function (data) {
+                var ret = $.parseJSON(data);
+                if (ret && ret.Err) {
+                    alert(ret.Err.Text);
+                    return;
+                }
+                $.rCall("ds." + dsName + ".free");
+                alert("表设计成功的保存");
+            })
+        }
+
+        function btnAddField_onclick() {
+            var list = tbForm.FieldDefs;
+            var fldDef = { OldName: null, Name: "", Type: "nvarchar", Length: 50, Procesion: 0 };
+            list.addDataItem(fldDef);
+        }
+
+        function btnDelField_onclick(el) {
+            var list = el.row.list;
+            list.removeItem(el.row);
+            var data = el.data;
+            if (data.OldName)
+                $.rCall("DataExplore.deleteField", { connName: connName, tableName: name, fieldName: data.OldName });
+        }
+
+
+        function btnModifyCons_onclick(el) {
+            var consName = el.data;
+            $.post("DataExplore.getConstraint.wbo", { connName: connName, tableName: name, consName: consName },
+            function (data) {
+                var ret = JSON.parse(data);
+                if (ret && ret.Err)
+                    alert(ret.Err.Text);
+                else
+                    alert(data);
+            })
+        }
+
+        function btnDeleteCons_onclick(el) {
+            var consName = el.data;
+            $.messager.confirm("删除约束", "是否要删除约束：" + consName, function (r) {
+                if (r)
+                    $.rCall("DataExplore.deleteConstraint.wbo", { connName: connName, tableName: name, ctrName: consName });
+            });
+        }
+
+        function btnAddToDs_onclick() {
+            //var dsId=c
+            var dsId = prompt("请输入数据源名称(英文):", "ds" + name);
+            if (!dsId)
+                return;
+            $.post("DsExplore.buildTableSchema.wbo", { connName: connName, tableName: name, dsId: dsId }, function (data) {
+                var resp = JSON.parse(data);
+                if (resp.Err) {
+                    alert(resp.Err.Text);
+                    return;
+                }
+                alert("表" + connName + "." + name + "已经添加到数据源");
+            })
+        }
+
+        function btnModifyTable_onclick() {
+            var dsName = name;
+            if (connName)
+                dsName = connName + "." + dsName;
+            window.location = "data-table2.html?" + $.param({ dsName: dsName });
+        }
+
+    </script>
+    <link href="SpryAssets/SpryValidationCheckbox.css" rel="stylesheet" type="text/css">
+</head>
+<body style="overflow: auto" class="bg-white pd10">
+    <p>
+        <input id="btnSaveTable" class="form-btn mb10" type="button" value="保存编辑" onclick="return btnSaveTable_onclick()" />
+        <input id="btnAddField" class="form-btn mb10" type="button" value="添加字段" onclick="return btnAddField_onclick()" />
+        <input id="btnAddTrigger" class="form-btn mb10" type="button" value="添加触发器" onclick="return btnAddTrigger_onclick()" />
+        <input id="btnAddToDs" class="form-btn mb10" type="button" value="添加到数据源" onclick="return btnAddToDs_onclick()" />
+        <input id="btnModifyTable" class="form-btn mb10" type="button" value="数据维护" onclick="return btnModifyTable_onclick()" /></p>
+    <div id="divTableForm" name="TableDef" style="zoom: 1;">
+        <table border="0" cellspacing="1" class="dataform mb10" istemplate="1">
+            <tr>
+                <td>
+                    表名
+                </td>
+                <td>
+                    <label name="TableDef.Name">
+                    </label>
+                    &nbsp;
+                </td>
+                <td>
+                    显示名称
+                </td>
+                <td>
+                    <input type="text" name="TableDef.Title" id="inptId" value="" />
+                </td>
+                <td>
+                    说明
+                </td>
+                <td>
+                    <textarea class="text400" name="TableDef.Description" id="Description" rows="1"></textarea>
+                </td>
+            </tr>
+        </table>
+        <dl class="tabpage">
+            <dt class="fn-clear"><a href="#" id="aField" class="act">字段信息</a> <a href="#" id="aTriger">
+                触发器</a> <a href="#" id="aCons">约束</a>
+                <div class="control">
+                    收缩</div>
+            </dt>
+            <dd id="ddField" style="display: block">
+                <table border="0" cellpadding="0" cellspacing="1" class="datalist" name="TableDef.FieldDefs"
+                    id="divMethodList">
+                    <tr align="center" list="hr" obj="TableDef.FieldDefs">
+                        <th class="hc">
+                            key
+                        </th>
+                        <th class="hc">
+                            字段名
+                        </th>
+                        <th class="hc">
+                            显示名称
+                        </th>
+                        <th class="hc">
+                            字段类型
+                        </th>
+                        <th class="hc">
+                            长度
+                        </th>
+                        <th class="hc">
+                            小数位
+                        </th>
+                        <th class="hc">
+                            默认值
+                        </th>
+                        <th class="hc">
+                            备注
+                        </th>
+                        <th class="hc">
+                            标识
+                        </th>
+                        <th class="hc">
+                            非重复
+                        </th>
+                        <th class="hc">
+                            必填
+                        </th>
+                        <th class="hc">
+                            索引
+                        </th>
+                        <th class="hc">
+                            删除
+                        </th>
+                    </tr>
+                    <tbody>
+                        <tr name="TableDef.FieldDefs.item">
+                            <td class="ic">
+                                <input type="hidden" name="TableDef.FieldDefs.OldName" />
+                                <input type="checkbox" name="TableDef.FieldDefs.IsPriKey" id="TableDef.FieldDefs.IsPriKey" />
+                            </td>
+                            <td class="ic">
+                                <input type="text" name="TableDef.FieldDefs.Name" id="TableDef.FieldDefs.Name" />
+                            </td>
+                            <td class="ic">
+                                <input type="text" name="TableDef.FieldDefs.Title" />
+                            </td>
+                            <td class="ic">
+                                <select id="TableDef.FieldDefs.Type" name="TableDef.FieldDefs.Type">
+                                    <option></option>
+                                </select>
+                            </td>
+                            <td class="ic" name="d">
+                                <input name="TableDef.FieldDefs.Length" type="text" value="50" class="w30" id="TableDef.FieldDefs.Length" />
+                            </td>
+                            <td class="ic" name="e">
+                                <input name="TableDef.FieldDefs.Procesion" type="text" value="0" class="w30" id="TableDef.FieldDefs.Procesion" />
+                            </td>
+                            <td class="ic" name="e">
+                                <input name="TableDef.FieldDefs.DefaultValue" type="text" id="TableDef.FieldDefs.DefaultValue" />
+                            </td>
+                            <td class="ic" name="e">
+                                <input type="text" name="TableDef.FieldDefs.Description" />
+                            </td>
+                            <td class="ic" name="e">
+                                <input type="checkbox" name="TableDef.FieldDefs.IsIdentity" id="TableDef.FieldDefs.IsIdentity" />
+                            </td>
+                            <td class="ic" name="e">
+                                <input type="checkbox" name="TableDef.FieldDefs.IsUnique" />
+                            </td>
+                            <td class="ic" name="e">
+                                <input type="checkbox" name="TableDef.FieldDefs.NotNull" />
+                            </td>
+                            <td class="ic" name="e">
+                                <input type="checkbox" name="TableDef.FieldDefs.IsIndex" id="TableDef.FieldDefs.IsIndex" />
+                            </td>
+                            <td class="ic" name="e">
+                                <input name="TableDef.FieldDefs.operate" type="button" class="list-btn" id="btnDelField"
+                                    value="-" onclick="return btnDelField_onclick(this)">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </dd>
+            <dd id="ddTriger">
+                <table cellpadding="0" cellspacing="0" class="datalist mb10" id="tbTrigger" name="tbTrigger">
+                    <tr bgcolor="#A4BDA2" align="center" obj="tbTrigger" name="tbTrigger.head" list="hr">
+                        <th class="hc">
+                            触发器
+                        </th>
+                        <th class="hc">
+                            操作
+                        </th>
+                    </tr>
+                    <tbody id="proTabbody">
+                        <tr name="tbTrigger.item">
+                            <td class="ic">
+                                <input name="tbTrigger.value" type="text" />
+                            </td>
+                            <td class="ic">
+                                <a id="spEditTrigger" href="javascript:;" name="tbTrigger.operate" onclick="return spEditTrigger_onclick(this)">
+                                    编辑</a>&nbsp;<a href="javascript:;" id="spDeleteTrigger" name="tbTrigger.operate"
+                                        onclick="spDeleteTrigger_onclick(this)">删除</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </dd>
+            <dd id="ddCons">
+                <table cellpadding="0" cellspacing="0" class="datalist" id="tbCons" name="tbCons">
+                    <tr bgcolor="#A4BDA2" align="center" name="tbCons.head">
+                        <th class="hc">
+                            约束名
+                        </th>
+                        <th class="hc">
+                            操作
+                        </th>
+                    </tr>
+                    <tbody id="proTabbody">
+                        <tr obj="WboSchema.Properties" name="tbCons.item">
+                            <td class="ic">
+                                <input name="tbCons.value" type="text" />
+                            </td>
+                            <td class="ic">
+                                <a href="javascript:;" id="btnModifyCons" name="tbCons.operate" onclick="return btnModifyCons_onclick(this)">
+                                    查看</a>&nbsp; <a href="javascript:;" id="btnDeleteCons" name="tbCons.operate" onclick="return btnDeleteCons_onclick(this)">
+                                        删除</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </dd>
+        </dl>
+    </div>
+</body>
+</html>

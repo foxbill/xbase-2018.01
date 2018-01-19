@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript">
+
+        //后台数据库访问
+        function btnTest_onclick() {
+            var rows = $.rCall("shop_goods.rows", { page: 1, rows: 8 });          
+            var tr = "";
+            $(".item").remove();
+            for (var i = 0; i < rows.length;i++) {
+                
+                tr+=" <tr class='item'>"
+            + "<td class='tdName'>" + rows[i].name + "</td>"
+            + "<td class='tdPrice'>" + rows[i].summary + "</td>"
+            + "<td class='tdCategory'>" + rows[i].category + "</td>"
+            + "<td class='tdSummary'>" + rows[i].price + "</td>"
+            + "<td><img class='imgPicuture' /><img src='" + rows[i].picture + "' width='50' height='50' /></td>"
+        +"</tr>"              
+            }
+            var table = $("#table1");
+            table.append(tr);
+
+
+            //var result = $.rCall("shop_goods.data", { page: 1, rows: 8, filterRules: [{ field: 'category', op: 'equal', value: 2 }] });
+            //alert($.getJsonStr(result));
+        }
+       
+
+
+
+    </script>
+    <style type="text/css">
+        #table1 {
+            height: 33px;
+            width: 636px;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-info">
+        <div class="demo-tip icon-tip"></div>
+        <div>Js通过页码跟每页显示多少条获取后端数据表shop_goods中的记录</div>
+    </div>
+    <input id="btnTest" type="button" value="演示" onclick="return btnTest_onclick()" /><br />
+    <table id="table1">
+        <tr >
+            <td>商品名称</td>
+            <td>单价</td>
+            <td>种类</td>
+            <td>简介</td>
+            <td>图片</td>
+            
+        </tr>
+       
+
+    </table>
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+﻿h1 {
+    margin: 0px;
+    padding: 0px;
+    font: 22px 微软雅黑;
+    line-height: 22px;
+    border: 0px solid red;
+    color:#fff;
+}
+
+.logo {
+    width: 25px;
+    height: 25px;
+    margin: 0px 10px 0px 0px;
+}
+
+.main-bg-1 {
+    background-color: #485f7e;
+    color: White;
+}
+
+.left-float-box {
+    float: left;
+}
+
+.x-rfbox {
+    float: right;
+}
+
+.layout-table {
+    width: 100%;
+    height: 100%;
+}
+
+.layout-table-head {
+    height: 48px;
+    padding-left: 10px;
+    padding-right: 10px;
+    vertical-align: middle;
+    color: White;
+}
+
+.layout-table-head-right {
+    float: right;
+    font-size: medium;
+    color: #fff;
+}
+
+    .layout-table-head-right a, .layout-table-head-right a:visited, .layout-table-head-right a:link {
+        margin: 10px;
+        color: #ffffff;
+        --text-decoration: none;
+    }
+
+.layout-table-content {
+    padding: 2px 0px 2px 0px;
+}
+
+.layout-table-foot {
+    font-size: small;
+    height: 23px;
+    line-height: 23px;
+    padding-left: 5px;
+    padding-right: 5px;
+    vertical-align: middle;
+}
+
+.mr10 {
+    margin-right: 10px;
+}
+
+.mr5 {
+    margin-right: 5px;
+}
+
+.no-margin-body {
+    padding: 0px;
+    margin: 0px;
+    overflow-y: hidden;
+}
+
+.form {
+    font-size: small;
+    color: #777;
+    padding: 10px;
+}
+
+    .form div, .form tr td {
+        font-size: small;
+        color: #777;
+    }
+
+.form-item {
+    float: left;
+    margin: 0px 10px 10px 0px;
+}
+
+.form input[type="text"], .form input[type="password"] {
+    border: 1px solid #aaa;
+    border-radius: 5px;
+}
+
+.x-toolbar-title {
+    font-weight: bold;
+    float: left;
+    line-height: 24px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+
+.ne-link a:visited {
+    color: #fff;
+}

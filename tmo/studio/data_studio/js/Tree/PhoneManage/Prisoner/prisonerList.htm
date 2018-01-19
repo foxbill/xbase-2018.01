@@ -1,0 +1,295 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+    <title>维护罪犯信息</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="StyleSheet" href="../../css/css.css" type="text/css">
+
+    <script language="JavaScript" src="../../../xbase.js/main.js" type="text/JavaScript"></script>
+    <script language="JavaScript" src="../../../xbase.js/jquery.js" type="text/JavaScript"></script>
+
+</head>
+<body class="bgtop">
+    <table cellspacing="0" cellpadding="0" border="0" width="100%" height="25">
+        <tr>
+            <td class="white f11" nowrap>
+                &nbsp;您现在的位置<img src="../../images/ico_arrow.gif" border="0" hspace="5">罪犯信息管理与审批 > 罪犯基础信息管理
+
+            </td>
+            <td class="white f11" align="right" nowrap>
+                操作员：Peck
+            </td>
+            <td class="white f11" align="right" width="100" nowrap>
+                | <a href="../../login.html" target="_parent" href="#" class="whitelink">退出登录</a>&nbsp;
+            </td>
+        </tr>
+    </table>
+    <table cellspacing="0" cellpadding="0" border="0" width="97%" align="center">
+        <tr>
+            <td>
+                <br>
+                <!-- 快速搜索开始 -->
+                <table id="search" cellspacing="0" cellpadding="0" width="100%" border="0">
+                    <tr bgcolor="#99CC99">
+                        <td height="19" align="left" bgcolor="#99CC99">
+                            &nbsp;<a href="javascript:ToggleDiv('divExpCollAsst_2')"><img id="divExpCollAsst_2_img"
+                                height="7" alt="" src="../../images/none.gif" width="7" align="absMiddle" border="0"></a>
+                            <a href="javascript:ToggleDiv('divExpCollAsst_2')"><b>快速搜索</b></a>
+                        </td>
+                    </tr>
+                </table>
+                <div id="divExpCollAsst_2" style="display: block">
+                    <table width="100%" border="1" align="center" cellpadding="3" cellspacing="1" bordercolorlight="#999999"
+                        bordercolordark="#ffffff" bgcolor="#eeeeee">
+                        <tr>
+                            <td align="center">
+                                <!-- 搜索表单开始 -->
+                                <table border="0" cellspacing="0" cellpadding="0" height="30" width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            姓名：<input type="text" value="" size="15" />
+                                            所属队别：
+                                            <select>
+                                                <option>1队</option>
+                                                <option>2队</option>
+                                                <option>3队</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                      <td align="center"> 罪犯编号：
+                                        <input name="text2" type="text" value="" size="15" />
+      
+<input name="button" type="button" class="button" value=" 查找 "></td>
+                                    </tr>
+                                </table>
+                                <!-- 搜索表单结束 -->
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!-- 快速搜索结束 -->
+                <p>
+                    <!-- 列表开始 -->
+                    <table id="list" cellspacing="0" cellpadding="0" width="100%" border="0">
+                        <tr>
+                            <td height="19" align="left" bgcolor="#99CC99">
+                                &nbsp;<a href="javascript:ToggleDiv('divExpCollAsst_3')"><img id="divExpCollAsst_3_img"
+                                    height="7" alt="" src="../../images/none.gif" width="7" align="absMiddle" border="0"></a>
+                                <a href="javascript:ToggleDiv('divExpCollAsst_3')"><b>罪犯列表</b></a>
+                            </td>
+                        </tr>
+                    </table>
+                    <div id="divExpCollAsst_3" style="display: block">
+                        <table class="listtable" id="MainTable" cellspacing="1">
+                            <tr class="listtitle">
+                                <td width="5%">
+                                    选择
+                                </td>
+                                <td>
+                                    罪犯编号
+                                </td>
+                                <td>
+                                    姓名
+                                </td>
+                                <td>
+                                    出生日期
+                                </td>
+                                <td>
+                                    队别
+                                </td>
+                                <td>
+                                    罪名
+                                </td>
+                                <td>
+                                    刑期
+                                </td>
+                                <td>
+                                    止日
+                                </td>
+                                <td>
+                                    入监时间
+                                </td>
+                                <td>
+                                    家庭地址
+                                </td>
+                                <td width="10%">
+                                    操作
+                                </td>
+                            </tr>
+                            <tr class="listrow">
+                                <td align="center">
+                                    <input type="checkbox" name="">
+                                </td>
+                                <td>
+                                    123
+                                </td>
+                                <td>
+                                    asdf
+                                </td>
+                                <td>
+                                    1991-1-1
+                                </td>
+                                <td>
+                                    1队
+                                </td>
+                                <td>
+                                    xx
+                                </td>
+                                <td>
+				    3年	
+                                </td>
+                                <td>
+				2009-9-9
+                                </td>
+                                <td>
+				2008-8-8
+                                </td>
+                                <td>
+				qwer
+                                </td>
+                                <td align="center">
+                                    <a href="prisonerview.htm">查看</a> <a href="prisonerEdit.htm">修改</a>
+                                </td>
+                            </tr>
+                            <tr class="listrowalt">
+                                <td align="center">
+                                    <input type="checkbox" name="">
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td align="center">
+                                    <a href="prisonerview.htm">查看</a> <a href="prisonerEdit.htm">修改</a>
+                                </td>
+                            </tr>
+                            <tr class="listrow">
+                                <td align="center">
+                                    <input type="checkbox" name="">
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td align="center">
+                                    <a href="prisonerview.htm">查看</a> <a href="prisonerEdit.htm">修改</a>
+                                </td>
+                            </tr>
+                            <tr class="listrowalt">
+                                <td align="center">
+                                    <input type="checkbox" name="">
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td align="center">
+                                    <a href="prisonerview.htm">查看</a> <a href="prisonerEdit.htm">修改</a>
+                                </td>
+                            </tr>
+                            <tr class="listrow">
+                                <td align="center">
+                                    <input type="checkbox" name="">
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td align="center">
+                                    <a href="prisonerview.htm">查看</a> <a href="prisonerEdit.htm">修改</a>
+                                </td>
+                            </tr>
+                        </table>
+                        <br />
+                        <div>
+                            <input type="button" class="button" onClick="SelAllCheck('MainTable');" value=" 全选 " />
+                            <input type="button" class="button" onClick="SelAllNotCheck('MainTable');" value=" 反选 " />
+
+                        </div>
+                        <div align="right">
+                            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="right">
+                                        总计 <span><strong>1300</strong></span> 条，分 <span><strong>130</strong></span> 页显示，当前第<span><strong>1</strong></span>页&nbsp;
+                                        <a>首页</a> <a>上一页</a> <a href="#">下一页</a> <a href="#">末页</a> &nbsp;跳转至第<select name="selPages"
+                                            id="selPages"><option selected value="0">1/130</option>
+                                            <option value="1">2/130</option>
+                                            <option value="127">128/130</option>
+                                            <option value="128">129/130</option>
+                                            <option value="129">130/130</option>
+                                        </select>
+                                        页&nbsp;<input id="txtPage" name="txtPage" type="text" size="3" value="" onKeyDown="return PageBarKeyDownEvent()"
+                                            maxlength="10">&nbsp;<input language="javascript" onClick="return PageBarClick()"
+                                                type="button" value="go">&nbsp;
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </p>
+            </td>
+        </tr>
+    </table>
+
+    <script>
+    init();
+    </script>
+</body>
+</html>

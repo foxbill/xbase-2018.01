@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+
+
+</head>
+<body>
+    <div class="demo-info">
+        <div class="demo-tip icon-tip"></div>
+        <div>easyui-combobox 访问数据</div>
+    </div>
+
+    <h2>组件绑定</h2>
+    <input id="cc" class="easyui-combobox" name="category"
+        data-options="valueField:'id',textField:'name',url:'demo_goodsType.rows'">
+
+    <h2>js获取</h2>
+    <input id="js" name="category1" />
+    <script type="text/javascript">
+        var combobox = $("#js").combobox({
+            url: 'demo_goodsType.rows',
+            valueField: 'id',
+            textField: 'name'
+        })
+        combobox.combobox('setValue', '1');
+    </script>
+
+    <div>
+        <div class="demo-info">
+            <div class="demo-tip icon-tip"></div>
+            <div>easyui-tree 异步实现省市区级联</div>
+        </div>
+        <ul id="tt"></ul>
+        <script type="text/javascript">
+             $(function () {
+                $("#tt").tree({
+                    url: 'province.rows',
+                    method: 'get',
+                    animate: true,                    
+                    onClick: function (node) {
+                       
+                        var data;//要加载的数据
+                        var level = $("#tt").tree('getLevel', node.target);//根据节点深度加载指定的数据
+                        if (level == 1 && count(node)==0) {//如果当前节点已经加载过，就不在访问数据库
+                            data = $.rCall("city.data", { page: 1, rows: 100, filterRules: [{ field: 'city_provinceId', op: 'equal', value: node.p_id }] });                          
+                        }
+                        if (level == 2 && count(node) == 0) {//如果当前节点已经加载过，就不在访问数据库
+                            data = $.rCall("district.data", { page: 1, rows: 100, filterRules: [{ field: 'd_cityId', op: 'equal', value: node.city_id }] });                                              
+                        }
+                        //把数据追加到当前节点
+                        $('#tt').tree('append', {
+                            parent: node.target,
+                            data: data.rows,
+                        });
+                        
+                    },
+                    formatter: function (node) {
+                        var text = node.p_name == undefined ? node.city_name == undefined ? node.d_name : node.city_name : node.p_name;// 判断要显示的文本
+                        return text;
+
+                    }
+
+
+                });
+
+                //此方法未返回当前节点的深度 1开始
+                $.extend($.fn.tree.methods, {
+                    getLevel: function (jq, target) {
+                        var l = $(target).parentsUntil("ul.tree", "ul");
+                        return l.length + 1;
+                    }
+                });
+            })
+
+            //此方法返回当前节点是否有子节点（0：没有 ,1 ：有）
+            function count(node) {
+                return $(node.target).parent().find("ul").length;
+            }
+        </script>
+    </div>
+</body>
+</html>

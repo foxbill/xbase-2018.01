@@ -1,0 +1,24 @@
+﻿<?xml version="1.0"?>
+<Schema name="Mondrian">
+  <Cube name="CubeTest">
+    <Table name="TB_SALARY" />
+
+    <Dimension name="Employee" foreignKey="EMPLOYEE_ID" >
+      <Hierarchy hasAll="true" primaryKey="EMPLOYEE_ID">
+        <Table name="TB_EMPLOYEE" />
+        <Level name="employeeId" column="EMPLOYEE_ID"   uniqueMembers="true" >
+          <Property name="employeeName" column="EMPLOYEE_NAME"/>
+        </Level>
+      </Hierarchy>
+    </Dimension>
+    <Dimension name="Time" foreignKey="TIME_ID" >
+      <Hierarchy hasAll="false" primaryKey="TIME_ID" >
+        <Table name="TB_TIME" />
+        <Level name="year" column="THE_YEAR" uniqueMembers="false" />
+        <Level name="month" column="THE_MONTH" uniqueMembers="false" />
+      </Hierarchy>
+    </Dimension>
+
+    <Measure name="Salary" column="SALARY" aggregator="sum" />
+  </Cube>
+</Schema>

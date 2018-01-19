@@ -1,0 +1,84 @@
+<!doctype html>
+<html manifest="index.appcache">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>附近</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" href="easyui/themes/default/easyui.css" />
+    <link rel="stylesheet" href="css/tmo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script type="text/javascript" src="js/tmo.js"></script>
+    <script type="text/javascript">
+       
+        function login() {
+            var userId = $(elId).val();
+            var password = $(elPassword).val();
+
+            var ret = $.rCall("Security.login", { userId: userId, password: password });
+            if (ret && !ret.Err) {
+                $.messager.alert("用户登录", "登录成功", "info", function () {
+                    location = "my.html";
+                });
+            }
+        }
+
+        function appWxlogin() {
+            wxLogin('{"access_token":"OezXcEiiBSKSxW0eoylIeDb8szeN0Wjr4xQ2wLgBqw2PpPDHguXG_OWhZiivurCpp111GLlVTVVPyuSJAu3PpU7qVzb6-yTwoXnL1NbEwDrKg2oFspI95pNAL8j0WxVHqwdyuJA5gpeLeulVb4MDXg","expires_in":7200,"refresh_token":"OezXcEiiBSKSxW0eoylIeDb8szeN0Wjr4xQ2wLgBqw2PpPDHguXG_OWhZiivurCpUelqMSDZzKAxjJJH906sW0zeiAcN2QaIB186xUTwb_PMup8rgAyV-gPGycUlwgbBJeflZ9MqEm55UkoWEgJeEA","openid":"oGVdNs3ACAt6w409OXs7tsyH4dn0","scope":"snsapi_userinfo"}');
+        }
+
+        function wxLogin(info) {
+            var ret = $.rCall("Security.login", {
+                tokenInfo: info
+            });
+            if (ret && !ret.Err) {
+                location = "my.html";
+            }
+        }
+
+    </script>
+</head>
+<body style="background-color: #eee">
+    <div class="panel">
+        <h2>
+            用户登录<img class="panel-fold-btn" alt="折叠" src="images/icon1/vimeo.png" />
+        </h2>
+        <div class="panel-conent">
+            <div class="form">
+                <p>
+                    手机号:<input id="elId" type="text" /></p>
+                <p>
+                    密&nbsp;&nbsp;&nbsp;&nbsp;码:<input id="elPassword" type="password" /></p>
+                <p>
+                    <a class="tmo-link-button" onclick="login()">登录</a></p>
+            </div>
+        </div>
+    </div>
+    <ul class="button-box-rnd">
+        <li onclick="appWxlogin()">
+            <img src="images/icon1/addlocation.png" /><div>
+                微信登录</div>
+        </li>
+        <li onclick="loginByWx">
+            <img src="images/icon1/addlocation.png" /><div>
+                淘宝登录</div>
+        </li>
+        <li>
+            <img src="images/icon1/addlocation.png" /><div>
+                QQ登录</div>
+        </li>
+        <li>
+            <img src="images/icon1/addlocation.png" /><div>
+                新浪登录</div>
+        </li>
+    </ul>
+</body>
+</html>

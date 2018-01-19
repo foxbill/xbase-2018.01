@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <title>数据源编辑</title>
+
+    <script type="text/javascript" src="system.xjs"></script>
+
+    <script type="text/javascript" src="wjs.xjs"></script>
+
+    <script language="javascript" type="text/javascript" src="js/js.js"></script>
+
+    <script type="text/javascript" src="js/net_util.js"></script>
+
+    <script language="javascript" type="text/javascript" src="js/xdk4j.js"></script>
+
+    <script language="javascript" type="text/javascript" src="js/controls/tablelist.js"></script>
+
+    <script language="javascript" type="text/javascript" src="js/controls/tab_page.js"></script>
+
+    <script type="text/javascript" src="js/controls/dialog.js"></script>
+
+    <script type="text/javascript">
+        var g_FieldList = null;
+        var g_Table = null;
+        var g_RowIdField = "";
+        var g_RowIdFieldMask = "Original_";
+
+        function Initialize() {
+            g_FieldList = new ListTable(fieldList);
+        }
+
+        function setData(xTable) {
+            g_Table = xTable;
+            g_FieldList.clearAll();
+            //    alert(fieldList.innerHTML);
+            for (fieldName in xTable.FieldCaptions) {
+
+                var editControl = null;
+
+                if (fieldName.indexOf(g_RowIdFieldMask, 0) == 0) {
+                    if (g_RowIdField == "")
+                        g_RowIdField = fieldName;
+                    editControl = document.createElement("<input type='button' style='width:100px;border:0px;backgroundcolor:white'  name='" + fieldName + "'>");
+                }
+                else
+                    editControl = document.createElement("<input type='text' name='" + fieldName + "'/>");
+
+                var button = null;
+                var extendType = g_Table.ExtendTypes[fieldName];
+                switch (extendType) {
+                    case 1:
+                        editControl = document.createElement("<img width='25' height='25' align='middle' name='" + fieldName + "'/>");
+                        button = document.createElement("<input type='button' name=upload_'" + fieldName + "' value='上传' onclick=\"onColumnButtonClick('" + fieldName + "', this)\"/>");
+                        break;
+                    case 2:
+                        //                        editControl = document.createElement("a");
+                        //                        editControl.innerHTML = "查看";
+                        //                        editControl.target = "_blank";
+                        var editControl = document.createElement("<input type='hidden' name='" + fieldName + "'/>");
+                        button = document.createElement("<input type='button' name=upload_'" + fieldName + "' value='编辑' onclick=\"editHtmlFile('" + fieldName + "', this)\"/>");
+                        break;
+
+                }
+                g_FieldList.addColumn(fieldName, xTable.FieldCaptions[fieldName], editControl, button);
+            }
+            //    alert(fieldList.innerHTML);
+
+
+
+            var isAddedRow = false;
+            for (var fieldName in xTable.FieldValues) {
+                //   var editControl = document.createElement("<input type='text'/>");
+                var values = xTable.FieldValues[fieldName];
+                for (var i = 0; i < values.length; i++) {
+                    if (!isAddedRow) g_FieldList.addRow();
+                    g_FieldList.setColumnValue(fieldName, i + 1, values[i]);
+                }
+                var isAddedRow = true;
+            }
+
+            pageCont.innerHTML = g_Table.PageCount;
+            pageNo.innerHTML = g_Table.PageNo;
+            recordCount.innerHTML = g_Table.RecordCount;
+        }
+
+        function updateTable() {
+            var rowCount = g_FieldList.getRowCount();
+            var keyFields = "";
+
+            for (var colName in g_Table.FieldValues) {
+                g_Table.FieldValues[colName] = new Array();
+            }
+
+            for (var i = 0; i < rowCount; i++) {
+                for (var colName in g_Table.FieldValues) {
+                    var value = g_FieldList.getColumnValue(colName, i + 1);
+                    g_Table.FieldValues[colName].push(value);
+                }
+            }
+        }
+
+        function saveTable() {
+            updateTable();
+            var req = new JoapRequest();
+            req.setObjCls("Table");
+            req.setObjName(g_Table.FullTableName);
+            req.setMethod("UpdateFieldValues");
+            req.addParamate("fieldValues", g_Table.FieldValues);
+            var rsp = req.commit(false);
+            if (rsp.ErrNo != 0) return;
+            setData(rsp.ObjData.Data);
+        }
+
+        function DeleteRow(node) {
+            var rowNo = g_FieldList.GetCellObjectRowNo(node);
+            if (schema.Fields[rowNo - 1]) {
+                schema.Fields[rowNo - 1] = null;
+
+                for (var i = rowNo - 1; i < schema.Fields.length - 1; i++) {
+                    schema.Fields[i] = schema.Fields[i + 1];
+                }
+                schema.Fields.length -= 1;
+            }
+            g_FieldList.DeleteRow(rowNo);
+        }
+
+        function AddFields() {
+
+            UpdateData(schema);
+
+            if (schema.Id == "") {
+                alert("请输入XTable的ID！");
+                return;
+            }
+            if (schema == null) {
+                alert("当前没有列表被选中，请在列表目上选择要编辑的列表！");
+                return;
+            }
+            if (schema.SelectCommand == null || schema.SelectCommand == "") {
+                alert("列表数据源还没有配置，请先配置列表数据源！");
+                return;
+            }
+            XDialog.ShowDlg("datafields.htm?sql=" + schema.SelectCommand, g_FieldList, 600, 400);
+        }
+
+        //edit Lookup of selected field
+        function LinkLookup(node) {
+            UpdateData(schema);
+
+            var rowNo = g_FieldList.GetCellObjectRowNo(node);
+
+            XDialog.ShowDlg("field_lookupTable.html?fieldId=" + schema.Fields[rowNo - 1].Id, schema, 800, 600);
+        }
+
+        //edit validation of the selected field
+        function editFieldValid(node) {
+            UpdateData(schema);
+
+            var rowNo = g_FieldList.getCellObjectRowNo(node);
+
+            XDialog.ShowDlg("field_validation.html?fieldId=" + schema.Fields[rowNo - 1].Id, schema, 800, 600);
+        }
+
+        function onColumnButtonClick(fieldName, button) {
+            var rowNo = g_FieldList.getCellObjectRowNo(button);
+            var p = new Object();
+            p.TableName = g_Table.FullTableName;
+            p.FieldName = fieldName;
+            if (g_RowIdField == "") {
+                alert("该表没有行标识列(主键列)，不能进行编辑");
+                return;
+            }
+            p.RowId = g_FieldList.getColumnValue(g_RowIdField, rowNo);
+            var ret = window.showModalDialog("upload_dlg.html", p,
+               "dialogHeight:300px;dialogWidth:500px;center:yes;resizable:yes;scroll:no");
+            if (ret) {
+                reload();
+            }
+        }
+
+        function editHtmlFile(fieldName, button) {
+            var rowNo = g_FieldList.getCellObjectRowNo(button);
+
+            if (g_RowIdField == "") {
+                alert("该表没有行标识列(主键列)，不能进行编辑");
+                return;
+            }
+
+            var rowId = g_FieldList.getColumnValue(g_RowIdField, rowNo);
+
+            var req = new JoapRequest();
+            req.setObjCls("Table");
+            req.setObjName(g_Table.FullTableName);
+            req.setMethod("GotoReocord");
+            req.addParamate("rowId", rowId);
+
+            var rsp = req.commit(false);
+            g_Table = rsp.ObjData.Data;
+
+            //            var wind = window.open("record.html");
+            //            elementReadyRun(wind.document, function() {
+            //                wind.setData(g_Table);
+            //            }
+            //            );
+            //            var ret = null;
+
+            var ret = window.showModalDialog("record.html", g_Table, "dialogWidth:800px;dialogHeight:600px;center:yes;resizable:yes;scroll:auto");
+            //            var ret = window.showModelessDialog("record.html", g_Table, "dialogWidth:800px;dialogHeight:600px;center:yes;resizable:yes;scroll:auto");
+
+
+            if (ret) {
+                reload();
+            }
+        }
+
+
+
+        function nextPage_onclick() {
+            var req = new JoapRequest();
+            req.setObjCls("Table");
+            req.setObjName(g_Table.FullTableName);
+            req.setMethod("NextPage");
+            var rsp = req.commit(false);
+            if (!rsp) return;
+  //          if (!rsp.RetData.Data) return;
+            setData(rsp.ObjData.Data);
+        }
+
+        function priorPage_onclick() {
+            var req = new JoapRequest();
+            req.setObjCls("Table");
+            req.setObjName(g_Table.FullTableName);
+            req.setMethod("PriorPage");
+            var rsp = req.commit(false);
+//            if (rsp.ErrNo != 0) return;
+//            if (!rsp.RetData.Data) return;
+            setData(rsp.ObjData.Data);
+        }
+
+        function reload() {
+            var req = new JoapRequest();
+            req.setObjCls("Table");
+            req.setObjName(g_Table.FullTableName);
+            var rsp = req.commit(false);
+//            if (rsp.ErrNo != 0) return;
+            setData(rsp.ObjData.Data);
+        }
+
+        function newRow() {
+            g_FieldList.addRow();
+        }
+
+        function newRecord() {
+            var req = new JoapRequest();
+            req.setObjCls("Table");
+            req.setObjName(g_Table.FullTableName);
+            req.setMethod("NewRecord");
+
+            var rsp = req.commit(false);
+            g_Table = rsp.ObjData.Data;
+
+            //            var wind = window.open("record.html");
+            //            elementReadyRun(wind.document, function() {
+            //                wind.setData(g_Table);
+            //            }
+            //            );
+            //            var ret = null;
+
+            var ret = window.showModalDialog("record.html", g_Table, "dialogWidth:800px;dialogHeight:600px;center:yes;resizable:yes;scroll:auto");
+            //            var ret = window.showModelessDialog("record.html", g_Table, "dialogWidth:800px;dialogHeight:600px;center:yes;resizable:yes;scroll:auto");
+
+
+            if (ret) {
+                reload();
+            }
+        }
+
+    </script>
+
+</head>
+<body onload="Initialize();" style="padding: 0px; margin: 0px">
+    <!--内容开始-->
+    <table width="950px" id="fieldList" cellspacing="0" cellpadding="0" border="1px #6e6e6e solid;" style="border-collapse: collapse;">
+        <tbody id="tb">
+            <tr bgcolor="#A4BDA2" align="center">
+                <td width="8%">列ID </td>
+                <td width="5%">Key </td>
+                <td width="8%">显示标签 </td>
+                <td width="6%">默认值 </td>
+                <td width="8%">编辑格式 </td>
+                <td width="4%">可见 </td>
+                <td style="display: none" width="8%">数据类型 </td>
+                <td width="11%">下拉列表 </td>
+                <td width="8%">外键引用 </td>
+                <td width="6%">验证 </td>
+                <td width="9%">操作 </td>
+            </tr>
+            <tr id="tempRow" style="height: 35px; display: none">
+                <td>
+                <input id="fieldList_Id" name="fieldList_Id"> </input>
+                </td>
+                <td>
+                <input id="Key" name="fieldList_Key" type="checkbox" width="5%" />
+                </td>
+                <td>
+                <input id="DisplayName" name="fieldList_DisplayName" type="text" width="8%" />
+                </td>
+                <td>
+                <input id="DefaultValue" name="fieldList_DefaultValue" type="text" width="6%" />
+                </td>
+                <td align="center">
+                <input id="EditFormat" name="fieldList_EditFormat" type="text" width="8%" />
+                </td>
+                <td>
+                <input id="Visibility" type="checkbox" name="fieldList_Visibility" width="4%" />
+                </td>
+                <td style="display: none" align="center">
+                <select style="width: 60px; font-weight: bold" name="fieldList_DataType" id="DataType" width="8%">
+                    <option style="width: 60px;" value="02"><strong>string</strong></option>
+                    <option style="width: 60px;" value="03"><strong>decimal</strong></option>
+                    <option style="width: 60px;" value="01"><strong>int</strong></option>
+                </select>
+                </td>
+                <td>
+                <select name="fieldList_CodeTableName" id="CodeTableName" width="11%">
+                    <option></option>
+                </select>
+                </td>
+                <td>
+                <input type="button" id="Lookup" value="编辑" width="8%" name="fieldList_Lookup" onclick="LinkLookup(this)"> </input>
+                </td>
+                <td>
+                <input type="button" id="Valids" value="编辑" width="6%" name="fieldList_Validation" onclick="editFieldValid(this)"> </input>
+                </td>
+                <td width="9%">
+                <input id="Button1" type="button" value="删除" name="fieldList_Delete" onclick="DeleteRow(this)" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!--内容结束-->
+    <div>
+        <button id="btnNewRow" title="添加记录" onclick="newRecord()">
+            添加记录
+        </button>
+        <button id="save" title="保存" onclick="saveTable()">
+            保存
+        </button>
+        <div style="float: right">
+            &nbsp;
+            <input type="button" id="priorPage" value="上一页" onclick="return priorPage_onclick()" />
+            &nbsp;
+            <input type="button" id="nextPage" value="下一页" onclick="return nextPage_onclick()" />&nbsp; 第<span id="pageNo"></span> 页 &nbsp; 共<span id="pageCont"></span>页&nbsp;&nbsp; 记录总数[<span id="recordCount"></span>]条
+        </div>
+    </div>
+</body>
+</html>

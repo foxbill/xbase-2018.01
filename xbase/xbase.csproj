@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{70854294-306B-493D-9264-87699D33A18B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>xbase</RootNamespace>
+    <AssemblyName>xbase</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\xbase.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Common.Logging, Version=1.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging.Log4Net, Version=1.2.0.2, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Common.Logging.Log4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Management" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseTypes\IdsObject.cs" />
+    <Compile Include="BaseTypes\IdsObjectList.cs" />
+    <Compile Include="BaseTypes\IdValueObject.cs" />
+    <Compile Include="Code.cs" />
+    <Compile Include="Exceptions\ESchemaFileException.cs" />
+    <Compile Include="Exceptions\JsonExceptionUtils.cs" />
+    <Compile Include="Exceptions\JsonRespose.cs" />
+    <Compile Include="Exceptions\NoConfigException.cs" />
+    <Compile Include="Exceptions\PermissionException.cs" />
+    <Compile Include="Exceptions\UmcExceptions.cs" />
+    <Compile Include="Exceptions\XUserException.cs" />
+    <Compile Include="Interface\DataFieldFolder.cs" />
+    <Compile Include="Interface\INamedWbo.cs" />
+    <Compile Include="ISession.cs" />
+    <Compile Include="ISessionWbo.cs" />
+    <Compile Include="IVwbo.cs" />
+    <Compile Include="IHttpWbo.cs" />
+    <Compile Include="ObjectAction\AcitonUtils.cs" />
+    <Compile Include="ObjectAction\Action.cs" />
+    <Compile Include="ObjectAction\ActionData.cs" />
+    <Compile Include="ObjectAction\ActionOptions.cs" />
+    <Compile Include="AutoHashList.cs" />
+    <Compile Include="Crypto.cs" />
+    <Compile Include="Exceptions\EAppNotStart.cs" />
+    <Compile Include="Interface\IDataSource.cs" />
+    <Compile Include="Interface\IXServer.cs" />
+    <Compile Include="IXHttpServer.cs" />
+    <Compile Include="NamedValueSchema.cs" />
+    <Compile Include="ObjSerialor.cs" />
+    <Compile Include="Register.cs" />
+    <Compile Include="TextValue.cs" />
+    <Compile Include="umc\AssemblyBuilder.cs" />
+    <Compile Include="umc\UmcTools.cs" />
+    <Compile Include="UserInfo.cs" />
+    <Compile Include="Wbo.cs" />
+    <Compile Include="SiteFileInfo.cs" />
+    <Compile Include="umc\LicenseException.cs" />
+    <Compile Include="ValueTextPair.cs" />
+    <Compile Include="WboListForm.cs" />
+    <Compile Include="RegMachine.cs" />
+    <Compile Include="SchemaFile.cs" />
+    <Compile Include="security\BuiltinUsers.cs" />
+    <Compile Include="security\ISecurity.cs" />
+    <Compile Include="security\ISecurityWbo.cs" />
+    <Compile Include="security\IUserContext.cs" />
+    <Compile Include="security\PermissionType.cs" />
+    <Compile Include="SysObjects.cs" />
+    <Compile Include="SysVarName.cs" />
+    <Compile Include="tree\TreeNode.cs" />
+    <Compile Include="TypeUtility.cs" />
+    <Compile Include="umc\AssemblyPool.cs" />
+    <Compile Include="umc\attributes\WboAttr.cs" />
+    <Compile Include="umc\attributes\WboMethodAttr.cs" />
+    <Compile Include="umc\attributes\WboPropertyAttr.cs" />
+    <Compile Include="umc\AssemblyProxy.cs" />
+    <Compile Include="umc\BaseWboProxy.cs" />
+    <Compile Include="umc\ComponentLoader.cs" />
+    <Compile Include="umc\ComWboProxy.cs" />
+    <Compile Include="umc\com\ComAppProxy.cs" />
+    <Compile Include="umc\DotNetWboProxy.cs" />
+    <Compile Include="umc\IWboProxy.cs" />
+    <Compile Include="umc\ObjectFactory.cs" />
+    <Compile Include="umc\PropertyOptionSchema.cs" />
+    <Compile Include="umc\PropertySchema.cs" />
+    <Compile Include="umc\SoapVer11XmlBuilder.cs" />
+    <Compile Include="umc\SoapXmlBuildController.cs" />
+    <Compile Include="umc\SoapXmlBuilder.cs" />
+    <Compile Include="umc\TypeConvertUtils.cs" />
+    <Compile Include="umc\WboMemberType.cs" />
+    <Compile Include="umc\WboProxyFactory.cs" />
+    <Compile Include="umc\WboRegService.cs" />
+    <Compile Include="umc\WboSchema.cs" />
+    <Compile Include="umc\WboSchemaContainer.cs" />
+    <Compile Include="umc\WboSchemaRegisterUtils.cs" />
+    <Compile Include="umc\WebServiceClientProxy.cs" />
+    <Compile Include="umc\winapi\WinApiProxy.cs" />
+    <Compile Include="Validation\BaseValidator.cs" />
+    <Compile Include="Validation\DateTimeValidator.cs" />
+    <Compile Include="Validation\EValidateException.cs" />
+    <Compile Include="Validation\NullValidator.cs" />
+    <Compile Include="Validation\ScopeValidator.cs" />
+    <Compile Include="SessionWbo.cs" />
+    <Compile Include="Validation\ValidationItemSchema.cs" />
+    <Compile Include="Validation\ValidationSchema.cs" />
+    <Compile Include="Validation\ValidatorSchema.cs" />
+    <Compile Include="Validation\ValidatorSchemaContainer.cs" />
+    <Compile Include="Validation\ValidatorFactory.cs" />
+    <Compile Include="umc\WboMethodParamSchema.cs" />
+    <Compile Include="umc\WboMethodSchema.cs" />
+    <Compile Include="Validation\Validator.cs" />
+    <Compile Include="VarGetter.cs" />
+    <Compile Include="HttpWbo.cs" />
+    <Compile Include="WboFieldDef.cs" />
+    <Compile Include="WboForm.cs" />
+    <Compile Include="XSite.cs" />
+    <Compile Include="umc\LifeCycle.cs" />
+    <Compile Include="umc\Umc.cs" />
+    <Compile Include="Exceptions\XException.cs" />
+    <Compile Include="SchemaContainer.cs" />
+    <Compile Include="SchemaList.cs" />
+    <Compile Include="Schema.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XBaseInterface.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Release\" />
+    <Folder Include="Calculator\" />
+    <Folder Include="obj\Debug\TempPE\" />
+    <Folder Include="register\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\Common.Logging.dll" />
+    <Content Include="bin\Common.Logging.Log4Net.dll" />
+    <Content Include="bin\Debug\Common.Logging.dll" />
+    <Content Include="bin\Debug\Common.Logging.Log4Net.dll" />
+    <Content Include="bin\Debug\log4net.dll" />
+    <Content Include="bin\Debug\Newtonsoft.Json.dll" />
+    <Content Include="bin\Debug\xbase%28冲突_foxmyth-super_2013-08-26 01-01-20%29.pdb" />
+    <Content Include="bin\Debug\xbase%28冲突_foxmyth-super_2013-08-26 01-01-20%29.xml" />
+    <Content Include="bin\Debug\xbase%28冲突_foxmyth-super_2013-08-26 01-01-21%29.dll" />
+    <Content Include="bin\Debug\xbase.dll" />
+    <Content Include="bin\Debug\xbase.pdb" />
+    <Content Include="bin\Debug\xbase.xml" />
+    <Content Include="bin\log4net.dll" />
+    <Content Include="bin\Newtonsoft.Json.dll" />
+    <Content Include="obj\Debug\xbase%28冲突_foxmyth-super_2013-08-26 01-01-20%29.pdb" />
+    <Content Include="obj\Debug\xbase%28冲突_foxmyth-super_2013-09-08 10-13-35%29.dll" />
+    <Content Include="obj\Debug\xbase.csproj.FileListAbsolute%28冲突_foxmyth-super_2013-08-26 01-01-21%29.txt" />
+    <Content Include="obj\Debug\xbase.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\xbase.dll" />
+    <Content Include="obj\Debug\xbase.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput%28冲突_foxmyth-super_2013-04-22 21-22-33%29.cache" />
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput%28冲突_foxmyth-super_2013-08-31 22-34-56%29.cache" />
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="obj\Debug\ResolveAssemblyReference%28冲突_foxmyth-super_2013-08-30 19-46-39%29.cache" />
+    <None Include="obj\Debug\ResolveAssemblyReference.cache" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\xbase.local\xbase.local.csproj">
+      <Project>{F42B9003-8CEE-4F14-9AA0-F43661C81F92}</Project>
+      <Name>xbase.local</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

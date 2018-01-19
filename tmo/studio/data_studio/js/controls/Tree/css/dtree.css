@@ -1,0 +1,40 @@
+body {margin:0; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;}
+
+.bgtopleft { background-color: #ffffff; background-image:url(../images/bg_top.gif); background-repeat: no-repeat; background-position: top; }
+
+/* Font */
+.white  {color:white}
+.f11     {font-size:11px}
+.b        {font-weight:bold}
+
+A.whitelink:link,A.whitelink:visited,A.whitelink:hover	{font-size:11px;color:#FFFFFF;text-decoration:underline;}
+
+/* Left Tree */
+.dtree {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #666;
+	white-space: nowrap;
+}
+.dtree img {
+	border: 0px;
+	vertical-align: middle;
+}
+.dtree a {
+	color: #333;
+	text-decoration: none;
+}
+.dtree a.node, .dtree a.nodeSel {
+	white-space: nowrap;
+	padding: 1px 2px 1px 2px;
+}
+.dtree a.node:hover, .dtree a.nodeSel:hover {
+	color: #333;
+	text-decoration: underline;
+}
+.dtree a.nodeSel {
+	background-color: #c0d2ec;
+}
+.dtree .clip {
+	overflow: hidden;
+}

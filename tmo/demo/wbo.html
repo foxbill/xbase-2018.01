@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript">
+
+        //同步调用
+        function btnTest_onclick() {
+            var person = $.rCall("ClassEcho");
+            $(tdName).html(person.Name);
+            $(tdAge).html(person.Age);
+            $(tdCompany).html(person.Company);
+            $(tdDepartment).html(parson.Department);
+        }
+
+        //同步调用
+        function asyncCall() {
+            $.rCall("ClassEcho", function (person) {
+                $(td1Name).html(person.Name);
+                $(td1Age).html(person.Age);
+                $(td1Company).html(person.Company);
+                $(td1Department).html(parson.Department);
+            });
+        }
+
+    </script>
+</head>
+<body>
+    <div class="demo-info">
+        <div class="demo-tip icon-tip"></div>
+        <div>Js获取后端组件对象，并将对象的属性显示在表格中，本例示范，调用后端注册的一个测试组件(ClassEcho),这个组件已经事先在开发平台的组件管理中注册。</div>
+    </div>
+    同步获取数据
+    <input id="btnTest" type="button" value="同步调用演示" onclick="return btnTest_onclick()" /><br />
+    
+    <table>
+        <tr>
+            <td>姓名</td>
+            <td id="tdName">&nbsp;</td>
+        </tr>
+        <tr>
+            <td>年龄</td>
+            <td id="tdAge">&nbsp;</td>
+        </tr>
+        <tr>
+            <td>公司</td>
+            <td id="tdCompany">&nbsp;</td>
+        </tr>
+        <tr>
+            <td>部门</td>
+            <td id="tdDepartment">&nbsp;</td>
+        </tr>
+    </table>
+
+    异步获取数据
+    <input id="Button1" type="button" value="异步调用演示" onclick="return asyncCall()" /><br />
+    <table>
+        <tr>
+            <td>姓名</td>
+            <td id="td1Name">&nbsp;</td>
+        </tr>
+        <tr>
+            <td>年龄</td>
+            <td id="td1Age">&nbsp;</td>
+        </tr>
+        <tr>
+            <td>公司</td>
+            <td id="td1Company">&nbsp;</td>
+        </tr>
+        <tr>
+            <td>部门</td>
+            <td id="td1Department">&nbsp;</td>
+        </tr>
+    </table>
+
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>目录</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <link type="text/css" href="../../xbase.js/controls/tree/css/dtree.css" rel="stylesheet" />
+    <style type="text/css">
+        body
+        {
+            background-color: #CCC;
+            overflow: hidden;
+        }
+        .LeftDiv
+        {
+            background-color: #FFF;
+            height: 5px;
+        }
+        .OutlookBar
+        {
+            background-color: #080C1A;
+            background-image: url(images/left_border_b.jpg);
+            background-repeat: no-repeat;
+            background-position: left bottom;
+        }
+        .OutlookTitle
+        {
+            height: 30px;
+        }
+        .OutlookTitle p
+        {
+            font-family: "黑体";
+            font-size: 14px;
+            color: #FFF;
+            margin-top: 0px;
+            margin-right: 0px;
+            margin-bottom: 0px;
+            margin-left: 30px;
+            line-height: 30px;
+        }
+        .OutlookPanel
+        {
+            background-color: White; /*#56628D*/
+            width: 234px;
+            margin-left: 3px; /* height:300px;*/
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        #DatabaseTitle
+        {
+            background-image: url(images/left_border_t.jpg);
+            background-repeat: no-repeat;
+            background-position: left top;
+        }
+        .OutlookBar #divQryTree
+        {
+            margin-bottom: 5px;
+        }
+    </style>
+
+    <script type="text/javascript" src="../../xbase.js/controls/tree/tree.js"></script>
+
+    <script type="text/javascript" src="net_util.xjs"></script>
+
+    <script type="text/javascript" src="wjs.xjs"></script>
+
+    <script type="text/javascript">
+
+        var dataTree;
+        var qryTree;
+
+        function getDataTree() {
+            var DataType = { Db: "db", Table: "Table", View: "View" };
+
+
+            dataTree = new Tree('dataTree');
+            var topNode = dataTree.newNode(null, "数据库", null);
+
+            var req = new JoapRequest();
+            req.setObjCls("DbManager");
+            req.setMethod("GetDataCategorys");
+            var resp = req.commit();
+            if (!resp) return;
+            var dbss = resp.RetData.Data;
+
+
+
+
+            //    var dbss = XDataDkRequester.getDatabaseSchema();
+
+            for (var no = 0; no < dbss.length; no++) {
+                var dbs = dbss[no];
+                var dbNode = dataTree.newNode(topNode, dbs.DbTitle, null);
+                dbNode.DataType = DataType.Db;
+                dbNode.DbName = dbs.DbName;
+                if (dbs.Err && dbs.Err != "") {
+                    dbNode.title = dbs.DbTitle + "(错误:" + dbs.Err + ")";
+                }
+
+                var tablesNode = dataTree.newNode(dbNode, "数据表", null);
+
+                var tables = dbs.Tables;
+                for (var i = 0; i < tables.length; i++) {
+                    var table = tables[i];
+                    var node = dataTree.newNode(tablesNode, table.Title, table.Name);
+                    node.DataType = DataType.Table;
+                    node.DbName = dbs.DbName;
+                    node.TableName = table.Name;
+                }
+
+                var viewNode = dataTree.newNode(dbNode, "视图", null);
+
+                var views = dbs.Views;
+
+                for (var i = 0; i < views.length; i++) {
+                    var view = views[i];
+                    var node = dataTree.newNode(viewNode, view.Title, view.Name);
+                    node.DataType = DataType.View;
+                    node.DbName = dbs.DbName;
+                    node.TableName = view.Name;
+                }
+
+                dataTree.NodeClick = function(node) {
+                    if (node.DataType && (node.DataType == DataType.View || node.DataType == DataType.Table)) {
+                        //parent.window.details.window.location = "xtable_prop.htm?TableName=" + node.DbName + "/" + node.TableName;
+                        //                        parent.window.details.window.setData(resp.ObjData.Data);
+                        //                        parent.window.frames("mainFrame").location = "table.html?TableName=" + node.DbName + "/" + node.TableName;
+                        parent.window.frames["mainFrame"].location = "table.html?TableName=" + node.DbName + "/" + node.TableName;
+                        //parent.window.details.src = "xtable_prop.htm";
+                        //parent.window.details.window.setData(resp.ObjData.Data);
+                        //                        parent.window.details.window.onload = function() {
+                        //                            parent.window.details.window.setData(resp.ObjData.Data);
+                        //                        }
+                    }
+                }
+            }
+        }
+
+        function getQryTree() {
+
+            var req = new JoapRequest("DbManager","", "GetTableSummarise");
+            req.addParamate("folder", "")
+            var tables = req.invoke();
+            if (!tables) return;
+
+            qryTree = new Tree('qryTree');
+            var topNode = qryTree.newNode(null, "查询", null);
+
+            for (var no = 0; no < tables.length; no++) {
+                var table = tables[no];
+                var tableNode = qryTree.newNode(topNode, table.Title, table.Name);
+                qryTree.NodeClick = function(node) {
+                if (node.data && (node.data != undefined)) {
+                        parent.window.frames["mainFrame"].location = "table.html?TableName=" + node.data;
+                    }
+                }
+            }
+
+        }
+
+
+        window.onload = function() {
+            getDataTree();
+            divDataTree.innerHTML = dataTree;
+            getQryTree();
+            divQryTree.innerHTML = qryTree;
+        }
+
+    </script>
+
+</head>
+<body>
+    <div class="LeftDiv">
+    </div>
+    <div class="OutlookBar">
+        <div id="DatabaseTitle" class="OutlookTitle">
+            <p id="databaseCaption" class="OutLookCaption">
+                数据库</p>
+        </div>
+        <div class="OutlookPanel" id="divDataTree">
+            <p>
+                此处显示 c</p>
+            <p>
+                lass "OutlookPanel" 的内容</p>
+        </div>
+        <div id="DataSetTitle" class="OutlookTitle">
+            <p id="dataSetCaption" class="OutLookCaption">
+                查询表</p>
+        </div>
+        <div id="divQryTree" class="OutlookPanel">
+            <p>
+                此处显示 c
+            </p>
+            <p>
+                &nbsp;</p>
+            <p>
+                lass "OutlookPanel" 的内容</p>
+        </div>
+    </div>
+</body>
+</html>

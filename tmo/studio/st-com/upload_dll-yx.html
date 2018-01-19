@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>    
+    <title>上传文件</title>
+    <base target="_self" />
+
+    <script type="text/javascript">
+
+        function submitFile() {
+            with (document.getElementsByName("zipfile")[0]) {
+                if (value != "" && value.substring(value.lastIndexOf(".")).toLowerCase() == ".dll") {
+                    zipFileForm.target = "uploadRet";
+                    zipFileForm.submit();
+                    return true;
+                }
+            }
+            alert("请选择ZIP文件。");
+            return false;
+        }
+        
+    </script>
+
+</head>
+<body>
+    <table width="100%" style="height: 300">
+        <tr>
+            <td align="center" valign="middle">
+                <form name="zipFileForm" id="zipFileForm" target="_self" enctype="multipart/form-data"
+                method="post" action="regdll.ashx?fileType=file" onsubmit="return false">
+                <input style="padding-left: 0px;" type="file" name="zipfile" />
+                <input id="upl" type="button" value="上传" onclick="submitFile()" />
+                </form>
+            </td>
+            
+        </tr>
+        <tr>
+        <td>
+           <iframe name="uploadRet"  frameborder="0"></iframe>
+           <button value="关闭"></button>
+        </td>
+        </tr>
+    </table>
+    
+</body>
+</html>

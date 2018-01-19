@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tianmiwo.com/sitemanage" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://tianmiwo.com/sitemanage" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tianmiwo.com/sitemanage">
+      <s:element name="Install">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="url" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="userName" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="InstallResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="InstallResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="InstallTest">
+        <s:complexType />
+      </s:element>
+      <s:element name="InstallTestResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="InstallTestResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="InstallSoapIn">
+    <wsdl:part name="parameters" element="tns:Install" />
+  </wsdl:message>
+  <wsdl:message name="InstallSoapOut">
+    <wsdl:part name="parameters" element="tns:InstallResponse" />
+  </wsdl:message>
+  <wsdl:message name="InstallTestSoapIn">
+    <wsdl:part name="parameters" element="tns:InstallTest" />
+  </wsdl:message>
+  <wsdl:message name="InstallTestSoapOut">
+    <wsdl:part name="parameters" element="tns:InstallTestResponse" />
+  </wsdl:message>
+  <wsdl:portType name="AppManageSoap">
+    <wsdl:operation name="Install">
+      <wsdl:input message="tns:InstallSoapIn" />
+      <wsdl:output message="tns:InstallSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="InstallTest">
+      <wsdl:input message="tns:InstallTestSoapIn" />
+      <wsdl:output message="tns:InstallTestSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="AppManageSoap" type="tns:AppManageSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Install">
+      <soap:operation soapAction="http://tianmiwo.com/sitemanage/Install" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InstallTest">
+      <soap:operation soapAction="http://tianmiwo.com/sitemanage/InstallTest" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="AppManageSoap12" type="tns:AppManageSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Install">
+      <soap12:operation soapAction="http://tianmiwo.com/sitemanage/Install" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InstallTest">
+      <soap12:operation soapAction="http://tianmiwo.com/sitemanage/InstallTest" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="AppManage">
+    <wsdl:port name="AppManageSoap" binding="tns:AppManageSoap">
+      <soap:address location="http://site.tianmiwo.com/AppManage.asmx" />
+    </wsdl:port>
+    <wsdl:port name="AppManageSoap12" binding="tns:AppManageSoap12">
+      <soap12:address location="http://site.tianmiwo.com/AppManage.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

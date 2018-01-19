@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>test</title>
+	<script type="text/javascript">
+/* P返回的是父窗口对象，也就是yqdialog.html这个页面的window对象。
+   D调用yqdialog.html页面的loadinndlg()函数，返回的就是窗口调用页面对象，也就是
+   加载yqdialog.js这个页面的window对象。
+ */ 
+var P = window.parent, D = P.loadinndlg();   // 注意！这行代码是每个内容页必须加的内容，否则无法正确显示。
+
+function closreload(url)
+{
+	// test10为打开子窗口的父窗口的id，D.J.dialog.infrm['test10'].contentWindow 为父窗口的window对象。
+	// 如果是想跳转父窗口页面P.reload()函数就要加上第三个参数，使其为真，第二个参数为要跳转到的页面，
+	// 注意第二个参数不能是跨域的页面，不然会出错。
+	if(!url)
+	    P.reload(D.J.dialog.infrm['test10'].contentWindow);
+	else
+	    P.reload(D.J.dialog.infrm['test10'],'_content/content1.html',true);
+}
+	</script>
+</head>
+
+<body>
+	<input type="button" value="关闭并刷新父窗口" onclick="closreload();"/><br/>
+	<input type="button" value="关闭并跳转父窗口" onclick="closreload(true);"/>父窗口跳转到content1.html页面
+</body>
+</html>

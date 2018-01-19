@@ -1,0 +1,131 @@
+﻿<html>
+<head>
+    <title>用户管理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <script type="text/javascript" src="../../xbase.js/utils/net_util.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/system/system.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/system/wjs.js"></script>
+
+    <script type="text/jscript" src="../../xbase.js/controls/xlistview.js"></script>
+
+    <script type="text/jscript" src="../../xbase.js/controls/tab_control.js"></script>
+
+    <script type="text/javascript">
+
+        var gRoleList;
+        
+        window.onload = function() {
+        if (!gRoleList) {
+                gRoleList = new ListView(elRoleList, elRoleListItem, elRoleListHead);
+                gRoleList.activeItemCss = "activeItem";
+            }
+            getRoleList();
+        }
+
+        function getRoleList() {
+            var req = new JoapRequest("RoleManager", "", "GetRoles");
+            var roles = req.invoke();
+
+
+            gRoleList.clear();
+            if (!roles) return;
+
+            for (var i = 0; i < roles.length; i++) {
+                var role = roles[i];
+                var listItem = gRoleList.addItem();
+                listItem.data = role;
+                if (!role.DisplayName)
+                    role.DisplayName = role.Id;
+                gRoleList.setItemValue(listItem, "RoleId", role.Id);
+                gRoleList.setItemValue(listItem, "DisplayName", role.DisplayName);
+                gRoleList.setItemValue(listItem, "Remark", role.Remark);
+            }
+        }
+
+        function onOk() {            
+
+            var ret = [];
+
+            var listItems = gRoleList.items;
+
+            for (var i = 0; i < listItems.length; i++) {
+                var listItem = listItems[i];
+                var sel = gRoleList.getItemValue(listItem, "ObjectSel");
+                if (sel) {
+                    var objId = gRoleList.getItemValue(listItem, "RoleId");
+                    ret.push(objId);
+                }
+                
+            }
+            
+            window.returnValue = ret;
+            close();
+       
+        }
+        function onCancel() {
+            window.returnValue = null;
+            close();
+        }
+
+    </script>
+
+	<link href="../css/style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="RndBox">
+      <div class="RndTopLeft">
+        <div class="RndTopRight">
+          <div class="RndTopMid"></div>
+        </div>
+      </div>
+      <div class="RndContent">
+        <div class="RndBoxTitle">&nbsp;角色选择</div>
+        <div style="height: 25px">
+          <table width="330" border="0" cellpadding="0" cellspacing="0" class="TableButtonForm">
+            <tr align="center" valign="middle">
+              <td width="110" height="30" align="left"><span class="BottomBox">
+                <input type="button" name="newTable3" id="newTable3" value="确定" onClick="onOk()" />
+              </span></td>
+              <td width="110" height="30" align="left"><span class="BottomBox">
+                <input type="button" name="newTable3" id="newTable4" value="取消" onClick="onCancel()" />
+              </span></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="RndBtmLeft">
+        <div class="RndBtmRight">
+          <div class="RndBtmMid"></div>
+        </div>
+      </div>
+    </div>
+<div class="TabPageContainer">
+      <div class="TabPage ActivePage" id="divPageUserList2">
+        <table class="ListTable" id="elRoleList" width="100%" border="0" cellspacing="0"
+                            cellpadding="0">
+          <tr class="ListHead" id="elRoleListHead">
+            <td name="ObjectSel" style="width: 27px"> 选择 </td>
+            <td name="ObjectId">角色Id</td>
+            <td name="ObjectTitle"> 显示名称 </td>
+            <td name="ObjectDescription"> 备注 </td>
+          </tr>
+          <tr id="elRoleListItem">
+            <td style="width: 27px"><input type="checkbox" name="ObjectSel" /></td>
+            <td name="RoleId">&nbsp;</td>
+            <td name="DisplayName">&nbsp;</td>
+            <td name="Remark"></td>
+          </tr>
+          <tr class="activeItem">
+            <td style="width: 27px"><input type="checkbox" name="ObjectSel" /></td>
+            <td name="RoleId">&nbsp;</td>
+            <td name="DisplayName">&nbsp;</td>
+            <td name="Remark"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+</body>
+</html>

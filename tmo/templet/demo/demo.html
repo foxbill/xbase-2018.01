@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0 minimal-ui"/>
+
+	<link rel="stylesheet" href="boostrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="styles/style.css">
+	<script src="scripts/jquery.min.2.1.js"></script>
+	<script src="boostrap/js/bootstrap.min.js"></script>
+	<script src="scripts/jk.respimg.js"></script>
+	<title>Document</title>
+
+	<style>
+		.jk-body { width:300px;height: 500px; margin: 0 auto; overflow: hidden;position: relative;}
+		.jk-main { width: 100%;height: 500px; background-color: white;position: relative;transition: all 0.25s;}
+		.jk-side { width: 150px;height: 500px; background-color: gray;position: absolute;top: 0;left: 0;bottom: 0;}
+		#op:checked ~ .jk-main{ transform:translateX(150px);-ms-transform:translateX(150px);-o-transform:translateX(150px);-webkit-transform:translateX(150px);-moz-transform:translateX(150px); }
+		#lbt {margin: 0px auto;padding: 10px; border:2px solid white;position: absolute; top:50px; left: 40px;background-color: gray;}
+		.jk-main .content{ overflow-y:auto;width: 100%;height: 100%;padding: 10px;}
+	</style>
+
+	<script>
+		$(function () {
+			var bdw=$(window).width();
+			var bdh=$(window).height();
+
+			$(".jk-body,.jk-main").css({"height":bdh,"width":bdw});
+			$(".jk-side").css({height:bdh});
+
+			$(".content").imgrespond();
+
+		})
+	</script>
+</head>
+<body>
+	<div class="jk-body">
+		<input type="checkbox" name="op" id="op" style="display:none;">
+		<div class="jk-side"></div>
+		<div class="jk-main word-wrap">
+			<label for="op" id="lbt">click me</label>
+			<div class="content">
+			<div class="post-4772 post type-post status-publish format-standard hentry category-web tag-991 tag-990" id="post-4772">
+			<h2>如何提问才能进阶成为前端大神？</h2>
+			<div class="entry">
+				<p>by <a href="http://www.zhangxinxu.com/">zhangxinxu</a> from <a href="http://www.zhangxinxu.com/">http://www.zhangxinxu.com</a><br>
+本文地址：<a href="http://www.zhangxinxu.com/wordpress/?p=4772">http://www.zhangxinxu.com/wordpress/?p=4772</a></p>
+<p>基本上每天微博、博客以及邮件都会受到很多同行的问题咨询，我个人是非常欢迎交流与学习的，因此有问必答。但是，毕竟一个人精力有限，我又没有财力请经纪人或者小秘之类的，如何高效利用时间就是对于我来讲就是非常重要的事情。毕竟，我的本职工作不是技术咨询师，而是在厂子里干活。我总结了几点高效问题处理之道：</p>
+<p><strong>1. 杜绝即时通讯工具沟通</strong><br>
+即时通讯工具，例如QQ, 是最低效的问题交流工具了，谁有这个闲功夫跟你一问一答，你以为把妹呢！因此，任何人妄图想加我QQ咨询问题，都是不可能的。除非：你是我同事、你是我同学、你给我支付宝或微信账户打了100块钱。</p>
+<p><strong>2. 固定时间处理邮件</strong><br>
+每天邮件的处理均在特定的时间点，一般饭点之后，或者任务大成、或会议之前的碎片时间。处理完毕邮件一般就进入忽略模式，除非是不要动脑子的一句话就能回复的邮件。超过5分钟的邮件全部累积到下一日处理。</p>
+<p>蛋的！就是这个邮件沟通，有好几次，几位同行的提问让我很火大（我是个可以坐在河边连续8小时不动的很有耐心的人），早就想写篇文章，教教这些人怎么才是高效地邮件沟通之道！我跟你讲，你问题提得好，别人才会耐心回复与沟通，自己才能成长，才能慢慢进阶成为前端大神！我标题不忽悠，有真实案例的！</p>
+<p>这里插播其他业界知名同行的言论：<br>
+<img src="http://image.zhangxinxu.com/image/blog/201505/2015-05-27_195801.png" width="609" height="321" alt="提问与言论" class="alignnone"></p>
+<p>看来，饱受提问之苦的现象是很普遍的，越发觉得此文有必要了。</p>
+<p>OK, 大家生理和心理都准备好，我要滔滔不绝讲讲如何才是正确的前端技术问题的提问之道！</p>
+<h3>①. 邮件不是聊天工具，不要问“在吗？”</h3>
+<p>有一部分很无语的邮件，完全就把邮件沟通当QQ使了。极端的代表内容是：</p>
+<blockquote><p>在不在啊？fastclick你熟不熟啊？</p></blockquote>
+<blockquote><p>你好，我可以问你一个问题吗？</p></blockquote>
+<p>我当即一口老血吐在了电脑屏幕上！你当是对吴彦祖表白呢？–“那个……那个……彦祖，你，你……可以做我…男盆友吗？” 我跟你讲，虽然我还蛮帅（众人：不要脸），但已名草有主，所以，有什么问题就不要扭扭捏捏，搞得像个淑男淑女，一副小受模样，我真的没有闲功夫去搭理你，有问题直接问，OK? 抱歉，你可能不懂英文。有问题直接问，好不好？</p>
+<p>还有部分邮件一副习大大的即视感：</p>
+<blockquote><p>你好，张鑫旭，我在网上看到了您写的xxx，有些地方不太明白。您能否能我解答一下<br>
+请您收到后请回复 谢谢！<br>
+本人xxx<br>
+（我的QQ：******* 希望您加我为好友）</p>
+<p><img src="http://image.zhangxinxu.com/image/blog/201505/2015-05-07_010306.png" width="674" height="212" class="alignnone"></p></blockquote>
+<p>一般收到这样的邮件，我都会去百度人肉下，就怕得罪了什么大人物。要不然，他哪来这么大勇气，在有求于人的时候，骨子里还能充分散发着趾高气扬的气质呢（可能自己并没意识到不礼貌之处）？</p>
+<p>好在，这类让我觉得不舒服的邮件只是少数，否则我要怀疑我国的社会主义人文建设了。一般，这类聊天风格的邮件的尿性是这样的：</p>
+<blockquote><p>你好，打扰了。我最近做什么什么，然后发现Android下效果是这样的，你知道是怎么回事吗？</p></blockquote>
+<blockquote><p>大哥，我现在遇到一个非常棘手的问题：firefox怎么取得相当于chrome下的……</p></blockquote>
+<blockquote><p>您好！我在 xxx 看到您的这个插件。<br>
+我把它使用在jQuery mobile的表单验证上，无法使用。<br>
+请问咋回事呢？<br>
+    谢谢！<br>
+[rar附件]</p>
+<p><img src="http://image.zhangxinxu.com/image/blog/201505/2015-05-07_012729.png" width="767" height="257" class="alignnone"></p></blockquote>
+<p>这类提问一般都在100字以内，估计提问者啪啪5分钟就写好发过来了。按照他们的设想，我应该会非常热心地回复邮件，就好像收到了女神的留言般，仔细询问：哎呀，亲，你哪里出问题啦，会不会是这样子？要么你试试那样子？这类人往往会觉得邮件沟通效率好低啊，加我QQ, 速度，妥妥儿的，邮件回复还要等，好慢。</p>
+<p>正在阅读本文的诸位，好好想想你自己，你是不是这样的想法，你问别人问题的时候是不是就是把问题一整理，然后就抛给对方了，你是不是也觉得使用QQ咨询问题要比邮箱来得效率高？</p>
+<p>我不知道你们有没有向其他前端前辈们邮箱提过问题，我估计不少人压根就没收到回复，不是所有人都像我这样有比较强的利他主义；有一部分人的问题暴露了菜鸟等级，不屑回复；更关键的是，基本上，你们写的那个邮件啊，根本就没法让人回复！</p>
+<p>就好比上面几个例子。直接一些白话文，无图片，无代码，就问Android的兼容性问题。我勒个去，这跟问“老板，我养的迷你香猪死掉了，你知道是怎么死的吗？”有什么区别。我怎么知道你的猪是怎么死的，难道因为近猪者痴，然后跟你一样，笨死的？</p>
+<p>Android的兼容问题千千万，不同手机型号又是不一样的风采。同学，你难道还指望我一点一点问你，亲，你用的手机是，使用场景是？要明白，我不是客服，不会主动跟踪你的问题，我平时很忙，时间对于我就是最宝贵的资源，我实在是没有精力去反问你的具体使用场景；我相信很多其他优秀的同行也都是这样的；遇到这种情况，只能就当没看到这封邮件。问了一个等于没问的问题，何必浪费精力，做一些毫无收益的事情呢？</p>
+<p>我这人还算耐心，我一般都会耐心回复：“你好，我精力有限，你可以把问题整理清楚……”，后来，越来越发现，这完全就是个不归路啊，这样子半吊子提问的人实在太多了，我只能抱期望与这篇文章，希望能够提高广大同行、应该说广大技术人员提问的能力。</p>
+<p>还有一点就是关于打包附件的问题，好吧，首先肯定一点的是，有代码的要比没源代码的要靠谱些。但是，你打包个文件，是要闹哪样。你知道，这下载，解压，再去浏览文件，找到<code>index.html</code>或<code>start.html</code>之类，有多烦人吗？而且还是<code>rar</code>格式，为啥不用<code>zip</code>格式呢，<code>mac</code>机下也能愉快地玩耍啊！我看到提问时候带个打包文件的头就大了，能不看就不看。有同学要反问了：那不打包文件，你怎么知道我的问题所在呢？这个下节会说。</p>
+<h3>② 正确的邮件提问之道</h3>
+<p>前面一节巴拉巴拉小魔仙了这么多，就是要让大家意识到：邮件沟通跟QQ, 微信沟通完全不是一码事，千万千万不要一个路数过来。邮件正是由于其非及时性，可以让人很好地安排时间去处理，从而提高工作效率和时间利用率。因此，当我们通过邮件方式向别人咨询技术问题的时候，一定一定要以邮件的形式，而不是聊天的形式！我再重复一遍，<strong>一定要以邮件的形式，而不是聊天的形式</strong>。</p>
+<p>什么是邮件的形式？一是要直奔目的地，我们聊天会寒暄之类，但是邮件，一定要直奔你的主题。所以，“在不在”“可不可以问问题”这样愚蠢的邮件就不要再出现了。邮件开头那些马屁的话也不用了。二是，要一次性把问题描述清楚。</p>
+<p><strong>一次性把问题描述清楚</strong><br>
+好了，高潮来了，最难的就是这个“如何一次性把问题描述清楚”。我列举了很重要的几个关键点：</p>
+<p><strong>1. 问题的环境和背景</strong><br>
+这里的背景一般包括，是针对桌面浏览器还是移动端开发？如果是桌面浏览器，则兼容性要求如何？比方说，你来咨询父级是百分比高度的垂直居中效果，你就要说明，你这个效果是需要兼容IE7+还是IE8+, 还是只需要IE10+支持就可以，这是很重要的，浏览器兼容性要求背景的不同，所提供的技术解决方案也会大相径庭；如果是移动端开发，是纯web还是Hybrid模式，只主需要关心iOS呢，还是所有设备。</p>
+<p><strong>2. 遇到的问题现象描述</strong><br>
+这里的描述不是简单的直抒胸臆，“哎呀，我这里怎么露出个边框色啊？”，没错，这是你看到问题时候内心自然的想法。但是，这只是你自己内心的想法，因为你脑中还有很多其他别人不知道的信息！就像写文章一样，要多换位思考，别人根本就不知道你项目是哪根葱上长出来的，什么“露出边框色”，鬼才知道是个怎么回事呢！这样的问题如何回答，如何交流？要描述具体一点，具体到你们部门的产品经理也知道你描述的是个什么问题就可以了。</p>
+<p>有一些很简单的技巧，对吧，你截两张图（敏感信息可以马赛克掉），往邮件里一放（不是附近格式），所谓一图胜千言，相比干巴巴的文字立马就直观很多了，看到了界面、看到了出问题的样子，说不定脑子里就知道大致怎么回事，我就可以发表自己的观点了。</p>
+<p><strong>3. 自己对问题的思考过程与看法</strong><br>
+当我们遇到问题的时候，自己内心肯定是有过思考的，百度也百了很久，实在棘手才去问别人的对吧。好的，在邮件沟通交流的时候，你自己内心的想法、思考过程是非常重要的，你应该写下来，这对于问题的解决非常有帮助。可以类似下面的结构：</p>
+<blockquote><p>我遇到了个xx问题，按照我以前的经验，直接xx就可以了，这次居然不行；我猜想可能是xx原因，于是尝试了下，发现，还是不对……我去网上搜了一下，有提到xxx东西，有影响，但并不是我要的效果，此问题已经困扰我很久了，希望能在你这里找到出路……</p></blockquote>
+<p>从我角度讲，提问者的思考过程，一是可以让问题的描述更加准确，知道是这么个问题；二是可以抓住提问者思路上的一些不正确的地方，比方说一些概念的描述，可能其根本就理解错误，因此，才找不到问题的出路，此时，只要一点拨，就通了。但是，如果提问者并没有说出自己的思路与想法，我又不姓诸葛，我很难一下子就知道你问题症结之所在。</p>
+<p>同时，对自己思考的整理，说不定会自己发现问题所在，恩，世界一下子美好了！</p>
+<p>这里，忍不住说些不美好的事情，我收到不少邮件是直接索要源代码的，而且语气上看似乎是理所当然的。我个人是非常鄙夷这种不劳而获的行为的。如果你真的感兴趣，可以购买源码，我还真出售过几份，5块钱，很便宜。想直接拿，还真把我当活雷锋了呢！</p>
+<p><strong>4. 必要的关键源代码</strong><br>
+有时候，发生问题，并不是思路、或者理解上出问题了。而是代码本身。因此，在提问的时候，最好附上一些关键的源代码（记得注释啊注释），直接邮件显示，不要附件。要知道，下载附件很烦的~<img src="http://mat1.gtimg.com/www/mb/images/face/34.gif" align="absmiddle"></p>
+<p><strong>5. 在线与预览的Demo</strong><br>
+最最高效的问题沟通之道就是这个了，可在线预览的Demo. 一图胜千言，一例胜千图。</p>
+<p>注意，这里的Demo指的是<strong>可在线预览</strong>的Demo. 是一个整理过的，只与问题自身相关联的静态在线Demo页面。基本上，90%以及以上的同学提问，凡事有Demo的，全都是打包文件，大部分都整理过，还算不错的；有的直接洋洋洒洒大波页面，而与问题相关的，也不知道藏在了哪里；还有一个印象深刻的，是直接就是asp页面，而且里面都是拖控件生成的些代码，我真是信了你的邪，这样的页面看毛线，毛线都没得看！</p>
+<p>说到在线Demo，有很多很好的网站、很多很好的工具，大家要用起来，对吧，都是免费的，体验又好，还能协同修改，不要太适合前端问题交流哦！</p>
+<p>比方说：<a href="http://jsbin.com/?html,css,output" target="_blank">jsbin.com</a>  <a href="http://jsfiddle.net/" target="_blank">jsfiddle.net</a> <a href="http://codepen.io/pen/" target="_blank">codepen.io</a>等，国内也有类似的站点。</p>
+<p><img src="http://image.zhangxinxu.com/image/blog/201505/2015-05-08_013308.png" width="580" height="268" alt="jsbin页面截图" class="alignnone"></p>
+<p>花个十几二十分钟，把Demo弄好，邮件过来，直接关键信息一描述，外加一个在线Demo, 得，事情已经成了一半。我可以直接在你的Demo上调试，帮助解决问题，弄好之后，或更新、或一个新Demo地址给你。非常高效，大家都开心，何乐而不为！</p>
+<p>人呢，容易会被眼前的一些繁琐所阻碍，会知难而退。什么意思呢？聊天其实属于快思维，对吧，通过QQ聊天的方式咨询技术问题，你一句我一句的，貌似很轻松惬意，因为耗费精力的慢思维成分比较少，然后30分钟过去了，问题解决，好棒！但是，你让他花点心思，把问题描述清楚，把自己思考过程一次性写好，整理个在线Demo，要了他的命了。因为这些是慢思维，要耗费精力，他们会觉得这种方式效率低。然而，实际上，只要十几二十分钟的事情，比聊天耗时要少；同时，与你沟通的人的耗时也少，这才是真正的高效沟通。结果很多人认为效率低，为什么呢？一部分人是按照聊天的方式发邮件，一封邮件30秒就写好，等着对方回复……结果对方每天只处理一次邮件， <img src="http://mat1.gtimg.com/www/mb/images/face/36.gif" align="absmiddle">这种感觉就像是一记重拳打在了棉胎上；还有一部分人呢，就是“懒”，这里懒加引号不是有其他含义意思，而是强调，就是懒！工作懒，做事情不尽善尽美；写邮件也懒，懒得截图，懒得搞Demo, 所谓一份付出一份回报，你邮件懒惰，还指望回复精彩吗？</p>
+<h3>③ 举个正面例子</h3>
+<p>每当看到用心提问的邮件的时候，我自己也会跟着用心起来，会用心答复，提供很多比较实用的技术信息、自己的一些思维感悟等。</p>
+<p>有一位半路出家的前端同行，它的提问邮件让我印象非常深刻，其从12年开始，就经常邮件我咨询问题。从问题的内容可以看出，其技术在不断进步；越往后，提问的频率越来越少，说明，独当一面的能力更强了，现在，已经有差不多半年没收到其邮件了，估计现在至少是leader级别的。举这个例子呢，就是想表明标题——“如何提问才能进阶成为前端大神”真不是忽悠，下面我们开看看这位同行是如何邮件沟通与提问的，我快速翻了一下（足足4页的邮件沟通记录），看下面这张截图：</p>
+<p><img src="http://image.zhangxinxu.com/image/blog/201505/2015-05-08_015344.png" width="581" height="1306" alt="优秀提问邮件示意" class="alignnone"></p>
+<p>可以看到，这位兄弟的邮件，有背景介绍（很棒），有自己的思路想法（很棒），有源代码展示（很棒），还有代码截图（很棒），还有Demo页面截图（很棒），哇哦，真是封超赞的沟通邮件，如此详细，以至于在线Demo其实都可以不必了。关键的是，这位兄弟很多邮件都是这样子的，非常认真与诚恳。</p>
+<p>我觉得吧，要是提问的小伙伴们都像这位兄台这样，我们国家的前端行业真是有指望了。</p>
+<p>所以，在座的诸位，下次，你们再来邮件交流的时候，就可以按照上面这种程度来，就可以了，有投资才有回报，投资越大回报越大；当然，如果你嫌写文字麻烦、截图麻烦，你也可以使用我上面介绍的Demo专用网站，把你遇到的问题，以在线Demo的方式呈现。</p>
+<p>总而言之，言而总之，不要再写浪费我、也浪费你自己时间和精力的邮件了！</p>
+<p>本文为原创文章，非技术文章，欢迎大力转载，但请保留原出处，方便溯源，因为我是会不断更新的。<br>
+本文地址：<a href="http://www.zhangxinxu.com/wordpress/?p=4772">http://www.zhangxinxu.com/wordpress/?p=4772</a></p>
+<p>（本篇完）</p>
+<div class="alipay_support"><strong>如果您觉得本文的内容对您的学习有所帮助，您可以支付宝(左)或微信(右)：</strong><div class="alipay_img"><img src="http://www.zhangxinxu.com/alipay.png"> <img src="http://www.zhangxinxu.com/wxpay.png"></div></div><div class="similarity"><ul><li>没有相关文章</li></ul></div><!-- Tag -->				<div class="wp_share_box">
+                	<!-- Baidu Button BEGIN -->
+<div id="bdshare" class="bdshare_t bds_tools get-codes-bdshare">
+<span class="bds_more">分享到：</span>
+<a class="bds_tsina" title="分享到新浪微博" href="#"></a>
+<a class="bds_qzone" title="分享到QQ空间" href="#"></a>
+<a class="bds_tqq" title="分享到腾讯微博" href="#"></a>
+<a class="bds_renren" title="分享到人人网" href="#"></a>
+<a class="bds_t163" title="分享到网易微博" href="#"></a>
+<a class="bds_douban" title="分享到豆瓣网" href="#"></a>
+<a class="bds_tsohu" title="分享到搜狐微博" href="#"></a>
+<a class="shareCount" href="#" title="累计分享12次">12</a>
+</div>
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=1954626" src="http://bdimg.share.baidu.com/static/js/bds_s_v2.js?cdnversion=399178"></script>
+
+<!-- Baidu Button END --> 
+                </div>
+								<p>标签： <a href="http://www.zhangxinxu.com/wordpress/tag/%e6%b2%9f%e9%80%9a/" rel="tag">沟通</a>, <a href="http://www.zhangxinxu.com/wordpress/tag/%e9%82%ae%e4%bb%b6/" rel="tag">邮件</a></p>
+				<p class="postmetadata alt">
+					<small>
+												这篇文章发布于 2015年05月8日，星期五，02:06，归类于 <a href="http://www.zhangxinxu.com/wordpress/category/web/" rel="category tag">web综合</a>。                        阅读 19229 次, 今日 325 次					</small>
+				</p>
+
+			</div>
+			</div>
+		</div>	
+		</div>
+	</div>
+</body>
+</html>

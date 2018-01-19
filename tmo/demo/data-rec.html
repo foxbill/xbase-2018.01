@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript">
+
+        //后台数据库访问
+        function btnTest_onclick() {
+            var row = $.rCall("shop_goods.row", { pk: { name: "ttt1" } });
+            $(tdName).valu(row.name);
+            $(tdSummary).valu(row.summary);
+            $(tdCategory).valu(row.category);
+            $(tdPrice).valu(row.price);
+            $(imgPicuture).valu(row.picture);
+        }
+
+
+    </script>
+</head>
+<body>
+    <div class="demo-info">
+        <div class="demo-tip icon-tip"></div>
+        <div>Js通过主键获取后端数据表shop_goods中的一条记录</div>
+    </div>
+    <input id="btnTest" type="button" value="演示" onclick="return btnTest_onclick()" /><br />
+    <table>
+        <tr>
+            <td>商品名称</td>
+            <td id="tdName">&nbsp;</td>
+        </tr>
+        <tr>
+            <td>单价</td>
+            <td id="tdPrice">&nbsp;</td>
+        </tr>
+        <tr>
+            <td>种类</td>
+            <td id="tdCategory">&nbsp;</td>
+        </tr>
+        <tr>
+            <td>简介</td>
+            <td id="tdSummary">&nbsp;</td>
+        </tr>
+        <tr>
+            <td>图片</td>
+            <td>
+                <img id="imgPicuture" /></td>
+        </tr>
+    </table>
+
+</body>
+</html>

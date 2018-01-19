@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.jsonform.js"></script>
+</head>
+<body>
+    <div class="demo-info">
+        <div class="demo-tip icon-tip"></div>
+        <div>数据库--列表元素+分页捆绑范例</div>
+    </div>
+
+
+    <script type="text/javascript">
+        function list2Prior() {
+            var page = parseInt($(list2Page).val()) - 1;
+            if (page > 0) {
+                $(list2Page).val(page);
+                list2.ctrl.reload({ page: page, rows: 8 });
+            }
+        }
+
+        function getPageCount() {
+            var total = $(list2Total).html();
+            total = parseInt(total);
+            var pageCount = total / 8;
+            if ((total % 8) > 0)
+                pageCount++;
+            return pageCount;
+        }
+
+        function list2Next() {
+
+            var page = parseInt($(list2Page).val()) + 1;
+            var pageCount = getPageCount();
+
+            if (page <= pageCount) {
+                $(list2Page).val(page);
+                list2.ctrl.reload({ page: page, rows: 8 });
+            }
+        }
+
+        function listdelete(el) {
+            var ret = $.rCall("shop_goods.delete", { row: el.data });
+            var ret = list2.ctrl.reload();
+            if (!ret)
+                alert("删除成功");
+        }
+
+        function list2Edit(e) {
+            alert(e.data.name);
+        }
+    </script>
+    <div wbo="shop_goods.data" id="list2" name="list2" wbo-params="{ page:1,rows:8 }"
+        style="height: 300px; border: 1px solid red;">
+        <div>
+            记录总数：<span id="list2Total" name="list2.total"></span><input type="button" value="上一页"
+                onclick="list2Prior()" />
+            <input type="button" value="下一页" onclick="list2Next()" />
+            第<input id="list2Page" type="text" value="1" />
+        </div>
+        <div name="list2.rows">
+            <div style="width: 150px; float: left; margin: 2px; border: 1px solid blue" name="list2.rows.item">
+                <p>
+                    商品名称:<span name="list2.rows.name"></span>
+                </p>
+                <p>
+                    店铺ID:<span name="list2.rows.shop_id"></span>
+                </p>
+                <p>
+                    类别Id：<span name="list2.rows.category"></span>
+                <p>
+                    图片：<span><img name="list2.rows.picture" width="50" height="50" /></span>
+                </p>
+                <p>
+                    <input type="button" value="编辑" name="list2.rows.operate" onclick="list2Edit(this)" />
+                    <input type="button" value="删除" name="list2.rows.operate" onclick="listdelete(this)" />
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

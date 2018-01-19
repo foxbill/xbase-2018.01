@@ -1,0 +1,774 @@
+﻿@charset "utf-8";
+body
+{
+    background-image: url(../images/body_bg.jpg);
+    background-repeat: repeat-x;
+    background-position: top;
+    padding: 0px;
+    overflow: hidden;
+    color: #FF9900;
+    font-family: "宋体";
+    font-size: 12px;
+    margin: 0px;
+}
+td, p, div
+{
+    color: #333;
+    font-family: "宋体";
+    font-size: 12px;
+    vertical-align: top;
+}
+.LayoutTable
+{
+    height: 100%;
+    width: 100%;
+}
+.Title
+{
+    background-image: url(../images/head_bg.jpg);
+    background-repeat: repeat-x;
+    background-position: top;
+    height: 60px;
+}
+.HeadRightIcon
+{
+}
+.Logo .Left
+{
+    background-image: url(../images/title_left.jpg);
+    background-repeat: no-repeat;
+    background-position: left;
+}
+.Logo
+{
+    background-image: url(../images/logo_flow_studio.png);
+    background-repeat: no-repeat;
+    background-position: center 9px;
+    height: 60px;
+}
+.Menu .Left
+{
+    background-image: url(../images/menu_left.jpg);
+    background-repeat: no-repeat;
+    background-position: left top;
+    height: 60px;
+}
+.Menu
+{
+    background-image: url(../images/menu_bg.jpg);
+    background-repeat: repeat-x;
+    height: 60px;
+}
+.Menu .r-align
+{
+    background-image: url(../images/menu_right_bg.jpg);
+    background-repeat: no-repeat;
+    background-position: right top;
+    height: 60px;
+}
+.Menu .TabHead
+{
+    height: 24px;
+    padding-left: 1px;
+}
+.Menu .TabHead .Tag
+{
+    height: 24px;
+    width: 46px;
+    line-height: 22px;
+    text-align: center;
+    font-family: "微软雅黑";
+    font-size: 14px;
+    color: #CCC; /*filter: dropshadow(color=#cc66ff,offx=2,offy=2,positive=1);	*/ /*filter:  Glow(color=red,strength=2);*/
+    float: left;
+    cursor: hand;
+}
+.Menu .TabHead .Tag.Act
+{
+    height: 24px;
+    width: 50px;
+    background-image: url(../images/menu_act_tag.jpg);
+    background-repeat: no-repeat;
+    color: #FFF;
+}
+.Menu .TabHead .Tag100
+{
+    height: 24px;
+    width: 100px;
+    line-height: 22px;
+    text-align: center;
+    font-family: "微软雅黑";
+    font-size: 14px;
+    color: #CCC; /*filter: dropshadow(color=#cc66ff,offx=2,offy=2,positive=1);	*/ /*filter:  Glow(color=red,strength=2);*/
+    float: left;
+    cursor: hand;
+}
+.Menu .TabHead .Tag100.Act
+{
+    height: 24px;
+    width: 100px;
+    background-image: url(../images/menu_act_tag-100.jpg);
+    background-repeat: no-repeat;
+    color: #FFF;
+}
+.Menu .MenuTabPanel
+{
+    height: 34px;
+    display: none;
+    overflow: hidden;
+}
+.Menu .MenuTabPanel.Act
+{
+    display: block;
+}
+table.lm
+{
+    height: 100%;
+    width: 100%;
+}
+.OutLookHead
+{
+    height: 25px;
+    background-image: url(../images/outlook_btn_bg.jpg);
+    background-repeat: repeat-x;
+}
+.OutLookHead div
+{
+    height: 25px;
+}
+.OutLookHead .Left
+{
+}
+.OutLookHead .r-align
+{
+    background-image: url(../images/ol_tab_left.jpg);
+    background-repeat: no-repeat;
+    background-position: right;
+    cursor: pointer;
+}
+.OutLookTab
+{
+    height: 25px;
+    background-image: url(../images/outlook_btn_bg.jpg);
+    background-repeat: repeat-x;
+    cursor: pointer;
+    line-height: 25px;
+    color: #FFF;
+}
+.OutLookTab div
+{
+    height: 25px;
+    color: #CCC;
+}
+.OutLookTab .Left
+{
+}
+.OutLookTab .r-align
+{
+    background-image: url(../images/ol_tab_down.jpg);
+    background-repeat: no-repeat;
+    background-position: right;
+}
+.OutLookTab.Act .Left .r-align
+{
+    background-image: url(../images/ol_tab_up.jpg);
+}
+.OutSplit
+{
+    font-size: 1px;
+    height: 3px;
+}
+.OutLookItemList
+{
+    /* [disabled]background-color: #ADB8CC; */
+    font-family: "宋体";
+    font-size: 12px;
+    line-height: 22px;
+    white-space: nowrap;
+    color: #FF9900;
+}
+.Input10
+{
+    width: 120px;
+    background-color: #B1B6BC;
+    border: solid 1px black;
+}
+.Foot
+{
+    background-image: url(../images/outlook_btn_bg.jpg);
+    background-repeat: repeat-x;
+    line-height: 23px;
+    color: #FFF;
+}
+.Foot div
+{
+	height: 25px;
+	color: #FFF;
+}
+.Foot .Left
+{
+    background-image: url(../images/foot_left.jpg);
+    background-repeat: no-repeat;
+    background-position: left;
+}
+.Foot .r-align
+{
+    background-image: url(../images/foot_right.jpg);
+    background-repeat: no-repeat;
+    background-position: right;
+    text-indent: 5px;
+    font-size: 12px;
+}
+.LayoutTable .MainPanel
+{
+    padding-bottom: 3px;
+    padding-left: 3px;
+}
+
+.content-head
+{
+    color: white;
+    height: 28px;
+    line-height: 28px;
+    background-color: #4A5F7D;
+}
+
+.content-head div, .content-head td, .content-head p
+{
+    color: white;
+    height: 28px;
+    float: left;
+}
+
+.TabHead2
+{
+    background-color: #4A5F7D;
+    font-family: "宋体";
+    font-size: 12px;
+    line-height: 28px;
+    height: 28px;
+}
+.TabHead2 div
+{
+    height: 28px;
+}
+.TabHead2 .TabTag2
+{
+    float: left;
+    height: 28px;
+    background-image: none;
+    background-repeat: repeat-x;
+    color: #CCC;
+    cursor: pointer;
+    text-align: center;
+}
+.TabHead2 .TabTag2 .r-align
+{
+    padding: 0px 5px 0px 5px;
+    background-image: none;
+    background-repeat: no-repeat;
+    background-position: right;
+    text-align: center;
+}
+.TabHead2 .TabTag2 .Left
+{
+    background-image: none;
+    background-repeat: no-repeat;
+    background-position: left;
+}
+.TabHead2 .TabTag2.Act
+{
+    float: left;
+    height: 28px;
+    background-image: url(../images/edit_tag_act.jpg);
+    color: #FE9900;
+}
+.TabHead2 .TabTag2.Act .r-align
+{
+    background-image: url(../images/edit_tag_right_act.jpg);
+    background-repeat: no-repeat;
+    background-position: right;
+    text-align: center;
+}
+.TabHead2 .TabTag2.Act .Left
+{
+    background-image: url(../images/edit_tag_left_act.jpg);
+    background-repeat: no-repeat;
+    background-position: left;
+}
+.tabpagee2
+{
+    background-color: #FFF;
+    display: none;
+}
+.tabpagee2.Act
+{
+    display: block;
+}
+.Menu .MenuBtn
+{
+    height: 34px;
+    text-align: center;
+    float: left;
+    font-family: "宋体";
+    font-size: 12px;
+    line-height: 12px;
+    color: #999999;
+    cursor: pointer;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center top;
+    white-space: nowrap;
+    vertical-align: bottom;
+    border: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    margin: 0px;
+    overflow: hidden;
+}
+.Menu .MenuBtnIcon
+{
+    height: 16px;
+    width: 16px;
+}
+.ButtonBox td
+{
+    white-space: nowrap;
+    padding: 1px 0px 0px 3px;
+    text-align: center;
+}
+.ButtonBox .ButtonSplite
+{
+    background-image: url(../images/btn_splite.jpg);
+    background-repeat: no-repeat;
+    float: left;
+    height: 34px;
+    width: 5px;
+}
+.Foot .Left .r-align .StatuBarRight
+{
+    float: left;
+}
+.Foot .Left .r-align .FootLeftCol
+{
+	float: left;
+	color: #FFF;
+}
+.SmallImgButton
+{
+    float: left;
+    width: 30px;
+}
+.TopicHead
+{
+    line-height: 22px;
+    background-image: url(../images/outlook_btn_bg.jpg);
+    background-repeat: repeat-x;
+    height: 22px;
+    text-align: center;
+    font-family: "微软雅黑";
+    font-size: 14px;
+    color: #F90;
+}
+.DataForm
+{
+    background-color: #4A5F7D;
+}
+.ListActItem
+{
+    background-color: #CCF;
+}
+.Logo div
+{
+    height: 60px;
+}
+.AutoWidthInput
+{
+    width: 100%;
+}
+.PadingFormS
+{
+    padding: 2px;
+}
+.HeadRightIcon a
+{
+    border: none;
+    text-decoration: none;
+}
+.HeadRightIcon img
+{
+    border: none;
+}
+.LabelList div
+{
+    float: left;
+}
+.LabelList
+{
+    height: 25px;
+}
+.TableButtonForm td
+{
+    vertical-align: top;
+}
+.ListTable
+{
+    white-space: nowrap;
+    width: 100%;
+    cursor: default;
+}
+.ListTable tr.activeItem
+{
+    background-color: #FFC;
+}
+.ListTable .ListHead
+{
+    font-family: "黑体";
+    font-weight: bold;
+    background-color: #999;
+    color: #FFF;
+    height: 25px;
+}
+.ListTable .ListHead td
+{
+    color: #FFF;
+    text-align: left;
+    height: 25px;
+    line-height: 25px;
+}
+.ToolBtn
+{
+    float: left;
+    height: 22px;
+    width: 22px;
+    margin: 0px;
+    padding: 0px;
+    background: none;
+    border: none;
+}
+table.tab_data
+{
+    width: 100%;
+    border: 1px solid #b6c3d3;
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+table.tab_data th
+{
+    border: 1px solid #d8e4f2;
+    background: #e4f4fd;
+    color: #3a6fa5;
+    height: 20px;
+    vertical-align: middle;
+}
+table.tab_data td
+{
+    border: 1px solid #d8e4f2;
+    background: #fff;
+    color: #333;
+    padding: 3px;
+    vertical-align: middle;
+}
+table.t_data
+{
+    width: 100%;
+    border-collapse: collapse;
+}
+table.t_data th
+{
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    border: 1pt solid windowtext;
+    height: 20px;
+    background: #538ed5;
+}
+table.t_data tr td
+{
+    border-style: none solid solid;
+    border-width: medium 1pt 1pt;
+    padding: 3px;
+    vertical-align: middle;
+}
+.button
+{
+	text-decoration: none;
+	font: bold 12px/12px HelveticaNeue, Arial;
+	padding: 6px 8px;
+	color: #555;
+	border: 1px solid #dedede;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	cursor: pointer;
+	margin: 2px;
+}
+.button.white
+{
+    background: #f5f5f5;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#f0f0f0'); /*  IE */
+    background: -webkit-gradient(linear, left top, left bottom, from(#f9f9f9), to(#f0f0f0)); /*  WebKit */
+    background: -moz-linear-gradient(top, #f9f9f9, #f0f0f0);
+    border-color: #dedede #d8d8d8 #d3d3d3;
+    color: #555;
+    text-shadow: 0 1px 0 #fff;
+    -webkit-box-shadow: 0 1px 1px #eaeaea, inset 0 1px 0 #fbfbfb;
+    -moz-box-shadow: 0 1px 1px #eaeaea, inset 0 1px 0 #fbfbfb;
+    box-shadow: 0 1px 1px #eaeaea, inset 0 1px 0 #fbfbfb;
+}
+.button.white:hover
+{
+    background: #f4f4f4;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#efefef', endColorstr='#f8f8f8'); /*  IE */
+    background: -webkit-gradient(linear, left top, left bottom, from(#efefef), to(#f8f8f8)); /*  WebKit */
+    background: -moz-linear-gradient(top, #efefef, #f8f8f8);
+    border-color: #c7c7c7 #c3c3c3 #bebebe;
+    text-shadow: 0 1px 0 #fdfdfd;
+    -webkit-box-shadow: 0 1px 1px #ebebeb, inset 0 1px 0 #f3f3f3;
+    -moz-box-shadow: 0 1px 1px #ebebeb, inset 0 1px 0 #f3f3f3;
+    box-shadow: 0 1px 1px #ebebeb, inset 0 1px 0 #f3f3f3;
+}
+.button.blue
+{
+    background: #92dbf6;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#abe4f8', endColorstr='#6fcef3'); /*  IE */
+    background: -webkit-gradient(linear, left top, left bottom, from(#abe4f8), to(#6fcef3)); /*  WebKit */
+    background: -moz-linear-gradient(top, #abe4f8, #6fcef3);
+    border-color: #8dc5da #76b7cf #63abc7;
+    color: #42788e;
+    text-shadow: 0 1px 0 #b6e6f9;
+    -webkit-box-shadow: 0 1px 1px #d6d6d6, inset 0 1px 0 #c0ebfa;
+    -moz-box-shadow: 0 1px 1px #d6d6d6, inset 0 1px 0 #c0ebfa;
+    box-shadow: 0 1px 1px #d6d6d6, inset 0 1px 0 #c0ebfa;
+}
+.button.blue:hover
+{
+    background: #92dbf6;
+    border-color: #7caec0 #68a3ba #5a9cb5;
+    text-shadow: 0 1px 0 #bee9fa;
+    -webkit-box-shadow: 0 1px 1px #d6d6d6, inset 0 1px 0 #ade4f8;
+    -moz-box-shadow: 0 1px 1px #d6d6d6, inset 0 1px 0 #ade4f8;
+    box-shadow: 0 1px 1px #d6d6d6, inset 0 1px 0 #ade4f8;
+}
+.button.darkblue
+{
+    background: #a5b8c6;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#becbd6', endColorstr='#88a1b4'); /*  IE */
+    background: -webkit-gradient(linear, left top, left bottom, from(#becbd6), to(#88a1b4)); /*  WebKit */
+    background: -moz-linear-gradient(top, #becbd6, #88a1b4);
+    border-color: #a2afb8 #8696a1 #6f818f;
+    color: #515f6a;
+    text-shadow: 0 1px 0 #c4d0d9;
+    -webkit-box-shadow: 0 1px 1px #d3d3d3, inset 0 1px 0 #ced8e0;
+    -moz-box-shadow: 0 1px 1px #d3d3d3, inset 0 1px 0 #ced8e0;
+    box-shadow: 0 1px 1px #d3d3d3, inset 0 1px 0 #ced8e0;
+}
+.button.darkblue:hover
+{
+    background: #adbfcb;
+    border-color: #8996a0 #798791 #6c7a85;
+    text-shadow: 0 1px 0 #ced9e0;
+    -webkit-box-shadow: 0 1px 1px #d3d3d3, inset 0 1px 0 #c2cfd8;
+    -moz-box-shadow: 0 1px 1px #d3d3d3, inset 0 1px 0 #c2cfd8;
+    box-shadow: 0 1px 1px #d3d3d3, inset 0 1px 0 #c2cfd8;
+}
+td.lmh
+{
+    height: 28px;
+}
+iframe.autosize, table.autosize
+{
+    height: 100%;
+    width: 100%;
+}
+.border0
+{
+    border-top-style: none;
+    border-right-style: none;
+    border-bottom-style: none;
+    border-left-style: none;
+}
+.bg-white
+{
+    background-color: #FFF;
+    background-image: url(none);
+}
+.pading3
+{
+    margin: 3px;
+}
+.dataform
+{
+/*	background-color: #ECECFF;*/
+    background-color: #FFF;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+.datalist
+{
+    background-color: #fff;
+}
+
+.datalist td , .datalist th
+{
+	padding:1px 3px 1px 3px;
+	vertical-align:middle;
+}
+
+.datalist td input 
+{
+ 	height:18px;
+	vertical-align:middle;
+}
+
+.datalist th
+{
+	color:#333;
+    font-weight:bold;
+    background-color: #eee;
+    padding: 2px;
+}
+.datalist .mo
+{
+    background-color: #ebebeb;
+
+}
+
+.datalist .act
+{
+    color:#000;
+    background-color: #d8e4f2;
+}
+
+.datalist input.act
+{
+	color:#000;
+}
+
+
+
+/***
+ *pannel-tab 标签页面板
+ ***/
+.tabpage
+{
+    margin-bottom: 20px;
+}
+.tabpage dt
+{
+    background: url(../images/nav-bline.gif) repeat-x 0 bottom;
+}
+.tabpage dt a
+{
+    display: block;
+    float: left;
+    padding: 2px 10px;
+    margin-right: 1px;
+    text-align: center;
+    font-size: 12px;
+    border: 1px solid #bbbec3;
+    border-bottom: 0;
+    border-radius: 2px 2px 0 0;
+    background: #eee;
+}
+.tabpage dt a.act
+{
+    border-bottom: 1px solid #fff;
+    font-weight: bold;
+    background: #fff;
+}
+.tabpage dt .control
+{
+    color: #006699;
+    cursor: pointer;
+    float: right;
+    font-size: 12px;
+    text-align: right;
+}
+.tabpage .operate
+{
+    padding-top: 10px;
+    margin-top: 10px;
+    border-top: 1px dotted #ddd;
+}
+.tabpage dd
+{
+	display: block;
+	overflow: hidden;
+	padding: 3px;
+	border: 1px solid #bbbec3;
+	border-top: 0;
+}
+.dataform td
+{
+    vertical-align: middle;
+    padding: 3px;
+}
+
+.mb10
+{
+    margin-bottom: 10px;
+}
+.pd10
+{
+    padding: 10px;
+}
+
+.w30
+{
+    width: 30px;
+}
+.w60
+{
+    width: 60px;
+}
+.w100
+{
+    width: 100px;
+}
+.text400
+{
+    width: 400px;
+}
+.tree-panel
+{
+    padding: 0px 2px 0px 8px;
+    background-color: #E8E1F7;
+    overflow: auto;
+    height: 300px;
+}
+.list-btn {
+	padding: 2px;
+	height: 18px;
+	width: 18px;
+}
+.form-btn {
+	padding: 1px 3px 1px 3px;
+}
+.OutLookBar {
+	background-color: #ECECFF;
+	background-image: none;
+}
+.pd5 {
+	padding: 5px;
+}
+.pd3 {
+	padding: 3px;
+}
+.LH20 {
+	line-height: 20px;
+}
+.mid {
+	margin-right: auto;
+	margin-left: auto;
+}
+.r-align {
+	float: right;
+	margin-right: 5px;
+
+}
+input[type="button"]
+{
+  cursor:pointer;
+}

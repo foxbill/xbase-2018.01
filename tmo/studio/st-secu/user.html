@@ -1,0 +1,204 @@
+﻿<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <title>数据库管理</title>
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/metro/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="/studio/css/main.css">
+    <!--<script type="text/javascript" src="../../xbase.js/tab_control.js"></script>-->
+    <script src="../../xbase.js/jquery.min.js" type="text/javascript"></script>
+    <script src="../../easyui/jquery.easyui.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.form.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.jsonform.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+
+        var curUser;
+        var oldUserId;
+        var gUserFrom;
+
+        $(function () {
+            if (parent.pCurUser)
+                setUser(parent.pCurUser);
+            else
+                addUser();
+        });
+
+        function deleteUser() {
+            $.messager.confirm("添加用户", "是否要删除用户" + curUser.Id + "?", function (ret) {
+                if (!ret) return;
+                var resp = $.rCall("UserAccount.deleteUser", { userId: oldUserId });
+                if (resp && !resp.Err) {
+                    $.messager.alert("用户" + curUser + "已经被删除!");
+                    window.location = "about:blank";
+                }
+            })
+        }
+
+        function updateParentTree(userId) {
+            if (parent && parent.loadUsers) {
+                parent.loadUsers();
+                parent.selectUser(userId);
+            }
+        }
+
+        function saveUser() {
+            var user = gUserFrom.getData();
+
+            var resp = $.rCall("UserAccount.updateUser", {
+                user: user,
+                userId: oldUserId
+            });
+
+            if (resp && !resp.Err) {
+                $.messager.alert("保存用户", "用户" + curUser.Id + "已经被保存.", "info"
+                 , function () {
+                     updateParentTree(user.Id);
+                 });
+
+            }
+
+        }
+
+        function saveNewUser() {
+            if (newUserPassword.value != newUserPassword1.value)
+                $.messager.alert("添加用户", "密码不一致", "error");
+            else {
+                var ret = $.rCall("UserAccount.addUser", {
+                    user: {
+                        Id: newUserId.value,
+                        Password: newUserPassword.value
+                    }
+                });
+                if (ret && !ret.Err) {
+                    $(dlgAddUser).dialog("close");
+                    $.messager.alert("添加用户", "用户已经添加", "info", function () {
+                        updateParentTree(curUser.Id);
+                    });
+                }
+
+            }
+        }
+
+        function selectRoles() {
+            location = "select-roles.html?" + $.param({ userId: oldUserId });
+        }
+
+        function addUser() {
+            $(dlgAddUser).dialog("open");
+        }
+
+        function cancelAdd() {
+            $(dlgAddUser).dialog('close');
+            if (!curUser)
+                location = "about:blank";
+        }
+
+        function setUser(user) {
+            curUser = user;
+            oldUserId = user.Id;
+            gUserFrom = $(frmUeser).jsonForm(user);
+            var userRoles = $.rCall("UserAccount.getUserRoles", { userId: oldUserId });
+            $(lstRoles).datagrid({ data: userRoles });
+        }
+
+    </script>
+</head>
+<body class="easyui-layout no-margin-body">
+    <div style="height: 30px; padding: 0px; border: none; border-bottom: solid 1px #ccc"
+        data-options="region:'north'">
+        <a class="easyui-linkbutton mr5" id="btnAddUser" onclick="addUser()">添加用户</a><a class="easyui-linkbutton mr5"
+            id="btnImportFile" type="button" onclick="saveUser()">保存修改</a><a class="easyui-linkbutton mr5"
+                id="btnAddField1" type="button" onclick="return selectRoles()">分配角色</a><a class="easyui-linkbutton mr5"
+                    id="btnDelTrans" type="button" onclick="deleteUser()">删除用户</a>
+    </div>
+    <div id="divTableForm" name="TableDef" class="easyui-layout" data-options="region:'center'"
+        style="border: none">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'north'" style="height: 70px; border-bottom: none">
+                <div class="form" id="frmUeser" name="User">
+                    <div class="form-item">
+                        <label>
+                            用户代号：<input name="User.Id" type="text" /></label>
+                    </div>
+                    <div class="form-item">
+                        <label>
+                            显示名称：<input name="User.DisplayName" type="text" /></label>
+                    </div>
+                    <div class="form-item">
+                        <label>
+                            分组：<input name="User.GroupId" type="text" /></label>
+                    </div>
+                    <div class="form-item">
+                        <label>
+                            创建日期：<input name="User.CreateDate" type="text" /></label>
+                    </div>
+                    <div class="form-item">
+                        <label>
+                            捆绑邮件：<input name="User.Email" type="text" /></label>
+                    </div>
+                    <div class="form-item">
+                        <label>
+                            捆绑手机：<input name="User.Mobile" type="text" /></label>
+                    </div>
+                    <div class="form-item">
+                        <label>
+                            是否禁止：<input name="User.IsDisable" type="checkbox" /></label>
+                    </div>
+                    <div class="form-item">
+                        <label>
+                            是否激活：<input name="User.IsActive" type="checkbox" /></label>
+                    </div>
+                </div>
+            </div>
+            <div data-options="region:'center'" style="border: none;">
+                <div id="divTab" class="easyui-tabs" data-options="fit:true" style="border: none;">
+                    <div title="用户角色" style="margin: 5px">
+                        <table class="easyui-datagrid" id="lstRoles">
+                            <thead>
+                                <tr>
+                                    <th field="Id">
+                                        角色Id
+                                    </th>
+                                    <th field="DisplayName">
+                                        显示名称
+                                    </th>
+                                    <th field="Remark">
+                                        描述
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="dlgAddUser" class="easyui-dialog" title="添加用户" style="width: 300px; height: 200px;"
+        data-options="iconCls:'icon-save',resizable:true,modal:true,closed:true,buttons:'#dlgAddUserButtons'">
+        <div class="form" name="newUser">
+            <div class="form-item">
+                <label>
+                    电话/Email:
+                    <input type="text" id="newUserId" name="newUser.Id" /></label>
+            </div>
+            <div class="form-item">
+                <label>
+                    用户密码:
+                    <input type="password" id="newUserPassword" name="newUser.Password" /></label></div>
+            <div class="form-item">
+                <label>
+                    确认密码:
+                    <input type="password" id="newUserPassword1" name="newUser.Password1" /></label></div>
+        </div>
+        <div id="dlgAddUserButtons">
+            <a class="easyui-linkbutton" onclick="saveNewUser()">保存</a> <a class="easyui-linkbutton"
+                onclick="cancelAdd()">取消</a>
+        </div>
+    </div>
+</body>
+</html>

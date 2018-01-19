@@ -1,0 +1,368 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script>
+
+        $(function () {
+            bindSource();            
+            $("#win").window('close');
+
+            $("[name='file_picture']").change(function () {
+                $("[name='file_picture']").val($(this).val());
+            })
+        });
+
+        var datagrid;//datagrid 全局变量
+        var rowEditor;//获取当前编辑过的json对象数组
+
+
+        function bindSource() {
+            datagrid = $('#tt').datagrid({
+                url: 'demo_goods.data',
+                pageSize: 5,
+                pagination: true,//显示分页
+                columns: [[
+                    {
+                        field: 'id', title: '商品编号', width: 100, editor: {//是否可编辑  
+                            type: 'validatebox',
+                            options: {//必须校验  
+                                required: true
+                            }
+                        }
+                    },
+                    {
+                        field: 'name', title: '商品名', width: 100, editor: {//是否可编辑  
+                            type: 'validatebox',
+                            options: {//必须校验  
+                                required: true,
+
+                            }
+                        }
+                    },
+                    {
+                        field: 'category', title: '类别', width: 100, align: 'right', formatter: cateCol, editor: {//是否可编辑  
+
+                            type: 'combobox',
+                            options: {
+                                url: 'demo_goodsType.rows',
+                                valueField: 'id',
+                                textField: 'name'
+                            }
+                        }
+                    },
+                    {
+                        field: 'price', title: '价格', width: 100, editor: {//是否可编辑  
+                            type: 'validatebox',
+                            options: {//必须校验  
+                                required: true
+                            }
+                        }
+                    },
+                    {
+                        field: 'summary', title: '简介', width: 100, editor: {//是否可编辑  
+                            type: 'validatebox',
+                            options: {//必须校验  
+                                required: true
+                            }
+                        }
+                    },
+                    {
+                        field: 'picture', title: '图片', width: 200, align: 'center', formatter: imgCol, editor: "picedit" //这个名字在自定义文件域要用到
+                    },                   
+                    {
+                        field: 'shop_id', title: '商店名', width: 100, align: 'center', editor: {//是否可编辑  
+                            type: 'validatebox',
+                            options: {//必须校验  
+                                required: true
+                            }
+                        }
+                    },
+                    { field: 'Original_id', title: '操作', width: 100, formatter: buttonCol }
+                ]],
+                toolbar: [              //工具条  
+                {
+                    text: "增加", iconCls: "icon-add", handler: function () {//回调函数  
+                        bindForm([]);
+                        $('#win').window('open');
+                    }
+                },
+               {
+                   text: "删除", iconCls: "icon-remove", handler: function () {
+                       var rows = datagrid.datagrid('getSelections');
+                       if (rows.length <= 0) {
+                           $.messager.alert('警告', '您没有选择', 'error');
+                       }
+                       else {
+                           $.messager.confirm('确定', '您确定要删除吗', function (t) {
+                               if (t) {
+                                   var reult = $.rCall("demo_goods.update", { insertRows: [], updateRows: [], deleteRows: rows })
+                                   if ($.getJsonStr(reult) == "null") {
+                                       datagrid.datagrid('acceptChanges');
+                                       $.messager.show({
+                                           msg: '删除成功',
+                                           title: '成功'
+                                       });
+
+                                       datagrid.datagrid('reload');
+                                   } else {
+                                       $.messager.alert('错误', $.getJsonStr(reult), 'error');
+                                   }
+                                   rowEditor = undefined;
+                                   datagrid.datagrid('unselectAll');
+
+                               }
+                           })
+                       }
+                   }
+               },
+               {
+                   text: "修改", iconCls: "icon-edit", handler: function () {
+                       rowEditor = datagrid.datagrid('getSelections');
+                       for (var i = 0; i < rowEditor.length; i++) {
+                           var index = datagrid.datagrid('getRowIndex', rowEditor[i]);
+                           datagrid.datagrid('beginEdit', index);
+                       }
+                   }
+               },
+               { text: "查询", iconCls: "icon-search", handler: function () { } },
+               {
+                   text: "保存", iconCls: "icon-save", handler: function () {
+                       rowEditor = datagrid.datagrid('getSelections');
+                       for (i in rowEditor) {
+                           var index = datagrid.datagrid('getRowIndex', rowEditor[i]);
+                           datagrid.datagrid('endEdit', index);
+                       }
+                       
+                       change();
+                       rowEditor = undefined;
+                   }
+               },
+               {
+                   text: "取消编辑", iconCls: "icon-redo", handler: function () {
+                       rowEditor = undefined;
+                       datagrid.datagrid('unselectAll');
+                       datagrid.datagrid('rejectChanges')
+                   }
+               }],
+                onDblClickCell: function (rowIndex, field, value) {
+                    datagrid.datagrid('selectRow', rowIndex);
+                    rowEditor = datagrid.datagrid('getSelections');
+                    bindForm(rowEditor[0]);
+                    $("#win").window('open');
+                    datagrid.datagrid('unselectAll');
+
+
+                }
+            });
+            
+            //自定义文件上传编辑器
+            $.extend($.fn.datagrid.defaults.editors, {
+                picedit: {
+                    init: function (container, options) {
+                        var input = $('<input type="file" style="width:300px">').appendTo(container);
+                        return input;
+                    },
+                    getValue: function (target) {
+                        return $(target).val();
+                    },
+                    setValue: function (target, value) {
+                        $(target).val(value);
+                    },
+                    resize: function (target, width) {
+                        var input = $(target);
+                        if ($.boxModel == true) {
+                            input.width(width - (input.outerWidth() - input.width()));
+                        } else {
+                            input.width(width);
+                        }
+                    }
+                }
+            });
+
+        }
+        function change() {
+            var inserted = datagrid.datagrid('getChanges', 'inserted');
+            var updateed = datagrid.datagrid('getChanges', 'updated');
+
+            //批量更新暂未处理文件上传
+            //if (inserted.length > 0) {//执行批量添加
+            //    rowEditor = datagrid.datagrid('getSelections');
+            //    var rest = $.rCall("demo_goods.update", { insertRows: rowEditor, updateRows: [], deleteRows: [] });
+            //}
+            //if (updateed.length > 0) {//执行批量更新
+            //    $.rCall("demo_goods.update", { insertRows: [], updateRows: rowEditor, deleteRows: [] })
+            //}
+
+            //把数据绑定到表单上,用表单提交         
+            bindForm(rowEditor[0]);
+            saveGoods();
+
+        }
+        //按条件查询
+        function search() {
+            var type = $("[name='type']").val();
+            var val = $("[name='query']").val();
+            var data = $.rCall("demo_goods.data", { rows: 8, page: 1, filterRules: [{ field: type, op: 'contains', value: val }] });
+            datagrid.datagrid('loadData', data);
+
+        }
+        //初始化商品类型
+        function cateCol(val, row) {
+            var result = $.rCall("demo_goodsType.row", { pk: { id: val } });
+            var tex = result == undefined ? val : result.name;
+            return "<span>" + tex + "</span>";
+        }
+        //初始化商品图片
+        function imgCol(val, row) {
+            return "<img style='width:40px;height:40px' src='" + val + "'/>";
+        }
+        //初始化超链接
+        function linkCol(val, row) {
+            return "<a href='goods.html?name=" + val + "'>" + val + "</a>";
+        }
+
+        function edit(el) {
+            var key = $(el).attr("key");
+            var row = $.rCall("demo_goods.row", { pk: { id: key } });           
+            bindForm(row);
+            $("#win").window('open');
+        }
+
+        function bindForm(data) {
+            $("#pic").valu(data.picture);           
+            $("#ff").form('clear');//清除表单数据,不然文件域会缓存上一次选中的文件
+            $("#ff").form('load', data);
+        }
+
+        function buttonCol(val, row) {
+            return "<input type='button' value='编辑'  onclick='edit(this)' key='" + val + "'/>";
+        }
+
+        function saveGoods() {
+            $("#ff").form('submit', {
+                url: "demo_goods.form",
+                success: function (ret) {
+                    if (ret && ret.Err) {
+                        $.messager.alert("保存记录", ret.Err.Text);                       
+                    }
+                    else {
+                        $.messager.alert("保存记录", "保存成功");
+                        datagrid.datagrid('reload');//重新加载数据
+                        $('#win').window('close');
+                    }
+                }
+            });
+        }
+
+
+
+
+    </script>
+</head>
+<body>
+    <div class="demo-info">
+        <div class="demo-tip icon-tip"></div>
+        <div>数据库--列表元素捆绑范例</div>
+        <div>
+            <select name="type">
+                <option value="name">商品名</option>
+                <option value="category">类型</option>
+                <option value="shop_id">商店名</option>
+            </select><input name="query" /><input type="button" onclick="search()" value="查询" />
+        </div>
+    </div>
+
+    <form id="dataFrm" method="post" enctype="multipart/form-data">
+        <table id="tt" class="easyui-datagrid"></table>
+    </form>
+
+    <div id="win" class="easyui-window" style="width: 600px; height: 380px; padding: 10px;" data-options="
+            iconCls:'icon-save',
+            modal:true,
+			onResize:function(){
+				$(this).window('hcenter');
+			}">
+        <div class="easyui-layout" data-options="fit:true">
+
+            <div data-options="region:'center'" style="padding: 10px; width: 30%">
+                <form id="ff" method="post" enctype="multipart/form-data">
+                    <table>
+                        <tr>
+                            <td>商品编号:
+                            </td>
+                            <td>
+                                <input class="easyui-validatebox" type="text" name="id" data-options="required:true" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>商品:
+                            </td>
+                            <td>
+                                <input type="hidden" name="Original_id" />
+                                
+                                <input class="easyui-validatebox" type="text" name="name" data-options="required:true" />
+                        </tr>
+                        <tr>
+                            <td>店铺:
+                            </td>
+                            <td>
+                                <input class="easyui-validatebox" type="text" name="shop_id" data-options="required:true" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>类别:
+                            </td>
+                            <td>
+                                <input class="easyui-combobox" data-options="valueField:'id',textField:'name',url:'demo_goodsType.rows'" name="category" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>单价:
+                            </td>
+                            <td>
+                                <input type="text" name="price" class="easyui-numberbox" data-options="min:0,precision:2" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>简介:
+                            </td>
+                            <td>
+                                <textarea name="summary" style="height: 60px;"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>图片:
+                            </td>
+                            <td>
+                                <input type="text" name="picture" hidden="hidden" />
+                                <input type="file" name="file_picture" /><br />
+                            </td>
+                        </tr>
+                    </table>
+                    
+                </form>
+
+            </div>
+            <div data-options="region:'east',split:true" style="width: 200px; padding: 20%">
+                <img id="pic" src="" style="width: 100px" /></div>
+            <div data-options="region:'south',border:false" style="text-align: right; padding: 5px 0 0;">
+                <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="saveGoods()" style="width: 80px">保存</a>
+                
+                <a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="$('#win').window('close')" style="width: 80px">取消</a>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

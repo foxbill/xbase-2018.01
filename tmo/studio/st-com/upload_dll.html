@@ -1,0 +1,110 @@
+﻿<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>上传</title>
+    <script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <script src="../../xbase.js/ajaxupload.js" type="text/javascript"></script>
+<!--    <script src="../../xbase.js/json.js" type="text/javascript"></script>-->
+    <base target="_self" />
+    <script type="text/javascript">
+        a = window.dialogArguments;
+        returnValue = false;
+
+        window.onload = function () {
+            init();  //初始化
+        }
+
+        //初始化
+        function init() {
+            //初始化文档上传
+            var btnFile = document.getElementById("btnUploadFile");
+            var doc = document.getElementById("doc");
+            var hidFileName = document.getElementById("hidFileName");
+            g_AjxUploadFile(btnFile, doc, hidFileName);
+
+        }
+
+
+        var g_AjxTempDir = "/file/temp/";
+        //文档上传
+
+        function RegisterDll(dllUrl) {
+            $.post("WboMan.RegComponent.wbo"
+            ,
+            {
+                src: dllUrl
+            },
+            function (data) {
+                var ret = JSON.parse(data);
+                if (!ret) {
+                    returnValue = true;
+                    alert("组件注册成功");
+                    return;
+                }
+                else if (ret.Err) {
+                    returnValue = false;
+                    alert(ret.Err.Text);
+                    return;
+                }
+                else {
+                    alert(data);
+                }
+
+            })
+        }
+
+        function g_AjxUploadFile(btn, doc, hidPut, action) {
+            var button = btn, interval;
+            new AjaxUpload(button, {
+                action: 'UploadHandler.wbo?path=/App_Data/bin&fileType=file&~v=' + $.timeVer(),
+                data: {},
+                name: 'myfile',
+                onSubmit: function (file, ext) {
+                    if (!(ext && /^(dll|DLL)$/.test(ext.toLowerCase()))) {
+                        alert("您上传的文档格式不对，请重新选择！");
+                        return false;
+                    }
+                },
+                onComplete: function (file, response) {
+                    if (!response) {
+                        alert("上传文件后，主机没有响应，请检查上传处理程序， 组件注册失败，情况未知");
+                    }
+
+                    var resp = JSON.parse(response);
+
+                    if (typeof (resp) == "string")
+                        alert(resp);
+
+                    if (resp && resp.Err)
+                        alert(resp.Err.Text);
+                    else if (resp.Url) {
+                        RegisterDll(resp.Url);
+                    }
+                    else
+                        alert(resp.RetHtml);
+                }
+            });
+        }
+
+        //删除文档
+        function DelFile(doc, hidPut) {
+            hidPut.value = "";
+            doc.innerHTML = "<input type=\"text\" disabled=\"disabled\" />";
+        }
+
+
+        function btnUploadFile_onclick() {
+
+        }
+
+    </script>
+</head>
+<body>
+    <div class="uploadFile">
+        <span id="doc">
+            <input type="text" disabled="disabled" id="hidFileName" /></span>
+        <input type="button" id="btnUploadFile" value="添加" onclick="return btnUploadFile_onclick()" />
+    </div>
+</body>
+</html>

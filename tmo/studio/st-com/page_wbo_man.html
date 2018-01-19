@@ -1,0 +1,482 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>页面对象管理</title>
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        body
+        {
+            padding: 5px;
+        }
+        #tags
+        {
+            padding-right: 0px;
+            padding-left: 0px;
+            padding-bottom: 0px;
+            margin: 0px 0px 0px 10px;
+            width: 900px;
+            padding-top: 0px;
+            height: 20px;
+            clear: left;
+        }
+        #tags LI
+        {
+            float: left;
+            margin-right: 1px;
+            list-style-type: none;
+            height: 25px;
+            background-repeat: no-repeat;
+            background-position: left bottom;
+        }
+        #tags LI A
+        {
+            padding-right: 10px;
+            padding-left: 10px;
+            float: left;
+            padding-bottom: 0px;
+            color: #000;
+            line-height: 25px;
+            padding-top: 0px;
+            height: 25px;
+            text-decoration: none;
+            background-repeat: no-repeat;
+            background-position: right bottom;
+        }
+        #tags LI.emptyTag
+        {
+            background: none transparent scroll repeat 0% 0%;
+            width: 4px;
+        }
+        #tags LI.selectTag
+        {
+            background-image: url(images/tag_left.jpg);
+            background-repeat: no-repeat;
+            background-position: left bottom;
+            margin-bottom: 0px;
+            position: relative;
+            height: 25px;
+        }
+        #tags LI.selectTag A
+        {
+            background-repeat: no-repeat;
+            background-position: right top;
+            background-image: url(images/tag_right.jpg);
+            color: #000;
+            line-height: 25px;
+            height: 25px;
+            margin-left: 5px;
+        }
+        #tagContent
+        {
+            border-right: #938E3B 1px solid;
+            padding-right: 1px;
+            border-top: #938E3B 1px solid;
+            padding-left: 1px;
+            padding-bottom: 1px;
+            border-left: #938E3B 1px solid;
+            padding-top: 1px;
+            border-bottom: #938E3B 1px solid;
+            background-color: #fff;
+            clear: left;
+        }
+        .tagContent
+        {
+            padding-right: 10px;
+            display: none;
+            padding-left: 10px;
+            padding-bottom: 10px;
+            color: #474747;
+            padding-top: 10px;
+            height: 250px;
+        }
+        #tagContent DIV.selectTag
+        {
+            display: block;
+        }
+        #con
+        {
+            margin-top: 5px;
+        }
+        #inputText
+        {
+            width: 324px;
+        }
+        #paramFormDiv tr
+        {
+            vertical-align: middle;
+        }
+        #elParamName
+        {
+            width: 74px;
+        }
+        #Text1
+        {
+            width: 285px;
+        }
+        .ParamList
+        {
+            vertical-align: top;
+            overflow-y: auto;
+            height: 400px;
+        }
+        .ListTD .Button
+        {
+            width: 60px;
+            text-align: center;
+            padding: 1px;
+        }
+        .ListActItem
+        {
+            background-color: #CCF;
+        }
+        p
+        {
+            margin-top: 4px;
+            margin-bottom: 4px;
+        }
+    </style>
+
+    <script type="text/javascript" src="../../xbase.js/system/system.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/system/wjs.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/utils/net_util.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/xdk/xdk4js.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/controls/xlistview.js"></script>
+
+    <script type="text/javascript" src="../../xbase.js/controls/tab_control.js"></script>
+
+    <script type="text/javascript">
+        var gWboList;
+        var gWboForm;
+
+        window.onload = function() {
+            gWboList = new WboList();
+            gWboForm = new WboForm();
+            gWboList.onSelectWbo = gWboForm.setData;
+            gWboList.onExitWbo = gWboForm.setWboValue;
+
+            setData(window.dialogArguments);
+        }
+
+        window.onunload = function() {
+            gWboForm.setWboValue(gWboList.getActiveWbo());
+        }
+
+        function setData(wbdl) {
+            gWboList.setData(wbdl);
+        }
+
+
+        function WboForm() {
+            var _elMethodName = selMethod; //装载方法的元素,必须是下拉列表
+            var _elPropItem = elPropItem;
+            var _elPropList = elPropList;
+            var _elParamList = elParamList;
+            var _elParamItem = elParamItem;
+
+            var _PropList = new ListView(_elPropList, _elPropItem);
+            var _ParamList = new ListView(_elParamList, _elParamItem);
+
+            _elMethodName.onchange = loadMethodPrototype;
+
+
+            function loadMethodPrototype() {
+
+                _ParamList.clear();
+
+                if (_elMethodName.selectedIndex < 0) return;
+
+                var m = _elMethodName.options[_elMethodName.selectedIndex].data;
+
+                if (!m) return;
+
+                var params = m.Params;
+                if (!params) return;
+
+
+                for (var i = 0; i < params.length; i++) {
+                    var param = params[i];
+                    var listItem = _ParamList.addItem();
+                    _ParamList.setItemValue(listItem, "ParamName", param.Title);
+                    _ParamList.setItemValue(listItem, "ParamId", param.Id);
+                }
+
+            }
+
+
+
+            function loadWboPrototype(wbo) {
+
+                var objType = wbo.DataType;
+
+                var req = new JoapRequest("WboAdmin", "", "GetWboPrototype");
+                req.addParamate("objectType", objType);
+                var objsc = req.invoke();
+
+                if (!objsc) return;
+
+                g_ObjSchema = objsc;
+                var methods = objsc.Methods;
+
+                _elMethodName.options.length = 0;
+                var op = new Option("", "");
+                _elMethodName.options.add(op);
+
+                for (var i = 0; i < methods.length; i++) {
+                    var m = methods[i];
+                    var op = new Option(m.Title, m.Id);
+                    op.data = m;
+                    _elMethodName.options.add(op);
+                }
+
+                var properties = objsc.Properties;
+                _PropList.clear();
+                for (var i = 0; i < properties.length; i++) {
+                    var p = properties[i];
+                    var listItem = _PropList.addItem();
+                    _PropList.setItemValue(listItem, "PropName", p.Title);
+                    _PropList.setItemValue(listItem, "PropId", p.Id);
+                }
+            }
+
+            this.setWboValue = function(wbo) {
+                if (!wbo) return;
+                var action = wbo
+
+                var n = _PropList.getCount();
+                var props = [];
+                for (var i = 0; i < n; i++) {
+
+                    var item = _PropList.getItem(i);
+                    var prop = new Object;
+                    prop.Name = _PropList.getItemValue(item, "PropId");
+                    prop.Value = _PropList.getItemValue(item, "PropValue");
+                    //   prop.Title = _PropList.getItemValue(item, "PropName");
+                    if (prop.Value)
+                        props.push(prop);
+                }
+                action.Props = props;
+
+                var n = _ParamList.getCount();
+                var params = [];
+                for (var i = 0; i < n; i++) {
+                    var item = _ParamList.getItem(i);
+                    var param = new Object;
+
+                    param.Id = _ParamList.getItemValue(item, "ParamId");
+                    param.Value = _ParamList.getItemValue(item, "ParamValue");
+                    param.Title = _ParamList.getItemValue(item, "ParamName");
+                    params.push(param);
+
+                }
+
+                return true;
+
+            }
+
+            function getWboValue(wbo) {
+
+                var action = wbo;
+
+                var props = action.Props;
+                if (props && props.length > 0) {
+                    for (var i = 0; i < props.length; i++) {
+                        var prop = props[i];
+                        var item = _PropList.getItemByField("PropId", prop.Name);
+                        _PropList.setItemValue(item, "PropValue", prop.Value);
+                    }
+                }
+
+                _elMethodName.value = action.MethodName;
+                loadMethodPrototype();
+
+                var params = action.Parameters;
+                if (params && params.length > 0) {
+                    for (var i = 0; i < params.length; i++) {
+                        var param = params[i];
+                        var item = _ParamList.getItemByField("ParamId", param.Id);
+                        _ParamList.setItemValue(item, "ParamValue", param.Value);
+                    }
+                }
+
+                //   elActionReturn.value = action.ReturnValue ? action.ReturnValue : "";
+                //       _elMethodName.value = action.MethodName;
+                //       loadParamsSchema();
+
+            }
+
+            this.setData = function(wbo) {
+                loadWboPrototype(wbo);
+                getWboValue(wbo);
+            }
+
+        }
+
+        function WboList() {
+            var _this = this;
+            var _dss;
+            var _WboList = new ListView(tbWboList, trWboItem);
+            _WboList.activeItemCss = "ListActItem";
+
+            this.getActiveWbo = function() {
+                var item = _WboList.getActiveItem();
+                if (item)
+                    return item.data;
+                return null;
+            }
+
+            this.onSelectWbo = function(wbo) { };
+            _WboList.onRowClick = function(item) {
+                _this.onSelectWbo(item.data);
+            }
+
+            this.onExitWbo = function(wbo) { };
+            _WboList.onExitItem = function(item) {
+                return _this.onExitWbo(item.data);
+            }
+
+            this.setData = function(wbdl) {
+                var dss = wbdl.DataSources;
+                _dss = dss;
+                _WboList.clear();
+                if (!dss.length) return;
+                for (var i = 0; i < dss.length; i++) {
+                    var ds = dss[i];
+                    var listItem = _WboList.addItem();
+                    listItem.data = ds;
+                    _WboList.setItemValue(listItem, "WboName", ds.Title);
+                    _WboList.setItemValue(listItem, "WboId", ds.Id);
+                }
+
+                if (_WboList.items && _WboList.items.length > 0) {
+                    _WboList.setActiveItem(_WboList.items[0]);
+                }
+            }
+
+            this.deleteItem = function(item) {
+                _dss.removeItem(item.data);
+                _WboList.deleteItem(item);
+            }
+        }
+
+        function elDeleteWbo_onclick(el) {
+            gWboList.deleteItem(el.parentNode.parentNode);
+        }
+
+    </script>
+
+</head>
+<body>
+    <!--    <div class="RndBox" style="width100%; height: 100px">
+        <div class="RndTopLeft">
+            <div class="RndTopRight">
+                <div class="RndTopMid">
+                </div>
+            </div>
+        </div>
+        <div class="RndBtmLeft">
+            <div class="RndBtmRight">
+                <div class="RndBtmMid">
+                </div>
+            </div>
+        </div>
+    </div>
+-->
+    <div class="RndContent" style="width: 100%; height: 100%">
+        <table width="100%"  height="100%" align="left" style="vertical-align: top;">
+            <tr valign="top">
+                <td nowrap="nowrap" height="22">
+                    <div class="TopicHead">
+                        对象列表
+                    </div>
+                </td>
+                <td>
+                    <div class="TopicHead">
+                        对象属性
+                    </div>
+                </td>
+            </tr>
+            <tr valign="top">
+                <td width="230" nowrap="nowrap">
+                    <div>
+                        <table width="100%" class="DataList" id="tbWboList" style="width: 276px">
+                            <tr id="trWboItem" class="DataRow">
+                                <td nowrap="nowrap" style="width: 112px">
+                                    <span id="span" name="WboName"></span>
+                                    <input type="hidden" id="txtWboId" name="WboId" />
+                                </td>
+                                <td width="60" align="center">
+                                    <input id="elDeleteWbo" type="button" value="删除" style="width: auto; text-align: center;"
+                                        onclick="return elDeleteWbo_onclick(this)" />
+                                </td>
+                            </tr>
+                            <tr class="ActRow">
+                                <td nowrap="nowrap" style="width: 112px">
+                                    <span id="span" name="WboName"></span>
+                                    <input type="hidden" id="txtWboId" name="WboId" />
+                                </td>
+                                <td width="60" align="center" class="style8">
+                                    <input id="elDeleteItem" type="button" value="删除" style="width: auto; text-align: center;"
+                                        onclick="return elDeleteItem_onclick(this)" />
+                                </td>
+                            </tr>
+                            <tr class="ListViewItem">
+                                <td nowrap="nowrap" style="width: 112px">
+                                    <span id="span" name="WboName"></span>
+                                    <input type="hidden" id="txtWboId" name="WboId" />
+                                </td>
+                                <td width="60" align="center" class="style8">
+                                    <input id="elDeleteItem" type="button" value="删除" style="width: auto; text-align: center;"
+                                        onclick="return elDeleteItem_onclick(this)" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+                <td>
+                    <table width="100%" cellpadding="0" cellspacing="0" id="elPropList">
+                        <tr id="elPropItem">
+                            <td name="PropName" nowrap="nowrap">
+                                页号
+                            </td>
+                            <td>
+                                <input type="text" name="PropValue" style="width: 80px" />
+                                <input type="hidden" name="PropId" />
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="TopicTitle">
+                        初始活动
+                        <select name="selAction" id="selMethod">
+                        </select>
+                    </div>
+                    <div class="TopicTitle">
+                        活动选项
+                    </div>
+                    <table width="100%" id="elParamList" cellpadding="0" cellspacing="0">
+                        <tr id="elParamItem">
+                            <td width="40%" name="ParamName">
+                                选项
+                            </td>
+                            <td width="60%">
+                                <input type="text" id="Select2" name="ParamValue" style="width: 80px" value="" />
+                                <input type="hidden" id="Text1" name="ParamId" value="" />
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="height: 33px">
+                    <div style="float: right; padding: 0px 10px 0px 10px;">
+                        <input type="button" name="elCancel" id="elCancel" value="关闭" onclick="return window.close()" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

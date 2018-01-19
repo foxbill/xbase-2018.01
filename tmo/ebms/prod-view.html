@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0 minimal-ui" />
+    <link rel="stylesheet" href="../../boostrap/css/bootstrap.min.css">
+
+    <script src="../../xbase.js/jquery-1.9.1.min.js"></script>
+    <script src="/boostrap/js/bootstrap.min.js"></script>
+    <script src="/xbase.js/jquery.xbase.form.js"></script>
+    <script src="/xbase.js/jquery.xbase.js"></script>
+    <script src="/xbase.js/jquery.xbase.jsonform.js"></script>
+    <script type="text/javascript" src="../../easyui/jquery.easyui.min.js"></script>
+    <script src="scripts/jk.date.js"></script>
+    <script src="scripts/jk.select.load.js"></script>
+    <script src="scripts/jk.uploadimg.js"></script>
+    <title>编辑详细</title>
+    <style>
+        .productcustom {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .customType {
+            display: inline-block;
+            float: left;
+            border: 1px solid #ccc;
+            padding: 1px 1px;
+            width: auto;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            margin: 0 3px;
+            cursor: pointer;
+        }
+
+
+        .customType-content {
+            height: 26px;
+            min-width: 30px;
+            padding: 0 5px;
+        }
+    </style>
+    <script>
+
+        var Type = "-1";//商品类别
+        var name = $.paramVal("xbase_ds_name"); //数据源名称
+        var pms = $.url.queryString;
+        var pk = {};
+        for (var i = 0; i < pms.length; i++) {
+            var f = pms[i];
+            if (f != "xbase_ds_name")
+                pk[f] = pms[f];
+        }
+        var user;
+        var operator = $.paramVal("operator");
+        $(function () {
+
+
+
+            $(".item-opreator").click(function () {
+                // body...
+                openDialog("prod-type.html");
+            });
+
+            initSelect($("#ptype"), 0);
+
+
+
+            user = $.rCall("LoginUser");
+
+            initDetaillink(9);
+
+            if (operator == undefined || operator == "" || operator == "edit") {
+                operator = "edit";
+                loadForm();
+            }
+
+            $("#Creater").val(user.Id);
+
+            $("#Updater").val(user.Id);
+            $("#UpdateTime").val(getNowDate());
+
+
+
+
+            //$("#btnImg").click(function () {
+            //    // body...
+            //    $("#filepicture").click();
+
+            //})
+
+
+            //$("#filepicture").change(function () {
+            //    previewImage(this, "imgDiv", "imgPicture", 300,300);
+            //})
+
+        });
+        var createTime = undefined;
+        function loadForm() {
+
+            var reqName = name + ".data";
+            var prodds = $.rCall(reqName, { page: 1, rows: 1, filterRules: [{ field: 'ID', op: 'equal', value: pk['ID'] }] });
+            var prodobj = prodds.rows[0];
+
+            $("#Name").val(prodobj.Name);
+            $("#CostPirce").val(prodobj.CostPirce);
+            $("#imgPicture").attr("src", prodobj.Picture === null ? "" : prodobj.Picture);
+            $("#Picture").val(prodobj.Picture === null ? "" : prodobj.Picture);
+
+            $("#pk_ID").val(prodobj.ID);
+            $("#Type").val(prodobj.Type);
+            $("#Model").val(prodobj.Model);
+            $("#Brand").val(prodobj.Brand);
+            $("#Series").val(prodobj.Series);
+            $("#Code").val(prodobj.Code);
+            $("#UnitPrice").val(prodobj.CostPirce);
+            $("#Summary").val(prodobj.Summary);
+
+
+
+            $("#ptype option[value='" + prodobj.Type + "']").attr("selected", "selected");
+            initBrand($("#pbrand"), prodobj.Type, prodobj.Brand, prodobj.Brand);
+            if (prodobj.Type != null && prodobj.Type != undefined)
+                initSelect($("#pmodel"), prodobj.Type.trim(), prodobj.Model.trim());
+
+            $("#pbrand option[value='" + prodobj.Brand + "']").attr("selected", "selected");
+            if (prodobj.Brand != null && prodobj.Brand != undefined)
+                initBrand($("#pseries"), prodobj.Type, prodobj.Brand, prodobj.Series);
+
+            //初始化详细信息
+            var detail = $.rCall("dspt_productDetail.data?productId=" + prodobj.ID, {
+                page: 1,
+                rows: 1
+            });
+            Type = prodobj.Type;
+            bindFieldValue(prodobj.Type);
+
+            var detailrow = detail.rows[0];
+
+
+
+            $("#detaillink option[value='" + detailrow.ArticleId + "']").attr("selected", "selected");
+            $("#articleId").val(detailrow.ArticleId);
+
+        }
+
+
+        function initDetaillink(typeId) {
+            var list = $.rCall("pt_article.data", { page: 1, rows: 100, filterRules: [{ field: "Type", op: 'equal', value: typeId }] });
+
+            var selector = $("#detaillink");
+            selector.empty();
+            selector.append("<option value='-1' >请选择</option>");
+
+            for (var i = 0; i < list.total; i++) {
+                selector.append("<option value='" + list.rows[i].ID + "'>" + list.rows[i].Title + "</option>");
+            }
+        }
+
+        function openDialog(url) {
+            // body...
+            var dlg = $("#prodModal");
+
+            //dlg.find("#prodFrame").attr("src", url);
+
+            parent.showMinDialog(url);
+
+            //dlg.modal('show');
+        }
+
+        function submit(argument) {
+            var url = "";
+            if (operator != "add")
+                url = "DataForm." + name + ".post.wbo";
+            else {
+                url = "DataForm." + name + ".post.wbo?action=add";
+                //var id = $.rCall("GUID.NewGUID");
+                //$("#ID").val(id);
+                //$("#pk_ID").remove();
+            }
+            createTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
+            $("#CreateTime").val(createTime);
+            $("#prodForm").form("submit", {
+                onSubmit: function (param) {
+
+                },
+                success: function (data) {
+
+                    try {
+                        var data = eval('(' + data + ')');
+                    } catch (e) { }
+
+                    if (data && data.Err)
+                        alert(data.Err.Text);
+                    else {
+
+                        var Id;
+                        if (operator != "add")
+                            Id = $("#pk_ID").val();
+                        else {
+                            var row = $.rCall("pt_product.data", { page: 1, rows: 1, filterRules: [{ field: 'Name', op: 'equal', value: $("#Name").val() }, { field: 'CreateTime', op: 'equal', value: createTime }] });
+                            if (row.rows[0] != "")
+                                Id = row.rows[0].ID;
+                        }
+
+                        alert('修改成功');
+                        var artid = $("#articleId").val();
+                        var res = $.rCall("ds.dspt_productDetail.insert", { row: { ProductId: Id, Body: $("#Summary").val(), ArticleId: artid, Summary: $("#Summary").val(), Creater: user.Id, Updater: user.Id } });
+
+                        if (!res) {
+                            window.history.back(-1);
+                        }
+
+
+                    }
+                }
+            });
+        }
+
+
+        function typeChange(obj, temp) {
+            var el = $(obj);
+
+            var slsattr = el.attr("wbo-select");
+
+            slsattr = eval("(" + slsattr + ")");
+
+            var frmhiden = slsattr.frmfield;
+
+            var v = el.find("option:selected").val();
+            Type = v;
+            if (el.attr("id") == "ptype")
+                bindFieldValue(v);
+            $("#" + frmhiden).val(v);
+            if (v != -1) {
+                if (Object.prototype.toString.call(slsattr.nxt) == '[object Array]')
+                    for (var i = 0; i < slsattr.nxt.length; i++) {
+                        var nextid = slsattr.nxt[i];
+                        if (nextid != undefined && nextid != "") {
+                            var nextobj = $("#" + nextid);
+                            initBrand(nextobj, $("#ptype").find("option:selected").val(), v);
+                        }
+                    } else {
+                    var nextid = slsattr.nxt
+                    var nextobj = $("#" + nextid);
+                    initBrand(nextobj, $("#ptype").find("option:selected").val(), v);
+                }
+            }
+
+
+        }
+
+
+
+
+        function initBrand(selector, typeId, brandId, selval) {
+            var slsattr = selector.attr("wbo-select");
+            slsattr = eval("(" + slsattr + ")");
+            var db = slsattr.tar + ".data";
+            var list;
+            if (selector.attr("id") == "pbrand")
+                list = $.rCall("dspt_productBrand.data?typeId=" + typeId);
+            //list = $.rCall(db, { page: 1, rows: 100, filterRules: [{ field: "TypeId", op: 'equal', value: typeId }, { field: "BrandId", op: 'equal', value: brandId }] });
+            if (selector.attr("id") == "pseries")
+                list = $.rCall(db, { page: 1, rows: 100, filterRules: [{ field: "TypeId", op: 'equal', value: typeId }, { field: "BrandId", op: 'equal', value: brandId }] });
+            if (selector.attr("id") == "pmodel")
+                list = $.rCall(db, { page: 1, rows: 100, filterRules: [{ field: "ParentId", op: 'equal', value: brandId }] });
+            selector.empty();
+            selector.append("<option value='-1' >请选择</option>");
+
+            var frmhiden = slsattr.frmfield;
+            $("#" + frmhiden).val("-1");
+
+            for (var i = 0; i < list.total; i++) {
+                selector.append("<option value='" + list.rows[i].ID + "'>" + list.rows[i].Name + "</option>");
+            }
+            if (selval != null && selval != undefined) {
+                selector.find("option").removeAttr("selected");
+                selector.find("option[value=" + selval + "]").attr("selected", true);
+
+                $("#" + frmhiden).val(selval);
+                // alert(selector.find("option [value=" + selval + "]").text());
+            }
+        }
+
+
+
+        //加载省市级联
+
+    </script>
+</head>
+<body>
+    <div class="container">
+
+        <div class="view" style="padding-top: 8px;">
+            <form class="form-horizontal" role="form" id="prodForm" method="post" action="DataForm.pt_product.post.wbo" enctype="multipart/form-data">
+                <div class="row" style="margin-bottom: 8px;">
+                    <div class="col-md-4">
+                        <div class="thumbnail">
+                            <input type="file" name="file_Picture" class="easyui-filebox" id="filepicture" style="display: none;">
+                             <a href="javascript:;" id="showPanel" onclick="addImage('#filepicture','#showPanel')" title="添加封面图片" style="width: 100%; min-height: 50px; display: block;">
+                                <img src="images/allcar_01.jpg" onerror="this.src='images/allcar_01.jpg'" id="imgPicture" alt="" width="100%">
+                            </a>
+                            
+                            <input type="hidden" name="Picture" id="Picture">
+                        </div>
+                       
+                    </div>
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="prodname" class="col-sm-2 control-label">名称：</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="Name" name="Name" placeholder="请输入名称">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="prodname" class="col-sm-2 control-label">价格：</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" id="CostPirce" name="CostPirce"
+                                    placeholder="请输入价格" min="1" max="1000000">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="prodname" class="col-sm-2 control-label">类别：</label>
+                            <div class="col-sm-10">
+                                <select name="" class="form-control" id="ptype" wbo-select="{'tar':'pt_productType','frmfield':'Type','nxt':['pmodel','pbrand'],'filter':'ParentId'}" onchange="typeChange(this,'temp')">
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="prodname" class="col-sm-2 control-label">类型：</label>
+                            <div class="col-sm-10">
+
+                                <select name="" class="form-control" id="pmodel" wbo-select="{'tar':'pt_productModel','frmfield':'Model','filter':'ParentId'}" onchange="selChange(this)"></select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="prodname" class="col-sm-2 control-label">品牌：</label>
+                            <div class="col-sm-10">
+
+                                <select name="" class="form-control" id="pbrand" wbo-select="{'tar':'dspt_productBrand','frmfield':'Brand','nxt':'pseries','filter':'ParentId'}" onchange="typeChange(this,'temp')"></select>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="prodname" class="col-sm-2 control-label">系列：</label>
+                            <div class="col-sm-10">
+
+                                <select name="" class="form-control" id="pseries" wbo-select="{'tar':'pt_productSeries','filter':['TypeId','BrandId'],'frmfield':'Series'}" onchange="selChange(this)"></select>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="hidden">
+                        <input type="hidden" name="Type" id="Type">
+                        <input type="hidden" name="Model" id="Model">
+                        <input type="hidden" name="Brand" id="Brand">
+                        <input type="hidden" name="Series" id="Series">
+                        <input type="hidden" name="Code" id="Code">
+                        <input type="hidden" name="UnitPirce" id="UnitPrice">
+                        <input type="hidden" name="Creater" id="Creater">
+                        <input type="hidden" name="CreateTime" id="CreateTime">
+                        <input type="hidden" name="Updater" id="Updater">
+                        <input type="hidden" name="UpdateTime" id="UpdateTime">
+                        <input type="hidden" name="pk_ID" id="pk_ID">
+                    </div>
+                    <div class="col-md-4">
+                        <ul class="productcustom" wbo="dspt_productCustomField.data" name="prodCustomField" id="prodCustomField" wbo-params="{ page: 1,rows:10}">
+                            <li wbo-bind="prodCustomField.rows" name="prodCustomFieldRows">
+                                <div wbo-bind="prodCustomFieldRows.item" style="line-height: 30px;" class="customFileitem">
+                                    <span name="prodCustomFieldRows.Display" class="customFileName" style="float: left"></span>
+                                    <span style="float: left">：</span>
+                                    <input type="hidden" class="customFileId" name="prodCustomFieldRows.ID" value="0">
+                                    <input type="hidden" class="customFileValue" value="0">
+
+                                    <div wbo="dspt_productCustomFieldValue.data" name="prodCustomValue" id="prodCustomValue" wbo-embed="prodCustomFieldRows" wbo-query="{FieldId:'prodCustomFieldRows.ID'}" wbo-params="{ page: 1,rows:10}" style="display: inline-block;">
+                                        <div wbo-bind="prodCustomValue.rows" name="prodCustomValueRows" class="clearfix col-md-12" style="display: inline-block;">
+                                            <div wbo-bind="prodCustomValueRows.item" class="customType col-md-4  " onclick="fieldClick(this)">
+                                                <div name="prodCustomValueRows.Value" class="customType-content " wbo-attr="{'style':'prodCustomValueRows.Style'}"></div>
+                                                <input type="hidden" name="prodCustomValueRows.ID" class="customvalueid" value="-1">
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="customType hidden" onclick="fieldClick(this)">
+                            <div class="customType-content btn-info">+</div>
+                            <input type="hidden" class="customvalueid" value="-1">
+                        </div>
+                        <div>
+                            <div>
+                                <span class="customFileName" style="float: left">属性</span>
+                                <span style="float: left">：</span>
+                            </div>
+                            <div class="customType addField col-md-10">
+                                <div class="customType-content btn-info" onclick="addField(this)">添加商品属性</div>
+                                <input type="hidden" class="customvalueid" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="prodname" class="col-sm-2 control-label">描述：</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="3" name="Summary" id="Summary"></textarea>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="form-group">
+                            <label for="prodname" class="col-sm-2 control-label">详细链接：</label>
+                            <div class="col-sm-10">
+
+                                <select name="" class="form-control" id="detaillink" onchange="selChange(this)" wbo-select="{'frmfield':'articleId'}"></select>
+                                <input type="hidden" name="ArticleId" id="articleId">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+        <div class="view text-center">
+            <button role="button" class="btn btn-primary btn-lg" onclick="submit(this)">保存</button>
+            <button role="button" class="btn btn-default btn-lg">取消</button>
+        </div>
+
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+            aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close"
+                            data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">添加颜色
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group field">
+                                <label for="prodname" class="col-sm-2 control-label label-title ">颜色：</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="FieldValue" placeholder="颜色" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="submit btn btn-primary">
+                            提交
+                        </button>
+                        <button type="button" class="btn btn-default"
+                            data-dismiss="modal">
+                            关闭
+                        </button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+
+        </div>
+
+        <div class="modal fade" id="updateModal" tabindex="-1" role="dialog"
+            aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close"
+                            data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title">修改属性
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group field">
+                                <label for="prodname" class="col-sm-2 control-label label-title ">颜色：</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="FieldValue" placeholder="颜色" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="submit btn btn-primary">
+                            修改
+                        </button>
+                        <button type="button" class="delete btn btn-danger">
+                            删除
+                        </button>
+                        <button type="button" class="btn btn-default"
+                            data-dismiss="modal">
+                            关闭
+                        </button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+
+        </div>
+
+        <div class="modal fade" id="fieldModal" tabindex="-1" role="dialog"
+            aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close"
+                            data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title">添加商品属性
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group field">
+                                <label for="prodname" class="col-sm-2 control-label label-title ">属性：</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="FieldValue" placeholder="属性" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="submitField()" class="submit btn btn-primary">
+                            提交
+                        </button>
+                        <button type="button" class="btn btn-default"
+                            data-dismiss="modal">
+                            关闭
+                        </button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        $(function () {
+            //$(".customType:not(.addField)").click(function () {
+            //    $(this).addClass("active").siblings().removeClass("active");
+            //    var customvalueid = $(this).find(".customvalueid").val();
+            //    var p = $(this).parents(".customFileitem");
+            //    var body = $(this).find(".customType-content").html();
+            //    var name = $(p).find(".customFileName").html();
+            //    var fieldId = $(p).find(".customFileId");
+            //    if (customvalueid == "-1" && body == "+") {
+            //        initModal(name, "", fieldId.val());
+            //    } else {
+            //        initUpdateModal(name, body, customvalueid);
+            //    }
+
+            //})
+        })
+
+        function fieldClick(e) {
+            Type = $("#ptype").find("option:selected").val();
+            if (Type == "-1") {
+                alert("请选择商品类别");
+                return;
+            }
+            $(e).addClass("active").siblings().removeClass("active");
+            var customvalueid = $(e).find(".customvalueid").val();
+            var p = $(e).parents(".customFileitem");
+            var body = $(e).find(".customType-content").html();
+            var name = $(p).find(".customFileName").html();
+            var fieldId = $(p).find(".customFileId");
+            if (customvalueid == "-1" && body == "+") {
+                initModal(name, "", fieldId.val());
+            } else {
+                initUpdateModal(name, body, customvalueid);
+            }
+
+        }
+        function bindFieldValue(TypeId) {
+            prodCustomField.ctrl.load("dspt_productCustomField.data?RelativeId=" + TypeId);
+            var html = $(".customType.hidden").clone();
+            var obj = $(html).removeClass("hidden");
+            $("[name='prodCustomValueRows']").append(obj);
+
+
+        }
+
+        function initModal(title, body, fieldId) {
+            $("#myModal .modal-title").html("添加" + title);
+            $("#myModal .label-title").html(title + ":");
+            var input = $("#myModal [name='FieldValue']").attr("placeholder", title);
+            $("#myModal .submit").attr("onclick", "submitFieldValue('" + fieldId + "')");
+            $("#myModal").modal("show");
+        }
+        function initUpdateModal(title, body, fieldId) {
+            $("#updateModal .modal-title").html("编辑" + title);
+            $("#updateModal .label-title").html(title + ":");
+            var input = $("#updateModal [name='FieldValue']").attr("placeholder", title);
+            $("#updateModal [name='FieldValue']").val(body);
+            $("#updateModal .submit").attr("onclick", "UpdateFieldValue('" + fieldId + "')");
+            $("#updateModal .delete").attr("onclick", "deleteFieldValue('" + fieldId + "')");
+            $("#updateModal").modal("show");
+        }
+
+        function addFieldValue(e) {
+
+
+        }
+
+        function UpdateFieldValue(fieldId) {
+            var input = $("#updateModal [name='FieldValue']");
+            if ($(input).val() == "") {
+                $(input).parent().parent().addClass("has-error");
+                return;
+            }
+            $(input).parent().parent().removeClass("has-error");
+            //{ page: 1, rows: 1, filterRules: [{ field: "ID", op: 'equal', value: fieldId }] }
+            var rowData = $.rCall("pt_productCustomFieldValue.row", { pk: { ID: fieldId } });
+            rowData.Value = $(input).val();
+            var result = $.rCall("pt_productCustomFieldValue.update", { row: rowData });
+            if (result == null) {
+                bindFieldValue(Type);
+            } else {
+                alert($.getJsonStr(result));
+            }
+            $("#updateModal").modal("hide");
+        }
+
+        function deleteFieldValue(fieldId) {
+            if (!confirm("确定删除该属性吗？"))
+                return;
+            var result = $.rCall("pt_productCustomFieldValue.delete", { row: { pk_ID: fieldId } });
+            if (result == null) {
+                bindFieldValue(Type);
+            } else {
+                alert($.getJsonStr(result));
+            }
+            $("#updateModal").modal("hide");
+
+        }
+
+        function submitFieldValue(fieldId) {
+
+            var input = $("#myModal [name='FieldValue']");
+            if ($(input).val() == "") {
+                $(input).parent().parent().addClass("has-error");
+                return;
+            }
+            $(input).parent().parent().removeClass("has-error");
+            var fieldValue = $(input).val();
+            var rowData = { RelativeId: Type, FieldId: fieldId, Value: fieldValue, Extra: 0 };
+            var result = $.rCall("ds.pt_productCustomFieldValue.insert", { row: rowData });
+            if (result == null) {
+                bindFieldValue(Type);
+            } else {
+                alert($.getJsonStr(result));
+            }
+            $("#myModal").modal("hide");
+        }
+
+        function addField(e) {
+            Type = $("#ptype").find("option:selected").val();
+            if (Type == "-1") {
+                alert("请选择商品类别");
+                return;
+            }
+            $("#fieldModal").modal("show");
+        }
+
+        function submitField() {
+            var input = $("#fieldModal [name='FieldValue']");
+            if ($(input).val() == "") {
+                $(input).parent().parent().addClass("has-error");
+                return;
+            }
+            $(input).parent().parent().removeClass("has-error");
+            var fieldValue = $(input).val();
+            var rowData = { RelativeId: Type, Field: null, Display: fieldValue, DelFlag: 0 };
+            var result = $.rCall("ds.pt_productCustomField.insert", { row: rowData });
+            if (result == null) {
+                bindFieldValue(Type);
+            } else {
+                alert($.getJsonStr(result));
+            }
+            $("#fieldModal").modal("hide");
+        }
+
+    </script>
+</body>
+</html>

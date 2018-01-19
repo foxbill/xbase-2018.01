@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>附近</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script type="text/javascript" src="/xbase.js/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.form.js"></script>
+    <script type="text/javascript" src="/xbase.js/jquery.xbase.jsonform.js"></script>
+</head>
+<body>
+    <div class="demo-info">
+        <div class="demo-tip icon-tip">
+        </div>
+        <div>
+            数据库--列表元素捆绑范例</div>
+    </div>
+    <!-- 
+       wbo="数据表名.方法名"
+       name="对象别名（可任意取名）"
+       wbo-params=json格式的参数表 "{ paramName1:paramValue1,paramName2:paramValue2 }"
+    -->
+    <div wbo="shop_goods.rows" name="list1" wbo-params="{ page:1,rows:8 }" view="jsonList"
+        style="height: 300px; border: 1px solid red;">
+        <div style="width: 150px; float: left; margin: 2px; border: 1px solid blue" field="list1.item"
+            name="list1.item">
+            <p>
+                商品名称:<span name="list1.name" field="list1.name"></span>
+            </p>
+            <p>
+                店铺ID:<a name="list1.shop_id" field="list1.shopid" wbo-attr="innerHTML:'name',alt:'name'"></a>
+            </p>
+            <p>
+                类别Id：<span name="list1.category"></span>
+            <p>
+                图片：<img name="list1.picture" width="50" height="50" />
+            </p>
+        </div>
+    </div>
+</body>
+</html>

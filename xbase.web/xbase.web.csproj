@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1A1F36B1-5BF0-4D6B-A45F-070974CD3642}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>xbase.web</RootNamespace>
+    <AssemblyName>xbase.web</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Common.Logging">
+      <HintPath>..\tmo\bin\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>bin\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>bin\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.DataVisualization" />
+    <Reference Include="System.Web.Extensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="controls\DataChart.cs" />
+    <Compile Include="DataAccessHandler.cs" />
+    <Compile Include="GridHandler.cs" />
+    <Compile Include="HandlerUtils.cs" />
+    <Compile Include="pdfdoc\DatadocPdf.cs" />
+    <Compile Include="WbcHandler.cs" />
+    <Compile Include="WboHandler.cs" />
+    <Compile Include="WboHandlerTools.cs" />
+    <Compile Include="WbpsHandler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WbosHandler.cs" />
+    <Compile Include="XJSHandler.cs" />
+    <Compile Include="UploadHandler.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\xbase.admin\xbase.admin.csproj">
+      <Project>{10503FF3-6247-4BEF-928B-2A873448D90C}</Project>
+      <Name>xbase.admin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xbase.bi\xbase.bi.csproj">
+      <Project>{2B39E7FD-3593-40C0-ACC2-0D30FB955AF9}</Project>
+      <Name>xbase.bi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xbase.data\xbase.data.csproj">
+      <Project>{21E8E302-AECD-43EC-8C4D-1A5473B9E5E4}</Project>
+      <Name>xbase.data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xbase.local\xbase.local.csproj">
+      <Project>{F42B9003-8CEE-4F14-9AA0-F43661C81F92}</Project>
+      <Name>xbase.local</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xbase.math\xbase.math.csproj">
+      <Project>{9F45AF8F-985F-4F30-9311-E1EBD9B60907}</Project>
+      <Name>xbase.math</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xbase.sdk\xbase.sdk.csproj">
+      <Project>{42BD7446-C327-4C59-A2B9-818E27032612}</Project>
+      <Name>xbase.sdk</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xbase.security\xbase.security.csproj">
+      <Project>{FE61869C-1B3A-4C72-B976-ADF6DC0E06A5}</Project>
+      <Name>xbase.security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xBase\xbase.csproj">
+      <Project>{70854294-306B-493D-9264-87699D33A18B}</Project>
+      <Name>xbase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xbase.wbs\xbase.wbs.csproj">
+      <Project>{5BB19EDE-67C4-4592-BC53-79B30DCB9525}</Project>
+      <Name>xbase.wbs</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,662 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>查询参数设置</title>
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+#tags {
+	padding-right: 0px;
+	padding-left: 0px;
+	padding-bottom: 0px;
+	margin: 0px 0px 0px 10px;
+	width: 900px;
+	padding-top: 0px;
+	height: 20px;
+	clear: left;
+}
+#tags LI {
+	float: left;
+	margin-right: 1px;
+	list-style-type: none;
+	height: 25px;
+	background-repeat: no-repeat;
+	background-position: left bottom;
+}
+#tags LI A {
+	padding-right: 10px;
+	padding-left: 10px;
+	float: left;
+	padding-bottom: 0px;
+	color: #000;
+	line-height: 25px;
+	padding-top: 0px;
+	height: 25px;
+	text-decoration: none;
+	background-repeat: no-repeat;
+	background-position: right bottom;
+}
+#tags LI.emptyTag {
+	background: none transparent scroll repeat 0% 0%;
+	width: 4px;
+}
+#tags LI.selectTag {
+	background-image: url(images/tag_left.jpg);
+	background-repeat: no-repeat;
+	background-position: left bottom;
+	margin-bottom: 0px;
+	position: relative;
+	height: 25px;
+}
+#tags LI.selectTag A {
+	background-repeat: no-repeat;
+	background-position: right top;
+	background-image: url(images/tag_right.jpg);
+	color: #000;
+	line-height: 25px;
+	height: 25px;
+	margin-left: 5px;
+}
+#tagContent {
+	border-right: #938E3B 1px solid;
+	padding-right: 1px;
+	border-top: #938E3B 1px solid;
+	padding-left: 1px;
+	padding-bottom: 1px;
+	border-left: #938E3B 1px solid;
+	padding-top: 1px;
+	border-bottom: #938E3B 1px solid;
+	background-color: #fff;
+	clear: left;
+}
+.tagContent {
+	padding-right: 10px;
+	display: none;
+	padding-left: 10px;
+	padding-bottom: 10px;
+	color: #474747;
+	padding-top: 10px;
+	height: 250px;
+}
+#tagContent DIV.selectTag {
+	display: block;
+}
+#con {
+	margin-top: 5px;
+}
+#inputText {
+	width: 324px;
+}
+#paramFormDiv tr {
+	vertical-align: middle;
+}
+#elParamName {
+	width: 74px;
+}
+#Text1 {
+	width: 285px;
+}
+.ParamList {
+	vertical-align: top;
+	overflow-y: auto;
+	height: 400px;
+}
+.ListTD .Button {
+	width: 60px;
+	text-align: center;
+	padding: 1px;
+}
+p {
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+    .ElementName {
+	width: 120px;
+	overflow: hidden;
+	display: block;
+	height: 22px;
+}
+    #lstValidation {
+	width: 90px;
+}
+    </style>
+    <script type="text/javascript" src="../../xbase.js/system/system.js"></script>
+    <script type="text/javascript" src="../../xbase.js/system/wjs.js"></script>
+    <script type="text/javascript" src="../../xbase.js/utils/net_util.js"></script>
+    <script type="text/javascript" src="../../xbase.js/xdk/xdk4js.js"></script>
+    <script type="text/javascript" src="../../xbase.js/controls/xlistview.js"></script>
+    <script type="text/javascript" src="../../xbase.js/controls/tab_control.js"></script>
+    <script type="text/javascript">
+        var g_WbdlEditor = window.dialogArguments;
+        window.returnValue = false;
+
+        var g_ListView = null;
+        var gHT = null;
+        var gValidForm = null;
+
+        window.onload = function() {
+
+            gHT = new TabControl([btn1, btn2],
+                                [page1, page2],
+                                "onclick", "TabTag2 Act");
+
+            gValidForm = new ValidForm();
+            gValidForm.initForm();
+            elElementNameInput.onchange = gValidForm.newData;
+
+            if (g_ListView == null) {
+                g_ListView = new ListView(elBindList, elBindListItem); //elBindListHead
+                g_ListView.activeItemCss = "ListActItem";
+                g_ListView.clear();
+
+                g_ListView.onRowClick = function(item) {
+                    var dataElementId = g_ListView.getItemValue(item, "elElementName");
+                    var elementBind = WbdlUtils.decodeDataElementId(dataElementId);
+                    elElementNameInput.value = elementBind.name;
+                    elElementAttrInput.value = elementBind.attr;
+                    elParamInput.value = elementBind.param;
+
+
+                    var sdk = new WbdlXdk(g_WbdlEditor.wbdl);
+                    var elementData = sdk.getElementDataById(dataElementId);
+                    if (!elementData)
+                        return;
+                    elDataSourceSel.value = elementData.DataSourceId;
+                    elBindTypeInput.value = elementData.BindType;
+                    elMapPath.checked = elementData.MapServerPath;
+                    chkReadOnly.checked = elementData.ReadOnly;
+
+
+                    fullDataFieldsSelect(elDataSourceSel.value);
+                    elDataFieldSel.value = elementData.DataField;
+                    if (elementData.Value != undefined && elementData.Value != null)
+                        elValueInput.value = elementData.Value;
+                    else
+                        elValueInput.value = "";
+                    gValidForm.setData(elementData.Validation);
+
+                };
+
+
+
+            }
+
+
+            if (g_WbdlEditor != undefined && g_WbdlEditor != null) {
+
+                fullDataSourseSelect();
+
+                if (elDataSourceSel.value != "")
+                    fullDataFieldsSelect(elDataSourceSel.value);
+
+                if (g_WbdlEditor.activeElement && g_WbdlEditor.activeElement.name != undefined && g_WbdlEditor.activeElement.name != null)
+                    elElementNameInput.value = g_WbdlEditor.activeElement.name;
+
+                setData(g_WbdlEditor.wbdl);
+                if (elElementNameInput.value) {
+                    var item = g_ListView.getItemByField("elElementName", elElementNameInput.value);
+                    g_ListView.setActiveItem(item);
+                }
+            }
+        }
+
+
+
+
+        function fullDataSourseSelect() {
+
+            if (g_WbdlEditor == undefined || g_WbdlEditor == null) return;
+
+            var elDsId = elDataSourceSel;
+
+            var dsList = g_WbdlEditor.getDataSources();
+
+            elDsId.options.length = 0;
+
+            var option = new Option("", "");
+            elDsId.options.add(option);
+
+            for (var i = 0; i < dsList.length; i++) {
+                var ds = dsList[i];
+                var option = new Option(ds.Title, ds.Id);
+                elDsId.options.add(option);
+            }
+
+        }
+
+        function fullDataFieldsSelect(dsId) {
+            var elField = elDataFieldSel;
+            elField.options.length = 0;
+            elField.options.add(new Option("", ""));
+
+            if (!dsId || dsId == undefined || dsId == "") return;
+
+            //    var dsList = wbdlXdk.getDataSources();
+
+            var fieldInfos = g_WbdlEditor.getGetDataFieldInfos(dsId);
+
+            if (fieldInfos == null) return;
+
+            for (var i = 0; i < fieldInfos.length; i++) {
+                var fieldInfo = fieldInfos[i];
+                var option = new Option(fieldInfo.Title, fieldInfo.Name);
+                elField.options.add(option);
+            }
+
+        }
+
+        function setData(wbdl) {
+
+
+
+            var elementDatas = wbdl.ElementDatas;
+
+
+            g_ListView.clear();
+
+            if (elementDatas) {
+                for (var i = 0; i < elementDatas.length; i++) {
+                    var elementData = elementDatas[i];
+                    var listItem = g_ListView.addItem();
+
+                    g_ListView.setItemValue(listItem, "elElementName", elementData.Id);
+
+                    var dispName = WbdlUtils.getDataElementDispName(elementData.Id);
+                    g_ListView.setItemValue(listItem, "elBindDispName", dispName);
+                }
+            }
+
+        }
+
+        function updateData(wbdl) {
+            //            var elementDatas = wbdl.QueryParams;
+            //            elementDatas.clear();
+
+            //            for (var i = 0; i < g_ListView.getCount(); i++) {
+            //                var elementData = new Object();
+            //                var listItem = g_ListView.items[i];
+            //                elementData.Id = g_ListView.getItemValue(listItem, "elParamName");
+            //                elementDatas.push(elementData);
+            //            }
+        }
+
+
+        function setColunm_onclick() {
+            window.returnValue = "";
+            window.close();
+        }
+
+        function elDeleteItem_onclick(btn) {
+            var item = g_ListView.getItemByElement(btn);
+            var bindId = g_ListView.getItemValue(item, "elElementName");
+            g_WbdlEditor.removeElementDataById(bindId);
+            g_ListView.deleteByElement(btn);
+
+        }
+
+        function addElementBind_onclick() {
+
+            if (!elElementNameInput.value) {
+                alert("元素名称不能为空");
+                elElementNameInput.focus();
+                return;
+            }
+            var bind = g_WbdlEditor.addElementData(
+                elElementNameInput.value,
+                elElementAttrInput.value,
+                elParamInput.value,
+                elDataSourceSel.value,
+                elDataFieldSel.value,
+                elValueInput.value
+            );
+            bind.BindType = !elBindTypeInput.value ? 0 : parseInt(elBindTypeInput.value);
+            bind.MapServerPath = elMapPath.checked;
+            bind.Validation = gValidForm.getData();
+            bind.ReadOnly = chkReadOnly.checked;
+
+
+            var item = g_ListView.getItemByField("elElementName", bind.Id);
+            if (item == null) {
+                item = g_ListView.addItem();
+                g_ListView.setItemValue(item, "elElementName", bind.Id);
+
+                var dispName = WbdlUtils.getDataElementDispName(bind.Id);
+                g_ListView.setItemValue(item, "elBindDispName", dispName);
+            }
+
+        }
+
+        function elOk_onclick() {
+            updateData(gTableSchema);
+            window.returnValue = true;
+            close();
+        }
+
+        function elCancel_onclick() {
+            close();
+        }
+
+
+        function elDataSourceSel_onchange() {
+            fullDataFieldsSelect(elDataSourceSel.value);
+        }
+
+        function ValidForm() {
+
+            var _selValid = selValidator;
+            var _lstValidation = lstValidation;
+            var _btnDelete = btnDelValid;
+            var _btnAddValid = btnAddValid;
+            var _btnModifyValid = btnModifyValid;
+
+            var _propList = new ListView(tabValidatorPropList, trValidatorPropListDataRow, trValidatorPropListHead);
+            var _validators = new Object();
+            var _objValidation = new Object();
+            _objValidation.Validators = [];
+
+            function loadValidatorProp() {
+                if (!_selValid.value) return;
+                var validId = _selValid.value;
+                var valid = _validators[validId];
+                if (!valid) return;
+
+                _propList.clear();
+                for (var i = 0; i < valid.Properties.length; i++) {
+                    var pr = valid.Properties[i];
+                    var item = _propList.addItem();
+                    _propList.setItemValue(item, "tdValidatorPropName", pr.Title);
+                    _propList.setItemValue(item, "txtValidatorPropValue", "", pr.Description);
+                    _propList.setItemValue(item, "hidValidatorPropId", pr.Id);
+                }
+
+            }
+
+            function onLstValidationChange() {
+                if (_lstValidation.selectedIndex < 0) return;
+                var vo = _objValidation.Validators[_lstValidation.selectedIndex];
+                setValidator(vo);
+            }
+
+            function getValidator() {
+                var vo = new Object();
+                vo.ValidatorName = _selValid.value;
+                vo.Options = [];
+
+                for (var i = 0; i < _propList.items.length; i++) {
+                    var item = _propList.items[i];
+                    var vop = new Object();
+                    vop.Id = _propList.getItemValue(item, "hidValidatorPropId");
+                    vop.Value = _propList.getItemValue(item, "txtValidatorPropValue");
+                    vo.Options.push(vop);
+                }
+                return vo;
+            }
+
+            function setValidator(vo) {
+                _selValid.value = vo.ValidatorName;
+                loadValidatorProp();
+                for (var i = 0; i < vo.Options.length; i++) {
+                    var vop = vo.Options[i];
+                    var item = _propList.getItemByField("hidValidatorPropId", vop.Id);
+                    if (item) {
+                        _propList.setItemValue(item, "hidValidatorPropId", vop.Id);
+                        _propList.setItemValue(item, "txtValidatorPropValue", vop.Value);
+                    }
+                }
+            }
+
+            this.initForm = function() {
+                _btnDelete.onclick = this.deleteValidator;
+                _btnAddValid.onclick = this.addValidator;
+                _btnModifyValid.onclick = this.modifyValidator;
+                _lstValidation.onclick = onLstValidationChange;
+
+                var req = new JoapRequest("ValidationAdmin", "", "GetValidatorSchemaList");
+                var resp = req.invoke();
+                if (!resp) {
+                    alert("初始化校验表单时候，无法活动校验器Schema");
+                    return;
+                }
+
+                for (var i = 0; i < resp.length; i++) {
+                    var vs = resp[i];
+                    var op = new Option(vs.Title, vs.Id);
+
+                    _selValid.add(op);
+                    _validators[vs.Id] = vs;
+                }
+                _selValid.onchange = loadValidatorProp;
+                loadValidatorProp();
+
+                lstSettedValidators.options.length = 0;
+
+            }
+
+            this.setElementBind = function() {
+
+            }
+
+            this.deleteValidator = function() {
+                if (_lstValidation.selectedIndex < 0) {
+                    alert("请选择要删除的校验器");
+                    return;
+                }
+
+                _lstValidation.remove(_lstValidation.selectedIndex);
+                _objValidation.Validators.splice(_lstValidation.selectedIndex, 1);
+            }
+
+            this.addValidator = function() {
+                var vo = getValidator();
+                _objValidation.Validators.push(vo);
+
+                var sop = _selValid.options[_selValid.selectedIndex];
+                var op = new Option(sop.text, sop.value);
+                _lstValidation.add(op);
+
+            }
+
+            this.modifyValidator = function() {
+                if (_lstValidation.selectedIndex < 0) {
+                    alert("请选择要修改的校验器");
+                    return;
+                }
+
+                var vo = getValidator();
+                _objValidation.Validators[_lstValidation.selectedIndex] = vo;
+
+                var sop = _selValid.options[_selValid.selectedIndex];
+                var op = _lstValidation.options[_lstValidation.selectedIndex];
+                op.text = sop.text;
+                op.value = sop.value;
+            }
+
+            this.setData = function(validation) {
+                if (!validation) {
+                    validation = new Object();
+                    validation.Validators = [];
+                }
+                _objValidation = validation;
+                _lstValidation.options.length = 0;
+                for (var i = 0; i < _objValidation.Validators.length; i++) {
+                    var v = _objValidation.Validators[i];
+                    var vs = _validators[v.ValidatorName];
+                    var op = new Option(vs.Title, vs.Id);
+                    _lstValidation.add(op);
+                }
+            }
+
+            this.getData = function() {
+                return _objValidation;
+            }
+            this.newData = function() {
+                _objValidation = new Object();
+                _objValidation.Validators = [];
+                _lstValidation.options.length = 0;
+            }
+
+        }
+    </script>
+    </head>
+    <body>
+        <table align="left" width="100%" height="" class="LayoutTable" style="background-color:#4A5F7D">
+            <tr valign="top">
+                <td height="22" nowrap="nowrap" class="Left">
+                    <div class="TopicHead" id="dlgCaption">
+                        元素列表
+                    </div>
+                </td>
+                <td>
+                    <div class="TopicHead" id="dlgCaption2">
+                        元素配置
+                    </div>
+                </td>
+            </tr>
+            <tr valign="top">
+                <td width="220" nowrap="nowrap" class="Left">
+                    <table width="100%" id="elBindList" style="">
+                            <tr id="elBindListItem" class="ListViewItem">
+                                <td width="120" nowrap="nowrap" > <span id="elBindDispName" name="elBindDispName" class="ElementName"></span>
+                                    <input type="hidden" id="elElementName" name="elElementName" />
+                                </td>
+                                <td class="style8" align="center">
+                                    <input id="elDeleteItem" type="button" value="删除" style="width: auto; text-align: center;"
+                                            onclick="return elDeleteItem_onclick(this)" />
+                                </td>
+                            </tr>
+                        </table>
+                </td>
+                <td>
+                    <p> 元素名称:
+                        <input id="elElementNameInput" type="text" />
+                    </p>
+                    <p> 元素属性:
+                        <input id="elElementAttrInput" type="text" />
+                    </p>
+                    <p> 元素变量:
+                        <input id="elParamInput" type="text" />
+                    </p>
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0" class="DataForm">
+                        <tr>
+                            <td class="TabHead2">
+                        <div id="btn1" class="TabTag2 Act" style="width:80px" >
+                            	<div class="Left">
+                                    <div class="Right">
+                                        数据设置</div>
+                                </div>
+
+                        </div>
+                        <div id="btn2" class="TabTag2" style="width:80px">
+                            	<div class="Left">
+                                    <div class="Right">
+                                    校验设置
+                                </div>
+                            </div>
+                        </div>
+                        
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table width="100%" border="0" cellpadding="0" cellspacing="0" class="TabPage2 Act" id="page1">
+                                    <tr>
+                                        <td>数据源：
+                                                
+                                        </td>
+                                        <td>
+                                            <select id="elDataSourceSel" name="elDataSourceSel" onChange="return elDataSourceSel_onchange()">
+                                                <option></option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>数据项：
+                            </td>
+                                        <td><select id="elDataFieldSel" name="elDataFieldSel">
+                                <option></option>
+                            </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>捆绑值：
+                            </td>
+                                        <td><input id="elValueInput" name="elValueInput" type="text" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>显示方法                            </td>
+                                        <td>
+                                            <select id="elBindTypeInput" name="elBindTypeInput">
+                                                <option value="0">顺序显示</option>
+                                                <option value="1">重复显示</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>只读：                            </td>
+                                        <td>
+                                            <input type ="checkbox" id="chkReadOnly"  name="chkReadOnly"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>MapPath：                            </td>
+                                        <td>
+                                            <input type="checkbox" id="elMapPath" name="elMapPath" />
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table width="100%" border="0" cellpadding="2" cellspacing="0" class="TabPage2" id="page2">
+                                    <tr>
+                                        <td width="90" valign="top">
+                                            <select name="lstSettedValidators" size="14"  id="lstValidation">
+                                                <option value="校验1">校验1</option>
+                                                <option value="校验2">校验1</option>
+                                                <option value="校验3">校验1</option>
+                                                <option value="校验4">校验1</option>
+                                                <option value="校验5">校验1</option>
+                                                <option value="校验6">校验1</option>
+                                            </select>
+                                        </td>
+                                        <td colspan="2" valign="top" class="ListTD">
+                                            <p>
+                                                <label> 校验类型</label>
+                                                <select name="selValidator" id="selValidator">
+                                                </select>
+                                            </p>
+                                            <table width="100%" id="tabValidatorPropList">
+                                                <tr id="trValidatorPropListHead" class="ListHead">
+                                                    <td> 选项 </td>
+                                                    <td> 选项值 </td>
+                                                </tr>
+                                                <tr id="trValidatorPropListDataRow">
+                                                    <td id="tdValidatorPropName" name="tdValidatorPropName"> 选项 </td>
+                                                    <td>
+                                                        <input id="txtValidatorPropValue" style="width:130px" value="" name="txtValidatorPropValue" />
+                                                        <input type="hidden" id="hidValidatorPropId" value="" name="hidValidatorPropId" />
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <input id="btnAddValid" type="button" class="Button" value="添加校验" />
+                                            <input id="btnModifyValid" type="button" class="Button" value="修改校验" />
+                                            <input id="btnDelValid" type="button" class="Button" value="删除校验" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input id="addElementBind" type="button" value="添加捆绑" onClick="return addElementBind_onclick()" />
+                                
+                                <input type="button" name="elCancel" id="elCancel" value="关闭" onClick="return elCancel_onclick()" />
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="right">
+                    <div style="float: right; margin-right: 10px">
+                    </div>
+                </td>
+            </tr>
+        </table>
+</body>
+</html>

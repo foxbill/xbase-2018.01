@@ -1,0 +1,148 @@
+﻿<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragram" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />
+    <title>触发器管理</title>
+    <script type="text/javascript" src="../../xbase.js/tab_control.js"></script>
+    <script src="../../xbase.js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../../xbase.js/jquery.xbase.js" type="text/javascript"></script>
+    <!-- <script src="../../xbase.js/jquery.cookie.js" type="text/javascript"></script>-->
+    <!--<script src="../../../xbase.js/tree.jquery.js" type="text/javascript"></script>-->
+    <!--<script src="../../xbase.js/popup-case.js" type="text/javascript"></script>-->
+    <!--<link href="../jqtree/css/jqtree.css" rel="stylesheet" type="text/css" />-->
+    <link href="../css/style.css" rel="stylesheet" type="text/css" />
+    <link href="css/studio.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .table-layout
+        {
+            table-layout: auto;
+            border-collapse: collapse;
+            width: 100%;
+            height: 100%;
+        }
+        .table-layout tr td
+        {
+            margin: 0px;
+            padding: 0px;
+        }
+        .fl-left
+        {
+            width: 400px;
+            height: 100%;
+        }
+        .header
+        {
+            width: 100%;
+            text-align: left;
+        }
+        .contents
+        {
+            width: 100%;
+            height: 100%;
+        }
+        .right-theme
+        {
+            background-color: White;
+            overflow: auto;
+            margin: 0px;
+            padding: 10px;
+        }
+        .tab-head
+        {
+            text-indent: 2em;
+            text-align: left;
+            overflow: hidden;
+        }
+        .tab-head input
+        {
+            position: relative;
+            left: 250px;
+        }
+    </style>
+    <script language="javascript" type="text/javascript">
+        var conn = dialogArguments.connName || decodeURIComponent($.url.queryString.connName);
+        var table = dialogArguments.tableName || decodeURIComponent($.url.queryString.tableName);
+        var trigger = dialogArguments.triggerName || decodeURIComponent($.url.queryString.triggerName);
+
+        window.onload = function () {
+            txtTriggerName.value = trigger;
+            getTrigger();
+        }
+
+        function getTrigger() {
+
+            if (conn && table) {
+                $.post("DataExplore.getTrigger.wbo"
+                ,
+                {
+                    connName: conn,
+                    tableName: table,
+                    triggerName: txtTriggerName.value
+                }
+                ,
+                function (data) {
+                    var ret = JSON.parse(data);
+                    if (ret && ret.Err)
+                        divErr.innerHTML = ret.Err.Text;
+                    else
+                        txtContent.value = JSON.parse(data);
+                })
+
+            }
+
+        }
+
+        function btnExc_onclick() {
+
+            $.post("DataExplore.modifyTrigger.wbo",
+            {
+                connName: conn,
+                tableName: table,
+                triggerName: txtTriggerName.value,
+                triggerText: txtContent.value
+            },
+            function (data) {
+                var ret = JSON.parse(data);
+                if (ret && ret.Err)
+                    divErr.innerHTML = ret.Err.Text;
+                else
+                    alert("保存成功");
+
+            })
+        }
+
+        function btnNewTrigger_onclick() {
+            if (!txtTriggerName.value) {
+                alert("请输入触发器名");
+                return;
+            }
+            getTrigger();
+        }
+
+    </script>
+</head>
+<body style="margin: 0px; padding: 0px; background: #FFFFFF none;">
+    <table width="100%" height="100%">
+        <tr height="30">
+            <td>
+                触发器名：<input type="text" id="txtTriggerName" style="width: 250px;" />
+                <input type="button" id="btnNewTrigger" value="创建" class="button blue" onclick="return btnNewTrigger_onclick()" />
+                <input id="btnExc" type="button" value="保存" class="button blue" onclick="return btnExc_onclick()" />
+                <div id="divErr" style="color: Red; float: left">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <textarea rows="8" id="txtContent" name="txtSql" cols="20" style="width: 100%; height: 100%"></textarea>
+            </td>
+            '
+        </tr>
+        <tr height="20">
+            <td>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
