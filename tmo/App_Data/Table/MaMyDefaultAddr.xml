@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>MaMyDefaultAddr</Id><Title>默认地址</Title><ListCommand><Id>76f5758e-ce1f-47a5-b35d-26704adecc7f</Id><CommandText>
+if Exists(Select DefaultAddressId From ma_my_setting where
+    UserId=@UserId) 
+Begin
+Select ma_user_address.*  
+  From ma_my_setting  Left Join   ma_user_address On
+      ma_my_setting.DefaultAddressId=ma_user_address.Id
+  Where ma_user_address.UserId=@UserId
+End Else Begin
+  Select Top 1 * From ma_user_address Where
+     UserId=@UserId
+End
+</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@UserId</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Guid</DataType><DefaultValue>[LoginUser.Id]</DefaultValue></ParameterSchema></QueryParams></ListCommand><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>10</PageSize><PrimaryKeys><string>UserId</string></PrimaryKeys><InsertCommand><Id>e8094a03-8580-4613-9e67-53c8333c2a0e</Id><CommandText>INSERT INTO ma_my_setting (
+ [UserId],
+ [DefaultAddressId])
+ VALUES (
+@UserId,
+@DefaultAddressId)</CommandText><CommandType>Text</CommandType></InsertCommand><UpdateCommand><Id>547f70fb-011f-4d38-befb-17cb4d818f74</Id><CommandText>UPDATE ma_my_setting SET 
+ [UserId]=@UserId,
+ [DefaultAddressId]=@DefaultAddressId
+ WHERE 
+ [UserId]=@pk_UserId</CommandText><CommandType>Text</CommandType></UpdateCommand><DeleteCommand><Id>53859968-9915-47ef-957b-3593a8e40551</Id><CommandText>DELETE FROM ma_my_setting WHERE  [UserId]=@pk_UserId</CommandText><CommandType>Text</CommandType></DeleteCommand><SelectCommand><Id>72eaa550-7dbb-48b9-a0ee-fb8516faee0d</Id><CommandText>
+if Exists(Select DefaultAddressId From ma_my_setting where
+    UserId=@UserId) 
+Begin
+Select ma_user_address.*  
+  From ma_my_setting  Left Join   ma_user_address On
+      ma_my_setting.DefaultAddressId=ma_user_address.Id
+  Where ma_user_address.UserId=@UserId
+End Else Begin
+  Select Top 1 * From ma_user_address Where
+     UserId=@UserId
+End
+</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@UserId</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Guid</DataType><DefaultValue>[LoginUser.Id]</DefaultValue></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>UserId</Id><Title>用户Id</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Id</Id><Title>地址Id</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Country</Id><Title>国家</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Province</Id><Title>省</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>City</Id><Title>城市</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>District</Id><Title>区县</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Details</Id><Title>详细地址</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Tel</Id><Title>电话</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Zip</Id><Title>邮编</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int32</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Receiver</Id><Title>收件人</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>ma_my_setting</TableName><IsPagingByParams>false</IsPagingByParams></DataSourceSchema>

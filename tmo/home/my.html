@@ -1,0 +1,355 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>我的</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../html-plugin/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/hammer.min.js"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/jquery.hammer.js"></script>
+
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/wx.share.js?v1.1.1.63"></script>
+
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+
+
+    <script type="text/javascript">
+
+      
+
+        function wxshare() {
+            $(shareit).show();
+            $("#shareit .close-share").click(function () {
+                $(shareit).hide();
+            });
+        }
+
+        $('#head-carousel').hammer().on('swipeleft', function () {
+
+            $(this).carousel('next');
+
+        });
+
+        $('#head-carousel').hammer().on('swiperight', function () {
+
+            $(this).carousel('prev');
+
+        });
+
+    </script>
+    <script>
+        $(function () {
+            if ($.rCall("BrowserAgent.isWeiXin")) {
+                $(elSetAccount).show();
+
+                var oa = $.rCall("OAuth20Api");
+                if ((!oa.isAuth || !xBase.User.Name || xBase.User.Name == '游客') && (oa.scope == "snsapi_base")) {
+                    $.rCall("OAuth20Api.login", { scope: "snsapi_userinfo" });
+                }
+
+                if (oa.isAuth && oa.scope == "snsapi_userinfo" && (!xBase.User.Name || xBase.User.Name == '游客')) {
+                    var wxUser = oa.User;
+                    var userData = {
+                        pk_uni_id: xBase.User.Id,
+                        city: wxUser.city,
+                        country: wxUser.country,
+                        head_photo: wxUser.headimgurl,
+                        display_name: wxUser.nickname,
+                        province: wxUser.province,
+                        sex: wxUser.sex
+                    }
+                    debugger;
+                    $.rCall("user.update", { row: userData });
+                    $.rCall("Security.reload");
+                    document.location.reload();
+                }
+            }
+
+        })
+    </script>
+    <style>
+        a {
+            text-decoration: none;
+        }
+
+        .person-info .head-photo {
+            width: 80px;
+            height: 80px;
+        }
+
+        .media-body {
+            padding-top: 15px;
+        }
+
+        .media-right {
+            padding-top: 15px;
+        }
+
+        .list-group {
+            margin: 10px;
+            padding-top: 20px;
+        }
+
+        .list-group-item-icon {
+            max-width: 32px;
+            max-height: 32px;
+        }
+
+        h4 {
+            margin: 0px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+            h4 img {
+                width: 40px;
+                height: 40px;
+            }
+    </style>
+</head>
+<body>
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header" wbo="Site.row">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only" wbo-bind="Name">运势小赢+</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-bind="Name">运势小赢+</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser" class="wxshare-img">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+
+    <!--分享提示-->
+    <div id="shareit">
+        <style>
+            .share-text {
+                color: red;
+            }
+
+            #shareit .arrow {
+                height: 300px;
+            }
+        </style>
+        <div class="arrow">
+            <img src="images/share-it.png">
+        </div>
+        <div class="share-text">
+            <h3>点击菜单'...'分享给好友</h3>
+            <h3>领取红包</h3>
+            <h1 class="close-share"><a class="btn btn-lg btn-danger">知道了</a></h1>
+        </div>
+        <!--<img id="share-text" src="http://dev.vxtong.com/cases/nuannan/imgs/share-text.png">-->
+
+    </div>
+
+    <!--用户信息-->
+    <div class="container full">
+        <style>
+            .media-body {
+                padding-top: 10px;
+            }
+
+            .person-info {
+                padding-top: 30px;
+                padding-bottom: 30px;
+                margin-top: 0px;
+            }
+
+                .person-info .media-body a {
+                    margin-right: 10px;
+                }
+        </style>
+        <div class="media person-info section-panel bg-blue-1" wbo="LoginUser.call" name="user">
+            <div class="">
+                <div class="media-left " href="#">
+                    <img class="head-photo  img-circle" src="images/headphoto.jpg" wbo-bind="user.HeadPhoto" alt="头像">
+                </div>
+                <div class="media-body">
+                    <h3 class="media-heading white" wbo-bind="user.Name">游客</h3>
+                    <div class="white" wbo-bind="user.Sign">今天想说什么</div>
+                    <div><a id="btnLogout" class="btn btn-xs btn-danger">退出</a><a wbo="Security" wbo-attr="href:'LoginPageUrl'" class="btn btn-xs btn-danger">切换账号</a></div>
+                </div>
+
+                <a class="btn media-right white" link="my-info.html">
+                    <i class="fa fa-arrow-right white" style="vertical-align: central; font-size: 30px"></i>
+                </a>
+            </div>
+            <script>
+                $(btnLogout).click(function () {
+                    $.rCall("Security.Logout");
+                    location = "index.html";
+                });
+            </script>
+        </div>
+    </div>
+
+
+
+    <!--红包信息-->
+    <div class="container  section-panel">
+        <style>
+            .dash-item h3 {
+                text-align: center;
+            }
+
+            .dash-item i {
+                font-size: 25px;
+                line-height: 25px;
+            }
+
+            .h-btn {
+                width: 120px;
+                margin-right: auto;
+                margin-left: auto;
+            }
+        </style>
+        <div class="row">
+            <div class="col col-xs-6 dash-item">
+                <div class="h-btn">
+                    <div style="float: left; text-align: center">
+                        <i wbo-attr="class:'icon'" class="fa fa-envelope-open red" style="text-align: center"></i>
+                        <h3 class="red text-center">0.00</h3>
+                    </div>
+                    <div style="float: right">
+                        <a class="btn btn-primary btn-xs">未领红包<br />
+                            领取</a>
+                    </div>
+                </div>
+                <div class="dash-right-line"></div>
+            </div>
+            <div class="col col-xs-6  dash-item">
+                <div class="h-btn">
+                    <div style="float: left; text-align: center">
+                        <i wbo-attr="class:'icon'" class="fa fa-rmb red"></i>
+                        <h3 class="red">0.00</h3>
+                    </div>
+                    <div style="float: right">
+                        <a class="btn btn-primary btn-xs">已领红包<br />
+                            提现</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="container">
+        <div class="panel-shadow">
+            我的幸运值：<span style="color:red">5</span>分
+        </div>
+    </section>
+
+    <!--我的菜单-->
+    <section class="container" style="border-top: 1px solid #eee; background-color: #fff; margin-bottom: 5px">
+        <div class="row" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01.04'}" name="navList">
+            <style>
+                .section-centent {
+                    background-color: white;
+                }
+
+                .col-box {
+                    padding: 0px;
+                    border-bottom: 1px solid #e8e5e5;
+                    border-right: 1px solid #e8e5e5;
+                }
+
+                .col-box-right {
+                    position: absolute;
+                    border: 1px solid #808080;
+                    right: 0px;
+                    top: 0px;
+                    bottom: 0px;
+                    width: 1px;
+                }
+
+                .nav-btn-box {
+                    padding: 20px 0px 20px 0px;
+                    min-height: 60px;
+                    text-align: center;
+                    display: block;
+                }
+            </style>
+            <div wbo-bind="navList.item" class="col col-box col-xs-3">
+                <a class="nav-btn-box" wbo-attr="href:'link'" href="my-shop.html">
+                    <i wbo-attr="class:'icon'" class="fa fa-address-book-o" aria-hidden="true" style="font-size: 22px"></i>
+                    <br />
+                    <!--<img wbo-bind="navList.icon" class="list-group-item-icon" alt="wo" src="images/my/js.png" />-->
+                    <span wbo-bind="navList.text">我的果文</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+    <!--创建账号-->
+    <section class="container" id="elSetAccount" style="display: none">
+        <div class="panel-shadow clearfix" style="padding-top: 8px; padding-bottom: 8px" link="my-account.html">
+            登录账号<i class="fa fa-chevron-right pull-right"></i>
+        </div>
+    </section>
+
+
+    <!--手机底部导航-->
+    <div class="footer-fill  visible-xs visible-sm"></div>
+    <nav class="nav-bottom  visible-xs visible-sm" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbar">
+        <div class="col col-sm-3 col-xs-3" wbo-bind="navbar.item">
+            <a class=" img-btn" href="gw.html" wbo-attr="href:'link',nid:'id'" wbo-up="navbar" style="text-align: center">
+                <!--<img src="images/icon/js.png" wbo-bind="navbar.icon" />-->
+                <div style="font-size: 14px">
+                    <i style="font-size: 22px" wbo-attr="class:'icon'" class="fa fa-home icon-spin"></i>
+                </div>
+                <div class="img-btn-text" wbo-bind="navbar.text">首页</div>
+            </a>
+        </div>
+    </nav>
+
+</body>
+</html>

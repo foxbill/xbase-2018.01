@@ -4,7 +4,11 @@
   <AdministratorObjects>
     <string>/studio</string>
     <string>DataExplore</string>
+    <string>UserAccount</string>
+    <string>RoleManager</string>
+    <string>SecuritySettings</string>
   </AdministratorObjects>
-  <LoginPageUrl>/studio/login.html</LoginPageUrl>
+  <LoginPageUrl>/login/login.html</LoginPageUrl>
+  <NeedImageValid>true</NeedImageValid>
   <ConnectionName />
 </SecuritySettingSchema>

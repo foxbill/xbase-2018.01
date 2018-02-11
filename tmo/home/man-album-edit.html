@@ -1,0 +1,419 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>专辑编辑</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../html-plugin/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../html-plugin/cropper/cropper.css">
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+    <!--    <script type="text/javascript" src="../html-plugin/hammer/hammer.min.js"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/jquery.hammer.js"></script>-->
+    <script src="../html-plugin/cropper/cropper.js"></script>
+    <script src="../html-plugin/cropper/cropper-modal.js?v1.1.1.63"></script>
+
+
+
+    <script type="text/javascript" src="../xbase.js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            new CropperDialog(modalCropper, [{ img: imgPic, fld: txtPic, x: 400, y: 400 }]);
+        });
+
+    </script>
+
+    <style>
+        .media {
+            margin-top: 0px;
+            position: relative;
+        }
+
+        .media-heading {
+            color: black;
+        }
+
+        .media-bottom {
+            position: absolute;
+            font-size: 16px;
+            bottom: 0px;
+            right: 0px;
+        }
+
+        .glyphicon {
+            color: red;
+        }
+
+        .top-nav-bar {
+            height: 35px;
+            overflow-x: hidden;
+        }
+
+        .top-nav-bar-slider {
+            width: 2000px;
+        }
+
+            .top-nav-bar-slider div {
+                float: left;
+                margin: 10px;
+            }
+
+                .top-nav-bar-slider div h4 {
+                    padding-top: 0px;
+                    padding-bottom: 0px;
+                    margin-top: 0px;
+                    margin-bottom: 0px;
+                }
+
+        input.cc-input {
+            box-shadow: none;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            -webkit-transition: none;
+            -o-transition: none;
+            transition: none;
+            -webkit-appearance: none;
+            border-bottom-right-radius: 0px;
+            border-top-right-radius: 0px;
+            border-bottom-left-radius: 4px;
+            border-top-left-radius: 4px;
+            -webkit-border-bottom-left-radius: 4px;
+            -webkit-border-top-left-radius: 4px;
+            -moz-border-radius-bottomleft: 4px;
+            -moz-border-radius-topleft: 4px;
+            font-size: 14px;
+            width: 100%;
+            display: table-cell;
+            border: 1px solid #DBDBDB;
+            padding: 6px 0px 6px 10px;
+        }
+    </style>
+
+    <!--文章管理-->
+    <script>
+        function saveAlbum(fn) {
+            $(frmAlbum).postForm(function (ret) {
+                if (ret.Err) {
+                    alert(ret.Err.Text);
+                    return false;
+                }
+                $("[wbo='SnAlbum.row']").jsonForm(ret.Form);
+                if (fn)
+                    fn(ret);
+                else {
+                    $("#dlgMsg .modal-body p").html("保存成功");
+                    $(dlgMsg).modal("show");
+                }
+
+            });
+        }
+
+        function newAlbumBlog() {
+            saveAlbum(function (ret) {
+                var album = ret.Form.Name;
+                $.cookie("goback", "man-album-edit.html?Name=" + album, { path: "/" });
+                location = "write.html?" + $.param({ Album: album });
+            });
+        }
+
+    </script>
+
+</head>
+<body class="bg-color-page">
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header" wbo="Site.row">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only" wbo-bind="Name">运势小赢+</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-bind="Name">运势小赢+</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+
+    <!--分享提示-->
+    <div id="shareit">
+        <style>
+            .share-text {
+                color: red;
+            }
+
+            #shareit .arrow {
+                height: 300px;
+            }
+        </style>
+        <div class="arrow">
+            <img src="images/share-it.png">
+        </div>
+        <div class="share-text">
+            <h3>点击菜单'...'分享给好友</h3>
+            <h3>领取红包</h3>
+            <h1 class="close-share"><a class="btn btn-lg btn-danger">知道了</a></h1>
+        </div>
+        <!--<img id="share-text" src="http://dev.vxtong.com/cases/nuannan/imgs/share-text.png">-->
+
+    </div>
+
+
+    <!--专辑信息-->
+    <section class="container  panel-shadow" wbo="SnAlbum.row" wbo-query="Name:$.paramVal('Name')" name="Album">
+        <section class="container-s">
+            <style>
+                .album-info-img {
+                    text-align: center;
+                    float: left;
+                    width: 25%;
+                }
+
+                    .album-info-img img {
+                        max-width: 100px;
+                        border: 5px solid #808080;
+                    }
+
+                .album-info-body {
+                    float: left;
+                    width: 75%;
+                    text-align: center;
+                }
+
+                    .album-info-body .form-group {
+                        margin-bottom: 5px;
+                    }
+
+                    .album-info-body input {
+                        font-size: 12px;
+                        padding: 2px;
+                        line-height: 14px;
+                        height: 20px;
+                        border-top: none;
+                        border-left: none;
+                        border-right: none;
+                        border-bottom: 1px solid #aaa;
+                        width: 80%;
+                    }
+
+                .album-info-summary {
+                    padding: 0px 30px;
+                }
+
+                    .album-info-summary textarea {
+                        border-top: none;
+                        border-left: none;
+                        border-right: none;
+                        border-bottom: 1px solid #aaa;
+                    }
+            </style>
+            <form role="form" id="frmAlbum" action="SnAlbum.form">
+                <div class="row">
+                    <div class="album-info-img">
+                        <img wbo-bind="Album.Picture" id="imgPic" src="images/qh/ccgirl.jpg">
+                    </div>
+                    <div class="album-info-body">
+                        <input name="pk_Name" type="hidden" wbo-bind="Album.pk_Name" />
+                        <input name="Picture" id="txtPic" type="hidden" wbo-bind="Album.Picture" />
+                        <div class="form-group">
+                            <input name="Name" wbo-bind="Album.Name" placeholder="名称" />
+                        </div>
+                        <div class="form-group">
+                            <input name="Author" wbo-bind="Album.Author" placeholder="作者" />
+                        </div>
+                        <div class="form-group">
+                            <input name="AnnualFee" wbo-bind="Album.AnnualFee" placeholder="年费(元)" />
+                        </div>
+                        <div class="form-group">
+                            <input name="MonthlyFee" wbo-bind="Album.MonthlyFee" placeholder="月费(元)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="album-info-summary">
+                    <textarea name="Summary" wbo-bind="Album.Summary" placeholder="简介" style="width: 100%"></textarea>
+                </div>
+            </form>
+        </section>
+    </section>
+
+    <!--专辑文章-->
+    <section class="container   panel-shadow">
+        <style>
+            .home-panel {
+                clear: both;
+                overflow: hidden;
+            }
+
+                .home-panel:after {
+                    content: "";
+                    clear: both;
+                }
+
+            .art-info {
+                position: absolute;
+                bottom: 3px;
+                right: 3px;
+                padding: 3px;
+            }
+
+            .art-title {
+                margin-top: 0px;
+                margin-bottom: 0px;
+            }
+
+            .art-author {
+                margin-top: 0px;
+                margin-bottom: 0px;
+            }
+
+            .art-summmary {
+                height: 36px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                margin-top: 0px;
+                margin-bottom: 0px;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 3;
+            }
+        </style>
+        <div class="section-title">
+            <h3>
+                <img src="images/sy-tj.jpg" style="width: 20px; height: 20px; vertical-align: middle" />
+                专辑文章
+
+            </h3>
+        </div>
+        <div class="row" wbo="SnAlbumBlog.rows" wbo-query="Album:$.paramVal('Name')" wbo-ctrl="jsonList" name="Blog">
+            <div class="col col-xs-12 col-sm-12 col-md-6 col-lg-6 full" wbo-bind="Blog.item">
+                <div class="media  list-item-lg">
+                    <a wbo-attr="href:'Blog.link'" class="media-left" style="float: left; max-width: 45%">
+                        <img wbo-bind="Blog.Picture" class="img-responsive" src="images/qh/2.jpg" style="">
+                    </a>
+                    <div class="media-body">
+                        <h3 class="art-title"><a wbo-attr="href:'Blog.link'" wbo-bind="Blog.Title">到丽江去自驾游</a></h3>
+                        <p class="art-author"><span wbo-bind="Blog.Author">沧源法师</span></p>
+                        <p class="art-summmary" wbo-bind="Blog.Summary">感觉玉龙雪山的神奇</p>
+                        <div class="art-info"><span style="color: red"><i class="fa fa-heart"></i><span wbo-bind="Blog.LikeCount">123</span></span><span style="color: green"><i class="fa fa-comment"></i><span wbo-bind="Blog.CommentsCount"> 343</span></span><a class="btn btn-sm btn-warning" style="margin-left: 10px" wbo-attr="href:'Blog.link'">查看</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--图像裁剪-->
+    <div class="modal" id="modalCropper" aria-labelledby="modalLabel" role="dialog" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modalLabel">剪辑图像</h4>
+                </div>
+                <div class="modal-body">
+                    <div style="background-color: azure; max-height: 350px; overflow: hidden">
+                        <img id="croImage" src="" alt="Picture" style="left: 0px; top: 0px; width: 100%" />
+                        <input type="file" id="cropFile" style="display: none" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="btnOk">确定</button>
+                    <button type="button" class="btn btn-default" id="btnCancel">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+     <!--信息提示-->
+    <div id="dlgMsg" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">提示</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        保存成功/p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+    <!--公共浮动工具-->
+    <div class="float-bottom-tool">
+        <a class="btn" onclick="newAlbumBlog()">
+            <img class="img-circle" src="images/write.png" alt="发表" />
+        </a>
+        <a class="btn" onclick="saveAlbum()">
+            <img class="img-circle" src="images/save.jpg" alt="保存" />
+        </a>
+    </div>
+
+
+
+    <!--手机底部导航-->
+    <div class="footer-fill  visible-xs visible-sm"></div>
+    <nav class="nav-bottom  visible-xs visible-sm" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbar">
+        <div class="col col-sm-3 col-xs-3" wbo-bind="navbar.item">
+            <a class=" img-btn" href="gw.html" wbo-attr="href:'link'" wbo-up="navbar" style="text-align: center">
+                <!--<img src="images/icon/js.png" wbo-bind="navbar.icon" />-->
+                <div style="font-size: 14px">
+                    <i style="font-size: 22px" wbo-attr="class:'icon'" class="fa fa-home icon-spin"></i>
+                </div>
+                <div class="img-btn-text" wbo-bind="navbar.text">首页</div>
+            </a>
+        </div>
+    </nav>
+
+</body>
+</html>

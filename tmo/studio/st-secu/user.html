@@ -100,9 +100,9 @@
 
         function setUser(user) {
             curUser = user;
-            oldUserId = user.Id;
+            oldUserId = user.uni_id;
             gUserFrom = $(frmUeser).jsonForm(user);
-            var userRoles = $.rCall("UserAccount.getUserRoles", { userId: oldUserId });
+            var userRoles = $.rCall("UserAccount.getUserRoles", { uni_id: user.uni_id });
             $(lstRoles).datagrid({ data: userRoles });
         }
 

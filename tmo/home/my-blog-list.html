@@ -1,0 +1,358 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>我的微博</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../html-plugin/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/hammer.min.js"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/jquery.hammer.js"></script>
+
+
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+    <style>
+        .media {
+            margin-top: 0px;
+            position: relative;
+        }
+
+        .media-heading {
+            color: black;
+        }
+
+        .media-bottom {
+            position: absolute;
+            font-size: 16px;
+            bottom: 0px;
+            right: 0px;
+        }
+
+        .glyphicon {
+            color: red;
+        }
+
+        .top-nav-bar {
+            height: 35px;
+            overflow-x: hidden;
+        }
+
+        .top-nav-bar-slider {
+            width: 2000px;
+        }
+
+            .top-nav-bar-slider div {
+                float: left;
+                margin: 10px;
+            }
+
+                .top-nav-bar-slider div h4 {
+                    padding-top: 0px;
+                    padding-bottom: 0px;
+                    margin-top: 0px;
+                    margin-bottom: 0px;
+                }
+
+        input.cc-input {
+            box-shadow: none;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            -webkit-transition: none;
+            -o-transition: none;
+            transition: none;
+            -webkit-appearance: none;
+            border-bottom-right-radius: 0px;
+            border-top-right-radius: 0px;
+            border-bottom-left-radius: 4px;
+            border-top-left-radius: 4px;
+            -webkit-border-bottom-left-radius: 4px;
+            -webkit-border-top-left-radius: 4px;
+            -moz-border-radius-bottomleft: 4px;
+            -moz-border-radius-topleft: 4px;
+            font-size: 14px;
+            width: 100%;
+            display: table-cell;
+            border: 1px solid #DBDBDB;
+            padding: 6px 0px 6px 10px;
+        }
+    </style>
+
+    <script type="text/javascript">
+
+        //设置激活按钮状态
+        $(function () {
+            var color = "#7f9f5c";
+            var $btn = $("#" + $.paramVal("nId"));
+            $btn.find("i").css("color", color);
+            $btn.find("div").css("color", color);
+        });
+
+
+
+        $(function () {
+            $(btnShare).click(function () {
+                wxshare();
+            })
+            $(imgWxfx).attr("src",
+              "http://qr.liantu.com/api.php?text="
+              + location.href
+              + "?from=2dcode"
+              + "&w=160&m=5"
+            );
+        })
+        function wxshare() {
+            $(shareit).show();
+            $("#shareit .close-share").click(function () {
+                $(shareit).hide();
+            });
+        }
+
+
+
+    </script>
+</head>
+<body class="bg-color-page">
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header" wbo="Site.row">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only" wbo-bind="Name">运势小赢+</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-bind="Name">运势小赢+</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+
+    <!--分享提示-->
+    <div id="shareit">
+        <style>
+            .share-text {
+                color: red;
+            }
+
+            #shareit .arrow {
+                height: 300px;
+            }
+        </style>
+        <div class="arrow">
+            <img src="images/share-it.png">
+        </div>
+        <div class="share-text">
+            <h3>点击菜单'...'分享给好友</h3>
+            <h3>领取红包</h3>
+            <h1 class="close-share"><a class="btn btn-lg btn-danger">知道了</a></h1>
+        </div>
+        <!--<img id="share-text" src="http://dev.vxtong.com/cases/nuannan/imgs/share-text.png">-->
+
+    </div>
+
+    <!--筛选查询-->
+    <div class="container section-panel">
+        <div class="top-nav-bar" style="display: none">
+            <div class="top-nav-bar-slider" wbo="BlogType.rows" wbo-ctrl="jsonList" name="artType">
+                <div>
+                    <h4>全部</h4>
+                </div>
+                <div wbo-bind="artType.item" wbo-attr="{typeId:'Id'}">
+                    <h4 wbo-bind="artType.Type">全部</h4>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(function () {
+                var $bar = $('.top-nav-bar');
+                var mc = new Hammer.Manager($bar[0]);
+                mc.add(new Hammer.Pan({ threshold: 0, pointers: 0 }));
+
+                var left = 0;
+                mc.on("panstart", function onPan(ev) {
+                    //   $bar.scrollLeft(ev.deltaX);
+                    left = $bar.scrollLeft();
+                });
+                mc.on("pan", function onPan(ev) {
+                    $bar.scrollLeft(left - ev.deltaX);
+                });
+            });
+        </script>
+        <!--工具条-->
+        <div class="toolbar bg-color-block">
+            <div class="input-group">
+                <input type="text" class="cc-input">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                </span>
+            </div>
+            <!-- /input-group -->
+        </div>
+        <!--分类筛选-->
+        <div class="page-header box" style="display: none">
+            <div class="row">
+                <div class="col-xs-4 col-md-2 text-center">
+                    <a href="#" class="">
+                        <img src="images/tea.png" style="height: 64px; width: 64px;">
+                        <h4>歌舞</h4>
+                    </a>
+
+                </div>
+                <div class="col-xs-4 col-md-2 text-center">
+                    <a href="#" class="">
+                        <img src="images/tea.png" style="height: 64px; width: 64px;">
+                        <h4>茶艺</h4>
+                    </a>
+
+                </div>
+                <div class="col-xs-4 col-md-2 text-center">
+                    <a href="#" class="">
+                        <img src="images/tea.png" style="height: 64px; width: 64px;">
+                        <h4>陶艺</h4>
+                    </a>
+
+                </div>
+                <div class="col-xs-4 col-md-2 text-center">
+                    <a href="#" class="">
+                        <img src="images/tea.png" style="height: 64px; width: 64px;">
+                        <h4>服装</h4>
+                    </a>
+
+                </div>
+                <div class="col-xs-4 col-md-2 text-center">
+                    <a href="#" class="">
+                        <img src="images/tea.png" style="height: 64px; width: 64px;">
+                        <h4>手工</h4>
+                    </a>
+
+                </div>
+                <div class="col-xs-4 col-md-2 text-center">
+                    <a href="#" class="">
+                        <img src="images/tea.png" style="height: 64px; width: 64px;">
+                        <h4>旅游</h4>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <ul class="media-list row" wbo="SnMyBlog.rows" id="elSnBlogList" wbo-ctrl="jsonList" name="artList">
+            <style>
+                .media-content {
+                    overflow: hidden;
+                    position: relative;
+                }
+
+                .media-toolbar {
+                    margin-top: 5px;
+                    border-top: 1px solid #DBDBDB;
+                    padding: 5px;
+                }
+            </style>
+            <li class="media col-xs-12 col-sm-12 col-md-12 col-lg-12  bg-color-block list-item-lg full" wbo-bind="artList.item">
+                <div class="media-content">
+                    <a wbo-attr="href:'link'" class="media-left" style="float: left; max-width: 45%">
+                        <img class="img-responsive" src="images/qh/2.jpg" style="" wbo-bind="artList.Picture" />
+                    </a>
+                    <a wbo-attr="href:'link'" class="media-body" style="max-width: 55%">
+                        <h4 class="media-heading" wbo-bind="artList.Title">回到瑜伽发源地</h4>
+                        <div wbo-bind="artList.Author">母其弥雅</div>
+                        <div wbo-bind="artList.Summary">印度是一个美丽的国度，瑜伽是普遍的运动</div>
+                    </a>
+                    <div class="media-bottom">
+                        <span style="margin-right: 20px; color: red" wbo-bind="artList.bag"><i class="icon-envelope-alt"></i></span><span class="glyphicon glyphicon-thumbs-up"></span><span wbo-bind="artList.likeCount">123</span> 阅读<span wbo-bind="artList.readCount"></span>
+                    </div>
+                </div>
+                <div class="media-toolbar">
+                    <a class="btn btn-sm btn-danger" wbo-attr="artId:'Id'" command="DelArt">删除</a>
+                    <a class="btn btn-sm btn-info" wbo-attr="href:'artList.Edit'">编辑</a>
+                    <a class="btn btn-sm btn-info">请人分享</a>
+                </div>
+            </li>
+            <script>
+                $(function () {
+                    $("[command='DelArt']").click(function () {
+                        var Id = $(this).attr("artId");
+                        var ret = $.rCall("SnBlog.delete", { row: { pk_Id: Id } });
+                        if (!ret || !ret.Err) {
+                            $(elSnBlogList).jsonList().reload();
+                        }
+                    })
+                })
+            </script>
+        </ul>
+
+    </div>
+
+
+    <!--公共浮动工具-->
+    <div class="float-bottom-tool">
+        <a class="btn" href="write.html">
+            <img class="img-circle" src="images/write.png" alt="发表" />
+        </a>
+        <a class="btn" id="btnShare">
+            <img class="img-circle" src="images/share.png" alt="分享" />
+        </a>
+    </div>
+
+    <!--手机底部导航-->
+    <div class="footer-fill  visible-xs visible-sm"></div>
+    <nav class="nav-bottom  visible-xs visible-sm" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbar">
+        <div class="col col-sm-3 col-xs-3" wbo-bind="navbar.item">
+            <a class=" img-btn" href="gw.html" wbo-attr="href:'link'" wbo-up="navbar" style="text-align: center">
+                <!--<img src="images/icon/js.png" wbo-bind="navbar.icon" />-->
+                <div style="font-size: 14px">
+                    <i style="font-size: 22px" wbo-attr="class:'icon'" class="fa fa-home icon-spin"></i>
+                </div>
+                <div class="img-btn-text" wbo-bind="navbar.text">首页</div>
+            </a>
+        </div>
+    </nav>
+
+</body>
+</html>

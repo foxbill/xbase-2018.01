@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>MaMainStore</Id><ListCommand><Id>070dd347-e545-4929-bad0-6f4938b06fe1</Id><CommandText>Select
+    a.* 
+From   
+    ma_store a inner join 
+       xsys_user_account b
+    on a.UserId=b.uni_id
+Where b.user_id='admin'</CommandText><CommandType>Text</CommandType></ListCommand><SubTables><SubTableSchema><Name>MaStoreGoods</Name><Fks><FkSchema><Fk>StoreId</Fk><Pk>Id</Pk></FkSchema></Fks></SubTableSchema></SubTables><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>10</PageSize><PrimaryKeys><string>Id</string></PrimaryKeys><InsertCommand><Id>12f85f21-b392-4989-bac9-34b8b9db06ce</Id><CommandText>set @Id=newId();
+
+select @UserId=uni_id from xsys_user_account where user_id='admin';
+
+set @CreateTime=getDate();
+
+INSERT INTO ma_store (
+ [Id],
+ [Name],
+ [UserId],
+ [Picture],
+ [CreateTime],
+ [Background],
+ [Logo],
+ [Summary])
+ VALUES (
+@Id,
+@Name,
+@UserId,
+@Picture,
+@CreateTime,
+@Background,
+@Logo,
+@Summary)</CommandText><CommandType>Text</CommandType></InsertCommand><UpdateCommand><Id>492e8728-11f5-46f6-909e-1efa0866b83d</Id><CommandText>UPDATE ma_store SET 
+ [Name]=@Name,
+ [Picture]=@Picture,
+ [CreateTime]=@CreateTime,
+ [Background]=@Background,
+ [Logo]=@Logo,
+ [Summary]=@Summary
+ WHERE 
+ [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></UpdateCommand><DeleteCommand><Id>93ee5099-fbc8-430f-bf1d-80404e39f79b</Id><CommandText>DELETE FROM ma_store WHERE  [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></DeleteCommand><SelectCommand><Id>02dbaced-21d3-492e-810b-70e12f9e2786</Id><CommandText>
+Select
+     top 1 a.* 
+From   
+    ma_store a inner join 
+       xsys_user_account b
+    on a.UserId=b.uni_id
+Where b.user_id='admin'</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@Id</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Guid</DataType><DefaultValue /></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>Id</Id><Title>Id</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Name</Id><Title>Name</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>UserId</Id><Title>UserId</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Picture</Id><Title>Picture</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>CreateTime</Id><Title>CreateTime</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>DateTime</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Background</Id><Title>Background</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Logo</Id><Title>Logo</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Summary</Id><Title>Summary</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>ma_store</TableName><IsPagingByParams>false</IsPagingByParams></DataSourceSchema>

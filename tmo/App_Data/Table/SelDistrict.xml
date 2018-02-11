@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>SelDistrict</Id><ListCommand><CommandText>Select d_id as value, d_name as text  From district Where d_cityId=@CityId</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@CityId</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Int32</DataType><DefaultValue>0</DefaultValue></ParameterSchema></QueryParams></ListCommand><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>10</PageSize><References /><LookupFields /><PrimaryKeys><string>d_id</string></PrimaryKeys><InsertCommand><CommandText>INSERT INTO district (
+ [d_id],
+ [d_name],
+ [d_cityId],
+ [IsUse])
+ VALUES (
+@d_id,
+@d_name,
+@d_cityId,
+@IsUse)</CommandText><CommandType>Text</CommandType></InsertCommand><UpdateCommand><CommandText>UPDATE district SET 
+ [d_id]=@d_id,
+ [d_name]=@d_name,
+ [d_cityId]=@d_cityId,
+ [IsUse]=@IsUse
+ WHERE 
+ [d_id]=@pk_d_id</CommandText><CommandType>Text</CommandType></UpdateCommand><DeleteCommand><CommandText>DELETE FROM district WHERE  [d_id]=@pk_d_id</CommandText><CommandType>Text</CommandType></DeleteCommand><SelectCommand><CommandText>Select d_id as value, d_name as text  From district Where d_id=@d_id</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@d_id</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Int32</DataType><DefaultValue /></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>value</Id><Title>区县Id</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int32</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>text</Id><Title>区县</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>district</TableName><IsPagingByParams>false</IsPagingByParams></DataSourceSchema>

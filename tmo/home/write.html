@@ -1,0 +1,1169 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>文案编辑</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+    <link rel="stylesheet" href="../html-plugin/cropper/cropper.css">
+    <link rel="stylesheet" href="css/geditor.css?v1.1.1.63">
+    <link href="../html-plugin/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../html-plugin/cropper/cropper.js"></script>
+    <script src="../html-plugin/iscroll/iscroll.js"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+
+    <!--    <script src="../ueditor/ueditor.config.js?v1.0.0.2"></script>
+    <script src="../ueditor/ueditor.all.min.js"></script>
+    <script src="../ueditor/lang/zh-cn/zh-cn.js"></script>-->
+    <script type="text/javascript" src="../xbase.js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+    <script src="../xbase.js/wx.js?v1.1.1.63"></script>
+    <script>
+        //$(function () {
+        initWxApi(["chooseImage"]);
+        //});
+    </script>
+
+
+
+
+    <script type="text/javascript">
+        $(function () {
+            var album = $.paramVal("Album");
+            if (album) {
+                $album = $("[wbo-bind='art.Album']");
+                $album.html(album);
+                $album.show();
+            }
+            var id = $.paramVal("Id");
+            if (id)
+                $(txtArtId).val(id);
+            var title = $.paramVal("Title");
+            if (title)
+                $(pTitle).html(title);
+        });
+    </script>
+</head>
+<body>
+
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">车友会</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-attr="href:'url'" wbo-bind="navLogo.name">cy168.cc</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+
+    <!--文章编辑-->
+    <div class="container">
+        <div>
+            <form role="form" id="artForm" wbo="SnBlog.row" wbo-query="Id:$.paramVal('Id')" name="art">
+
+                <div class="art-cover">
+                    <input type="hidden" name="pk_Id" wbo-bind="art.pk_Id">
+                    <input type="hidden" name="Id" wbo-bind="art.Id" id="txtArtId">
+                    <div class="art-cover-body">
+                        <p class="art-title" wbo-bind="art.Title" id="pTitle">文章标题,点击编辑</p>
+                        <div class="art-album" wbo-bind="art.Album" style="display: none"></div>
+                        <p class="art-summary" wbo-bind="art.Summary">文章摘要：生活不止眼前的苟且还有诗和远方的田野,请点击编写摘要</p>
+                    </div>
+                    <div class="art-media">
+                        <a><i data-cmd="showImgList" data-cmd-params="{img:'#artCoverImage'}" class="fa fa-camera"></i></a>
+                        <a><i class="fa fa-music"></i></a>
+                    </div>
+                    <div class="art-author"><span wbo-bind="art.Author">严雪</span><span wbo-bind="art.Type">车友</span></div>
+                    <img id="artCoverImage" src="images/top-bg-2.jpg" wbo-bind="art.Picture" class="img-rounded img-responsive" />
+                </div>
+                <!--<input type="hidden" name="Picture" id="txtCoverPicture" wbo-bind="art.Picture">-->
+                <article>
+                    <div id="editor" name="Body" style="overflow-x: hidden;" wbo-bind="art.Body"></div>
+                </article>
+                <div style="margin: 0px; text-align: center; margin-bottom: 100px">
+                    <div class="sec-btn" id="divAppendSec" data-cmd="showBlogTemp" data-cmd-params="{isBefore:false,artType:2}">+</div>
+                </div>
+            </form>
+        </div>
+        <!--<form id="upLoadForm" action="form_action.asp" method="post" enctype="multipart/form-data">-->
+        <!--</form>-->
+    </div>
+
+
+    <!--编辑工具-->
+    <section id="secGlEditorTools">
+        <!--语音上传-->
+        <div style="display: none">
+            <input name="upfile" id="artImage" type="file" style="display: none" />
+            <input type="file" id="fileVoice" style="display: none" />
+        </div>
+
+        <!--文案工具-->
+        <aside class="art-edit-tools">
+            <div class="art-edit-tools-btn" data-cmd="showPasteDocDlg">
+                <p>粘贴文案</p>
+            </div>
+            <div class="art-edit-tools-btn" data-cmd="showBlogTemp" data-cmd-params="{isBefore:false,artType:1}">
+                <p>使用模板</p>
+            </div>
+            <div class="art-edit-tools-btn" data-cmd="saveDocToTemplate">
+                <p>存到模板</p>
+            </div>
+            <div class="art-edit-tools-btn" data-cmd="saveDoc">
+                <p>保存</p>
+            </div>
+            <div class="art-edit-tools-btn" data-cmd="saveDoc" data-cmd-params="{isPerview:true}">
+                <p>发布</p>
+            </div>
+        </aside>
+
+        <!--右侧边条-->
+        <aside class="aside-bar">
+            <div class="aside-img-box">
+                <div class="aside-img-tools">
+                    &nbsp;
+                    <div class="aside-img-tools-btns">
+                        <a data-cmd="hideImgList"><i class="fa fa-close"></i></a>
+                        <a data-cmd="takePhoto"><i class="fa fa-camera"></i></a>
+                    </div>
+                </div>
+                <div class="aside-img-list-box" data-scroll="{scrollbars: true,mouseWheel:true}">
+                    <div class="aside-img-list" wbo="NetDisk.getMyPictures" wbo-params="{path:'upload',page:1,count:20}" wbo-ctrl="jsonList" name="PicList" id="elPicList"
+                        data-slid-load="{scrollBox:'.aside-img-list-box',scroll:'.aside-img-list'}" style="display: none">
+                        <div class="aside-img-list-item" wbo-bind="PicList.item">
+                            <img wbo-bind="PicList.Url" class="img-responsive" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!--板块工具-->
+        <div class="sec-tools sec-tools-before">
+            <div class="sec-btn sec-before" data-cmd="showBlogTemp" data-cmd-params="{isBefore:true,artType:2}">+</div>
+            <div>
+                <!--<div class="pull-left"></div>-->
+                <button class="btn btn-sm btn-danger" data-cmd='saveSecToTemplate' onclick="return false;">收藏式样</button>
+                <button type="button" class="close" data-cmd='removeSec'><i aria-hidden="true">×</i></button>
+            </div>
+        </div>
+        <div class="sec-tools sec-tools-after">
+            <div class="btn-toolbar" role="toolbar">
+                <div class="btn-group btn-group-sm">
+                    <!--<div class="pull-left"></div>-->
+                    <!--<button class="btn btn-sm btn-danger" data-cmd='enableEdit' onclick="return false;"><i class="fa fa-pencil"></i></button>-->
+                    <button class="btn btn-sm btn-danger" data-cmd='firstDedent' onclick="return false;"><i class="fa fa-dedent"></i></button>
+                </div>
+                <div class="btn-group btn-group-sm">
+                    <!--<div class="pull-left"></div>-->
+                    <button class="btn btn-sm btn-danger" data-cmd='addFontSize' onclick="return false;"><i class="fa fa-plus-square-o"></i></button>
+                    <button class="btn btn-sm btn-danger" data-cmd='decFontSize' onclick="return false;"><i class="fa fa-minus-square-o"></i></button>
+
+                </div>
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-sm btn-danger" data-cmd='alignLeft' onclick="return false;"><i class="fa fa-align-left"></i></button>
+                    <button class="btn btn-sm btn-danger" data-cmd='alignCenter' onclick="return false;"><i class="fa fa-align-center"></i></button>
+                    <button class="btn btn-sm btn-danger" data-cmd='alignJustify' onclick="return false;"><i class="fa fa-align-justify"></i></button>
+                    <button class="btn btn-sm btn-danger" data-cmd='alignRight' onclick="return false;"><i class="fa fa-align-right"></i></button>
+                </div>
+            </div>
+            <div class="sec-btn sec-after" data-cmd="showBlogTemp" data-cmd-params="{isBefore:false,artType:2}">+</div>
+        </div>
+
+
+        <!--图片工具-->
+        <div class="img-tools">
+            <span class="btn btn-sm btn-danger" data-cmd="showImgList">选图</span>
+        </div>
+
+        <!--模板选择对话框-->
+        <div class="modal fade" tabindex="-1" role="dialog" id="dlgBlogTemp" data-art-type="">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <!--                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">图文模板</h4>
+                    </div>-->
+                    <div class="modal-body" style="padding: 5px">
+                        <!--                        <ul class="nav nav-tabs">
+                            <li role="presentation" class="active"><a href="#">标题</a></li>
+                            <li role="presentation"><a href="#">语音</a></li>
+                            <li role="presentation"><a href="#">视频</a></li>
+                        </ul>
+                        <div style="padding: 5px">
+                            <input type="text" />
+                        </div>-->
+                        <div class="blog-temp-list" id="blogTempListSB">
+                            <div id="blogTempListS" wbo="SnBlogTemp.rows" wbo-ctrl="jsonList" wbo-params="{page:1,rows:10}" name="SnBlogTemp" data-slid-load="{dir:'y',scrollBox:'#blogTempListSB',scroll:'#blogTempListS'}">
+                                <div wbo-bind="SnBlogTemp.item" class="blog-temp-list-item">
+                                    <div wbo-bind="SnBlogTemp.Title"></div>
+                                    <div wbo-bind="SnBlogTemp.Content"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="pull-left">
+                            <button type="button" class="btn btn-default" data-cmd="insertVoice" data-cmd-params="{isBefore:true}"><i class="fa  fa-camera" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-default" data-cmd="showPasteVideoDlg"><i class="fa fa-film"></i></button>
+                            <!--语音录入-->
+                            <!--                            <button type="button" class="btn btn-default">
+                                <i class="fa fa-microphone" aria-hidden="true"></i>
+                            </button>-->
+                        </div>
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+
+        <!--保存式样对话框-->
+        <div class="modal fade" tabindex="-1" role="dialog" id="dlgSaveSecTemp">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">保存到式样库</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>式样名称</label>
+                            <input type="text" class="form-control" id="inpTempTitle" />
+                        </div>
+                        <div class="form-group">
+                            <label>标签</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" data-cmd="templateDlgOk">保存</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+
+
+        <!-- 图像剪辑 -->
+        <div class="modal" id="modalCropper" aria-labelledby="modalLabel" role="dialog" tabindex="-1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabel">剪辑图像</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div style="background-color: azure; max-height: 400px; overflow: hidden">
+                            <img id="croImage" src="" alt="Picture" style="left: 0px; top: 0px; width: 100%" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="text-left pull-left" style="margin-bottom: 10px; max-width: 210px">
+                            <div class="btn-group btn-group-sm" style="margin-bottom: 5px">
+                                <button type="button" class="btn btn-default btn-sm" data-cmd="setAspectRatio" data-cmd-params="[1/1]">1:1</button>
+                                <button type="button" class="btn btn-default  btn-sm" data-cmd="setAspectRatio" data-cmd-params="[16/9]">16:9</button>
+                                <button type="button" class="btn btn-default  btn-sm" data-cmd="setAspectRatio" data-cmd-params="[9/16]">9:16</button>
+                                <button type="button" class="btn btn-default  btn-sm" data-cmd="setAspectRatio" data-cmd-params="[4/3]">4:3</button>
+                                <button type="button" class="btn btn-default  btn-sm" data-cmd="setAspectRatio" data-cmd-params="[3/4]">3:4</button>
+                            </div>
+                            <div class="btn-group btn-group-sm">
+                                <button type="button" class="btn btn-default  btn-sm" data-cmd="rotate" data-cmd-params="[90]"><i class="fa fa-repeat"></i></button>
+                                <button type="button" class="btn btn-default  btn-sm" data-cmd="rotate" data-cmd-params="[-90]"><i class="fa fa-rotate-left"></i></button>
+                            </div>
+                            <div class="btn-group btn-group-sm">
+                                <button type="button" class="btn btn-default  btn-sm" data-cmd="scaleX" data-cmd-params="[-1]"><i class="fa fa-arrows-h"></i></button>
+                                <button type="button" class="btn btn-default  btn-sm" data-cmd="scaleY" data-cmd-params="[-1]"><i class="fa fa-arrows-v"></i></button>
+                            </div>
+                        </div>
+                        <div class="pull-right" style="bottom: 15px">
+                            <button type="button" class="btn btn-default" data-cmd="uploadCropper">确定</button>
+                            <button type="button" class="btn btn-default" data-cmd="closeModalCropper">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 粘贴文案 -->
+        <div class="modal" id="dlgPasteDoc" aria-labelledby="modalLabel" role="dialog" tabindex="-1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="H1">粘贴文案</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div>请点击下面的方框，将复制好的文案粘贴进去</div>
+                        <div id="divPasteDoc" contenteditable="true" style="height: 400px; overflow-y: auto; border: 1px solid blue">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-cmd="pasteDocOk">确定</button>
+                        <button type="button" class="btn btn-default" onclick="$('#dlgPasteDoc').modal('hide')">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 粘贴视频 -->
+        <div class="modal" id="dlgPasteVideo" aria-labelledby="modalLabel" role="dialog" tabindex="-1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="H3">视频粘贴</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>将视频网站的通用代码，粘贴到以下输入框：</p>
+                        <textarea style="width: 100%; height: 200px" id="txtPastedVideo"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-default" data-cmd="pasteVideoOk">确定</button>
+                            <button type="button" class="btn btn-default" onclick="$('#dlgPasteVideo').modal('hide')">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 信息提示 -->
+        <div class="modal" id="dlgInfo" aria-labelledby="modalLabel" role="dialog" tabindex="-1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="H2">信息提示</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="dlgInfoMessage">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" onclick="$('#dlgInfo').modal('hide')">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--上传进度-->
+        <div class="upload-progress" style="display: none">
+            <div style="font-size: 40px">
+                <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+            </div>
+            <div>上传文件...</div>
+            <div class="upload-progress-data">20%</div>
+        </div>
+    </section>
+    <script>
+
+        var glEditor;
+
+        $(function () {
+            glEditor = new GlEditor();
+        });
+
+        function GlEditor(editorElement) {
+            var curImg;
+            var curSection;
+            var insBefore = true;
+            var _this = this;
+            var $secGlEditorTools = $(secGlEditorTools);
+            var apis = {};
+            var $artTitle = $("[wbo-bind='art.Title']");
+            var $artSummary = $("[wbo-bind='art.Summary']");
+            var $artAlbum = $("[wbo-bind='art.Album']");
+            var $editor;
+            var fDocTempType = 3;
+            var $curEl;
+            if (editorElement)
+                $editor = $(editorElement);
+            else
+                $editor = $("#editor");
+
+            var art = {
+                title: "文章标题，点击编辑",
+                album: '所属专辑，点击编辑',
+                summary: "文章摘要，点击编辑"
+            }
+
+            $editor.find("img").attr("alt", "图片");
+
+            $(".modal").on("hidden.bs.modal", function () {
+                $("body").css("overflow-y", "auto");
+            });
+            $(".modal").on("show.bs.modal", function () {
+                $("body").css("overflow-y", "hidden");
+            });
+
+            if (!$artTitle.html())
+                $artTitle.html(art.title);
+            if (!$artAlbum.html())
+                $artAlbum.html(art.album);
+            if (!$artSummary.html())
+                $artSummary.html(art.summary);
+
+            //function postForm(formData, url, fn) {
+            //    var oReq = new XMLHttpRequest();
+
+            //    oReq.open("POST", url, true);
+            //    oReq.onload = function (oEvent) {
+            //        var s = oEvent.target.response;
+            //        fn(s, eval("(" + s + ")"));
+            //    }
+            //    oReq.send(formData);
+            //}
+
+
+            function putNode($Node) {
+                $(".modal").modal("hide");
+                if (!curSection || fDocTempType == 1) {
+                    $editor.append($Node).click();
+                    $Node.click();
+                }
+                else if (insBefore)
+                    $Node.insertBefore($(curSection)).click();
+                else
+                    $Node.insertAfter($(curSection)).click();
+                checkContent();
+                $(".focus-el").removeClass("focus-el");
+                $curEl = null;
+            }
+
+            function checkContent() {
+                if (!$editor.html())
+                    $(divAppendSec).show();
+                else
+                    $(divAppendSec).hide();
+            }
+
+            function cropper() {
+                $(croImage).cropper({
+                    aspectRatio: 4 / 3,//16 / 9, //4/3,
+                    viewMode: 3,
+                    dragMode: 'move',
+                    autoCropArea: 1,
+                    restore: false,
+                    modal: true,
+                    guides: true,
+                    highlight: false,
+                    cropBoxMovable: true,
+                    cropBoxResizable: false,
+                    center: false,
+                    autoCrop: true
+                });
+                $(croImage).cropper('moveTo', 0, 0);
+
+            }
+            //<audio src="/i/horse.ogg" controls="controls">   Your browser does not support the audio element.    </audio>
+            function clearDocTools() {
+                apis.hideImgList();
+                $(".sec-tools").hide();
+                $secGlEditorTools.append($(".sec-tools"));
+                $(".img-tools").hide();
+                $editor.find("[contenteditable]").removeAttr("contenteditable");
+                $editor.find(".act").removeClass("act");
+                $(".focus-el").removeClass("focus-el");
+            }
+            //function submitArt() {
+            //    var formData = new FormData(artForm);
+            //    postForm(formData, artForm.action, function (resp, json) {
+            //        if (json.Err) {
+            //            alert(json.Err.Text);
+            //            return;
+            //        }
+            //        location.href = "blog.html?" + $.param({ Id: json.Form.pk_Id });
+            //    });
+            //}
+            function getParams(el) {
+                var obj = eval("(" + $(el).attr("data-cmd-params") + ")");
+                return obj;
+            }
+
+            function createElementByFile(fileName) {
+                var Types = {
+                    audio: {
+                        ext: [".mp3", ".m4a", ".ac3", ".amr", ".ape", ".flac", ".mid", ".ogg", ".ra", ".wav", ".wma", ".acc"],
+                        el: "<audio src='' controls='controls'></audio>"
+                    },
+                    img: {
+                        ext: [".jpg", ".jpeg", ".gif", ".png"],
+                        el: "<img style='max-width:100%' alt='图片'/>"
+                    },
+                    vedio: {
+                        ext: [".mp4", ".mov", "rmvb", ".flv", ".mkv", ".avi", ".3gp"],
+                        el: "<video src='' controls='controls' style='max-width:100%' width='100%' webkit-playsinline='true'></video>"
+                    }
+                }
+
+                for (var type in Types) {
+                    var o = Types[type];
+                    for (var i = 0; i < o.ext.length; i++) {
+                        if (fileName.toLowerCase().lastIndexOf(o.ext[i]) == fileName.length - o.ext[i].length) {
+                            var $el = $(o.el);
+                            $el.attr("src", fileName);
+                            return $el;
+                        }
+                    }
+                }
+
+            }
+
+            apis.insertVoice = function () {
+                //var params = getParams(this);
+                //if (params)
+                //    insBefore = params.insBefore;
+                $(".modal").hide();
+                var changing = false;
+                $(fileVoice).change(function () {
+                    if (!this.value) return;
+                    if (this.files.length == 0)
+                        return;
+                    if (changing) return;
+                    changing = true;
+                    $(".upload-progress").show();
+                    var formData = new FormData();
+                    // var file = new File([blob], "userlogo.jpeg", { type: 'image/jpeg' });
+                    // alert(file.type);
+                    formData.append('upfile', this.files[0]);
+
+                    $.postFormData(formData, "NetDisk.upload.call",
+                           function (json) {
+                               $(fileVoice).val('');
+                               if (json.Err) {
+                                   showMsg(json.Err.Text);
+                                   return
+                               }
+                               var $sec = $("<section style='text-align:center'></section>");
+                               $sec.append(createElementByFile(json))
+                               putNode($sec);
+                               $(".upload-progress").hide();
+                           },
+                           function (pr) {
+                               $(".upload-progress-data").html(Math.round(pr.loaded * 100 / pr.total));
+                           });
+                });
+
+                $(fileVoice).click();
+            }
+            apis.showPasteVideoDlg = function () {
+                $(".modal").modal("hide");
+                $("#dlgPasteVideo").modal("show");
+            }
+            apis.pasteVideoOk = function () {
+                putNode($("<section style='min-height:300px;padding:20px 0px;'>" + txtPastedVideo.value + "</section>"));
+
+
+                //$("<section style='height:300px;padding:20px 0px;'>" + txtPastedVideo.value + "</section>").appendTo($editor);
+                $("#dlgPasteVideo").modal("hide");
+            }
+            apis.uploadCropper = function () {
+                var ca = $(croImage).cropper('getCroppedCanvas', { width: 1000 });
+
+                var data = ca.toDataURL("image/jpeg");
+
+
+                var ret = $.rCall("NetDisk.uploadBase64Url", { url: data });
+                if (ret && !ret.Err)
+                    $(curImg).attr("src", ret);
+                apis.closeModalCropper();
+                $("[wbo='NetDisk.getMyPictures']").jsonList().reload({ page: 1, count: 20 });
+                setTimeout(function () {
+                    var el = $(".aside-img-list-box")[0];
+                    if (el.xbaseIScroll)
+                        el.xbaseIScroll.refresh();
+                }, 50);
+
+            }
+
+            apis.closeModalCropper = function () {
+                $(artImage).val("");
+                $('#modalCropper').modal('hide');
+            }
+
+            apis.insertImage = function () {
+                $(artImage).change(function () {
+                    if (artImage.files.length == 0)
+                        return;
+                    $(modalCropper).modal("show");
+                    URL = (window.webkitURL || window.URL);
+                    url = URL.createObjectURL(artImage.files[0]);
+                    croImage.src = url;
+                    croImage.style.width = '100%';
+                    if ($(croImage).data('cropper')) {
+                        $(croImage).cropper("reset").cropper('replace', url);
+                    } else {
+                        cropper();
+                    }
+
+                });
+                $(artImage).click();
+            }
+
+            apis.setAspectRatio = function () {
+                $(croImage).cropper("setAspectRatio", getParams(this)[0]);
+            }
+
+            apis.rotate = function () {
+
+                $(croImage).cropper("rotate", getParams(this)[0]);
+            }
+
+            apis.scaleX = function () {
+                var sx = $(croImage).cropper("getData").scaleX;
+                $(croImage).cropper("scaleX", 0 - sx);
+            }
+
+            apis.scaleY = function () {
+                var sy = $(croImage).cropper("getData").scaleY;
+                $(croImage).cropper("scaleY", 0 - sy);
+            }
+
+            apis.setImg = function (el) {
+                if (curImg) {
+                    var src = curImg.src;
+                    src = src.replace(location.origin, "");
+                    curImg.src = el.src;
+                    var bgUrl = $(curImg).parent().parent().css("background-image");
+                    if (bgUrl && bgUrl != "none" && bgUrl.indexOf(src) > -1)
+                        $(curImg).parent().parent().css("background-image", "url('" + el.src + "')")
+
+                    apis.hideImgList();
+                }
+
+            }
+
+            apis.showImgList = function (img) {
+                if (TypeUtils.isElement(this)) {
+                    img = null;
+                    var params = getParams(this);
+                    if (params)
+                        img = params.img;
+                }
+                if (img)
+                    curImg = $(img)[0];
+
+                $(".aside-img-list").show();
+                $(".aside-bar").addClass("aside-bar-show");
+                $("body").css("overflow-y", "hidden");
+                $(".aside-bar").focus();
+                var el = $(".aside-img-list-box")[0];
+                if (el.xbaseIScroll)
+                    el.xbaseIScroll.refresh();
+
+            }
+
+            apis.hideImgList = function () {
+                $(".aside-bar").removeClass("aside-bar-show");
+                //$(".aside-img-list").hide();
+                $("body").css("overflow-y", "auto");
+            }
+            apis.locPic = function () {
+                var src = $.rCall("NetDisk.downloadFile", { url: curImg.src })
+                if (src)
+                    curImg.src = src;
+            }
+            apis.takePhoto = function () {
+                var param = $(this).attr("data-cmd-params");
+                apis.insertImage();
+                return;
+                if (xBase.Agent.isWx) {
+                    wx.chooseImage({
+                        count: 1, // 默认9
+                        sizeType: ['original'], //['original', 'compressed'] 可以指定是原图还是压缩图，默认二者都有
+                        sourceType: [param], // ['album', 'camera']可以指定来源是相册还是相机，默认二者都有
+                        success: function (res) {
+                            var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+                            if (localIds.length > 0) {
+                                $(modalCropper).modal("show");
+                                var url = localIds[0];
+                                croImage.src = url;
+                                croImage.style.width = '100%';
+                                if ($(croImage).data('cropper')) {
+                                    $(croImage).cropper("reset").cropper('replace', url);
+                                } else {
+                                    cropper();
+                                }
+                            }
+                        }
+                    });
+                }
+                else
+                    insertImage();
+
+            }
+
+            apis.insTemplate = function (el) {
+                if (fDocTempType == 1) {
+                    clearDocTools();
+                    $editor.html("");
+                }
+                var $c = $($(el).find("[wbo-bind='SnBlogTemp.Content']").html());
+                putNode($c);
+                //_this.init();
+            }
+
+            apis.removeSec = function () {
+                if (!curSection) return;
+                $(curSection).remove();
+                clearDocTools();
+                curSection = null;
+                checkContent();
+            }
+
+            apis.showBlogTemp = function (isBefore, artType) {
+                var params = getParams(this);
+                if (isBefore == undefined || typeof (isBefore) == "object")
+                    insBefore = params.isBefore;
+                else if (typeof (isBefore) != "object")
+                    insBefore = isBefore
+                else
+                    insBefore = false;
+
+                var _ArtType;
+                if (artType)
+                    _ArtType = artType;
+                else if ("artType" in params)
+                    _ArtType = params.artType;
+
+                var h = $(window).innerHeight() - 200;
+                $(".blog-temp-list").css("max-height", h + 'px');
+                fDocTempType = 2;
+                if (_ArtType) {
+                    $("[wbo='SnBlogTemp.rows']").jsonList().query({ Type: _ArtType }, { page: 1, rows: 10 });
+                    fDocTempType = _ArtType;
+                }
+
+                $(dlgBlogTemp).modal("show");
+            };
+
+            //GlEditor.apply(apis);
+            var fTempateDoc = false;
+
+            function saveSecTemp() {
+                if (!curSection) return;
+                var tRow = {};
+                $(curSection).find("[contenteditable]").removeAttr("contenteditable");
+                $(curSection).find(".focus-el").removeClass("focus-el");
+                $(curSection).removeClass("act");
+                tRow.Content = curSection.outerHTML;
+                tRow.Type = 2;
+                tRow.Title = inpTempTitle.value;
+                var ret = $.rCall("SnBlogTemp.insert", { row: tRow });
+                $(curSection).click();
+            }
+            function saveDocTemp() {
+                if (!$editor.html()) return;
+                clearDocTools();
+                var tRow = {};
+                tRow.Content = $editor.html();
+                tRow.Type = 1;
+                tRow.Title = inpTempTitle.value;
+                //tRow.Title = $artTitle.html();
+                var ret = $.rCall("SnBlogTemp.insert", { row: tRow })
+            }
+
+            apis.templateDlgOk = function () {
+                if (fTempateDoc)
+                    saveDocTemp();
+                else
+                    saveSecTemp();
+
+                $(dlgSaveSecTemp).modal("hide");
+            };
+            apis.saveDocToTemplate = function () {
+                fTempateDoc = true;
+                $('#dlgSaveSecTemp').modal("show");
+            };
+
+            apis.saveSecToTemplate = function () {
+                $(dlgSaveSecTemp).modal("show");
+                fTempateDoc = false;
+            }
+
+
+            apis.insSecBefore = function () {
+                apis.showBlogTemp(true);
+                //insBefore = true;
+            }
+            apis.insSecAfter = function () {
+                apis.showBlogTemp(false);
+                //insBefore = false;
+            }
+
+            apis.showPasteDocDlg = function () {
+                $("#dlgPasteDoc").modal("show");
+            }
+
+            function decodeImgUrl(s) {
+                s = s.replace(/&amp;/g, "&");
+                s = s.replace(/&lt;/g, "<");
+                s = s.replace(/&gt;/g, ">");
+                s = s.replace(/&nbsp;/g, " ");
+                return s;
+            };
+
+            apis.pasteDocOk = function () {
+                $("#dlgPasteDoc").modal("hide");
+                $(".upload-progress").show();
+                setTimeout(function () {
+                    $("#secGlEditorTools").append($(".sec-tools"));
+                    $(".sec-tools").hide();
+                    var html;
+                    if ($("#divPasteDoc").children().length == 1)
+                        html = $("#divPasteDoc").children().html();
+                    else
+                        html = $("#divPasteDoc").html();
+
+                    var bgImgs = html.match(/background[^;"]+url\s*\(([^\)]+)\)/gi);
+                    if (bgImgs) {
+                        for (var i = 0; i < bgImgs.length; i++) {
+                            //"".
+                            var url = bgImgs[i].replace(/\s/, "").midStr("url(", ")").trim();
+                            if (url[0] == "\"")
+                                url = url.midStr("\"", "\"");
+                            if (url[0] == "'")
+                                url = url.midStr("'", "'");
+
+                            url = url.replace(new RegExp("&quot;", "g"), "");
+
+                            var deUrl = decodeImgUrl(url);
+                            if (deUrl.indexOf(location.origin) > -1)
+                                continue;
+                            var newUrl = $.rCall("NetDisk.downloadFile", { url: deUrl });
+                            if (newUrl && !newUrl.Err) {
+                                var reg = RegExp(url.replace(/\?/g, "\\?"), "gi");
+                                if (!reg.test(html)) {
+                                    console.log(url);
+                                    debugger;
+                                }
+                                html = html.replace(reg, newUrl);
+                            }
+                        }
+                    }
+
+                    $editor.html(html);
+
+                    $editor.find("img").each(function () {
+                        var src = this.src;
+                        if (src.indexOf(location.origin) < 0) {
+                            var src = $.rCall("NetDisk.downloadFile", { url: src });
+                            if (src && !src.Err)
+                                this.src = src;
+                        }
+                    });
+
+
+                    $("#divPasteDoc").html("");
+                    $(".upload-progress").hide();
+
+
+                }, 100);
+            }
+
+            function showMsg(msg, fn) {
+                $(dlgInfoMessage).html(msg);
+                $(dlgInfo).modal('show');
+                if (fn)
+                    $(dlgInfo).on("hidden.bs.modal", fn);
+            }
+            var fDocId;
+            function saveDoc() {
+                clearDocTools();
+                var row = $("[wbo='SnBlog.row']").jsonForm().data();
+                if (row.Title == art.title) {
+
+                    showMsg("标题还没输入，请输入标题", function () {
+                        $(window).scrollTop(0);
+                        $artTitle.click();
+                        $artTitle.select();
+                    });
+                    return false;
+                }
+
+                if ($artAlbum.html() == art.album)
+                    $artAlbum.html("");
+
+                if (row.Summary == art.summary)
+                    row.Summary = $editor.text().substr(0, 50);
+
+                row = $.rCall("SnBlog.update", { row: row });
+                fDocId = row.Id;
+                $("[wbo='SnBlog.row']").jsonForm().data(row);
+                if ($artAlbum.html() == "")
+                    $artAlbum.html(art.album);
+                return true;
+            }
+            apis.saveDoc = function () {
+                var params = getParams(this);
+                if (saveDoc()) {
+                    if (params && params.isPerview) {
+                        var goback = $.cookie('goback');
+                        if (goback)
+                            location.href = goback;
+                        else
+                            location = document.referrer;
+                            //location.href = "blog.html?" + $.param({ Id: fDocId });
+                    }
+                    else
+                        showMsg("文章保存成功");
+                }
+            }
+
+            apis.addFontSize = function () {
+                if (!$curEl) return;
+                var size = parseInt($curEl.css("font-size"));
+                if (!size) size = 12;
+                size += 2;
+                $curEl.css("font-size", size + "px");
+            }
+            apis.enableEdit = function () {
+                if (!$curEl) return;
+                $editor.find("[contenteditable]").removeAttr("contenteditable");
+                $curEl.attr("contenteditable", "true");
+                $curEl.focus();
+            }
+            apis.decFontSize = function () {
+                if (!$curEl) return;
+                var size = parseInt($curEl.css("font-size"));
+                if (!size) return;
+                if (size < 14) return;
+                size -= 2;
+                $curEl.css("font-size", size + "px");
+            }
+            apis.firstDedent = function () {
+                if (!$curEl) return;
+                var dedent = parseInt($curEl.css("text-indent"));
+                if (!dedent)
+                    $curEl.css("text-indent", "2em");
+                else
+                    $curEl.css("text-indent", "0");
+            }
+
+            apis.alignLeft = function () {
+                if (!$curEl) return;
+                $curEl.css("text-align", "left");
+            }
+            apis.alignCenter = function () {
+                if (!$curEl) return;
+                $curEl.css("text-align", "center");
+            }
+            apis.alignJustify = function () {
+                if (!$curEl) return;
+                $curEl.css("text-align", "justify");
+            }
+            apis.alignRight = function () {
+                if (!$curEl) return;
+                $curEl.css("text-align", "right");
+            }
+
+
+            //绑定按钮命令句柄
+            $("[data-cmd]").each(function () {
+                var attr = $(this).attr("data-cmd");
+                $(this).click(apis[attr]);
+                $(this).click(function () {
+                    return false;
+                })
+            });
+
+            $(".art-cover span,.art-cover p").click(function () {
+                $(this).attr("contenteditable", true);
+                $(this).focus();
+            });
+
+            function unSelectImg() {
+                if (curImg) {
+                    $(curImg).removeClass("act");
+                    curImg = null;
+                    apis.hideImgList();
+                    $(".img-tools").hide();
+                }
+
+            }
+
+            function selectSection(el) {
+                $(curSection).removeClass("act");
+                $(el).addClass("act");
+                curSection = el;
+                //if ($(this).find("img.act").length < 1) {
+                //    $(curImg).removeClass("act");
+                //    curImg = null;
+                //    $(".img-tools").hide();
+                //}
+
+                $(".sec-tools-before").insertBefore(el);
+                $(".sec-tools-after").insertAfter(el);
+                $(".sec-tools").show();
+
+            }
+
+            this.init = function () {
+
+
+
+
+                $(".aside-img-list").on("click", "[wbo-bind='PicList.Url']", function () {
+                    apis.setImg(this);
+                    return false;
+                });
+
+                $("[wbo='SnBlogTemp.rows']").on("click", "[wbo-bind='SnBlogTemp.item']", function () {
+                    apis.insTemplate(this);
+                    return false;
+                });
+
+
+                $("body").click(function () {
+                    clearDocTools();
+                });
+
+                $("body").on("click", "#editor>section,#editor>p", function () {
+                    unSelectImg();
+                    if ($curEl) {
+                        $curEl.removeClass("focus-el");
+                        $curEl = null;
+                    }
+
+                    selectSection(this);
+                    return false;
+                });
+
+                $editor.on("click", "strong,span,div,p", function () {
+                    if ($(".sec-tools").find(this).length > 0 || $(this).hasClass("sec-tools"))
+                        return true;
+
+                    unSelectImg();
+
+                    //                    $(this).attr("contenteditable", "true");
+                    $(this).focus();
+
+                    selectSection($(this).parents("#editor>section,#editor>p")[0]);
+
+
+                    if ($curEl && $curEl.length > 0 && $curEl[0] != this) {
+                        $curEl.removeClass("focus-el");
+                        $editor.find("[contenteditable]").removeAttr("contenteditable");
+                    } else if ($curEl && $curEl.length > 0 && $curEl[0] == this) {
+                        $(this).attr("contenteditable", "true").focus();
+                    }
+                    $curEl = $(this);
+                    $curEl.addClass("focus-el");
+
+                    return false;
+                });
+
+                $editor.on("keydown", "*", function () {
+                    //var range = document.selection.createRange();
+                    //range.text = "\r\n";
+                    //range.select();
+
+                    if (event.keyCode == 13) {
+                        //document.execCommand("insertHTML",true, "<br/>");
+                        //return false;
+                        //document.execCommand("insertParagraph");
+                        //return false;
+                        if (this.nodeName != "P") {
+                            document.execCommand("insertHTML", true, "<br/>");
+                            return false;
+                        }
+                        var selection = window.getSelection ? window.getSelection() : document.selection;
+                        //var range = selection.createRange ? selection.createRange() : selection.getRangeAt(0);
+                        var pos = selection.anchorOffset;
+                        var s1 = $(this).text().substr(0, pos);
+                        var s2 = $(this).text().substr(pos);
+                        var $P = $(this).clone();
+                        $(this).html(s1);
+                        $P.html(s2);
+                        $P.insertAfter($(this));
+                        $P.focus();
+                        return false;
+                    }
+                })
+
+
+                $editor.on("click", "img", function () {
+                    if ($curEl) {
+                        $curEl.removeAttr("contenteditable");
+                        $curEl.removeClass("focus-el");
+                        $curEl = null;
+                    }
+
+                    $("#editor .act").removeClass("act");
+                    $(this).addClass("act");
+                    curImg = this;
+
+                    apis.showImgList();
+
+                    selectSection($(this).parents("#editor>section")[0])
+
+                    return false;
+                });
+            };
+
+            this.init();
+
+
+            //if (!$editor.html()) {
+            //    $c = $("#secDefault");
+            //    $c.css("display", 'block');
+            //    $c.attr("id", "");
+            //    $editor.append($c);
+            //    $c.find("img").click();
+            //}
+        }
+    </script>
+</body>
+</html>

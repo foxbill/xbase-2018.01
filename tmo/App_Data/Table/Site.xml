@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>Site</Id><ListCommand><Id>51f21dca-74ce-4f0d-9d7b-3396530709db</Id><CommandText>site</CommandText><CommandType>TableDirect</CommandType></ListCommand><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>10</PageSize><PrimaryKeys><string>Name</string></PrimaryKeys><InsertCommand><Id>b6d56f62-6b78-4ba9-b5c8-e8d459870dc1</Id><CommandText>INSERT INTO site (
+ [Name],
+ [Logo],
+ [CopyRight],
+ [Addr],
+ [ServiceTel])
+ VALUES (
+@Name,
+@Logo,
+@CopyRight,
+@Addr,
+@ServiceTel)</CommandText><CommandType>Text</CommandType></InsertCommand><UpdateCommand><Id>7e070ebc-d32f-4e8b-87c9-effe21885f3c</Id><CommandText>UPDATE site SET 
+ [Name]=@Name,
+ [Logo]=@Logo,
+ [CopyRight]=@CopyRight,
+ [Addr]=@Addr,
+ [ServiceTel]=@ServiceTel
+ WHERE 
+ [Name]=@pk_Name</CommandText><CommandType>Text</CommandType></UpdateCommand><DeleteCommand><Id>d19f7188-96dd-4ca2-b81e-7f72778a2615</Id><CommandText>DELETE FROM site WHERE  [Name]=@pk_Name</CommandText><CommandType>Text</CommandType></DeleteCommand><SelectCommand><Id>23332577-437d-4bf8-ba73-09291c3f3922</Id><CommandText>Select  top 1 * From site</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@Name</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>String</DataType><DefaultValue /></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>Name</Id><Title>站点名称</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Logo</Id><Title>图标</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>CopyRight</Id><Title>版权</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Addr</Id><Title>通讯地址</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ServiceTel</Id><Title>客户电话</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>site</TableName><IsPagingByParams>false</IsPagingByParams></DataSourceSchema>

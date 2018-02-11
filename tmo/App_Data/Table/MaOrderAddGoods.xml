@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>MaOrderAddGoods</Id><ListCommand><Id>84ee01b2-66a1-4eea-8112-bf58fcdca5c3</Id><CommandText>ma_order_details</CommandText><CommandType>TableDirect</CommandType></ListCommand><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>10</PageSize><PrimaryKeys><string>Id</string></PrimaryKeys><InsertCommand><Id>964c5927-b3a1-49c5-927c-39a26166a825</Id><CommandText>set @CreateTime=getDate();
+set @DetailsId=newId();
+set @Status=1;
+
+if @Model is null  begin
+set @Model='';
+end;
+
+if @Attrs is null begin
+set @Attrs='';
+end;
+
+
+--测试数据
+--declare @BuyerId uniqueidentifier='AF00335A-1D49-46C5-A066-B0ED020C760B';--买家Id=[LoginUser.Id] 当前用户
+--declare @SellerId uniqueidentifier='AF00335A-1D49-46C5-A066-B0ED020C760B';--卖家Id来自商品信息;
+--declare @DetailsId uniqueidentifier=newId();--卖家Id来自商品信息;
+--declare @CreateTime datetime=getDate();
+--declare @SHour nvarchar(12);
+
+--declare @GoodsId uniqueidentifier='EC64DAC0-F394-4D75-AD00-AE224EF72464';--商品-Id
+--declare @Model nvarchar(20)='t111'
+--declare @Price money=1;
+--declare @OrgPrice money=1;
+--declare @Count money=1;
+--declare @Amount money=1;
+--declare @IsPay bit=0;
+--declare @PayAmount money=1;
+--declare @Status smallint=0;
+--declare @ReceiveCountry nvarchar(20)='中国';
+--declare @ReceiveProvince nvarchar(20)='云南';
+--declare @ReceiveCity nvarchar(20)='昆明';
+--declare @ReceiveDistrict nvarchar(20)='官渡';
+--declare @ReceiveName nvarchar(20)='白阳';
+--declare @ReceiveTel nvarchar(20)='13888';
+--declare @ReceiveZip nvarchar(20)='650000';
+--declare @ReceiveDetails nvarchar(20)='双桥路11号';
+--declare @GoodsName nvarchar(20)='老白干';
+--declare @OrderNo nvarchar(18);
+
+
+
+
+	set @SHour=
+		left(replace(replace(replace(CONVERT(varchar, getdate(), 120),'-',''),' ','H'),':',''),11)+'-';
+
+    --创建订单号
+	set @OrderNo =
+		@SHour+Right(
+		(select IsNull(
+			   Convert(
+				  int,Right(Max(OrderNo),6)
+			   ),0
+			)+1000001
+		  from 
+			   ma_order 
+		  where
+			   Left(OrderNo,12)=@SHour),6
+		);
+
+	INSERT INTO ma_order (
+	 [BuyerId],
+	 [SellerId],
+         [SellerStoreId],
+	 [IsPay],
+	 [PayAmount],
+	 [Status],
+	 [ReceiveCountry],
+	 [ReceiveProvince],
+	 [ReceiveCity],
+	 [ReceiveDistrict],
+	 [ReceiveName],
+	 [ReceiveTel],
+	 [ReceiveZip],
+	 [ReceiveDetails],
+	 [CreateTime],
+	[OrderNo])
+	 VALUES (
+	@BuyerId,
+	@SellerId,
+        @SellerStoreId,
+	@IsPay,
+	@PayAmount,
+	@Status,
+	@ReceiveCountry,
+	@ReceiveProvince,
+	@ReceiveCity,
+	@ReceiveDistrict,
+	@ReceiveName,
+	@ReceiveTel,
+	@ReceiveZip,
+	@ReceiveDetails,
+	@CreateTime,
+	@OrderNo);
+
+
+--插入商品明细数据
+INSERT INTO ma_order_details (
+ [Id],
+ [OrderNo],
+ [GoodsId],
+ [GoodsName],
+ [Model],
+ [Price],
+ [OrgPrice],
+ [Count],
+ [Amount],
+[Attrs])
+ VALUES (
+@DetailsId,
+@OrderNo,
+@GoodsId,
+@GoodsName,
+@Model,
+@Price,
+@OrgPrice,
+@Count,
+@Count*@Price,
+@Attrs);
+
+update ma_order 
+   set
+      PayAmount=(select sum(Amount)  from ma_order_details where OrderNo=@OrderNo)
+Where OrderNo=@OrderNo;
+
+
+select * from ma_order_details    where
+ [OrderNo]=@OrderNo and
+ [GoodsId]=@GoodsId and
+ [GoodsName]=@GoodsName and
+ [Model]=@Model and
+ [Attrs]=@Attrs;
+
+
+
+</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@BuyerId</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Guid</DataType><DefaultValue>[LoginUser.Id]</DefaultValue></ParameterSchema></QueryParams></InsertCommand><UpdateCommand><Id>d73a0308-8462-424b-b527-1b2e0a4f95bb</Id><CommandText>UPDATE ma_order_details SET 
+ [Id]=@Id,
+ [OrderNo]=@OrderNo,
+ [GoodsId]=@GoodsId,
+ [GoodsName]=@GoodsName,
+ [Model]=@Model,
+ [Price]=@Price,
+ [OrgPrice]=@OrgPrice,
+ [Count]=@Count,
+ [Amount]=@Amount,
+ [Attrs]=@Attrs
+ WHERE 
+ [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></UpdateCommand><DeleteCommand><Id>cdb5d36e-9080-438c-bdf9-235bb817b641</Id><CommandText>DELETE FROM ma_order_details WHERE  [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></DeleteCommand><SelectCommand><Id>2c1c5d62-cd58-47f3-90db-9677c76ebd76</Id><CommandText>Select * From ma_order_details Where Id=@Id</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@Id</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Guid</DataType><DefaultValue /></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>Id</Id><Title>Id</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>OrderNo</Id><Title>订单号</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>GoodsId</Id><Title>商品Id</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>GoodsName</Id><Title>商品名称</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Model</Id><Title>型号规格</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Price</Id><Title>单价</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Decimal</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>OrgPrice</Id><Title>原价</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Decimal</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Count</Id><Title>数量</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Double</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Amount</Id><Title>金额</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Decimal</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Attrs</Id><Title>附加属性</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>ma_order_details</TableName><IsPagingByParams>false</IsPagingByParams></DataSourceSchema>

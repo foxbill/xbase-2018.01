@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<YunTonXunConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <AccountSid>8a216da85c62c9ad015c7c77df410888</AccountSid>
+  <AccountToken>e2a28be77a67484b91fd60fac671d1ce</AccountToken>
+  <AppId>8a216da85c62c9ad015c7c77df8f088d</AppId>
+  <AppToken>0fb75718e03c008800ec3f798e225f26</AppToken>
+  <Production>app.cloopen.com</Production>
+  <Develop>sandboxapp.cloopen.com</Develop>
+  <RestPort>8883</RestPort>
+  <TestAppID>8a216da85c62c9ad015c7c77df410888</TestAppID>
+  <TestAppToken>e2a28be77a67484b91fd60fac671d1ce</TestAppToken>
+  <SMSTemplateId>184894</SMSTemplateId>
+</YunTonXunConfig>

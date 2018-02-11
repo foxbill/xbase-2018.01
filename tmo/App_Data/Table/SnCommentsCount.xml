@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>SnCommentsCount</Id><ListCommand><Id>679f359a-0edf-4b81-b2f6-d73320b0d7ee</Id><CommandText>Select * From sn_v_comments_count 
+Where 
+     TargetId Like @TargetId
+     and TargetType Like @TargetType
+  </CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@TargetId</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>AnsiString</DataType><DefaultValue>%</DefaultValue></ParameterSchema><ParameterSchema><Id>@TargetType</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>AnsiString</DataType><DefaultValue>sn_blog</DefaultValue></ParameterSchema></QueryParams></ListCommand><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>10</PageSize><PrimaryKeys><string>Id</string></PrimaryKeys><InsertCommand><Id>049f192d-3c7e-4e5e-95c6-9f9324be056e</Id><CommandText>INSERT INTO sn_comments (
+ [Id],
+ [TargetType],
+ [TargetId],
+ [CommentText],
+ [CommentatorId],
+ [CreateTime],
+ [ToId])
+ VALUES (
+@Id,
+@TargetType,
+@TargetId,
+@CommentText,
+@CommentatorId,
+@CreateTime,
+@ToId)</CommandText><CommandType>Text</CommandType></InsertCommand><UpdateCommand><Id>4b247c74-5dfe-43cc-9424-162f8ebe04ad</Id><CommandText>UPDATE sn_comments SET 
+ [Id]=@Id,
+ [TargetType]=@TargetType,
+ [TargetId]=@TargetId,
+ [CommentText]=@CommentText,
+ [CommentatorId]=@CommentatorId,
+ [CreateTime]=@CreateTime,
+ [ToId]=@ToId
+ WHERE 
+ [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></UpdateCommand><DeleteCommand><Id>8fcf6200-3065-4e59-b3ec-83f14ec4dc67</Id><CommandText>DELETE FROM sn_comments WHERE  [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></DeleteCommand><SelectCommand><Id>39c5f0b1-92ee-488d-b77a-62207371460e</Id><CommandText>Select * From sn_v_comments_count 
+Where 
+     TargetId=@TargetId
+     and TargetType=@TargetType
+  </CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@TargetId</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Guid</DataType><DefaultValue /></ParameterSchema><ParameterSchema><Id>@TargetType</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>AnsiString</DataType><DefaultValue>sn_blog</DefaultValue></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>Id</Id><Title>Id</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>TargetType</Id><Title>评论对象类型</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>TargetId</Id><Title>评论对象Id</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>CommentText</Id><Title>评论内容</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>CommentatorId</Id><Title>评论人Id</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>CreateTime</Id><Title>评论时间</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>DateTime</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ToId</Id><Title>回复对象</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Count</Id><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int32</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>sn_comments</TableName><IsPagingByParams>true</IsPagingByParams></DataSourceSchema>

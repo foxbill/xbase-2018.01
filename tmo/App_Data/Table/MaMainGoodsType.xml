@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>MaMainGoodsType</Id><ListCommand><Id>9e658b1a-a84e-4d15-97be-88c0b865ac54</Id><CommandText>declare @SellerId uniqueidentifier; 
+declare @StoreId uniqueidentifier; 
+
+
+
+Select  @SellerId= uni_id from xsys_user_account where user_id='admin';
+select @StoreId=Id from ma_store where UserId=@SellerId;
+select * from ma_goods_type 
+where 
+     ShopId=@StoreId
+     and (TakeOff&lt;&gt;1 or TakeOff is null) 
+order by Sort;</CommandText><CommandType>Text</CommandType></ListCommand><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>10</PageSize><PrimaryKeys><string>Id</string></PrimaryKeys><InsertCommand><Id>bae8f3dc-52c2-49ce-9ef8-1ab659cfb9e7</Id><CommandText>INSERT INTO ma_goods_type (
+ [Id],
+ [Text],
+ [ImageH],
+ [ImageW],
+ [Icon],
+ [ListCss],
+ [ShopId],
+ [UpId])
+ VALUES (
+@Id,
+@Text,
+@ImageH,
+@ImageW,
+@Icon,
+@ListCss,
+@ShopId,
+@UpId)</CommandText><CommandType>Text</CommandType></InsertCommand><UpdateCommand><Id>653501e2-6fca-4be1-b184-4eaefd37a6f6</Id><CommandText>UPDATE ma_goods_type SET 
+ [Id]=@Id,
+ [Text]=@Text,
+ [ImageH]=@ImageH,
+ [ImageW]=@ImageW,
+ [Icon]=@Icon,
+ [ListCss]=@ListCss,
+ [ShopId]=@ShopId,
+ [UpId]=@UpId
+ WHERE 
+ [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></UpdateCommand><DeleteCommand><Id>2c5ca2ba-1c23-41cb-832c-58b91c50d27a</Id><CommandText>DELETE FROM ma_goods_type WHERE  [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></DeleteCommand><SelectCommand><Id>243c3ffb-2804-4f80-995f-0b627615698d</Id><CommandText>Select * From ma_goods_type Where Id=@Id</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@Id</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Int32</DataType><DefaultValue /></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>Id</Id><Title>类别Id</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int32</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Text</Id><Title>类别名称</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ImageH</Id><Title>图片高度</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int32</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ImageW</Id><Title>图片宽度</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int32</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Icon</Id><Title>类别图标</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ListCss</Id><Title>商品列表式样</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ShopId</Id><Title>所属店铺</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>UpId</Id><Title>UpId</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int32</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>ma_goods_type</TableName><IsPagingByParams>false</IsPagingByParams></DataSourceSchema>

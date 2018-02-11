@@ -1,0 +1,782 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>商品</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../html-plugin/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+
+
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+    <link rel="stylesheet" href="../html-plugin/cropper/cropper.css">
+    <style type="text/css">
+        .container-s {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        /* 小屏幕（平板，大于等于 768px） */
+        @media (min-width: 450px) {
+            .container-s {
+                width: 450px;
+            }
+        }
+    </style>
+    <style>
+        .btn.mo {
+            background-color: #c9ebef;
+        }
+
+        .btn.act {
+            background-color: #13706d;
+            color: #fff;
+        }
+    </style>
+
+
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../html-plugin/cropper/cropper.js"></script>
+    <script src="../html-plugin/cropper/cropper-modal.js?v1.1.1.63"></script>
+
+
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+
+    <script>
+        /**
+        *------------
+        *订单操作程序
+        *------------
+        **/
+        $(function () {
+
+
+            var gAttrs = [];
+            var gSelModel = "";
+            var gSelPrice;
+            var gTotalAmount;
+            var gMyCarts = [];
+            var gOp = 0;//0：无操作，1：加到购物车，2：直接买
+
+            var fGoodsForm = $("[wbo='MaGoods.form']").data("wbo");
+            var fGoods = fGoodsForm.Form;
+            $("title").html(fGoods.Name);
+
+            gSelPrice = fGoodsForm.Form.Price;
+
+            getCartItems();
+
+            //加载商品附加属性
+            var model = fGoodsForm.Details[0].Rows;
+            $("#elGoodsModel").jsonList(model);
+
+            //商品规格型号被选择
+            $("[wbo-bind='GoodsModel.item']").click(function () {
+                gSelPrice = $(this).find("[wbo-bind='GoodsModel.Price']").html();
+                $("[wbo-bind='Goods.Price']").html(gSelPrice);
+                //  $("[data-for='model']").removeClass("red");
+                checkOrder();
+                return false;
+            })
+
+            //获取订单附加信息字符串
+            function getOrderAttr() {
+                var keys = Object.keys(gAttrs);
+                keys.sort();
+                var s = "";
+                for (var i = 0; i < keys.length; i++) {
+                    var k = keys[i];
+                    s = s + keys[i] + ":" + gAttrs[k] + ";";
+                }
+                return s;
+            }
+
+            function curOrderNo() {
+                if (gMyCarts.length)
+                    return gMyCarts[0].OrderNo;
+                else
+                    throw "No Order";
+            }
+
+            $("[data-btn='ShowCart']").click(function () {
+                location.href = "order.html?" + $.param({ OrderNo: curOrderNo() });
+            });
+
+            //商品附加信息被选择
+            $("[wbo-bind='Attr.item']").click(function () {
+                checkOrder();
+                return false;
+            })
+
+            //设置错误提示框信息
+            function setDlgErr(err) {
+                $(dlgOrderErr).find(".modal-body h4").html(err);
+                //    $(dlgOrderErr).modal("show");
+            }
+
+
+            function getCartItems() {
+                gMyCarts = $.rCall("MaCart.rows");
+                if (gMyCarts.length) {
+                    $("[data-btn='ShowCart'] .badge").html(gMyCarts.length);
+                    $("[data-btn='ShowCart']").show();
+                } else
+                    $("[data-btn='ShowCart']").hide();
+
+            }
+
+            //计算订单金额
+            function evalOrder() {
+
+                gTotalAmount = parseInt($(elOrderCount).val()) * parseFloat(gSelPrice);
+                gTotalAmount = gTotalAmount.toFixed(2);
+                $("#elOrderAmount").valu(gTotalAmount);
+            }
+
+            //订单数量改变
+            $(elOrderCount).bind("input propertychange", function () {
+                evalOrder();
+            })
+
+            //校验订单数据合法性，并生产订单数据
+            function checkOrder() {
+
+                var listModel = $(elGoodsModel).jsonList();
+                var listAttrTypes = $("[wbo='MaGoodsAttrType.rows']").jsonList();
+                gAttrs = [];
+                var eActiveModel = listModel.activeItem();
+                if (listModel.items().length) {
+                    if (!eActiveModel) {
+                        var $title = $("[data-for='model']").addClass("red");
+                        $(window).scrollTop($title.offset().top - $(window).height() + 200);
+                        setDlgErr('请选择"规格型号"!', listModel.$);
+                        return false;
+                    }
+                    gSelModel = eActiveModel.ctrl.data().Model;
+                }
+                $("[data-for='model']").removeClass("red");
+
+
+                if (listAttrTypes.items().length) {
+                    var $types = listAttrTypes.items();
+                    for (var i = 0; i < $types.length; i++) {
+                        var eAttrType = $types[i];
+                        var title = eAttrType.ctrl.data().AttrName;
+                        //                        var title = $(eAttrType).find("h2").html();
+                        var jlistAttr = $(eAttrType).find("[wbo='MaGoodsAttr.rows']").data("ctrl");
+                        var eActAttr = jlistAttr.activeItem();
+
+                        if (jlistAttr.items().length && !eActAttr) {
+                            var $eAttrType = $(eAttrType).addClass("red");
+                            $(window).scrollTop($eAttrType.offset().top - $(window).height() + 260);
+                            setDlgErr('请选择"' + title + "'!");
+                            return false
+                        }
+                        var value = eActAttr.ctrl.data().AttrValue;
+                        gAttrs[title] = value;
+                        $(eAttrType).removeClass("red");
+                    }
+                }
+                return true;
+
+            }
+
+            //获取当前被选中的商品
+            function getSelGoods() {
+                evalOrder();
+                var goods = {
+                    SellerId: fGoods.UserId,
+                    SellerStoreId:fGoods.StoreId,
+                    GoodsName: fGoods.Name,
+                    GoodsId: fGoods.Id,
+                    Model: gSelModel,
+                    Price: gSelPrice,
+                    Attrs: getOrderAttr(),
+                    Count: $(elOrderCount).valu(),
+                    Amount: gTotalAmount
+                };
+                return goods;
+            }
+
+            //提交购物车
+            $("#btnSubmitOrder").click(function () {
+                if (!checkOrder()) {
+                    $(dlgOrderErr).modal("show");
+                    return;
+                }
+                var order = getSelGoods();
+
+                var ret;
+                if (gOp == 0)
+                    return false;
+                else if (gOp == 1)
+                    ret = $.rCall("MaCart.insert", { row: order });
+                else if (gOp == 2)
+                    ret = $.rCall("MaOrderAddGoods.insert", { row: order });
+
+                if (!ret.Err) {
+                    $("#elBuyTools").show();
+                    $("#elOrderBox").hide();
+                    if (gOp == 2)
+                        location.href = "order.html?" + $.param({ OrderNo: ret.OrderNo });
+                    else
+                        getCartItems();
+
+                }
+            });
+
+            function showOrder() {
+                var count = 1;
+                for (var i = 0; i < gMyCarts.length; i++) {
+                    var goods = gMyCarts[i];
+                    if (goods.GoodsId == fGoods.Id &&
+                        goods.Model == gSelModel &&
+                            goods.Attrs == getOrderAttr()
+                        ) {
+                        count = goods.Count;
+                        break;
+                    }
+                }
+                
+                $(elOrderCount).valu(count);
+                evalOrder();
+                $(elOrderBox).show();
+                $("float-box-rd-fill").click(function () {
+                    $(elOrderBox).hide();
+                })
+                $(frmGoods).click(function () {
+                    $(elOrderBox).hide();
+                })
+            }
+
+            //点击直接买
+            $("[data-btn='Buy']").click(function () {
+                if (!checkOrder()) {
+                    $(dlgOrderErr).modal("show");
+                    return false;
+                }
+
+                $("#btnSubmitOrder").html("买");
+                gOp = 2;
+                showOrder();
+                return false;
+
+            });
+
+            //点击加到购物车
+            $("[data-btn='AddCart']").click(function () {
+                if (!checkOrder()) {
+                    $(dlgOrderErr).modal("show");
+                    return false;
+                }
+
+                $("#btnSubmitOrder").html("添加");
+                gOp = 1;
+                showOrder();
+                return false;
+            });
+
+            $("[wbo-bind='MyAddrs.item']").click(function () {
+                $("[wbo='MaMyDefaultAddr.row']")
+                    .data("ctrl")
+                    .data($(this).data("ctrl").data());
+            })
+
+            $("[data-btn='AddCount']").click(function () {
+                $("#elOrderCount").val(parseInt($("#elOrderCount").val()) + 1);
+                evalOrder();
+            });
+            $("[data-btn='DecCount']").click(function () {
+                var c = parseInt($("#elOrderCount").val());
+                if (c <= 1) return;
+                $("#elOrderCount").val(c - 1);
+                evalOrder();
+            });
+
+        });
+    </script>
+
+</head>
+<body>
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">车友会</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-attr="href:'url'" wbo-bind="navLogo.name">cy168.cc</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+
+    <!--分享提示-->
+    <div id="shareit">
+        <style>
+            .share-text {
+                color: red;
+            }
+
+            #shareit .arrow {
+                height: 300px;
+            }
+        </style>
+        <div class="arrow">
+            <img src="images/share-it.png">
+        </div>
+        <div class="share-text">
+            <h3>点击菜单'...'分享给好友</h3>
+            <h3>领取红包</h3>
+            <h1 class="close-share"><a class="btn btn-lg btn-danger">知道了</a></h1>
+        </div>
+        <!--<img id="share-text" src="http://dev.vxtong.com/cases/nuannan/imgs/share-text.png">-->
+
+    </div>
+
+    <!--商品信息-->
+    <div class="container" wbo="MaGoods.form" wbo-query="Id:$.paramVal('Id')" name="GoodsForm" id="frmGoods" style="color: white; position: relative">
+        <style>
+            .goods-form {
+                background-color: white;
+                color: black;
+            }
+
+            [wbo-bind="Goods.Name"] {
+                font-size: 25px;
+            }
+
+            [wbo-bind="Goods.Price"] {
+                font-size: 25px;
+            }
+
+            .goods-img-sm-bar {
+                margin-left: -3px;
+                margin-top: 3px;
+                overflow: hidden;
+            }
+
+            .goods-img-sm {
+                width: 25%;
+                float: left;
+                padding-left: 3px;
+            }
+
+            .goods-info {
+                padding-left: 10px;
+                font-size: 16px;
+            }
+
+                .goods-info label {
+                    font-size: 16px;
+                }
+
+            .col {
+                padding-right: 0px;
+            }
+
+            .goods-info h2 {
+                padding-top: 10px;
+                border-top: 1px solid #eee;
+                font-size: 16px;
+                margin-top: 5px;
+                margin-bottom: 5px;
+            }
+        </style>
+        <div class="goods-form" wbo-bind="GoodsForm.Form" name="Goods">
+            <input name="pk_Id" wbo-bind="Goods.pk_Id" type="hidden" />
+            <div class="row">
+                <div class="col col-sm-12 col-md-6 col-lg-6">
+                    <div class="goods-img-lg">
+                        <img wbo-bind="Goods.Pic1" id="imgGoodsPic" class="img-responsive" src="images/new-goods.jpg" />
+                    </div>
+                    <div class="goods-img-sm-bar">
+                        <div class="goods-img-sm">
+                            <img wbo-bind="Goods.Pic1" id="imgGoodsPic1" class="img-responsive" src="images/new-goods.jpg" />
+                        </div>
+                        <div class="goods-img-sm">
+                            <img wbo-bind="Goods.Pic2" id="imgGoodsPic2" class="img-responsive" src="images/new-goods.jpg" />
+                        </div>
+                        <div class="goods-img-sm">
+                            <img wbo-bind="Goods.Pic3" id="imgGoodsPic3" class="img-responsive" src="images/new-goods.jpg" />
+                        </div>
+                        <div class="goods-img-sm">
+                            <img wbo-bind="Goods.Pic4" id="imgGoodsPic4" class="img-responsive" src="images/new-goods.jpg" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-sm-12 col-md-6 col-lg-6">
+                    <div class="goods-info">
+                        <h1 wbo-bind="Goods.Name"></h1>
+                        <p class="red">￥<span wbo-bind="Goods.Price"></span>元</p>
+                        <p wbo-bind="Goods.Remark"></p>
+                        <div class="form-group" style="overflow: hidden;">
+                            <h2 data-for='model'>规格型号<span wbo-bind="Goods.Model"></span></h2>
+                            <div id="elGoodsModel" name="GoodsModel">
+                                <a wbo-bind="GoodsModel.item" class="btn btn-default  btn-sm"><span wbo-bind="GoodsModel.Model">aaa</span><span style="display: none" wbo-bind="GoodsModel.Price"></span></a>
+                            </div>
+                            <div wbo="MaGoodsAttrType.rows" wbo-query="GoodsId:$.paramVal('Id')" wbo-ctrl="jsonList" name="AttrType">
+                                <div wbo-bind="AttrType.item">
+                                    <h2 wbo-bind="AttrType.AttrName">尺码</h2>
+                                    <div wbo-embed='AttrType' wbo="MaGoodsAttr.rows" wbo-ctrl="jsonList" name="Attr" wbo-query="GoodsId:$.paramVal('Id'),AttrName:'AttrName'">
+                                        <a class="btn btn-default btn-sm" wbo-bind="Attr.item"><span wbo-bind="Attr.AttrValue">s</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="goods-tools -hidden-sm -hidden-xs">
+                            <div style="float: right">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $("#btnAddCart").click(function () {
+                $("#elOrderDlg").modal("show");
+            })
+
+            $(function () {
+                $(".goods-img-sm-bar img").mouseenter(function () {
+                    var src = $(this).attr("src");
+                    imgGoodsPic.src = src;
+                })
+
+                $("[wbo-cmd='goodsBuy']").click(function () {
+                    var link = $(this).attr("goodsId");
+                    location = "order.html?" + $.param({ GoodsId: link });
+                })
+            })
+        </script>
+
+    </div>
+
+    <!--订单-->
+
+    <!--    <div class="modal fade" id="elOrderDlg">
+        <style>
+            [wbo='MaMyAddr.rows'] li a {
+                white-space: normal;
+            }
+        </style>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" id="btnCloseOrder"><i class="fa fa-window-close"></i></button>
+                    <h4 class="panel-title">商品订单</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="media" id="elOrderGoods">
+                        <div class="media-left">
+                            <img wbo-bind="Pic1" style="width: 130px" />
+                        </div>
+                        <div class="media-body">
+                            <div class="media-heading">
+                                <h3 wbo-bind="Name">商品名称</h3>
+                            </div>
+                            <p>
+                                型号/颜色: <span></span>
+                            </p>
+                            <p>
+                                单价:￥<span wbo-bind="Price" id="elOrderPrice"></span>元
+                            </p>
+                        </div>
+
+                    </div>
+                    <div>
+                        <div class="pull-left">
+                            送货地址：
+                        </div>
+                        <div class="btn-group">
+                            <a class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" id="dropMyAddress">更换地址<span class="caret"></span></a>
+                            <ul wbo="MaMyAddr.rows" wbo-ctrl="jsonList" class="dropdown-menu" name="MyAddrs">
+                                <li wbo-bind="MyAddrs.item" style="border-bottom: 1px solid #eee">
+                                    <a>
+                                        <span wbo-bind="MyAddrs.Receiver"></span>
+                                        <span wbo-bind="MyAddrs.Tel"></span>
+                                        <span wbo-bind="MyAddrs.Province"></span>
+                                        <span wbo-bind="MyAddrs.City"></span>
+                                        <span wbo-bind="MyAddrs.District"></span>
+                                        <span wbo-bind="MyAddrs.Zip"></span>
+                                        <span wbo-bind="MyAddrs.Details"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <a class="btn btn-info btn-sm">添加地址</a>
+                    </div>
+                    <div wbo="MaMyDefaultAddr.row" name="addr">
+                        <span wbo-bind="addr.Receiver"></span>
+                        <span wbo-bind="addr.Tel"></span>
+                        <span wbo-bind="addr.Province"></span>
+                        <span wbo-bind="addr.City"></span>
+                        <span wbo-bind="addr.District"></span>
+                        <span wbo-bind="addr.Zip"></span>
+                        <span wbo-bind="addr.Details"></span>
+                    </div>
+                    <div class="form-group" style="overflow: hidden; zoom: 1; vertical-align: middle">
+                        <div class="input-group pull-right" style="width: 120px; vertical-align: middle">
+                            <a class="input-group-addon btn" id="elDecCount">-</a>
+                            <input class="form-control" id="elOrderCount" value="1" style="text-align: center; outline: none" />
+                            <a class="input-group-addon btn" id="elAddCount">+</a>
+                        </div>
+                        <div style="float: right">
+                            <label style="font-size: 14px; margin-top: 4px; margin-right: 5px">
+                                数量：
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <p class="pull-right" style="color: red; font-size: 20px">
+                        金额：￥
+                          <span wbo-bind="Price" id="elOrderAmount">221</span>元
+                          <a class="btn btn-success" wbo-cmd='MaCart.insert'>加入</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <script>
+
+            $(function () {
+                $(btnCloseOrder).click(function () {
+                    $(elOrderDlg).modal("hide");
+                });
+                $(elAddCount).click(function () {
+                    $(elOrderCount).val(parseInt($(elOrderCount).val()) + 1);
+                    evalOrder();
+                });
+                $(elDecCount).click(function () {
+                    $(elOrderCount).val(parseInt($(elOrderCount).val()) - 1);
+                    if (parseInt($(elOrderCount).val()) < 1)
+                        $(elOrderCount).val(1);
+                    evalOrder();
+                });
+                $(elOrderCount).bind("input propertychange", function () {
+                    if (/\D/.test(this.value)) {
+                        this.value = '1';
+                        this.select();
+                    }
+                    var v = parseInt($(elOrderCount).val());
+                    if (!v || v < 1) {
+                        $(elOrderCount).val(1);
+                        this.select();
+                    }
+                    evalOrder();
+                });
+
+
+                //$("[wbo-cmd='goodsBuy']").click(function () {
+                //    $(elOrder).modal("show");
+                //    var goodsId = $(this).attr("goodsId");
+                //    var goods = $.rCall("MaGoods.row?" + $.param({ Id: goodsId }));
+                //    $(elOrder).jsonForm(goods);
+                //});
+
+            });
+        </script>
+    </div>
+-->
+
+    <!--订单浮动工具-->
+    <div class="float-box-rd-fill" style="height: 100px; "></div>
+    <div id="elBuyTools" class="float-box-rd  -hidden-md -hidden-lg">
+        <style>
+            .float-box-rd {
+                position: fixed;
+                right: 0px;
+                left: 0px;
+                bottom: 54px;
+                padding: 10px;
+            }
+
+            .float-box-rd-tools .btn {
+                margin-left: 10px;
+            }
+
+                .float-box-rd-tools .btn .badge {
+                    margin-left: 5px;
+                    margin-right: 5px;
+                }
+        </style>
+        <div class="float-box-rd-tools">
+            <button class="btn btn-danger pull-left" data-btn="ShowCart"><i class="fa fa-cart-plus"></i><span class="badge">23</span></button>
+            <button class="btn btn-danger pull-right" data-btn="AddCart">加到购物车</button>
+            <button class="btn btn-danger pull-right" data-btn="Buy">立即买<i class="fa fa-cny"></i></button>
+        </div>
+    </div>
+
+    <!--订单确认框-->
+    <div id="elOrderBox">
+        <style>
+            #elOrderBox {
+                display: none;
+                position: fixed;
+                bottom: 50px;
+                right: 0px;
+                left: 0px;
+                background-color: #fff;
+                padding: 10px;
+                margin: 5px;
+                border-radius: 10px;
+                border: 1px solid #aaa;
+            }
+
+                #elOrderBox .form-group {
+                    vertical-align: middle;
+                    line-height: 34px;
+                    border: none;
+                    margin-bottom: 0px;
+                }
+
+                    #elOrderBox .form-group label {
+                        margin-bottom: 0px;
+                    }
+
+                    #elOrderBox .form-group .btn {
+                        margin-left: 10px;
+                    }
+
+                #elOrderBox .form-control {
+                    padding: 6px 6px;
+                }
+
+            .address-panel {
+                font-size: 14px;
+                border-bottom: 1px solid #ccc;
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+            }
+        </style>
+        <div class="clearfix  address-panel" style="display: none">
+            <div class="btn-toolbar">
+                <div class="pull-left" style="vertical-align: middle">
+                    送货地址：
+                </div>
+                <div class="btn-group btn-group-xs dropup pull-right">
+                    <a class="btn btn-info btn-sm">添加地址</a>
+                    <a class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" id="A3">更换地址<span class="caret"></span></a>
+                    <ul wbo="MaMyAddr.rows" wbo-ctrl="jsonList" class="dropdown-menu" name="MyAddrs">
+                        <li wbo-bind="MyAddrs.item" style="border-bottom: 1px solid #eee">
+                            <a>
+                                <span wbo-bind="MyAddrs.Receiver"></span>
+                                <span wbo-bind="MyAddrs.Tel"></span>
+                                <span wbo-bind="MyAddrs.Province"></span>
+                                <span wbo-bind="MyAddrs.City"></span>
+                                <span wbo-bind="MyAddrs.District"></span>
+                                <span wbo-bind="MyAddrs.Zip"></span>
+                                <span wbo-bind="MyAddrs.Details"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div wbo="MaMyDefaultAddr.row" name="addr">
+                <span wbo-bind="addr.Receiver"></span>
+                <span wbo-bind="addr.Tel"></span>
+                <span wbo-bind="addr.Province"></span>
+                <span wbo-bind="addr.City"></span>
+                <span wbo-bind="addr.District"></span>
+                <span wbo-bind="addr.Zip"></span>
+                <span wbo-bind="addr.Details"></span>
+            </div>
+        </div>
+        <div class="form-group pull-left red" style="font-size: 16px">
+            <i class="fa fa-cny" style="vertical-align: middle; line-height: 34px;"></i>
+            <label id="elOrderAmount">23.01</label>元
+        </div>
+        <div class="form-group pull-right" style="overflow: hidden; zoom: 1; vertical-align: middle;">
+            <label class="pull-left" style="font-size: 14px; margin-right: 5px">
+                数量：
+            </label>
+            <div class="input-group pull-left" style="width: 110px; vertical-align: middle">
+                <a class="input-group-addon btn" id="A1" data-btn="DecCount">-</a>
+                <input class="form-control" id="elOrderCount" type="text" value="1" style="text-align: center; outline: none" />
+                <a class="input-group-addon btn" id="A2" data-btn="AddCount">+</a>
+            </div>
+            <button class="btn btn-danger pull-left" id="btnSubmitOrder">确认</button>
+        </div>
+    </div>
+
+    <!--错误提示-->
+    <div id="dlgOrderErr" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title     text-danger">错误提示</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger" role="alert">
+                        <h4>Oh snap! You got an error!</h4>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">知道了</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+    <!--手机底部导航-->
+    <div class="footer-fill  visible-xs visible-sm"></div>
+    <nav class="nav-bottom  visible-xs visible-sm" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbar">
+        <div class="col col-sm-3 col-xs-3" wbo-bind="navbar.item">
+            <a class=" img-btn" href="gw.html" wbo-attr="href:'link'" wbo-up="navbar" style="text-align: center">
+                <!--<img src="images/icon/js.png" wbo-bind="navbar.icon" />-->
+                <div style="font-size: 14px">
+                    <i style="font-size: 22px" wbo-attr="class:'icon'" class="fa fa-home icon-spin"></i>
+                </div>
+                <div class="img-btn-text" wbo-bind="navbar.text">首页</div>
+            </a>
+        </div>
+    </nav>
+
+</body>
+</html>

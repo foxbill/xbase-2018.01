@@ -1,0 +1,376 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>销售订单</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../html-plugin/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="../html-plugin/hammer/hammer.min.js"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/jquery.hammer.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+
+
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+    <style>
+        .toolbar {
+            padding: 10px 0px;
+            background-color: #fff;
+            margin-bottom: 3px;
+            border-bottom: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-content: stretch;
+        }
+
+        .toolbar-btn {
+            position: relative;
+            padding-right: 0px;
+            flex-grow: 0;
+            color: #666;
+        }
+
+            .toolbar-btn i {
+                font-size: 16px;
+            }
+
+            .toolbar-btn.act {
+                color: red;
+            }
+
+        .order {
+            background-color: #fff;
+            border-bottom: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+        }
+
+            .order:before, order:after {
+                display: table;
+                content: "   ";
+                clear: both;
+            }
+
+            .order ul {
+                padding: 0px;
+                margin-bottom: 0px;
+            }
+
+        .order-head, .order-receiver {
+            margin: 0px;
+            padding: 10px 5px;
+            border-bottom: 1px solid #eee;
+        }
+
+
+        .order-footer {
+            padding: 5px;
+        }
+
+        .badge-rd {
+            position: absolute;
+            top: -3px;
+            right: -7px;
+            font-size: 10px;
+            line-height: 10px;
+            background-color: red;
+            padding: 2px 0px;
+            min-width: 14px;
+            /*height:15px;*/
+            border-radius: 7px;
+        }
+
+        .WaybillNo {
+            display: inline-block;
+        }
+
+            .WaybillNo:before {
+                content: '快递单号:';
+            }
+
+            .WaybillNo:empty {
+                display: none;
+            }
+    </style>
+    <script type="text/javascript">
+
+        $(function () {
+            $(loading).hide();
+        });
+    </script>
+
+    <script>
+        function goStatus(el) {
+            $(elLogistics).hide();
+            $(elOrderList).show();
+
+            $(loading).show();
+            setTimeout(function () {
+                var status = $(el).attr("status");
+                $(elOrderList).jsonList().query({ Status: status });
+                $(loading).hide();
+
+
+            }, 50);
+        }
+
+
+        $(function () {
+            $(btnSaveWaybill).click(function () {
+                var row = $(dlgWaybill).data("row");
+                row.WaybillNo = txtWaybill.value;
+                row.Status = 3;
+                $.rCall("MaMainOrders.update", { row: row });
+                $(dlgWaybill).modal("hide");
+                $("[wbo='MaSellerOrderStatus.rows']").jsonList().reload();
+                $("[wbo='MaMainOrders.rows']").jsonList().reload();
+            });
+        });
+
+        function inputWaybill() {
+            var row = $(event.target).parents("[wbo-bind='Orders.item']").jsonForm().data();
+            $(dlgWaybill).data("row", row);
+            $(dlgWaybill).modal("show");
+        }
+
+        function findlogistics() {
+            $(elLogistics).show();
+            $(elOrderList).hide();
+            var row = $(event.target).parents("[wbo-bind='Orders.item']").jsonForm().data();
+            $(loading).show();
+            setTimeout(function () {
+                var json = eval("(" + $.rCall("KuaiDiApi.searchNo", { no: row.WaybillNo }) + ")");
+                $(elLogiOrder).html(row.OrderNo);
+                $(elLogistics).jsonForm(json);
+                $(loading).hide();
+
+            }, 50);
+
+        }
+
+        if ($.rCall("BrowserAgent.isWeiXin")) {
+            var cfg = $.rCall("WxJsCfg.call");
+            cfg.jsApiList = ['scanQRCode'];
+            wx.config(cfg);
+        }
+
+
+        function sanQR() {
+            wx.scanQRCode({
+                needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                success: function (res) {
+                    var result = res.resultStr; // 当need
+                    var code = result.split(",")[1];
+                    $("#txtWaybill").val(code);
+                }
+
+            });
+        }
+    </script>
+</head>
+<body class="bg-color-page">
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header" wbo="Site.row">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only" wbo-bind="Name">运势小赢+</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-bind="Name">运势小赢+</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+
+
+    <!--订单-->
+    <section class="container">
+        <div class="toolbar clearfix" wbo="MaSellerOrderStatus.rows" wbo-ctrl="jsonList" name="Status">
+            <div class="toolbar-btn" wbo-bind="Status.item" wbo-attr="status:'Id'" onclick="goStatus(this)">
+                <i wbo-attr="class:'SellerStatusIcon'" class="fa fa-rmb"></i>
+                <br />
+                <span wbo-bind="Status.SellerStatus">待收款</span>
+                <span class="badge badge-rd" wbo-bind="Status.OrderCount"></span>
+            </div>
+        </div>
+        <div id="elOrderList" class="row" wbo="MaMainOrders.rows" wbo-query="Status:'0'" wbo-ctrl="jsonList" name="Orders">
+            <div class="col" wbo-bind="Orders.item">
+                <div class="order">
+                    <p class="order-head"><strong>订单号:</strong><span wbo-bind="Orders.OrderNo"></span></p>
+                    <div class="order-receiver">
+                        <p><strong>订货人:</strong><span wbo-bind="Orders.ReceiveCountry">530100</span></p>
+                        <address>
+                            <strong wbo-bind="Orders.ReceiveName">严雪</strong>
+                            <span wbo-bind="Orders.ReceiveTel">18300000</span>
+                            <span wbo-bind="Orders.ReceiveProvince">云南</span>
+                            <span wbo-bind="Orders.ReceiveCity">昆明</span>
+                            <span wbo-bind="Orders.ReceiveDistrict">官渡区</span>
+                            <span wbo-bind="Orders.ReceiveZip">222</span>
+                            <span wbo-bind="Orders.ReceiveDetails">双桥路</span>
+
+                        </address>
+                        <div class="WaybillNo" wbo-bind="Orders.WaybillNo">
+                        </div>
+                    </div>
+                    <ul wbo-embed="Orders" wbo="MaMyOrderDetails.rows" wbo-query="OrderNo:'Orders.OrderNo'" wbo-ctrl="jsonList" name="OrderDetails">
+                        <li class="clearfix" wbo-bind="OrderDetails.item" style="list-style: none; padding: 5px; border-bottom: 1px solid #eee">
+                            <div style="float: left; max-width: 65px; margin-right: 5px">
+                                <img class="img-responsive" src="images/qh/2.jpg" style="" wbo-bind="OrderDetails.Pic1" />
+                            </div>
+                            <div class="clearfix" style="float: left">
+                                <div wbo-bind="OrderDetails.GoodsName">...</div>
+                                <div>
+                                    <span wbo-bind="OrderDetails.Model"></span>
+                                    <span wbo-bind="OrderDetails.Attrs"></span>
+
+                                </div>
+                                <div>
+                                    数量
+                                    <span wbo-bind="OrderDetails.Count"></span>
+                                    单价
+                                    <span wbo-bind="OrderDetails.Price"></span>
+                                    金额
+                                    <span wbo-bind="OrderDetails.Amount"></span>
+
+                                </div>
+                            </div>
+                            <div class="clearfix pull-right">
+                                <button class="btn bg-white"><i class="fa fa-cart-plus red"></i></button>
+                            </div>
+                        </li>
+
+                    </ul>
+                    <div class="order-footer clearfix">
+                        <strong class="pull-left red">合计：<span wbo-bind="Orders.PayAmount"></span>
+                        </strong>
+                        <div class="pull-right" wbo-bind="Orders.SellerOp">
+                            <a class="btn btn-danger btn-sm" onclick="inputWaybill()"><i class="fa fa-envelope-o"></i><span>修改运单</span></a>
+                            <a class="btn btn-danger btn-sm" onclick="findlogistics()"><i class="fa fa-envelope-o"></i><span>查物流</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="elLogistics" class="logi panel-shadow" name="Logi">
+            <div class="logi-order">
+                订单号:<span id="elLogiOrder"></span>
+            </div>
+            <div class="logi-company">
+                <div class="logi-company-icon">
+                    <img class="img-rounded img-responsive" wbo-bind="Logi.ico" />
+                </div>
+                <div class="logi-company-info">
+                    <div wbo-bind="Logi.company"></div>
+                    <div>电话:<span wbo-bind="Logi.phone"></span></div>
+                    <div>运单:<span wbo-bind="Logi.nu"></span></div>
+                </div>
+            </div>
+            <div class="times" wbo-bind="Logi.data" name="Tracking">
+                <ul>
+                    <li wbo-bind="Tracking.item">
+                        <b></b>
+                        <span wbo-bind="Tracking.time">2010-01-01</span>
+                        <p wbo-bind="Tracking.context">这里是2010年哟</p>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <!--运单号输入对话框-->
+    <div class="modal fade" id="dlgWaybill" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">填写运单号</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+
+                        <input class="form-control" type="text" id="txtWaybill" style="width: 100%" />
+                        <span class="input-group-addon" onclick="sanQR()">扫描运单</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="btnSaveWaybill">保存</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <!--手机底部导航-->
+    <div class="footer-fill  visible-xs visible-sm"></div>
+    <nav class="nav-bottom  visible-xs visible-sm" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbar">
+        <div class="col col-sm-3 col-xs-3" wbo-bind="navbar.item">
+            <a class=" img-btn" href="gw.html" wbo-attr="href:'link'" wbo-up="navbar" style="text-align: center">
+                <!--<img src="images/icon/js.png" wbo-bind="navbar.icon" />-->
+                <div style="font-size: 14px">
+                    <i style="font-size: 22px" wbo-attr="class:'icon'" class="fa fa-home icon-spin"></i>
+                </div>
+                <div class="img-btn-text" wbo-bind="navbar.text">首页</div>
+            </a>
+        </div>
+    </nav>
+
+    <div class="loading" id="loading">
+        <div class="loading-show">
+            <i class="fa fa-spinner fa-spin"></i>
+            <p>loading</p>
+        </div>
+    </div>
+</body>
+</html>

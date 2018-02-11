@@ -117,14 +117,14 @@
               <th class="hc"> 测试 </th>
             </tr>
         <tbody>
-              <tr list="ir" obj="WboSchema.Methods">
+              <tr wbo-bind="WboSchema.Methods.item" >
             <td class="ic" name="WboSchema.Methods.Id"> a a </td>
             <td class="ic"><input type="text" name="WboSchema.Methods.Title" /></td>
             <td class="ic"><textarea name="WboSchema.Methods.Description" rows="1" cols="50"></textarea></td>
             <td class="ic" name="d"> d </td>
             <td class="ic" name="e"> e </td>
           </tr>
-              <tr list="ir" obj="WboSchema.Methods">
+              <tr wbo-bind="WboSchema.Methods.item" >
             <td class="ic"> 调用参数 </td>
             <td colspan="2" class="ic"><table class="AutoWidthInput" name="WboSchema.Methods.Params">
                 <tr list="hr" obj="WboSchema.Methods.Params">
@@ -132,7 +132,7 @@
                   <td> 显示名称 </td>
                   <td> 说明 </td>
                 </tr>
-                <tr list="ir" obj="WboSchema.Methods.Params">
+                <tr wbo-bind="WboSchema.Methods.Params.item">
                   <td name="WboSchema.Methods.Params.Id"> ID </td>
                   <td><input id="Text1" type="text" name="WboSchema.Methods.Params.Title" /></td>
                   <td><textarea id="TextArea1" cols="40" name="WboSchema.Methods.Params.Description" rows="1"></textarea></td>
@@ -154,7 +154,7 @@
               <th class="hc"> 说明 </th>
             </tr>
         <tbody id="proTabbody">
-              <tr obj="WboSchema.Properties" list="ir">
+              <tr obj-bind="WboSchema.Properties.item" >
             <td class="ic" name="WboSchema.Properties.Id"> 属性名 </td>
             <td class="ic"><input name="WboSchema.Properties.Title" type="text" /></td>
             <td class="ic"><textarea name="WboSchema.Properties.Description" rows="1"></textarea></td>

@@ -1,0 +1,98 @@
+﻿.container {
+    position: absolute;
+    height: 100%;
+    left: 100px;
+    right: 814px;
+    padding-left: 0px;
+    padding-right: 0px;
+    top: 2px;
+}
+
+.nav-page {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    margin: auto;
+    /*border: 1px solid red;*/
+}
+
+    .nav-page .nav {
+        left: 0px;
+        padding: 10px;
+        top: 0px;
+        width: 20%;
+        display: block;
+        position: absolute;
+        transition: all ease .5s;
+        height: 100%;
+    }
+
+    .nav-page .nav-hidden {
+        top: 0px;
+        left: -20%;
+        transition: left ease .5s;
+    }
+
+    .nav-page .page {
+        top: 0px;
+        height: 100%;
+        width: 80%;
+        left: 20%;
+        padding-bottom: 50px;
+        position: absolute;
+        transition: all ease .5s;
+    }
+
+
+        .nav-page .page.show {
+            left: 0px;
+            width: 100%;
+            transition: all ease .5s;
+        }
+
+    .nav-page .page-header {
+        height: 50px;
+        margin: 0px;
+        padding: 8px;
+    }
+
+        .nav-page .page-header .page-title {
+            font-size: 22px;
+            line-height: 34px;
+            margin: 0px;
+        }
+
+.list-group li {
+    cursor: pointer;
+}
+
+@media (max-width: 767px) {
+    .container {
+        left: 0px;
+        right: 0px;
+    }
+
+    .nav-page .nav {
+        left: 0px;
+        width: 100%;
+    }
+
+    .nav-page .nav-hidden {
+        left: -100%;
+        transition: left ease .5s;
+    }
+
+
+    .nav-page .page {
+        left: 100%;
+        width: 100%;
+        transition: all ease .5s;
+    }
+
+        .nav-page .page.show {
+            left: 0px;
+            width: 100%;
+            transition: all ease .5s;
+        }
+}

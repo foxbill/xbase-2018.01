@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>MaMainOrders</Id><ListCommand><Id>0c26bf88-1ada-4141-8a37-8dddd08d6cc8</Id><CommandText>declare @SellerId uniqueidentifier; 
+declare @SellerStoreId uniqueidentifier; 
+--declare @Status int=1;
+
+
+Select  @SellerId= uni_id from xsys_user_account where user_id='admin';
+select @SellerStoreId=Id from ma_store where UserId=@SellerId;
+
+Select a.*,b.SellerOp From  ma_order a left join ma_order_status b on a.Status=b.Id
+Where (a.SellerStoreId=@SellerStoreId
+               Or a.SellerId=@SellerId)
+          and a.Status=@Status
+    </CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@Status</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Byte</DataType><DefaultValue>1</DefaultValue></ParameterSchema></QueryParams></ListCommand><SubTables><SubTableSchema><Name>MaMyOrderDetails</Name><Fks><FkSchema><Fk>OrderNo</Fk><Pk>OrderNo</Pk></FkSchema></Fks></SubTableSchema></SubTables><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>10</PageSize><PrimaryKeys><string>OrderNo</string></PrimaryKeys><InsertCommand><Id>57acbd10-ed4a-4c3c-97c7-f4b6c0865e39</Id><CommandText>INSERT INTO ma_order (
+ [OrderNo],
+ [BuyerId],
+ [SellerId],
+ [IsPay],
+ [PayAmount],
+ [Status],
+ [ReceiveCountry],
+ [ReceiveProvince],
+ [ReceiveCity],
+ [ReceiveDistrict],
+ [ReceiveName],
+ [ReceiveTel],
+ [ReceiveZip],
+ [ReceiveDetails],
+ [CreateTime],
+ [SellerStoreId])
+ VALUES (
+@OrderNo,
+@BuyerId,
+@SellerId,
+@IsPay,
+@PayAmount,
+@Status,
+@ReceiveCountry,
+@ReceiveProvince,
+@ReceiveCity,
+@ReceiveDistrict,
+@ReceiveName,
+@ReceiveTel,
+@ReceiveZip,
+@ReceiveDetails,
+@CreateTime,
+@SellerStoreId)</CommandText><CommandType>Text</CommandType></InsertCommand><UpdateCommand><Id>8efcd2a2-2311-4731-b255-e4d6eeaa2f42</Id><CommandText>UPDATE ma_order SET 
+ [OrderNo]=@OrderNo,
+ [BuyerId]=@BuyerId,
+ [SellerId]=@SellerId,
+ [IsPay]=@IsPay,
+ [PayAmount]=@PayAmount,
+ [Status]=@Status,
+ [ReceiveCountry]=@ReceiveCountry,
+ [ReceiveProvince]=@ReceiveProvince,
+ [ReceiveCity]=@ReceiveCity,
+ [ReceiveDistrict]=@ReceiveDistrict,
+ [ReceiveName]=@ReceiveName,
+ [ReceiveTel]=@ReceiveTel,
+ [ReceiveZip]=@ReceiveZip,
+ [ReceiveDetails]=@ReceiveDetails,
+ [CreateTime]=@CreateTime,
+ [SellerStoreId]=@SellerStoreId,
+[WaybillNo]=@WaybillNo
+ WHERE 
+ [OrderNo]=@pk_OrderNo</CommandText><CommandType>Text</CommandType></UpdateCommand><DeleteCommand><Id>9c740ee1-c848-471b-9272-80f2be790f9b</Id><CommandText>DELETE FROM ma_order WHERE  [OrderNo]=@pk_OrderNo</CommandText><CommandType>Text</CommandType></DeleteCommand><SelectCommand><Id>300c05f3-e2bf-4477-a23e-fa0ed054fb36</Id><CommandText>Select *  From ma_order Where OrderNo=@OrderNo</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@OrderNo</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>String</DataType><DefaultValue /></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>OrderNo</Id><Title>订单号</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>BuyerId</Id><Title>买家</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>SellerId</Id><Title>卖家</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>IsPay</Id><Title>是否付款</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Boolean</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>PayAmount</Id><Title>付款金额</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Decimal</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Status</Id><Title>订单状态</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int16</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ReceiveCountry</Id><Title>收货国家</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ReceiveProvince</Id><Title>收货省</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ReceiveCity</Id><Title>收货城市</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ReceiveDistrict</Id><Title>收货区县</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ReceiveName</Id><Title>收货人</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ReceiveTel</Id><Title>收货人电话</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ReceiveZip</Id><Title>收货人邮编</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int32</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ReceiveDetails</Id><Title>收货人详情</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>CreateTime</Id><Title>创建时间</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>DateTime</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>SellerStoreId</Id><Title>卖家店铺</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>SellerOp</Id><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>WaybillNo</Id><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>ma_order</TableName><IsPagingByParams>false</IsPagingByParams></DataSourceSchema>

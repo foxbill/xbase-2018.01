@@ -1,1 +1,266 @@
-﻿<?xml version="1.0" encoding="utf-8"?><WboSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>Security</Id><Title>安全管理</Title><Methods><WboMethodSchema><Id>checkPage</Id><Title>checkPage</Title><PermissionTypes>Read</PermissionTypes><ReturnType>System.Void</ReturnType></WboMethodSchema><WboMethodSchema><Id>CheckObjectPermission</Id><Title>CheckObjectPermission</Title><PermissionTypes>Read</PermissionTypes><Params><WboMethodParamSchema><Id>objectType</Id><Title>objectType</Title><DefaultValue /><DataType>System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType></WboMethodParamSchema><WboMethodParamSchema><Id>objectId</Id><Title>objectId</Title><DefaultValue /><DataType>System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType></WboMethodParamSchema><WboMethodParamSchema><Id>permissionType</Id><Title>permissionType</Title><DefaultValue /><DataType>xbase.security.PermissionTypes, xbase, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</DataType></WboMethodParamSchema></Params><ReturnType>System.Boolean</ReturnType></WboMethodSchema><WboMethodSchema><Id>_CheckObjectPermission</Id><Title>_CheckObjectPermission</Title><PermissionTypes>Read</PermissionTypes><Params><WboMethodParamSchema><Id>objectType</Id><Title>objectType</Title><DefaultValue /><DataType>System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType></WboMethodParamSchema><WboMethodParamSchema><Id>objectId</Id><Title>objectId</Title><DefaultValue /><DataType>System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType></WboMethodParamSchema><WboMethodParamSchema><Id>permissionType</Id><Title>permissionType</Title><DefaultValue /><DataType>xbase.security.PermissionTypes, xbase, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</DataType></WboMethodParamSchema></Params><ReturnType>System.Boolean</ReturnType></WboMethodSchema><WboMethodSchema><Id>login</Id><Title>login</Title><PermissionTypes>Read</PermissionTypes><Params><WboMethodParamSchema><Id>tokenInfo</Id><Title>tokenInfo</Title><DefaultValue /><DataType>xbase.security.wechat.WeChatOS, xbase.security, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</DataType></WboMethodParamSchema></Params><ReturnType>System.Boolean</ReturnType></WboMethodSchema><WboMethodSchema><Id>login</Id><Title>login</Title><PermissionTypes>Read</PermissionTypes><Params><WboMethodParamSchema><Id>userId</Id><Title>userId</Title><DefaultValue /><DataType>System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType></WboMethodParamSchema><WboMethodParamSchema><Id>password</Id><Title>password</Title><DefaultValue /><DataType>System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType></WboMethodParamSchema></Params><ReturnType>System.Boolean</ReturnType></WboMethodSchema><WboMethodSchema><Id>Logout</Id><Title>Logout</Title><PermissionTypes>Read</PermissionTypes><ReturnType>System.Void</ReturnType></WboMethodSchema><WboMethodSchema><Id>isFriend</Id><Title>isFriend</Title><PermissionTypes>Read</PermissionTypes><Params><WboMethodParamSchema><Id>p</Id><Title>p</Title><DefaultValue /><DataType>System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType></WboMethodParamSchema></Params><ReturnType>System.Boolean</ReturnType></WboMethodSchema><WboMethodSchema><Id>setContext</Id><Title>setContext</Title><PermissionTypes>Read</PermissionTypes><Params><WboMethodParamSchema><Id>umc</Id><Title>umc</Title><DefaultValue /><DataType>xbase.umc.Umc, xbase, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</DataType></WboMethodParamSchema></Params><ReturnType>System.Void</ReturnType></WboMethodSchema><WboMethodSchema><Id>ToString</Id><Title>ToString</Title><PermissionTypes>Read</PermissionTypes><ReturnType>System.String</ReturnType></WboMethodSchema><WboMethodSchema><Id>Equals</Id><Title>Equals</Title><PermissionTypes>Read</PermissionTypes><Params><WboMethodParamSchema><Id>obj</Id><Title>obj</Title><DefaultValue /><DataType>System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType></WboMethodParamSchema></Params><ReturnType>System.Boolean</ReturnType></WboMethodSchema><WboMethodSchema><Id>GetHashCode</Id><Title>GetHashCode</Title><PermissionTypes>Read</PermissionTypes><ReturnType>System.Int32</ReturnType></WboMethodSchema><WboMethodSchema><Id>GetType</Id><Title>GetType</Title><PermissionTypes>Read</PermissionTypes><ReturnType>System.Type</ReturnType></WboMethodSchema></Methods><PermissionTypes>Read</PermissionTypes><Namespace>xbase.security</Namespace><AssemblyCategory>DotNet</AssemblyCategory><Src>C:\Users\Jinot\AppData\Local\Temp\Temporary ASP.NET Files\vs\8a48e25c\3dc5177b\assembly\dl3\cbbf6d91\b5a9a701_ddbad001\xbase.security.dll</Src><IsVisual>false</IsVisual><IsPublish>false</IsPublish><Properties><Schema><Id>IsLogin</Id></Schema><Schema><Id>LoginFormDatas</Id></Schema><Schema><Id>CheckingUrl</Id></Schema><Schema><Id>LoginPageUrl</Id></Schema><Schema><Id>UserRole</Id></Schema><Schema><Id>IsAdminRoleUser</Id></Schema><Schema><Id>user</Id></Schema><Schema><Id>name</Id></Schema><Schema><Id>title</Id></Schema><Schema><Id>description</Id></Schema></Properties><LifeCycle>Session</LifeCycle><AssemblyName>xbase.security, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</AssemblyName><ClassName>xbase.security.Security</ClassName></WboSchema>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WboSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Id>Security</Id>
+  <Title>安全组件</Title>
+  <Methods>
+    <WboMethodSchema>
+      <Id>checkPage</Id>
+      <Title>checkPage</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <ExecuteType>none</ExecuteType>
+      <Params />
+      <ReturnType>System.Void</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>CheckObjectPermission</Id>
+      <Title>CheckObjectPermission</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <ExecuteType>none</ExecuteType>
+      <Params>
+        <WboMethodParamSchema>
+          <Id>objectType</Id>
+          <Title>objectType</Title>
+          <DefaultValue />
+          <DataType>System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType>
+        </WboMethodParamSchema>
+        <WboMethodParamSchema>
+          <Id>objectId</Id>
+          <Title>objectId</Title>
+          <DefaultValue />
+          <DataType>System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType>
+        </WboMethodParamSchema>
+        <WboMethodParamSchema>
+          <Id>permissionType</Id>
+          <Title>permissionType</Title>
+          <DefaultValue />
+          <DataType>xbase.security.PermissionTypes, xbase, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</DataType>
+        </WboMethodParamSchema>
+      </Params>
+      <ReturnType>System.Boolean</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>setOA20LoginId</Id>
+      <Title>setOA20LoginId</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <ExecuteType>none</ExecuteType>
+      <Params>
+        <WboMethodParamSchema>
+          <Id>loginId</Id>
+          <Title>loginId</Title>
+          <DefaultValue />
+          <DataType>System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType>
+        </WboMethodParamSchema>
+        <WboMethodParamSchema>
+          <Id>password</Id>
+          <Title>password</Title>
+          <DefaultValue />
+          <DataType>System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType>
+        </WboMethodParamSchema>
+      </Params>
+      <ReturnType>System.Void</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>regUser</Id>
+      <Title>regUser</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <ExecuteType>none</ExecuteType>
+      <Params />
+      <ReturnType>System.Void</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>accreditOA20Respone</Id>
+      <Title>accreditOA20Respone</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <ExecuteType>none</ExecuteType>
+      <Params>
+        <WboMethodParamSchema>
+          <Id>response</Id>
+          <Title>response</Title>
+          <DefaultValue />
+          <DataType>System.Web.HttpResponse, System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</DataType>
+        </WboMethodParamSchema>
+        <WboMethodParamSchema>
+          <Id>isReturnJson</Id>
+          <Title>isReturnJson</Title>
+          <DefaultValue>False</DefaultValue>
+          <DataType>System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType>
+        </WboMethodParamSchema>
+      </Params>
+      <ReturnType>System.Void</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>login</Id>
+      <Title>login</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <ExecuteType>none</ExecuteType>
+      <Params>
+        <WboMethodParamSchema>
+          <Id>userId</Id>
+          <Title>userId</Title>
+          <DefaultValue />
+          <DataType>System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType>
+        </WboMethodParamSchema>
+        <WboMethodParamSchema>
+          <Id>password</Id>
+          <Title>password</Title>
+          <DefaultValue />
+          <DataType>System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType>
+        </WboMethodParamSchema>
+      </Params>
+      <ReturnType>System.Boolean</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>login</Id>
+      <Title>login</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <ExecuteType>none</ExecuteType>
+      <Params>
+        <WboMethodParamSchema>
+          <Id>userId</Id>
+          <Title>userId</Title>
+          <DefaultValue />
+          <DataType>System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType>
+        </WboMethodParamSchema>
+        <WboMethodParamSchema>
+          <Id>password</Id>
+          <Title>password</Title>
+          <DefaultValue />
+          <DataType>System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType>
+        </WboMethodParamSchema>
+        <WboMethodParamSchema>
+          <Id>imgCode</Id>
+          <Title>imgCode</Title>
+          <DefaultValue />
+          <DataType>System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType>
+        </WboMethodParamSchema>
+      </Params>
+      <ReturnType>System.Boolean</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>reload</Id>
+      <Title>reload</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <ExecuteType>none</ExecuteType>
+      <Params />
+      <ReturnType>System.Void</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>Logout</Id>
+      <Title>Logout</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <ExecuteType>none</ExecuteType>
+      <Params />
+      <ReturnType>System.Void</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>isFriend</Id>
+      <Title>isFriend</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <ExecuteType>none</ExecuteType>
+      <Params>
+        <WboMethodParamSchema>
+          <Id>p</Id>
+          <Title>p</Title>
+          <DefaultValue />
+          <DataType>System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType>
+        </WboMethodParamSchema>
+      </Params>
+      <ReturnType>System.Boolean</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>setContext</Id>
+      <Title>setContext</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <ExecuteType>none</ExecuteType>
+      <Params>
+        <WboMethodParamSchema>
+          <Id>umc</Id>
+          <Title>umc</Title>
+          <DefaultValue />
+          <DataType>xbase.umc.Umc, xbase, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</DataType>
+        </WboMethodParamSchema>
+      </Params>
+      <ReturnType>System.Void</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>ToString</Id>
+      <Title>ToString</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <ExecuteType>none</ExecuteType>
+      <Params />
+      <ReturnType>System.String</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>Equals</Id>
+      <Title>Equals</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <ExecuteType>none</ExecuteType>
+      <Params>
+        <WboMethodParamSchema>
+          <Id>obj</Id>
+          <Title>obj</Title>
+          <DefaultValue />
+          <DataType>System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType>
+        </WboMethodParamSchema>
+      </Params>
+      <ReturnType>System.Boolean</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>GetHashCode</Id>
+      <Title>GetHashCode</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <ExecuteType>none</ExecuteType>
+      <Params />
+      <ReturnType>System.Int32</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>GetType</Id>
+      <Title>GetType</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <ExecuteType>none</ExecuteType>
+      <Params />
+      <ReturnType>System.Type</ReturnType>
+    </WboMethodSchema>
+  </Methods>
+  <PermissionTypes>Read</PermissionTypes>
+  <Namespace>xbase.security</Namespace>
+  <AssemblyCategory>DotNet</AssemblyCategory>
+  <Src>C:\Users\lov\AppData\Local\Temp\Temporary ASP.NET Files\vs\edc108a6\bea8ec4d\assembly\dl3\2ad1b5df\d654e74a_a244d301\xbase.security.dll</Src>
+  <IsVisual>false</IsVisual>
+  <IsPublish>false</IsPublish>
+  <Properties>
+    <Schema>
+      <Id>IsLogin</Id>
+    </Schema>
+    <Schema>
+      <Id>LoginFormDatas</Id>
+    </Schema>
+    <Schema>
+      <Id>CheckingUrl</Id>
+    </Schema>
+    <Schema>
+      <Id>LoginPageUrl</Id>
+    </Schema>
+    <Schema>
+      <Id>UserRole</Id>
+    </Schema>
+    <Schema>
+      <Id>IsAdminRoleUser</Id>
+    </Schema>
+    <Schema>
+      <Id>user</Id>
+    </Schema>
+    <Schema>
+      <Id>name</Id>
+    </Schema>
+    <Schema>
+      <Id>title</Id>
+    </Schema>
+    <Schema>
+      <Id>description</Id>
+    </Schema>
+  </Properties>
+  <LifeCycle>Session</LifeCycle>
+  <AssemblyName>xbase.security, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</AssemblyName>
+  <ClassName>xbase.security.Security</ClassName>
+</WboSchema>

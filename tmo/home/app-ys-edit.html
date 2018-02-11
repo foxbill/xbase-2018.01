@@ -1,0 +1,295 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>运势编辑</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+    <link rel="stylesheet" href="../html-plugin/cropper/cropper.css">
+
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../html-plugin/cropper/cropper.js"></script>
+
+    <script src="../ueditor/ueditor.config.js?v1.0.0.2"></script>
+    <script src="../ueditor/ueditor.all.min.js"></script>
+    <script src="../ueditor/lang/zh-cn/zh-cn.js"></script>
+
+    <script src="js/jk.uploadimg.js"></script>
+    <script src="js/jk.html.filter.js"></script>
+
+
+
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+
+
+
+
+    <script type="text/javascript">
+        $(function () {
+            $(imgWxfx).attr("src",
+              "http://qr.liantu.com/api.php?text="
+              + location.href
+              + "?from=2dcode"
+              + "&w=160&m=5"
+            );
+
+            var s = "<div class='container'><p></p></div>";
+
+
+
+            window.ue = UE.getEditor('editor', {
+                toolbars: [[]],
+                //初始化编辑器的内容
+                //initialContent: s,
+                initialFrameHeight: 200,
+                elementPathEnabled: false,
+                autoHeightEnabled: true,
+
+                imageScaleEnabled: false,
+                imagePopup: false
+            });
+            ue.addListener("contentChange", function () {
+                //    $(txtSummary).val(ue.getContentTxt().substr(0, 30));
+            });
+
+        });
+
+
+        //function uploadImage() {
+        //}
+
+
+        function postForm(formData, url, fn) {
+            var oReq = new XMLHttpRequest();
+
+            oReq.open("POST", url, true);
+            oReq.onload = function (oEvent) {
+                var s = oEvent.target.response;
+                fn(s, eval("(" + s + ")"));
+            }
+            oReq.send(formData);
+        }
+
+
+
+        function uploadCropper() {
+            // alert("upload");
+            var ca = $(croImage).cropper('getCroppedCanvas', { width: 600 });
+
+            var data = ca.toDataURL("image/jpeg");
+
+            var formData = new FormData();
+            // var file = new File([blob], "userlogo.jpeg", { type: 'image/jpeg' });
+            // alert(file.type);
+            formData.append('upfile', data);
+
+            postForm(formData, "/ueditor/base64.ashx?action=dataurl", function (resp, json) {
+                $(artImage).val('');
+                ue.execCommand('inserthtml',
+                           "<img alt='' style='width:100%' src='" + json.url + "'/><p></p>");
+                //                $(txtCoverPicture).val(json.url);
+                closeModal();
+
+            });
+        }
+
+        function closeModal() {
+            $(artImage).val("");
+            $('#modalCropper').modal('hide');
+        }
+
+        function cropper() {
+            $(croImage).cropper({
+                aspectRatio: 4 / 3,//16 / 9, //4/3,
+                viewMode: 3,
+                dragMode: 'move',
+                autoCropArea: 1,
+                restore: false,
+                modal: true,
+                guides: true,
+                highlight: false,
+                cropBoxMovable: true,
+                cropBoxResizable: false,
+                center: false,
+                autoCrop: true
+            });
+            $(croImage).cropper('moveTo', 0, 0);
+
+        }
+
+        function insertImage() {
+            $(artImage).change(function () {
+                if (artImage.files.length == 0)
+                    return;
+                $(modalCropper).modal("show");
+                URL = (window.webkitURL || window.URL);
+                url = URL.createObjectURL(artImage.files[0]);
+                croImage.src = url;
+                croImage.style.width = '100%';
+                if ($(croImage).data('cropper')) {
+                    $(croImage).cropper("reset").cropper('replace', url);
+                } else {
+                    cropper();
+                }
+
+            });
+            $(artImage).click();
+        }
+
+        function submitYs() {
+            $(artForm).postForm(function (ret) {
+                if (ret.Err) {
+                    if (ret.Err.Text.indexOf("违反了 PRIMARY KEY 约束") >= 0)
+                        alert("编号输入重复");
+                    else
+                        alert(ret.Err.Text);
+                } else
+                    history.back();
+            });
+            //var formData = new FormData(artForm);
+            //postForm(formData, artForm.action, function (resp, json) {
+            //    if (json.Err) {
+            //        alert(json.Err.Text);
+            //        return;
+            //    }
+
+
+            //});
+        }
+    </script>
+</head>
+<body>
+
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">车友会</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-attr="href:'url'" wbo-bind="navLogo.name">cy168.cc</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+
+    <!--分享提示-->
+    <div id="shareit">
+        <style>
+            .share-text {
+                color: red;
+            }
+
+            #shareit .arrow {
+                height: 300px;
+            }
+        </style>
+        <div class="arrow">
+            <img src="images/share-it.png">
+        </div>
+        <div class="share-text">
+            <h3>点击菜单'...'分享给好友</h3>
+            <h3>领取红包</h3>
+            <h1 class="close-share"><a class="btn btn-lg btn-danger">知道了</a></h1>
+        </div>
+        <!--<img id="share-text" src="http://dev.vxtong.com/cases/nuannan/imgs/share-text.png">-->
+
+    </div>
+
+    <!--编辑表单-->
+    <div class="container" style="padding: 10px">
+        <form role="form" enctype="multipart/form-data" id="artForm" action="AppYsk.form" wbo="AppYsk.row" wbo-query="Num:$.paramVal('Num')" name="Ysk">
+            <input type="hidden" name="pk_Num" wbo-bind="Ysk.pk_Num">
+            <div class="form-group">
+                <input type="text" class="form-control" id="title" wbo-bind="Ysk.Title" name="Title" placeholder="运势标题">
+            </div>
+            <div class="form-group">
+                <label for="inpNum">编号</label>
+                <input class="form-control" id="inpNum" wbo-bind="Ysk.Num" name="Num" type="number" placeholder="编号" />
+            </div>
+            <div class="form-group">
+                <article>
+                    <textarea id="editor" name="Text" style="width: 100%; height: 200px;" wbo-bind="Ysk.Text"></textarea>
+                </article>
+                <div class="btn-toolbar" role="toolbar" style="margin: 0px;">
+                    <div class="btn-group pull-left" style="margin: 0px;">
+                        <button type="button" class="btn btn-default" onclick="insertImage()">图片</button>
+                    </div>
+
+                    <div class="btn-group pull-right">
+                        <button type="button" class="btn btn-default" onclick="submitYs()">发布</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <form id="upLoadForm" action="form_action.asp" method="post" enctype="multipart/form-data">
+            <input name="upfile" id="artImage" type="file" style="display: none" />
+        </form>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modalCropper" aria-labelledby="modalLabel" role="dialog" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modalLabel">剪辑图像</h4>
+                </div>
+                <div class="modal-body">
+                    <div style="background-color: azure; max-height: 350px; overflow: hidden">
+                        <img id="croImage" src="" alt="Picture" style="left: 0px; top: 0px" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" onclick="uploadCropper()">确定</button>
+                    <button type="button" class="btn btn-default" onclick="closeModal()">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

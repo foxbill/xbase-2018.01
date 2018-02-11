@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>MaMyOrder</Id><Title>我的订单</Title><ListCommand><Id>bacba097-4668-420a-b055-58c4202331bc</Id><CommandText>Select 
+  ma_order.*,
+  ma_order_status.OpTitle,
+  ma_order_status.OpIcon,
+  ma_order_status.OpLink+'?OrderNo='+ma_order.OrderNo as OpLink
+
+  
+From 
+    ma_order left join ma_order_status 
+    on ma_order.Status=ma_order_status.Id 
+Where 
+    ma_order.BuyerId=@BuyerId  
+   and ma_order.Status=@Status
+Order By
+    OrderNo desc</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@BuyerId</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Guid</DataType><DefaultValue>[LoginUser.Id]</DefaultValue></ParameterSchema><ParameterSchema><Id>@Status</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Byte</DataType><DefaultValue>0</DefaultValue></ParameterSchema></QueryParams></ListCommand><SubTables><SubTableSchema><Name>MaMyOrderDetails</Name><Fks><FkSchema><Fk>OrderNo</Fk><Pk>OrderNo</Pk></FkSchema></Fks></SubTableSchema></SubTables><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>10</PageSize><References /><PrimaryKeys><string>OrderNo</string></PrimaryKeys><InsertCommand><Id>265a28ea-e499-47d8-a191-5dcda3163444</Id><CommandText>set @CreateTime=getDate();
+set @DetailsId=newId();
+set @Status=1;
+
+if @Model is null or @Model='' begin
+set @Model='-';
+end;
+
+if @Attrs is null or @Attrs='' begin
+set @Attrs='-';
+end;
+
+
+--测试数据
+--declare @BuyerId uniqueidentifier='AF00335A-1D49-46C5-A066-B0ED020C760B';--买家Id=[LoginUser.Id] 当前用户
+--declare @SellerId uniqueidentifier='AF00335A-1D49-46C5-A066-B0ED020C760B';--卖家Id来自商品信息;
+--declare @DetailsId uniqueidentifier=newId();--卖家Id来自商品信息;
+--declare @CreateTime datetime=getDate();
+--declare @SHour nvarchar(12);
+
+--declare @GoodsId uniqueidentifier='EC64DAC0-F394-4D75-AD00-AE224EF72464';--商品-Id
+--declare @Model nvarchar(20)='t111'
+--declare @Price money=1;
+--declare @OrgPrice money=1;
+--declare @Count money=1;
+--declare @Amount money=1;
+--declare @IsPay bit=0;
+--declare @PayAmount money=1;
+--declare @Status smallint=0;
+--declare @ReceiveCountry nvarchar(20)='中国';
+--declare @ReceiveProvince nvarchar(20)='云南';
+--declare @ReceiveCity nvarchar(20)='昆明';
+--declare @ReceiveDistrict nvarchar(20)='官渡';
+--declare @ReceiveName nvarchar(20)='白阳';
+--declare @ReceiveTel nvarchar(20)='13888';
+--declare @ReceiveZip nvarchar(20)='650000';
+--declare @ReceiveDetails nvarchar(20)='双桥路11号';
+--declare @GoodsName nvarchar(20)='老白干';
+--declare @OrderNo nvarchar(18);
+
+
+
+
+	set @SHour=
+		left(replace(replace(replace(CONVERT(varchar, getdate(), 120),'-',''),' ','H'),':',''),11)+'-';
+
+    --创建订单号
+	set @OrderNo =
+		@SHour+Right(
+		(select IsNull(
+			   Convert(
+				  int,Right(Max(OrderNo),6)
+			   ),0
+			)+1000001
+		  from 
+			   ma_order 
+		  where
+			   Left(OrderNo,12)=@SHour),6
+		);
+
+	INSERT INTO ma_order (
+	 [BuyerId],
+	 [SellerId],
+	 [IsPay],
+	 [PayAmount],
+	 [Status],
+	 [ReceiveCountry],
+	 [ReceiveProvince],
+	 [ReceiveCity],
+	 [ReceiveDistrict],
+	 [ReceiveName],
+	 [ReceiveTel],
+	 [ReceiveZip],
+	 [ReceiveDetails],
+	 [CreateTime],
+	[OrderNo])
+	 VALUES (
+	@BuyerId,
+	@SellerId,
+	@IsPay,
+	@PayAmount,
+	@Status,
+	@ReceiveCountry,
+	@ReceiveProvince,
+	@ReceiveCity,
+	@ReceiveDistrict,
+	@ReceiveName,
+	@ReceiveTel,
+	@ReceiveZip,
+	@ReceiveDetails,
+	@CreateTime,
+	@OrderNo);
+
+
+--插入商品明细数据
+INSERT INTO ma_order_details (
+ [Id],
+ [OrderNo],
+ [GoodsId],
+ [GoodsName],
+ [Model],
+ [Price],
+ [OrgPrice],
+ [Count],
+ [Amount],
+[Attrs])
+ VALUES (
+@DetailsId,
+@OrderNo,
+@GoodsId,
+@GoodsName,
+@Model,
+@Price,
+@OrgPrice,
+@Count,
+@Count*@Price,
+@Attrs);
+
+update ma_order 
+   set
+      PayAmount=(select sum(Amount)  from ma_order_details where OrderNo=@OrderNo)
+Where OrderNo=@OrderNo;
+
+
+select * from ma_order_details    where
+ [OrderNo]=@OrderNo and
+ [GoodsId]=@GoodsId and
+ [GoodsName]=@GoodsName and
+ [Model]=@Model and
+ [Attrs]=@Attrs;
+
+
+
+</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@BuyerId</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Guid</DataType><DefaultValue>[LoginUser.Id]</DefaultValue></ParameterSchema><ParameterSchema><Id>@SHour</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>AnsiString</DataType><DefaultValue>20170810H12-</DefaultValue></ParameterSchema></QueryParams></InsertCommand><UpdateCommand><Id>a29eca2b-cf63-4309-a16d-870e3267eca7</Id><CommandText>UPDATE ma_order SET 
+ [PayAmount]=@PayAmount,
+ [Status]=@Status,
+ [ReceiveCountry]=@ReceiveCountry,
+ [ReceiveProvince]=@ReceiveProvince,
+ [ReceiveCity]=@ReceiveCity,
+ [ReceiveDistrict]=@ReceiveDistrict,
+ [ReceiveName]=@ReceiveName,
+ [ReceiveTel]=@ReceiveTel,
+ [ReceiveZip]=@ReceiveZip,
+ [ReceiveDetails]=@ReceiveDetails
+ WHERE 
+ [OrderNo]=@pk_OrderNo and
+[BuyerId]=@BuyerId</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@BuyerId</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Guid</DataType><DefaultValue>[LoginUser.Id]</DefaultValue></ParameterSchema></QueryParams></UpdateCommand><DeleteCommand><Id>1b09c232-4b21-4b31-8fde-ddc5c3955aef</Id><CommandText>DELETE FROM ma_order WHERE  [OrderNo]=@pk_OrderNo
+ and
+[BuyerId]=@BuyerId</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@BuyerId</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Guid</DataType><DefaultValue>[LoginUser.Id]</DefaultValue></ParameterSchema></QueryParams></DeleteCommand><SelectCommand><Id>32c85bf8-a242-44e7-b0f0-514bf1b2da18</Id><CommandText>Select 
+  ma_order.*,
+  ma_order_status.OpTitle,
+  ma_order_status.OpIcon
+
+  
+From 
+    ma_order left join ma_order_status 
+    on ma_order.Status=ma_order_status.Id 
+Where 
+   ma_order.OrderNo=@OrderNo
+   and ma_order.BuyerId=@BuyerId</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@OrderNo</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>AnsiString</DataType><DefaultValue /></ParameterSchema><ParameterSchema><Id>@BuyerId</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Guid</DataType><DefaultValue>[LoginUser.Id]</DefaultValue></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>OrderNo</Id><Title>订单号</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>BuyerId</Id><Title>买家</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>SellerId</Id><Title>卖家</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>IsPay</Id><Title>是否付款</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Boolean</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>PayAmount</Id><Title>付款金额</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Decimal</DataType><Visable>true</Visable><EditFormat>0.00</EditFormat><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Status</Id><Title>订单状态</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int16</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ReceiveCountry</Id><Title>收货国家</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ReceiveProvince</Id><Title>收货省</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ReceiveCity</Id><Title>收货城市</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ReceiveDistrict</Id><Title>收货区县</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ReceiveName</Id><Title>收货人</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ReceiveTel</Id><Title>收货人电话</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ReceiveZip</Id><Title>收货人邮编</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int32</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ReceiveDetails</Id><Title>收货人详情</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>GoodsName</Id><Title>商品名称</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>CreateTime</Id><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>DateTime</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>BuyerStoreId</Id><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>OpTitle</Id><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>OpIcon</Id><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>OpLink</Id><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>SellerStoreId</Id><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>WaybillNo</Id><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>ma_order</TableName><IsPagingByParams>true</IsPagingByParams></DataSourceSchema>

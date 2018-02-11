@@ -1,1 +1,77 @@
-﻿<?xml version="1.0" encoding="utf-8"?><WboSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>ParameterDirectionCaptions</Id><Title>ParameterDirectionCaptions</Title><Methods><WboMethodSchema><Id>caption</Id><Title>caption</Title><PermissionTypes>Read</PermissionTypes><Params><WboMethodParamSchema><Id>direction</Id><Title>direction</Title><DefaultValue /><DataType>System.Data.ParameterDirection, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType></WboMethodParamSchema></Params><ReturnType>System.String</ReturnType></WboMethodSchema><WboMethodSchema><Id>valueTextPairs</Id><Title>valueTextPairs</Title><PermissionTypes>Read</PermissionTypes><Params /><ReturnType>System.Collections.Generic.List`1[xbase.ValueTextPair`1[System.Int32]]</ReturnType></WboMethodSchema><WboMethodSchema><Id>ToString</Id><Title>ToString</Title><PermissionTypes>Read</PermissionTypes><Params /><ReturnType>System.String</ReturnType></WboMethodSchema><WboMethodSchema><Id>Equals</Id><Title>Equals</Title><PermissionTypes>Read</PermissionTypes><Params><WboMethodParamSchema><Id>obj</Id><Title>obj</Title><DefaultValue /><DataType>System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType></WboMethodParamSchema></Params><ReturnType>System.Boolean</ReturnType></WboMethodSchema><WboMethodSchema><Id>GetHashCode</Id><Title>GetHashCode</Title><PermissionTypes>Read</PermissionTypes><Params /><ReturnType>System.Int32</ReturnType></WboMethodSchema><WboMethodSchema><Id>GetType</Id><Title>GetType</Title><PermissionTypes>Read</PermissionTypes><Params /><ReturnType>System.Type</ReturnType></WboMethodSchema></Methods><PermissionTypes>Read</PermissionTypes><Namespace>xbase.data</Namespace><AssemblyCategory>DotNet</AssemblyCategory><Src>C:\Users\Jinot\AppData\Local\Temp\Temporary ASP.NET Files\vs\8a48e25c\3dc5177b\assembly\dl3\3d828a5b\608bcc00_ddbad001\xbase.data.dll</Src><IsVisual>false</IsVisual><IsPublish>false</IsPublish><Properties><Schema><Id>captions</Id></Schema></Properties><LifeCycle>Request</LifeCycle><AssemblyName>xbase.data, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</AssemblyName><ClassName>xbase.data.ParameterDirectionCaptions</ClassName></WboSchema>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WboSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Id>ParameterDirectionCaptions</Id>
+  <Title>ParameterDirectionCaptions</Title>
+  <Methods>
+    <WboMethodSchema>
+      <Id>caption</Id>
+      <Title>caption</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <Params>
+        <WboMethodParamSchema>
+          <Id>direction</Id>
+          <Title>direction</Title>
+          <DefaultValue />
+          <DataType>System.Data.ParameterDirection, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType>
+        </WboMethodParamSchema>
+      </Params>
+      <ReturnType>System.String</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>valueTextPairs</Id>
+      <Title>valueTextPairs</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <Params />
+      <ReturnType>System.Collections.Generic.List`1[xbase.ValueTextPair`1[System.Int32]]</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>ToString</Id>
+      <Title>ToString</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <Params />
+      <ReturnType>System.String</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>Equals</Id>
+      <Title>Equals</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <Params>
+        <WboMethodParamSchema>
+          <Id>obj</Id>
+          <Title>obj</Title>
+          <DefaultValue />
+          <DataType>System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</DataType>
+        </WboMethodParamSchema>
+      </Params>
+      <ReturnType>System.Boolean</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>GetHashCode</Id>
+      <Title>GetHashCode</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <Params />
+      <ReturnType>System.Int32</ReturnType>
+    </WboMethodSchema>
+    <WboMethodSchema>
+      <Id>GetType</Id>
+      <Title>GetType</Title>
+      <PermissionTypes>Read</PermissionTypes>
+      <Params />
+      <ReturnType>System.Type</ReturnType>
+    </WboMethodSchema>
+  </Methods>
+  <PermissionTypes>Read</PermissionTypes>
+  <Namespace>xbase.data</Namespace>
+  <AssemblyCategory>DotNet</AssemblyCategory>
+  <Src>C:\Users\Jinot\AppData\Local\Temp\Temporary ASP.NET Files\vs\8a48e25c\3dc5177b\assembly\dl3\3d828a5b\608bcc00_ddbad001\xbase.data.dll</Src>
+  <IsVisual>false</IsVisual>
+  <IsPublish>false</IsPublish>
+  <Properties>
+    <Schema>
+      <Id>captions</Id>
+    </Schema>
+  </Properties>
+  <LifeCycle>Request</LifeCycle>
+  <AssemblyName>xbase.data, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</AssemblyName>
+  <ClassName>xbase.data.ParameterDirectionCaptions</ClassName>
+</WboSchema>

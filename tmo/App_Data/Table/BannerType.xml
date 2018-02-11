@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>BannerType</Id><ListCommand><Id>e6131bba-394c-48e8-84ba-eaa632c27aa5</Id><CommandText>banner_type</CommandText><CommandType>TableDirect</CommandType></ListCommand><SubTables /><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>10</PageSize><References /><PrimaryKeys><string>Id</string></PrimaryKeys><InsertCommand><Id>25227dc9-dc6a-444f-be4e-83257f6edf47</Id><CommandText>INSERT INTO banner_type (
+ [Id],
+ [Type])
+ VALUES (
+@Id,
+@Type)</CommandText><CommandType>Text</CommandType></InsertCommand><UpdateCommand><Id>5a38cf49-478f-482c-bf79-d47b6dd304ef</Id><CommandText>UPDATE banner_type SET 
+ [Id]=@Id,
+ [Type]=@Type
+ WHERE 
+ [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></UpdateCommand><DeleteCommand><Id>1e89bc2f-9365-4c50-af6a-2b5e39576bb1</Id><CommandText>DELETE FROM banner_type WHERE  [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></DeleteCommand><SelectCommand><Id>a13a1ed3-f12e-47c4-bab0-dcbba5dc3bd0</Id><CommandText>Select * From banner_type Where Id=@Id</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@Id</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Int32</DataType><DefaultValue /></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>Id</Id><Title>类型编号</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int32</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Type</Id><Title>类型</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>banner_type</TableName><IsPagingByParams>false</IsPagingByParams></DataSourceSchema>

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>SelProvince</Id><ListCommand><CommandText>Select p_name as text, p_id as value From province</CommandText><CommandType>Text</CommandType></ListCommand><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>100</PageSize><References /><LookupFields /><PrimaryKeys><string>p_id</string></PrimaryKeys><InsertCommand><CommandText>INSERT INTO province (
+ [p_id],
+ [p_name],
+ [IsUse])
+ VALUES (
+@p_id,
+@p_name,
+@IsUse)</CommandText><CommandType>Text</CommandType></InsertCommand><UpdateCommand><CommandText>UPDATE province SET 
+ [p_id]=@p_id,
+ [p_name]=@p_name,
+ [IsUse]=@IsUse
+ WHERE 
+ [p_id]=@pk_p_id</CommandText><CommandType>Text</CommandType></UpdateCommand><DeleteCommand><CommandText>DELETE FROM province WHERE  [p_id]=@pk_p_id</CommandText><CommandType>Text</CommandType></DeleteCommand><SelectCommand><CommandText>Select p_name as text, p_id as value From province Where p_id=@p_id</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@p_id</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Int32</DataType><DefaultValue /></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>text</Id><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>value</Id><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int32</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>province</TableName><IsPagingByParams>false</IsPagingByParams></DataSourceSchema>

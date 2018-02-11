@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>MaOrderStatus</Id><ListCommand><Id>b46ef9b3-5030-4b47-a77d-967e06a0fc46</Id><CommandText>Select a.Id,
+         a.Status,
+         a.BtnIcon,
+         a.Remark, 
+         case when Count(b.OrderNo) =0 then '' else 
+         cast(Count(b.OrderNo) as varchar(5)) end  as OrderCount
+From 
+    ma_order_status a left join ma_order b
+    on  a.Id=b.Status and
+    b.BuyerId=@UserId
+
+Group By  a.Id,
+         a.Status,
+         a.BtnIcon,
+         a.Remark
+
+    </CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@UserId</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Guid</DataType><DefaultValue>[LoginUser.Id]</DefaultValue></ParameterSchema></QueryParams></ListCommand><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>10</PageSize><PrimaryKeys><string>Id</string></PrimaryKeys><InsertCommand><Id>30d95165-8489-4d94-bb37-6db2f73253ef</Id><CommandText>INSERT INTO ma_order_status (
+ [Id],
+ [Status],
+ [Remark])
+ VALUES (
+@Id,
+@Status,
+@Remark)</CommandText><CommandType>Text</CommandType></InsertCommand><UpdateCommand><Id>ec90d167-797c-446c-896e-db636f3501c8</Id><CommandText>UPDATE ma_order_status SET 
+ [Id]=@Id,
+ [Status]=@Status,
+ [Remark]=@Remark
+ WHERE 
+ [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></UpdateCommand><DeleteCommand><Id>43849141-2735-4a02-91c4-d6be53c1c304</Id><CommandText>DELETE FROM ma_order_status WHERE  [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></DeleteCommand><SelectCommand><Id>55bcdc93-8be8-40c9-8bbf-1ca2c53bb9c2</Id><CommandText>Select a.Id,
+         a.Status,
+         a.BtnIcon,
+         a.Remark, 
+        Count(b.OrderNo) as OrderCount
+From 
+    ma_order_status a left join ma_order b
+    on  a.Id=b.Status
+ Where Id=@Id
+Group By  a.Id,
+         a.Status,
+         a.BtnIcon,
+         a.Remark
+
+    </CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@Id</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Int16</DataType><DefaultValue /></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>Id</Id><Title>Id</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int16</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Status</Id><Title>状态</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Remark</Id><Title>备注</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>BtnIcon</Id><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>OrderCount</Id><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int32</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>ma_order_status</TableName><IsPagingByParams>true</IsPagingByParams></DataSourceSchema>

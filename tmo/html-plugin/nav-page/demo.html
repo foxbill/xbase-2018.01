@@ -1,0 +1,54 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>侧滑导航页</title>
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/nav-page.css" rel="stylesheet" />
+    <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/nav-page.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-page">
+            <div class="nav">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="media">
+                            <div class="media-left">
+                                <a href="#">
+                                    <img class="media-object" src="img/head.jpg" style="width: 40px" alt="...">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">Media heading</h4>
+                                性别:<span>女</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ul class="list-group">
+                    <li class="list-group-item" href="page1.html">item1</li>
+                    <li class="list-group-item" href="about:blank">item1</li>
+                    <li class="list-group-item" href="about:blank">item1</li>
+                    <li class="list-group-item" href="about:blank">item1</li>
+                    <li class="list-group-item" href="about:blank">item1</li>
+                </ul>
+            </div>
+            <div class="page">
+                <div class="page-header" style="">
+                    <button class="btn back-btn pull-left" style="margin-right: 10px">
+                        <span class="glyphicon glyphicon-arrow-left"></span>
+                    </button>
+                    <h3 class="page-title">带有title 的面板标题
+                    </h3>
+                </div>
+                <div class="page-body" style="height: 100%">
+                    <iframe src="page1.html" style="width: 100%; height: 100%; border: 1px solid blue;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

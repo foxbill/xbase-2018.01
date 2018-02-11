@@ -1,0 +1,420 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>订单</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../html-plugin/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/hammer.min.js"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/jquery.hammer.js"></script>
+
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/wx.pay.js?v=1.0.0.4"></script>
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+
+    <script>
+        xBase.errHandle = function (err) {
+            $("#errModal").find(".modal-body").html(err.Text);
+            $("#errModal").modal("show");
+        }
+        xBase.debug = false;
+        //wbo="MaMyDefaultAddr.row"
+
+        $(function () {
+
+            $("li[wbo-bind='MyAddrs.item']").click(function () {
+                var json = this.ctrl.data();
+                $("[wbo-bind='Order.ReceiveName']").valu(json.Receiver);
+                $("[wbo-bind='Order.ReceiveTel']").valu(json.Tel);
+                $("[wbo-bind='Order.ReceiveProvince']").valu(json.Province);
+                $("[wbo-bind='Order.ReceiveCity']").valu(json.City);
+                $("[wbo-bind='Order.ReceiveDistrict']").valu(json.District);
+                $("[wbo-bind='Order.ReceiveZip']").valu(json.Zip);
+                $("[wbo-bind='Order.ReceiveDetails']").valu(json.Details);
+
+                $(frmMyOrder).postForm(function (json) {
+                    $("[wbo='MaMyOrder.form']").jsonForm().data(json);
+                    $("#elOrderDetails").jsonList(json.Details[0].Rows);
+                });
+            });
+
+        });
+    </script>
+
+    <script type="text/javascript">
+
+        //设置激活按钮状态
+        $(function () {
+            var color = "#7f9f5c";
+            var $btn = $("#" + $.paramVal("nId"));
+            $btn.find("i").css("color", color);
+            $btn.find("div").css("color", color);
+        });
+
+
+        $(function () {
+            var details = $("[wbo='MaMyOrder.form']").jsonForm().data().Details[0].Rows;
+            //  var c = 0;
+            //  for (var i = 0; i < details.length; i++) {
+            //      c += parseFloat(details[i].Amount);
+            //  }
+            // $("#elOrderAmount").html(c);
+            // $("#inpOrderAmount").val(c);
+            $("#elOrderDetails").jsonList(details);
+
+            //用户确认支付
+            $("[data-command='OrderPay']").click(function () {
+                var recName = $("input[wbo-bind='Order.ReceiveName']").val();
+                var recTel = $("input[wbo-bind='Order.ReceiveTel']").val();
+                if (!recName || !recTel) {
+                    $(errText).html("请选择收货人");
+                    $(errModal).modal("show");
+                    return;
+                }
+
+                var xOrder = $("[wbo='MaMyOrder.form']").jsonForm().data().Form;
+                var wxOrder = {
+                    out_trade_no: xOrder.pk_OrderNo,       //订单号
+                    total_fee: xOrder.PayAmount * 100,           //付款金额(分)
+                    body: $("title").html() + ",收货人:" + $("[wbo-bind='Order.ReceiveName']").valu(),  //付款说明
+                    attach: "运势小品"  //附加信息
+                };
+
+                wxPay(wxOrder, function (res) {
+                    if (res.err_msg.indexOf("ok") > -1) {
+                        $(elPaySuccess).show();
+                        $("[data-command='OrderPay']").hide();
+
+                        $("[wbo-bind='Order.Status']").valu(2);
+                        $(frmMyOrder).postForm(function (json) {
+                            if (json.Err) {
+                                alert(json.Err.Message)
+                                return;
+                            }
+                        });
+                    }
+                })
+
+            });
+
+            function wxshare() {
+                $(shareit).show();
+                $("#shareit .close-share").click(function () {
+                    $(shareit).hide();
+                });
+            }
+
+            $('#head-carousel').hammer().on('swipeleft', function () {
+
+                $(this).carousel('next');
+
+            });
+
+            $('#head-carousel').hammer().on('swiperight', function () {
+
+                $(this).carousel('prev');
+
+            });
+
+
+
+        });
+
+        function reloadForm() {
+            $("[wbo='MaMyOrder.form']").jsonForm().reload();
+            var details = $("[wbo='MaMyOrder.form']").jsonForm().data().Details[0].Rows;
+            $("#elOrderDetails").jsonList(details);
+        }
+
+        function getTotalAmount() {
+            var rows = $("#elOrderDetails").jsonList().data();
+            var c = 0;
+
+            if (rows) {
+                for (var i = 0; i < rows.length; i++) {
+                    var a = parseFloat(rows[i].Price) * parseInt(rows[i].Count);
+                    c += a;
+                }
+                c = c.toFixed(2);
+                $(elOrderAmount).html(c);
+                $(inpOrderAmount).val(c);
+                $(frmMyOrder).postForm();
+            } else {
+                $.rCall("MaMyOrder.delete", { row: { pk_OrderNo: $.paramVal("OrderNo") } });
+            }
+        }
+
+        function addCount() {
+            var el = event.target;
+            var elCount = $(el).prev();
+            elCount.val(parseInt(elCount.val()) + 1);
+            var row = el.row.data();
+            $.rCall("MaMyOrderDetails.update", { row: row });
+            getTotalAmount();
+            reloadForm();
+        }
+        function decCount() {
+            var el = event.target;
+            var elCount = $(el).next();
+            var c = parseInt(elCount.val());
+            c--;
+            elCount.val(c);
+            var row = el.row.data();
+            if (c > 0) {
+                $.rCall("MaMyOrderDetails.update", { row: row });
+            }
+            else {
+                $.rCall("MaMyOrderDetails.delete", { row: row });
+                $("#elOrderDetails").jsonList().removeItem(el.row.$);
+            }
+
+
+            getTotalAmount();
+            reloadForm();
+        }
+    </script>
+
+</head>
+<body>
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">车友会</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-attr="href:'url'" wbo-bind="navLogo.name">cy168.cc</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+
+    <!--分享提示-->
+    <div id="shareit">
+        <style>
+            .share-text {
+                color: red;
+            }
+
+            #shareit .arrow {
+                height: 300px;
+            }
+        </style>
+        <div class="arrow">
+            <img src="images/share-it.png">
+        </div>
+        <div class="share-text">
+            <h3>点击菜单'...'分享给好友</h3>
+            <h3>领取红包</h3>
+            <h1 class="close-share"><a class="btn btn-lg btn-danger">知道了</a></h1>
+        </div>
+        <!--<img id="share-text" src="http://dev.vxtong.com/cases/nuannan/imgs/share-text.png">-->
+
+    </div>
+
+    <!--用户信息-->
+    <div class="container full">
+        <style>
+            .person-info {
+                padding-top: 30px;
+                padding-bottom: 30px;
+                margin-top: 0px;
+            }
+
+                .person-info .media-body a {
+                    margin-right: 10px;
+                }
+        </style>
+        <div class="media person-info section-panel bg-blue-1" wbo="LoginUser.call" name="user">
+            <div class="">
+                <div class="media-left " href="#">
+                    <img class="head-photo  img-circle" src="images/headphoto.jpg" wbo-bind="user.HeadPhoto" alt="头像">
+                </div>
+                <div class="media-body">
+                    <h3 class="media-heading white" wbo-bind="user.Name">LOLA</h3>
+                    <div class="white" wbo-bind="user.Sign">朝花夕拾杯中酒</div>
+                </div>
+                <a class="btn media-right white" link="my-info.html">
+                    <i class="fa fa-arrow-right white" style="vertical-align: central; font-size: 30px"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!--订单-->
+    <div class="container" id="elOrder" wbo="MaMyOrder.form" wbo-query="OrderNo:$.paramVal('OrderNo')" name="OrderData">
+        <style>
+            [wbo='MaMyAddr.rows'] li a {
+                white-space: normal;
+            }
+        </style>
+        <div wbo-bind="OrderData.Form" name="Order">
+            <form action="MaMyOrder.form" id="frmMyOrder">
+                <div class="page-header">
+                    <h1 class="panel-title">商品订单</h1>
+                    <div>订单号：<span wbo-bind="Order.OrderNo"></span></div>
+                    <input type="hidden" wbo-bind="Order.pk_OrderNo" name="pk_OrderNo" />
+                    <input type="hidden" wbo-bind='Order.Status' name="Status" />
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <label class="pull-left">
+                            收货人：
+                        </label>
+                        <div class="btn-group">
+                            <a class="btn btn-info btn-sm" href="my-address-edit.html" id="elAddAddr">添加收货人</a>
+                            <a class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" id="dropMyAddress">选择收货人<span class="caret"></span></a>
+                            <ul wbo="MaMyAddr.rows" wbo-ctrl="jsonList" class="dropdown-menu" name="MyAddrs">
+                                <li wbo-bind="MyAddrs.item" wbo-attr="'data-id':'MyAddrs.Id'" style="border-bottom: 1px solid #eee">
+                                    <a>
+                                        <span wbo-bind="MyAddrs.Receiver"></span>
+                                        <span wbo-bind="MyAddrs.Tel"></span>
+                                        <span wbo-bind="MyAddrs.Province"></span>
+                                        <span wbo-bind="MyAddrs.City"></span>
+                                        <span wbo-bind="MyAddrs.District"></span>
+                                        <span wbo-bind="MyAddrs.Zip"></span>
+                                        <span wbo-bind="MyAddrs.Details"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <address>
+                            <strong wbo-bind="Order.ReceiveName"></strong>
+                            <input wbo-bind="Order.ReceiveName" type="hidden" name="ReceiveName" />
+                            <span wbo-bind="Order.ReceiveTel"></span>
+                            <input wbo-bind="Order.ReceiveTel" type="hidden" name="ReceiveTel" />
+                            <span wbo-bind="Order.ReceiveProvince"></span>
+                            <input wbo-bind="Order.ReceiveProvince" type="hidden" name="ReceiveProvince" />
+                            <span wbo-bind="Order.ReceiveCity"></span>
+                            <input wbo-bind="Order.ReceiveCity" type="hidden" name="ReceiveCity" />
+                            <span wbo-bind="Order.ReceiveDistrict"></span>
+                            <input wbo-bind="Order.ReceiveDistrict" type="hidden" name="ReceiveDistrict" />
+                            <span wbo-bind="Order.ReceiveZip"></span>
+                            <input wbo-bind="Order.ReceiveZip" type="hidden" name="ReceiveZip" />
+                            <span wbo-bind="Order.ReceiveDetails"></span>
+                            <input wbo-bind="Order.ReceiveDetails" type="hidden" name="ReceiveDetails" />
+                        </address>
+                        <ul class="media-list" id="elOrderDetails" name="Details">
+                            <li class="media" wbo-bind="Details.item">
+                                <div class="media-left" style="min-width: 100px">
+                                    <a href="#">
+                                        <img wbo-bind="Details.Pic1" class="img-responsive" alt="...">
+                                    </a>
+                                </div>
+                                <div class="media-body">
+                                    <h4 class="media-heading" wbo-bind="Details.GoodsName">...</h4>
+                                    <div wbo-bind="Details.Model"></div>
+                                    <div wbo-bind="Details.Attrs"></div>
+                                </div>
+                                <div class="media-right" style="white-space: nowrap; vertical-align: bottom">
+                                    <div>单价：<span wbo-bind="Details.Price"></span></div>
+                                    <div class="red">金额：<span wbo-bind="Details.Amount"></span></div>
+                                </div>
+                                <div class="media-bottom">
+                                    <div class="input-group pull-right" style="width: 100px">
+                                        <span class="input-group-addon" data-get="Details.row" id="basic-addon1" onclick="decCount()">-</span>
+                                        <input type="text" wbo-bind="Details.Count" class="form-control" value="0" aria-describedby="basic-addon1" style="text-align: center">
+                                        <span class="input-group-addon" data-get="Details.row" onclick="addCount()">+</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <div class="panel-footer" style="overflow: hidden">
+                        <p class="pull-right" style="color: red; font-size: 20px">
+                            金额：￥
+                          <span wbo-bind="Order.PayAmount" id="elOrderAmount">0</span>元
+                            <input wbo-bind="Order.PayAmount" id="inpOrderAmount" type="hidden" name="PayAmount" />
+                            <a class="btn btn-success btn-sm" data-command='OrderPay'>付款</a>
+                            <span id="elPaySuccess" style="color: green; font-size: 20px; display: none">付款成功</span>
+                        </p>
+                    </div>
+
+                </div>
+
+
+            </form>
+        </div>
+    </div>
+
+    <!-- 错误提示窗口 -->
+    <div class="modal fade" id="errModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header red">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title red" id="myModalLabel">错误提示</h4>
+                </div>
+                <div class="modal-body" id="errText">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--手机底部导航-->
+    <div class="footer-fill  visible-xs visible-sm"></div>
+    <nav class="nav-bottom  visible-xs visible-sm" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbar">
+        <div class="col col-sm-3 col-xs-3" wbo-bind="navbar.item">
+            <a class=" img-btn" href="gw.html" wbo-attr="href:'link'" wbo-up="navbar" style="text-align: center">
+                <!--<img src="images/icon/js.png" wbo-bind="navbar.icon" />-->
+                <div style="font-size: 14px">
+                    <i style="font-size: 22px" wbo-attr="class:'icon'" class="fa fa-home icon-spin"></i>
+                </div>
+                <div class="img-btn-text" wbo-bind="navbar.text">首页</div>
+            </a>
+        </div>
+    </nav>
+
+
+</body>
+</html>

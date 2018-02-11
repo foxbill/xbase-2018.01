@@ -1,5 +1,15 @@
-﻿
-var xBase = { debug: true };
+﻿var xBase = {
+    v: 'g2.1',
+    debug: false,
+    errHandle: null,//function(Err){}
+    LoginUser: "",//失效,新版使用User
+    User: null,
+    Agent: {
+        isWx: false
+    },
+    onWeixinReady: function () { }
+};
+
 
 /***
 *  数据类型判断工具
@@ -131,6 +141,34 @@ Array.prototype.clear = function () {
     }
 };
 
+String.prototype.midStr = function (starStr, endStr) {
+    var p1 = this.indexOf(starStr) + starStr.length;
+    var p2 = this.indexOf(endStr, p1);
+    return this.substring(p1, p2);
+
+}
+
+Date.prototype.format = function (fmt) {
+    var o = {
+        "M+": this.getMonth() + 1,                 //月份 
+        "d+": this.getDate(),                    //日 
+        "h+": this.getHours(),                   //小时 
+        "H+": this.getHours(),                   //小时 
+        "m+": this.getMinutes(),                 //分 
+        "s+": this.getSeconds(),                 //秒 
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+        "S": this.getMilliseconds()             //毫秒 
+    };
+    if (/(y+)/.test(fmt)) {
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    }
+    for (var k in o) {
+        if (new RegExp("(" + k + ")").test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        }
+    }
+    return fmt;
+}
 
 
 function rCall(objMember, params, fn) {
@@ -139,16 +177,19 @@ function rCall(objMember, params, fn) {
     var qryStr = "";
     var ary = objMember.split("?");
     objMember = ary[0];
+
     if (ary.length > 1)
         qryStr = ary[1];
 
+    if (location.protocol == "file:")
+        return;
 
     if (fn && TypeUtils.isFunction(fn))
         func = fn;
     else if (params && TypeUtils.isFunction(params))
         func = params
 
-    var handles = [".wbo", ".call", ".dir", ".free", ".disp", ".del", ".set", ".keep", ".data", ".cols", ".grid", ".row", ".rows", ".update", ".delete", ".insert", ".sub"];
+    var handles = [".wbo", ".call", ".dir", ".free", ".disp", ".del", ".set", ".keep", ".data", ".cols", ".grid", ".row", ".rows", ".update", ".delete", ".insert", ".sub", ".columns", ".form"];
 
     var handle = objMember.substr(objMember.lastIndexOf("."));
 
@@ -178,10 +219,7 @@ function rCall(objMember, params, fn) {
     }
 
     function showErr(msg, no) {
-        document.open()
-        document.clear();
-        document.write(msg);
-        document.close();
+        alert(msg);
     }
 
     $.ajax({
@@ -190,7 +228,7 @@ function rCall(objMember, params, fn) {
         type: "post",
         async: !!func,
         processData: true,
-        timeout: 10000,
+        timeout: 20000,
         dataType: "json",
         success: function (json) {
             ret = json;
@@ -205,6 +243,9 @@ function rCall(objMember, params, fn) {
                     document.writeln("<br/>");
                     document.writeln(ret.Err.ErrStack);
                     document.close();
+                }
+                else if (xBase.errHandle) {
+                    xBase.errHandle(ret.Err);
                 }
                 else
                     showErr(ret.Err.Text);
@@ -239,8 +280,11 @@ function rCall(objMember, params, fn) {
     function Url() {
         var s = window.location.href;
         var vars = [], hash;
+
         if (s.indexOf("?") > 0) {
-            var hashes = s.slice(window.location.href.indexOf('?') + 1).split('&');
+            s = s.slice(s.indexOf('?') + 1);
+            s = s.replace(/\?from=2dcode/gi, "");
+            var hashes = s.split('&');
             for (var i = 0; i < hashes.length; i++) {
                 hash = hashes[i].split('=');
                 vars.push(hash[0]);
@@ -254,11 +298,60 @@ function rCall(objMember, params, fn) {
         this.queryString = vars;
     }
 
+    function postFormData(formData, url, fn, prFn) {
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            cache: false,
+            data: formData,
+            processData: false,
+            //            dataType: 'json',
+            contentType: false,
+            xhr: function () {
+                var myXhr = $.ajaxSettings.xhr();
+                if (myXhr.upload) {
+                    myXhr.upload.addEventListener('progress', prFn, false);
+                }
+                return myXhr;
+            },
+            success: function (ret) {
+                if (fn)
+                    fn(eval("(" + ret + ")"));
+            },
+            error: function (xhr, err) {
+                var msg;
+                msg = err + "," + xhr.status + ": " + xhr.statusText;
+                alert(msg);
+            }
+        });
+
+        //var oReq = new XMLHttpRequest();
+
+        //oReq.open("POST", url, true);
+        //oReq.onload = function (oEvent) {
+        //    var s = oEvent.target.response;
+        //    debugger;
+        //    if (fn)
+        //        fn(eval("(" + s + ")"));
+        //}
+        //oReq.send(formData);
+        //if (prFn) {
+        //    //            oReq.upload.onprogress = prFn;
+        //    oReq.upload.addEventListener("progress", prFn, false);
+        //}
+    }
+
+    function postForm(form, fn, prFn) {
+        var formData = new FormData(form);
+        postFormData(formData, form.action, fn, prFn);
+    }
 
 
     $.extend({
         url: new Url(),
-        rCall: rCall
+        rCall: rCall,
+        postFormData: postFormData
     })
 
     $.extend({
@@ -275,6 +368,7 @@ function rCall(objMember, params, fn) {
             else
                 return url.queryString[x]
         }
+
     })
 
     $.fn.extend({
@@ -294,6 +388,9 @@ function rCall(objMember, params, fn) {
                 _this.outerWidth(p.width());
                 _this.outerHeight(p.height());
             });
+        },
+        postForm: function (fn, prFn) {
+            postForm(this[0], fn, prFn);
         }
 
     })
@@ -310,10 +407,26 @@ function rCall(objMember, params, fn) {
                     value = "";
 
                 switch (element.nodeName) {
-                    case "SELECT": case "TEXTAREA":
-                        element.value = value;
+                    case "SELECT":
+                        $(element).val(value).trigger("change");
+                        //var hasItem = false;
+                        //for (var i = 0; i < element.options.length; i++) {
+                        //    if (element.options[i].value == value) {
+                        //        element.options[i].selected = true;
+                        //        hasItem = true;
+                        //        $(element).val(value).trigger("change");
+                        //    }
+                        //    else {
+                        //        element.options[i].selected = false;
+                        //    }
+                        //}
+                        //if (!hasItem) {
+                        //    element.options.add(new Option(value, value));
+                        //    element.value = value;
+                        //}
+
                         break;
-                    case "INPUT":
+                    case "INPUT": case "TEXTAREA":
                         if (!element.attributes["type"] || element.attributes["type"] == undefined) {
                             element.value = value;
                             break;
@@ -348,15 +461,16 @@ function rCall(objMember, params, fn) {
                         element.nodeValue = value;
                         break
                     case "IMG": case "IFRAME":
-                        element.src = value;
+                        if (value)
+                            element.src = value;
                         break;
-                    case "A":
-                        element.href = value;
-                        break;
+                        //case "A":
+                        //    element.href = value;
+                        //    break;
                     default:
-                        element.innerHTML = value;
-                        element.innerHTML = element.innerText;
-                        //$(element).html(value);
+                        //   element.innerHTML = value;
+                        //  element.innerHTML = element.innerText;
+                        $(element).html(value);
                         break;
                 }
             }
@@ -373,6 +487,9 @@ function rCall(objMember, params, fn) {
                     case "TEXTAREA":
                         return element.value;
                     case "INPUT":
+                        if (!element.attributes["type"]) {
+                            return element.value;
+                        }
                         switch (element.attributes["type"].value) {
                             case "checkbox":
                                 return element.checked;
@@ -392,10 +509,10 @@ function rCall(objMember, params, fn) {
                         return element.value;
                     case "IFRAME": case "IMG":
                         return element.src;
-                    case "A":
-                        return element.href;
+                        //case "A":
+                        //    return element.href;
                     default:
-                        return $(element).text();
+                        return $(element).html();
                 }
             }
         }
@@ -474,6 +591,52 @@ function rCall(objMember, params, fn) {
 
 })(jQuery);
 
+
 $(function () {
+    $("body").on("click","[link]",function () {
+        var url = $(this).attr('link');
+        var param = $(this).attr('link-params');
+        var taget = $(this).attr('link-target');
+
+        if (!url) return;
+
+        if (param) {
+            if (param[0] != "{")
+                param = "{" + param + "}";
+            url += "?" + $.param(eval("(" + param + ")"));
+        }
+
+        if (taget) {
+            $("iframe[name='" + taget + "']").attr("src", url);
+        }
+        location.href = url;
+
+    });
+});
+
+function initXBase() {
+    if (location.protocol == "file:")
+        return;
+
     var ret = $.rCall("Security.checkPage");
-})
+
+    xBase.Agent.isWx = $.rCall("BrowserAgent.isWeiXin");
+
+    if (xBase.Agent.isWx) {
+        var oa = $.rCall("OAuth20Api");
+        if (!oa.isAuth)
+            $.rCall("OAuth20Api.login", { scope: "snsapi_base" });
+        else {
+            getUser()
+            xBase.onWeixinReady();
+        }
+    } else
+        getUser();
+
+    function getUser() {
+        xBase.User = $.rCall("LoginUser");
+        xBase.LoginUser = xBase.User;
+    }
+}
+
+initXBase();

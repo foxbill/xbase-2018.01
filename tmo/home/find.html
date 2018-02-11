@@ -1,0 +1,342 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../html-plugin/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.3/css/swiper.min.css">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.3/js/swiper.min.js"></script>
+
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/hammer.min.js"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/jquery.hammer.js"></script>
+    <script type="text/javascript" src="../xbase.js/wx.share.js?v1.1.1.63"></script>
+
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+
+
+    <script>
+        function goGoods(el) {
+            //var el = event.target;
+            var id = el.data.Id;
+            location.href = "mall.html?" + $.param({ TypeId: id });
+
+        }
+    </script>
+
+    <script>
+        $(function () {
+            var swiper = new Swiper('.swiper-container', {
+                pagination: '.swiper-pagination',
+                //effect: 'coverflow',
+                grabCursor: true,
+                initialSlide: 1,
+                centeredSlides: true,
+                slidesPerView: 'auto'
+                //coverflow: {
+                //    rotate: 50,
+                //    stretch: 0,
+                //    depth: 100,
+                //    modifier: 1,
+                //    slideShadows: true
+                //}
+            });
+        });
+    </script>
+    <style>
+        .home-button-bar {
+        }
+
+        .home-button {
+            float: left;
+            width: 60px;
+            margin: 20px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+            .home-button:hover {
+                text-decoration: none;
+            }
+
+        .home-button-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50px;
+            border: 1px solid #407436;
+            color: #407436;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            padding-top: 12px;
+        }
+
+        .home-button-title {
+            text-align: center;
+            font-size: 14px;
+            color: black;
+            padding-top: 5px;
+        }
+
+        .bottom-img-text {
+            position: absolute;
+            background-color: black;
+            bottom: 0px;
+            filter: alpha(opacity=50);
+            opacity: 0.5;
+            color: white;
+            text-indent: 2em;
+        }
+
+        .img-box {
+            position: relative;
+        }
+
+        .triangle-img-text {
+            text-indent: 2em;
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            width: 160px;
+            height: 70px;
+            color: white;
+            text-align: right;
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .triangle-img-text-br {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            width: 0px;
+            height: 0px;
+            border-bottom: 200px solid black;
+            border-left: 200px solid transparent;
+            opacity: 0.5;
+        }
+
+        .notify-bar {
+            height: 40px;
+            overflow-y: hidden;
+            background-color: #786de4;
+            color: white;
+        }
+
+        .notify-item {
+            margin-top: 10px;
+            /*border:1px solid red;*/
+        }
+
+        .navbar {
+            margin-bottom: 10px;
+        }
+        /*.col {
+            border:1px solid red;
+        }*/
+        .dash-right-line {
+            position: absolute;
+            right: 0px;
+            border-right: 1px solid #e9e9e9;
+            width: 1px;
+            top: 5px;
+            height: 110px;
+        }
+
+        .dash-item {
+            height: 120px;
+            padding-top: 10px;
+        }
+
+            .dash-item p {
+                text-align: center;
+            }
+
+            .dash-item img {
+                width: 40px;
+            }
+
+        h3 {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+    </style>
+
+</head>
+<body style="">
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header" wbo="Site.row">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only" wbo-bind="Name">运势小赢+</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-bind="Name">运势小赢+</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+
+    <!--分享提示-->
+    <div id="shareit">
+        <style>
+            .share-text {
+                color: red;
+            }
+
+            #shareit .arrow {
+                height: 300px;
+            }
+        </style>
+        <div class="arrow">
+            <img src="images/share-it.png">
+        </div>
+        <div class="share-text">
+            <h3>点击菜单'...'分享给好友</h3>
+            <h3>领取红包</h3>
+            <h1 class="close-share"><a class="btn btn-lg btn-danger">知道了</a></h1>
+        </div>
+        <!--<img id="share-text" src="http://dev.vxtong.com/cases/nuannan/imgs/share-text.png">-->
+
+    </div>
+
+    <style>
+        .type-list {
+        }
+
+        .type-item {
+            background-color: #fff;
+        }
+
+        .type-list-text {
+            text-align: center;
+            margin-bottom: 0px;
+            padding:5px;
+        }
+
+        .type-goods {
+            /*display: flex;
+            flex-wrap: wrap;*/
+        }
+
+        .type-goods-item {
+            width: 33.3333%;
+            overflow: hidden;
+            padding-right: 5px;
+            padding-bottom: 5px;
+        }
+
+            .type-goods-item img {
+                width: 100%;
+            }
+
+        .type-item-foot {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 5px;
+        }
+    </style>
+
+    <!--商品列表-->
+    <div class="container">
+
+        <div class="type-list" wbo="MaMainGoodsType.rows" wbo-params="{page:1,rows:20}" name="Types" wbo-ctrl="jsonList">
+            <div class="col col-sm-12 col-md-6 full" wbo-bind="Types.item">
+                <div class="type-item panel-shadow" data-get="Types.row" onclick="goGoods(this)">
+                    <p class="type-list-text" wbo-bind="Types.Text"></p>
+                    <div class="type-goods swiper-container" wbo-embed="Types" wbo="MaGoods.rows" wbo-params="{page:1,rows:10}" wbo-query="TypeId:'Types.Id'" wbo-ctrl="jsonList" name="Goods">
+                        <div class="swiper-wrapper">
+                            <div class="type-goods-item swiper-slide" wbo-bind="Goods.item">
+                                <img wbo-bind="Goods.Pic1" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="type-item-foot">
+                        <div>
+                        </div>
+                        <div class="text-danger">
+                            更多 >>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!--手机底部导航-->
+    <div class="footer-fill  visible-xs visible-sm"></div>
+    <nav class="nav-bottom  visible-xs visible-sm" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbar">
+        <div class="col col-sm-3 col-xs-3" wbo-bind="navbar.item">
+            <a class=" img-btn" href="gw.html" wbo-attr="href:'link',nid:'id'" wbo-up="navbar" style="text-align: center">
+                <!--<img src="images/icon/js.png" wbo-bind="navbar.icon" />-->
+                <div style="font-size: 14px">
+                    <i style="font-size: 22px" wbo-attr="class:'icon'" class="fa fa-home icon-spin"></i>
+                </div>
+                <div class="img-btn-text" wbo-bind="navbar.text">首页</div>
+            </a>
+        </div>
+    </nav>
+
+    <!--悬浮工具-->
+    <!--    <div class="float-bottom-tool">
+        <a class="btn" href="write.html">
+            <img class="img-circle" src="images/write.png" alt="发表" />
+        </a>
+        <a class="btn" id="btnShare">
+            <img class="img-circle" src="images/share.png" alt="分享" />
+        </a>
+    </div>-->
+
+</body>
+</html>

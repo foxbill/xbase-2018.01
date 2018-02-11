@@ -1,0 +1,229 @@
+﻿@media (max-width: 992px) {
+    .container {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+}
+/*解决空图显示问题*/
+/*image {
+    min-height:20px;
+    min-width:20px;
+}*/
+.art-cover {
+    position: relative;
+    margin-bottom: 10px;
+    max-height: 200px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.art-cover-body {
+    top: 10px;
+    left: 10px;
+    right: 100px;
+    position: absolute;
+    color: white;
+    /*top: 10px;
+    left: 10px;*/
+}
+
+    .art-cover-body p {
+        background-color: rgba(100,100,100,0.3);
+        border-radius: 10px;
+        margin-bottom: 5px;
+    }
+
+.art-title {
+    font-size: 18px;
+}
+
+p.art-album {
+    font-size: 14px;
+    /*margin-bottom: 10px;*/
+}
+
+.art-summary {
+    /*font-size: 12px;*/
+    text-indent: 2em;
+    /*margin-right: 10px;*/
+}
+
+.art-author {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.art-media {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    color: #fff;
+    font-size: 20px;
+}
+
+.art-author span {
+    margin-left: 10px;
+}
+
+/*#editor > section:hover {
+    border: 1px solid #0094ff;
+}*/
+
+#editor .act {
+    border: 1px solid #d9534f;
+}
+
+.art-edit-tools {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+}
+
+.art-edit-tools-btn {
+    float: left;
+    background-color: #d18d8d;
+    font-size: 12px;
+    color: #fff;
+    margin-right: 5px;
+    padding: 8px 5px;
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+    .art-edit-tools-btn p {
+        margin: 0px;
+        padding: 0px;
+    }
+
+.modal {
+    z-index: 10001;
+}
+
+.aside-bar {
+    width: 150px;
+    position: fixed;
+    top: 0px;
+    bottom: 50px;
+    right: -150px;
+    transition: right 0.5s;
+    z-index: 10000;
+}
+
+.aside-bar-show {
+    right: 0px;
+}
+
+
+.aside-img-box {
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.aside-img-tools {
+    float: left;
+    width: 30%;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+
+.aside-img-tools-btns {
+    padding-top: 5px;
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    text-align: center;
+    background-color: #ddd;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
+    .aside-img-tools-btns a {
+        min-width: 34px;
+        display: inline-block;
+        font-size: 20px;
+        padding: 3px 1px;
+        border-radius: 50%;
+        background-color: #fff;
+        margin-bottom: 20px;
+    }
+
+.aside-img-list-box {
+    padding-left: 5px;
+    background-color: #ddd;
+    float: left;
+    width: 70%;
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.aside-img-list {
+}
+
+.aside-img-list-item {
+    margin-bottom: 5px;
+}
+
+.sec-tools {
+    display: none;
+}
+
+.sec-btn {
+    cursor: pointer;
+}
+
+.sec-btn {
+    font-size: 18px;
+    margin: 5px auto;
+    width: 25px;
+    /*display:inline-block;*/
+    /*width: 40px;
+    height: 40px;*/
+    line-height: 25px;
+    background-color: #999;
+    border-radius: 50%;
+    text-align: center;
+    color: #fff;
+}
+
+.img-tools {
+    position: absolute;
+    display: none;
+}
+
+.blog-temp-list {
+    max-height: 60%;
+    overflow-y: auto;
+    background-color: #000;
+    padding: 5px;
+}
+
+.blog-temp-list-item {
+    max-height: 260px;
+    overflow-y: hidden;
+    margin-bottom: 5px;
+    background-color: #fff;
+    /*color:#fff;*/
+}
+
+.upload-progress {
+    position: fixed;
+    padding-top: 50%;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    color: #fff;
+    background-color: rgba(0,0,0,0.85);
+    text-align: center;
+    font-size: 20px;
+}
+
+.focus-el {
+    border: 1px solid #28a4c9;
+}
+

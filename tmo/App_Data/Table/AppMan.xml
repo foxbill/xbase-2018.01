@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>AppMan</Id><ListCommand><Id>d65eec13-9088-43dd-88d6-6f423e70dd65</Id><CommandText>select 
+   *,
+   'app-edit.html?Game='+Code as Link
+   
+from app 
+Where 
+   Price&gt;0 and Price is not null    
+order by Sort</CommandText><CommandType>Text</CommandType></ListCommand><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>10</PageSize><PrimaryKeys><string>Code</string></PrimaryKeys><InsertCommand><Id>78bf0d59-dd86-4bca-a03f-02a154d5a42b</Id><CommandText>INSERT INTO app (
+ [Code],
+ [Name],
+ [Summary],
+ [Icon],
+ [Sort],
+ [Price],
+ [Manual])
+ VALUES (
+@Code,
+@Name,
+@Summary,
+@Icon,
+@Sort,
+@Price,
+@Manual)</CommandText><CommandType>Text</CommandType></InsertCommand><UpdateCommand><Id>13cf6076-8808-49e8-acf8-fe1b5f13b66d</Id><CommandText>UPDATE app SET 
+ [Code]=@Code,
+ [Name]=@Name,
+ [Summary]=@Summary,
+ [Icon]=@Icon,
+ [Sort]=@Sort,
+ [Price]=@Price,
+ [Manual]=@Manual
+ WHERE 
+ [Code]=@pk_Code</CommandText><CommandType>Text</CommandType></UpdateCommand><DeleteCommand><Id>cebf1549-82ff-4ade-a411-a1b145d94aa2</Id><CommandText>DELETE FROM app WHERE  [Code]=@pk_Code</CommandText><CommandType>Text</CommandType></DeleteCommand><SelectCommand><Id>cc6be72c-41ef-46d1-a2a3-632ce76d5a65</Id><CommandText>Select  *,
+  'app-edit.html?Game='+Code as Link
+ From app Where Code=@Code</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@Code</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>AnsiString</DataType><DefaultValue /></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>Code</Id><Title>Code</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Name</Id><Title>Name</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Summary</Id><Title>Summary</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Icon</Id><Title>Icon</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Sort</Id><Title>Sort</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int32</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Price</Id><Title>Price</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Decimal</DataType><Visable>true</Visable><EditFormat>0.00</EditFormat><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Manual</Id><Title>说明</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Link</Id><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>app</TableName><IsPagingByParams>false</IsPagingByParams></DataSourceSchema>

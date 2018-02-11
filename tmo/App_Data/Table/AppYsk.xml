@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>AppYsk</Id><ListCommand><Id>0eef24eb-59d4-4f00-be57-7069c7adad74</Id><CommandText>select 
+   *,
+   Case When Locked=1 Then 'display:none' else 
+    'display:inline-block' end as ShowLocked,
+   Case When Locked=1 Then '解锁' else 
+    '锁定' end as LockedText
+  
+ from app_ysk  where Game =@Game  order by Num</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@Game</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>AnsiString</DataType><DefaultValue>G-Num</DefaultValue></ParameterSchema></QueryParams></ListCommand><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>100</PageSize><PrimaryKeys><string>Num</string></PrimaryKeys><InsertCommand><Id>b7ff1d05-7030-4ad1-897c-d5e5f655f128</Id><CommandText>
+      set @BlogId=newId();
+      INSERT INTO app_ysk (
+      [Num],
+      [Title],
+      [Text],
+      [Game],
+      [BlogId])
+      VALUES (
+      @Num,
+      @Title,
+      @Text,
+      @Game,
+      @BlogId);
+
+      select * from app_ysk where Num=@Num
+    </CommandText><CommandType>Text</CommandType></InsertCommand><UpdateCommand><Id>95539655-f9a7-4471-b683-008cad069718</Id><CommandText>
+      if @BlogId is null begin
+      set @BlogId=newId();
+      end ;
+      UPDATE app_ysk SET
+      [Num]=@Num,
+      [Title]=@Title,
+      [Text]=@Text,
+      [BlogId]=@BlogId,
+      [Locked]=@Locked
+      WHERE
+      [Num]=@pk_Num
+    </CommandText><CommandType>Text</CommandType></UpdateCommand><DeleteCommand><Id>96f3a7bd-29c2-4260-afba-4e48c4c12125</Id><CommandText>DELETE FROM app_ysk WHERE  [Num]=@pk_Num</CommandText><CommandType>Text</CommandType></DeleteCommand><SelectCommand><Id>160d30aa-c47d-4bba-a7b2-7f7b41931cad</Id><CommandText>Select
+   *,
+   Case When Locked=1 Then 'display:none' else 
+    'display:inline-block' end as ShowLocked,
+   Case When Locked=1 Then '解锁' else 
+    '锁定' end as LockedText
+  From app_ysk Where Num=@Num</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@Num</Id><DataSize>10</DataSize><Direction>Input</Direction><DataType>String</DataType><DefaultValue /></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>Num</Id><Title>Num</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Title</Id><Title>Title</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Text</Id><Title>Text</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>LinkEdit</Id><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Expression>'app-ys-edit.html?Num='+Num</Expression><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Game</Id><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>BlogId</Id><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Locked</Id><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Boolean</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ShowLocked</Id><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>LockedText</Id><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>app_ysk</TableName><IsPagingByParams>true</IsPagingByParams></DataSourceSchema>

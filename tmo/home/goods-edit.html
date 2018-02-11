@@ -1,0 +1,405 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>商品上传</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../html-plugin/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+
+
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+    <link rel="stylesheet" href="../html-plugin/cropper/cropper.css">
+
+
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../html-plugin/cropper/cropper.js"></script>
+    <script src="../html-plugin/cropper/cropper-modal.js?v1.1.1.63"></script>
+
+
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+
+
+    <script type="text/javascript">
+        /**
+         *-------------
+         *加载明细表
+         *-------------
+         **/
+        $(function () {
+            var goodsData = $("#frmGoods").data("wbo");
+
+            var storeId = $.paramVal("StoreId");
+            if (storeId)
+                $("#txtStoreId").val(storeId);
+
+            if (!storeId)
+                storeId = $("#txtStoreId").val();
+            var types = $.rCall("MaGoodsType.rows?" + $.param({ ShopId: storeId }));
+            $("option[name='Type']").jsonList(types);
+            $("select[wbo-bind='Goods.TypeId']").val(goodsData.Form.TypeId);
+
+            for (var i = 0; i < goodsData.Details.length; i++) {
+                var details = goodsData.Details[i];
+                if (details.Name == "MaMyGoodsModel")
+                    $(tbGoodsModel).jsonList(details.Rows);
+                if (details.Name == "MaMyGoodsAttr")
+                    $(tbGoodsAttr).jsonList(details.Rows);
+            }
+
+            $("#btnAddAttr").click(function () {
+                $(tbGoodsAttr).jsonList().addDataItem({ AttrName: "", AttrValue: "" });
+            })
+            $("#btnAddModel").click(function () {
+                $(tbGoodsModel).jsonList().addItem();
+            })
+
+
+            $("[data-cmd='RemoveAttr']").click(function () {
+                $("#tbGoodsAttr").jsonList().removeItem(this.parentNode.parentNode);
+                $.rCall("MaMyGoodsAttr.delete", { row: this.data });
+                return false;
+            })
+
+            $("[data-cmd='RemoveModel']").click(function () {
+                $(tbGoodsModel).jsonList().removeItem(this.parentNode.parentNode);
+                $.rCall("MaMyGoodsModel.delete", { row: this.data });
+                return false;
+            })
+
+        });
+
+    </script>
+    <script>
+        $(function () {
+            $("#btnSaveGoods").click(function () {
+                $(frmGoods).postForm(function (json) {
+                    frmGoods.ctrl.data(json);
+                    location = window.document.referrer
+                });
+            });
+            $(".goods-img-sm-bar img").mouseenter(function () {
+                var src = $(this).attr("src");
+                if (src && src != "images/new-goods.png")
+                    imgGoodsPic.src = src;
+            })
+            new CropperDialog(modalCropper, [
+                    {
+                        img: imgGoodsPic1, fld: inpGoodsPic1, x: 600, y: 444
+                    },
+                    {
+                        img: imgGoodsPic2, fld: inpGoodsPic2, x: 600, y: 444
+                    },
+                    {
+                        img: imgGoodsPic3, fld: inpGoodsPic3, x: 600, y: 444
+                    },
+                    {
+                        img: imgGoodsPic4, fld: inpGoodsPic4, x: 600, y: 444
+                    }
+            ])
+            $(modalCropper).bind('ok', function (e, img, fld) {
+                imgGoodsPic.src = img.src;
+            });
+        })
+    </script>
+
+    <style type="text/css">
+        .container-s {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        /* 小屏幕（平板，大于等于 768px） */
+        @media (min-width: 450px) {
+            .container-s {
+                width: 450px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">车友会</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-attr="href:'url'" wbo-bind="navLogo.name">cy168.cc</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+
+    <!--分享提示-->
+    <div id="shareit">
+        <style>
+            .share-text {
+                color: red;
+            }
+
+            #shareit .arrow {
+                height: 300px;
+            }
+        </style>
+        <div class="arrow">
+            <img src="images/share-it.png">
+        </div>
+        <div class="share-text">
+            <h3>点击菜单'...'分享给好友</h3>
+            <h3>领取红包</h3>
+            <h1 class="close-share"><a class="btn btn-lg btn-danger">知道了</a></h1>
+        </div>
+        <!--<img id="share-text" src="http://dev.vxtong.com/cases/nuannan/imgs/share-text.png">-->
+
+    </div>
+
+    <!--商品信息-->
+    <div class="container goods" style="color: white; position: relative">
+        <style>
+            .goods-img-sm-bar {
+                margin-left: -3px;
+                margin-top: 3px;
+                overflow: hidden;
+            }
+
+            .goods-img-sm {
+                width: 25%;
+                float: left;
+                padding-left: 3px;
+            }
+
+            .goods-form div, .goods-form p {
+                color: black;
+            }
+
+            .goods-info {
+                font-size: 16px;
+            }
+
+                .goods-info label {
+                    font-size: 16px;
+                }
+
+                .goods-info textarea {
+                    resize: none;
+                }
+
+            .goods .col {
+                padding-right: 0px;
+                padding-left: 10px;
+            }
+
+            .goods .row {
+                margin-left: -10px;
+            }
+
+            .tab-content {
+                border: 1px solid #e4dcdc;
+                border-top: none;
+                background-color: #fff;
+                padding: 10px;
+            }
+        </style>
+        <form method="post" class="goods-form" action="MaMyGoods.form" wbo="MaMyGoods.form" wbo-query="Id:$.paramVal('Id')" name="GoodsForm" id="frmGoods">
+            <div class="row" wbo-bind="GoodsForm.Form" name="Goods">
+                <input name="pk_Id" wbo-bind="Goods.pk_Id" type="hidden" />
+                <input name="StoreId" wbo-bind="Goods.StoreId" id="txtStoreId" type="hidden" />
+                <div class="col col-sm-12 col-md-6 col-lg-6">
+                    <div class="goods-img-lg hidden-sm hidden-xs">
+                        <img wbo-bind="Goods.Pic1" id="imgGoodsPic" class="img-responsive" src="images/new-goods.jpg" />
+                    </div>
+                    <div class="goods-img-sm-bar">
+                        <div class="goods-img-sm">
+                            <img wbo-bind="Goods.Pic1" id="imgGoodsPic1" class="img-responsive" src="images/new-goods.png" />
+                            <input name="Pic1" wbo-bind="Goods.Pic1" id="inpGoodsPic1" type="hidden" />
+                        </div>
+                        <div class="goods-img-sm">
+                            <img wbo-bind="Goods.Pic2" id="imgGoodsPic2" class="img-responsive" src="images/new-goods.png" />
+                            <input name="Pic2" wbo-bind="Goods.Pic2" id="inpGoodsPic2" type="hidden" />
+                        </div>
+                        <div class="goods-img-sm">
+                            <img wbo-bind="Goods.Pic3" id="imgGoodsPic3" class="img-responsive" src="images/new-goods.png" />
+                            <input name="Pic3" wbo-bind="Goods.Pic3" id="inpGoodsPic3" type="hidden" />
+                        </div>
+                        <div class="goods-img-sm">
+                            <img wbo-bind="Goods.Pic4" id="imgGoodsPic4" class="img-responsive" src="images/new-goods.png" />
+                            <input name="Pic4" wbo-bind="Goods.Pic4" id="inpGoodsPic4" type="hidden" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-sm-12 col-md-6 col-lg-6">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#tabpGoodsInfo" data-toggle="tab">商品信息</a></li>
+                        <li><a href="#tabPaGoodsModel" data-toggle="tab">规格型号</a></li>
+                        <li><a href="#tabPaGoodsAttr" data-toggle="tab">附加属性</a></li>
+                    </ul>
+                    <div class="tab-content ">
+                        <div class="tab-pane  goods-info active" id="tabpGoodsInfo">
+                            <div class="form-group">
+                                <label for="exampleInputName2">商品名称</label>
+                                <input wbo-bind="Goods.Name" name="Name" type="text" class="form-control" id="exampleInputName2" placeholder="商品名称">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName2">商品类别</label>
+                                <select wbo-bind="Goods.TypeId" name="TypeId" class="form-control" placeholder="商品简介">
+                                    <option wbo-ctrl='jsonList' wbo-query="TypeId:$.paramVal('Id')" wbo-attr="value:'Type.Id'" wbo-bind='Type.Text' name="Type"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputName2">商品简介</label>
+                                <textarea wbo-bind="Goods.Remark" name="Remark" class="form-control" placeholder="商品简介"></textarea>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col col-xs-6">
+                                    <label for="exampleInputName2">单价</label>
+                                    <input wbo-bind="Goods.Price" name="Price" type="text" class="form-control" id="Text2" placeholder="￥0.00元">
+                                </div>
+                                <div class="form-group col col-xs-6 ">
+                                    <label for="exampleInputName2">数量</label>
+                                    <input wbo-bind="Goods.Count" name="Count" type="text" class="form-control" id="Text3" placeholder="0个">
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="tab-pane" id="tabPaGoodsModel">
+                            <table class="table" id="tbGoodsModel" name="GoodsModel">
+                                <thead>
+                                    <tr>
+                                        <th>规格</th>
+                                        <th>单价</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr wbo-bind="GoodsModel.item">
+                                        <td>
+                                            <input type="hidden" wbo-bind="GoodsModel.pk_Id" name="MaMyGoodsModel.pk_Id" />
+                                            <input type="text" wbo-bind="GoodsModel.Model" name="MaMyGoodsModel.Model" />
+                                        </td>
+                                        <td>
+                                            <input type="text" wbo-bind="GoodsModel.Price" name="MaMyGoodsModel.Price" /></td>
+                                        <td>
+                                            <button data-cmd="RemoveModel" data-get="GoodsModel.row"><i class="fa fa-remove"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <a class="btn btn-default" id="btnAddModel">+</a>
+                        </div>
+                        <div class="tab-pane" id="tabPaGoodsAttr">
+                            <table class="table" id="tbGoodsAttr" name="GoodsAttr">
+                                <thead>
+                                    <tr>
+                                        <th>属性</th>
+                                        <th>属性值</th>
+                                        <td></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr wbo-bind="GoodsAttr.item">
+                                        <td>
+                                            <input type="hidden" wbo-bind="GoodsAttr.pk_Id" name="MaMyGoodsAttr.pk_Id" />
+                                            <input type="text" wbo-bind="GoodsAttr.AttrName" name="MaMyGoodsAttr.AttrName" /></td>
+                                        <td>
+                                            <input type="text" wbo-bind="GoodsAttr.AttrValue" name="MaMyGoodsAttr.AttrValue" /></td>
+                                        <td>
+                                            <button data-cmd="RemoveAttr" data-get="GoodsAttr.row"><i class="fa fa-remove"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <a class="btn btn-default" id="btnAddAttr">+</a>
+                        </div>
+                    </div>
+                    <div style="padding: 10px">
+                        <a id="btnSaveGoods" class="btn btn-danger pull-right">提交</a>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+
+    <!--图片裁剪窗口-->
+    <div class="modal" id="modalCropper" aria-labelledby="modalLabel" role="dialog" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modalLabel">剪辑图像</h4>
+                </div>
+                <div class="modal-body">
+                    <div style="background-color: azure; max-height: 350px; overflow: hidden">
+                        <img id="croImage" src="" alt="Picture" style="left: 0px; top: 0px; width: 100%" />
+                        <input type="file" id="cropFile" accept="jpge,jpg,png,gif" style="display: none" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="btnOk">确定</button>
+                    <button type="button" class="btn btn-default" id="btnCancel">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--手机底部导航-->
+    <div class="footer-fill  visible-xs visible-sm"></div>
+    <nav class="nav-bottom  visible-xs visible-sm" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbar">
+        <div class="col col-sm-3 col-xs-3" wbo-bind="navbar.item">
+            <a class=" img-btn" href="gw.html" wbo-attr="href:'link'" wbo-up="navbar" style="text-align: center">
+                <!--<img src="images/icon/js.png" wbo-bind="navbar.icon" />-->
+                <div style="font-size: 14px">
+                    <i style="font-size: 22px" wbo-attr="class:'icon'" class="fa fa-home icon-spin"></i>
+                </div>
+                <div class="img-btn-text" wbo-bind="navbar.text">首页</div>
+            </a>
+        </div>
+    </nav>
+
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>运势管理</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../html-plugin/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+    <style>
+        .toolbar-btn {
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        .dotdotdot {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            height: 20px;
+        }
+    </style>
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/hammer.min.js"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/jquery.hammer.js"></script>
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+
+    <script type="text/javascript">
+        //设置激活按钮状态
+        $(function () {
+            var color = "#7f9f5c";
+            var $btn = $("#" + $.paramVal("nId"));
+            $btn.find("i").css("color", color);
+            $btn.find("div").css("color", color);
+        });
+    </script>
+    <script>
+        //$(function () {
+        //    $("[data-cmd='delete']").click(function () {
+        //        var pk_id = $(this).attr("pk-id");
+        //        $.rCall("Ysk.delete", { row: { pk_Id: pk_id } });
+        //        $("[wbo='Ysk.rows']").jsonList().reload();
+        //    });
+        //})
+    </script>
+    <script>
+        function deleteBanner(el) {
+            debugger;
+            $.rCall("AppYsk.delete", { row: el.data });
+            $("[wbo='AppYsk.rows']").jsonList().reload();
+        }
+
+        function sortData() {
+            var list = $("[wbo='Ysk.rows']").jsonList().data();
+            for (var i = 0; i < list.length; i++) {
+                var item = list[i];
+                item.Sort = i;
+            };
+            $.rCall("Ysk.update", { rows: list });
+        }
+        function moveUp(el) {
+            var list = $("[wbo='Ysk.rows']").jsonList();
+            list.moveUp(el.dataForm.$);
+            sortData();
+        }
+
+        function moveDown(el) {
+            var list = $("[wbo='Ysk.rows']").jsonList();
+            list.moveDown(el.dataForm.$);
+            sortData();
+        }
+        function goType(el) {
+            var list = $("[wbo='Ysk.rows']").jsonList();
+            list.query({ TypeId: $(el).attr("typeid") });
+        }
+    </script>
+
+
+    <script>
+        $(function () {
+            var loading = false;
+            $(window).scroll(function () {
+                //$(window).scrollTop()这个方法是当前滚动条滚动的距离
+                //$(window).height()获取当前窗体的高度
+                //$(document).height()获取当前文档的高度
+                if (loading) return;
+                var bot = 50; //bot是底部距离的高度
+                if ((bot + $(window).scrollTop()) >= ($(document).height() - $(window).height())) {
+                    //当底部基本距离+滚动的高度〉=文档的高度-窗体的高度时；
+                    //我们需要去异步加载数据了
+                    //$.getJSON("url", { page: "2" }, function (str) { alert(str); });
+                    loading = true;
+                    $(pageLoading).show();
+                    $("[wbo='AppYsk.rows']").jsonList().addPaging();
+                    $(pageLoading).hide();
+                    loading = false;
+                }
+            });
+        })
+    </script>
+
+</head>
+<body>
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header" wbo="Site.row">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only" wbo-bind="Name">运势小赢+</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-bind="Name">运势小赢+</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+
+    <!--工具条-->
+    <!--   <section class="container">
+        <div class="toolbar clearfix panel-shadow">
+            <a class="toolbar-btn act" href="banner-edit.html" wbo-bind="BannerTypes.item" wbo-attr="TypeId:'Id'" onclick="goType(this)">
+                <i class="fa fa-plus-square"></i>
+                <br />
+                <span wbo-bind="BannerTypes.Type">添加</span>
+            </a>
+        </div>
+    </section>-->
+
+    <!--分类-->
+    <section class="container">
+        <div class="toolbar clearfix panel-shadow">
+            <div class="toolbar-btn act">
+                <span wbo-bind="BannerTypes.Type">运势管理</span>
+            </div>
+        </div>
+    </section>
+    <!--运势管理-->
+    <div class="container full">
+        <div class="row" wbo="AppYsk.rows" wbo-ctrl="jsonList" wbo-params="{page:1,rows:15}" name="Ysk">
+            <div class="col col-xs-12 col-sm-12 col-md-6 col-lg-6 full" wbo-bind="Ysk.item">
+                <div class="media home-panel list-item-lg">
+                    <div class="media-left">
+                        <div wbo-bind="Ysk.Num" class="red"></div>
+                    </div>
+                    <div class="media-body">
+                        <div><a wbo-attr="href:'Ysk.Title'" wbo-bind="Ysk.Title">到丽江去自驾游</a></div>
+                        <div class="dotdotdot">
+                            <nobr wbo-bind="Ysk.Text">感觉玉龙雪山的神奇</nobr>
+                        </div>
+                    </div>
+                    <div class="media-bottom clearfix" style="clear: both; padding-top: 5px; padding-bottom: 5px; border-top: 1px solid #eee; margin-top: 3px">
+                        <div class="pull-left">
+                            <a class="btn btn-info btn_sm" wbo-attr="href:'LinkEdit'">编辑</a>
+                            <a class="btn btn-danger btn_sm" data-cmd='delete' wbo-bind="Ysk.btn" onclick="deleteBanner(this)">删除</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!--手机底部导航-->
+    <div class="footer-fill  visible-xs visible-sm"></div>
+    <nav class="nav-bottom  visible-xs visible-sm" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbar">
+        <div class="col col-sm-3 col-xs-3" wbo-bind="navbar.item">
+            <a class=" img-btn" href="gw.html" wbo-attr="href:'link'" wbo-up="navbar" style="text-align: center">
+                <!--<img src="images/icon/js.png" wbo-bind="navbar.icon" />-->
+                <div style="font-size: 14px">
+                    <i style="font-size: 22px" wbo-attr="class:'icon'" class="fa fa-home icon-spin"></i>
+                </div>
+                <div class="img-btn-text" wbo-bind="navbar.text">首页</div>
+            </a>
+        </div>
+    </nav>
+
+    <!--公共浮动工具-->
+    <div class="float-bottom-tool">
+        <a class="btn" href="app-ys-edit.html">
+            <img class="img-circle" src="images/write.png" alt="发表" />
+        </a>
+    </div>
+
+    <style>
+        .page-loading {
+            position: fixed;
+            top: 100px;
+            width: 200px;
+            height: 200px;
+            background-color: #333;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+    <div id="pageLoading" class="page-loading" style="display: none">
+        loading...
+    </div>
+
+</body>
+</html>

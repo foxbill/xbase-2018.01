@@ -1,0 +1,366 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>运势管理</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../html-plugin/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../html-plugin/cropper/cropper.css">
+
+
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+    <style>
+        .toolbar-btn {
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        .dotdotdot {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            height: 20px;
+        }
+    </style>
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.cookie.js"></script>
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../html-plugin/cropper/cropper.js"></script>
+    <script src="../html-plugin/cropper/cropper-modal.js?v1.1.1.63"></script>
+
+
+
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/hammer.min.js"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/jquery.hammer.js"></script>
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+
+    <script>
+        function deleteBanner(el) {
+            debugger;
+            $.rCall("AppYsk.delete", { row: el.data });
+            $("[wbo='AppYsk.rows']").jsonList().reload();
+        }
+
+        function sortData() {
+            var list = $("[wbo='Ysk.rows']").jsonList().data();
+            for (var i = 0; i < list.length; i++) {
+                var item = list[i];
+                item.Sort = i;
+            };
+            $.rCall("Ysk.update", { rows: list });
+        }
+        function moveUp(el) {
+            var list = $("[wbo='Ysk.rows']").jsonList();
+            list.moveUp(el.dataForm.$);
+            sortData();
+        }
+
+        function moveDown(el) {
+            var list = $("[wbo='Ysk.rows']").jsonList();
+            list.moveDown(el.dataForm.$);
+            sortData();
+        }
+        function goType(el) {
+            var list = $("[wbo='Ysk.rows']").jsonList();
+            list.query({ TypeId: $(el).attr("typeid") });
+        }
+
+        var fRow = { Game: '', Num: '', Title: '', pk_Num: '' };
+
+        function update() {
+
+            if (!$(txtNum).val()) {
+                alert("编号必须输入");
+                $(txtNum).focus();
+                return;
+            }
+
+            $(frmGame).postForm(function (json) {
+
+                if (json.Err) {
+                    alert(json.Err.Text);
+                    return;
+                }
+
+                fRow.Game = json.Form.Code;
+                fRow.Num = $(txtNum).val();
+                fRow.Title = $(txtNum).val();
+                var newRow = $.rCall("AppYsk.update", { row: fRow });
+                $("[wbo='AppYsk.rows']").jsonList().reload();
+                $(dlgEdit).modal("hide");
+                location = "write.html?" + $.param({ Id: newRow.BlogId, Title: newRow.Num });
+            });
+
+        }
+
+        function newItem() {
+            fRow = { Game: '', Num: '', Title: '', pk_Num: '' };
+            $("#dlgEdit").modal("show");
+        }
+
+        function editItem(el) {
+            fRow = el.data;
+            $(txtNum).val(fRow.Num);
+            $("#dlgEdit").modal("show");
+        }
+
+        function lockYsk(el) {
+            var row = el.data;
+
+            if (row.Locked.toLowerCase() == "true")
+                row.Locked = "false"
+            else
+                row.Locked = "true";
+
+            $.rCall("AppYsk.update", { row: row })
+            $("[wbo='AppYsk.rows']").jsonList().reload({ page: 1, rows: 15 });
+        }
+
+        $(function () {
+            $("#frmGame input,#frmGame textarea").change(function () {
+                $(frmGame).postForm();
+            });
+        })
+
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            new CropperDialog(modalCropper, [{ img: imgGameIcon, fld: txtGameIcon, x: 400, y: 400 }]);
+
+            $(modalCropper).bind('ok', function (e, img, fld) {
+                $(frmGame).postForm();
+            });
+
+        });
+    </script>
+
+
+</head>
+<body>
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header" wbo="Site.row">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only" wbo-bind="Name">运势小赢+</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-bind="Name">运势小赢+</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+
+    <!--游戏信息-->
+    <section class="container">
+        <style>
+            .head {
+                padding: 10px 3px;
+                text-align: center;
+            }
+
+            .head-image {
+                margin-bottom: 5px;
+            }
+
+            .head-body > div {
+                margin-bottom: 5px;
+            }
+
+            .head input, .head textarea {
+                text-align: center;
+                border: none;
+                border-bottom: 1px solid #aaa;
+                width: 200px;
+            }
+
+            .head-image-center {
+                margin-left: auto;
+                margin-right: auto;
+                max-width: 60px;
+            }
+
+            .head-title {
+                font-size: 14px;
+            }
+        </style>
+        <div class="panel-shadow head" wbo="AppMan.row" wbo-query="Code:$.paramVal('Game')" name="Apps">
+            <form id="frmGame" action="AppMan.form">
+                <input type="hidden" wbo-bind="Apps.pk_Code" name="pk_Code" />
+                <input type="hidden" wbo-bind="Apps.Code" name="Code" />
+                <div class="head-image head-image-center">
+                    <img id="imgGameIcon" class="img-responsive img-rounded" wbo-bind="Apps.Icon" alt="图片" />
+                    <input type="hidden" id="txtGameIcon" wbo-bind="Apps.Icon" name="Icon" />
+                </div>
+                <div class="head-body">
+                    <div class="head-title">
+                        <input wbo-bind="Apps.Name" name="Name" placeholder="游戏名称" />
+                    </div>
+                    <div class="head-title">
+                        <input wbo-bind="Apps.Price" name="Price" placeholder="价格" />
+                    </div>
+                    <div class="head-text">
+                        <textarea rows="2" wbo-bind="Apps.Summary" name="Summary" placeholder="游戏简介"></textarea>
+                    </div>
+                    <div class="head-text">
+                        <textarea rows="2" wbo-bind="Apps.Manual" name="Manual" placeholder="游戏玩法"></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+
+    <!--运势管理-->
+    <section class="container full">
+        <div class="row" wbo="AppYsk.rows" wbo-ctrl="jsonList" wbo-query="Game:$.paramVal('Game')" wbo-params="{page:1,rows:15}" name="Ysk" data-slid-load="{dir:'x'}">
+            <div class="col col-xs-12 col-sm-12 col-md-6 col-lg-6 full" wbo-bind="Ysk.item">
+                <div class="media home-panel list-item-lg">
+                    <div class="media-body">
+                        <div><span wbo-bind="Ysk.Num" class="red"></span></div>
+                    </div>
+                    <div class="media-bottom clearfix" style="clear: both; padding-top: 5px; padding-bottom: 5px; border-top: 1px solid #eee; margin-top: 3px">
+                        <div class="pull-right">
+                            <span style="display: inline-block" wbo-attr="style:'Ysk.ShowLocked'">
+                                <a class="btn btn-danger btn-sm" data-cmd='delete' wbo-bind="Ysk.btn" onclick="deleteBanner(this)">删除</a>
+                                <a class="btn btn-info btn-sm" wbo-attr="num:'Num'" wbo-bind="Ysk.btn" onclick="editItem(this)">编辑</a>
+                            </span>
+                            <a class="btn btn-info btn-sm" wbo-bind="Ysk.btn" wbo-attr="innerHTML:'LockedText'" onclick="lockYsk(this)">锁定</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!--手机底部导航-->
+    <div class="footer-fill  visible-xs visible-sm"></div>
+    <nav class="nav-bottom  visible-xs visible-sm" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbar">
+        <div class="col col-sm-3 col-xs-3" wbo-bind="navbar.item">
+            <a class=" img-btn" href="gw.html" wbo-attr="href:'link'" wbo-up="navbar" style="text-align: center">
+                <!--<img src="images/icon/js.png" wbo-bind="navbar.icon" />-->
+                <div style="font-size: 14px">
+                    <i style="font-size: 22px" wbo-attr="class:'icon'" class="fa fa-home icon-spin"></i>
+                </div>
+                <div class="img-btn-text" wbo-bind="navbar.text">首页</div>
+            </a>
+        </div>
+    </nav>
+
+    <!--公共浮动工具-->
+    <div class="float-bottom-tool">
+        <a class="btn" href="javascript:return false;" onclick="newItem()">
+            <img class="img-circle" src="images/write.png" alt="发表" />
+        </a>
+    </div>
+
+    <!--编辑对话框-->
+    <div class="modal fade" id="dlgEdit" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">资料编辑</h4>
+                </div>
+                <div class="modal-body">
+                    <p>请输入资料代码：</p>
+                    <div class="input-flex">
+                        <div class="input-label">资料代码</div>
+                        <div class="input-box">
+                            <input id="txtNum" type="text" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="update()">确认</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+    <!--图像裁剪-->
+    <div class="modal" id="modalCropper" aria-labelledby="modalLabel" role="dialog" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modalLabel">剪辑图像</h4>
+                </div>
+                <div class="modal-body">
+                    <div style="background-color: azure; max-height: 350px; overflow: hidden">
+                        <img id="croImage" src="" alt="Picture" style="left: 0px; top: 0px; width: 100%" />
+                        <input type="file" id="cropFile" style="display: none" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="btnOk">确定</button>
+                    <button type="button" class="btn btn-default" id="btnCancel">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--加载-->
+    <style>
+        .page-loading {
+            position: fixed;
+            top: 100px;
+            width: 200px;
+            height: 200px;
+            background-color: #333;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+    <div id="pageLoading" class="page-loading" style="display: none">
+        loading...
+    </div>
+
+</body>
+</html>

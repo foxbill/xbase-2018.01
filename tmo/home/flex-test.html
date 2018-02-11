@@ -1,0 +1,442 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>运势小赢+</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../html-plugin/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/hammer.min.js"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/jquery.hammer.js"></script>
+    <script type="text/javascript" src="../html-plugin/jquery.dotdotdot.js"></script>
+    <script type="text/javascript" src="../xbase.js/wx.share.js?v1.1.1.63"></script>
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+
+    <script type="text/javascript">
+        //设置激活按钮状态
+        $(function () {
+            var color = "#7f9f5c";
+            var $btn = $("#" + $.paramVal("nId"));
+            $btn.find("i").css("color", color);
+            $btn.find("div").css("color", color);
+        });
+
+
+        $(function () {
+            $("#btnShare").click(function () {
+                wxshare();
+            })
+            //  $("#myCarousel").carousel('cycle');
+
+        })
+        function wxshare() {
+            $(shareit).show();
+            $("#shareit .close-share").click(function () {
+                $(shareit).hide();
+            });
+        }
+
+
+    </script>
+    <script>
+
+        //传送带装载
+        $(function () {
+            var banners = $.rCall("Banner.rows");
+            var $IndBox = $(elCarouselInd);
+            $IndBox.jsonList(banners);
+            $(elCarouseInner).jsonList(banners);
+
+            $IndItems = $IndBox.find("li");
+            for (var i = 0; i < $IndItems.length; i++) {
+                var elInd = $IndItems[i];
+                $(elInd).attr("data-slide-to", i);
+                $(elInd).html(i + 1);
+            }
+
+            $("#elCarouselInd li").first().addClass("active");
+            $("#elCarouseInner .item").first().addClass("active");
+
+            $('#head-carousel').hammer().on('swipeleft', function () {
+                $(this).carousel('next');
+            });
+
+            $('#head-carousel').hammer().on('swiperight', function () {
+
+                $(this).carousel('prev');
+
+            });
+
+        })
+
+    </script>
+    <script>
+        $(function () {
+
+            $(".art-summmary").dotdotdot({ truncate: "letter" });
+            //$(".media-right").dotdotdot();
+
+        })
+    </script>
+    <style>
+        .home-button-bar {
+        }
+
+        .home-button {
+            float: left;
+            width: 60px;
+            margin: 20px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+            .home-button:hover {
+                text-decoration: none;
+            }
+
+        .home-button-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50px;
+            border: 1px solid #407436;
+            color: #407436;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            padding-top: 12px;
+        }
+
+        .home-button-title {
+            text-align: center;
+            font-size: 14px;
+            color: black;
+            padding-top: 5px;
+        }
+
+        .bottom-img-text {
+            position: absolute;
+            background-color: black;
+            bottom: 0px;
+            filter: alpha(opacity=50);
+            opacity: 0.5;
+            color: white;
+            text-indent: 2em;
+        }
+
+        .img-box {
+            position: relative;
+        }
+
+        .triangle-img-text {
+            text-indent: 2em;
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            width: 160px;
+            height: 70px;
+            color: white;
+            text-align: right;
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .triangle-img-text-br {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            width: 0px;
+            height: 0px;
+            border-bottom: 200px solid black;
+            border-left: 200px solid transparent;
+            opacity: 0.5;
+        }
+
+        .notify-bar {
+            height: 40px;
+            overflow-y: hidden;
+            color: white;
+        }
+
+        .notify-item {
+            margin-top: 10px;
+            /*border:1px solid red;*/
+        }
+
+        .navbar {
+            margin-bottom: 10px;
+        }
+    </style>
+
+    <style>
+        .flex-box {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: center;
+            /*border: 1px solid blue;*/
+            /*width:50%;*/
+            padding: 5px;
+            background-color: #fff;
+        }
+
+        .flex-item {
+            border: 1px solid red;
+            /*width:33.33%;*/
+            text-align: center;
+            flex: 1;
+            margin: 3px;
+            /*flex-align: center;*/
+        }
+    </style>
+</head>
+<body>
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header" wbo="Site.row">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only" wbo-bind="Name">运势小赢+</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-bind="Name">运势小赢+</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+
+    <!--分享提示-->
+    <div id="shareit">
+        <style>
+            .share-text {
+                color: red;
+            }
+
+            #shareit .arrow {
+                height: 300px;
+            }
+        </style>
+        <div class="arrow">
+            <img src="images/share-it.png">
+        </div>
+        <div class="share-text">
+            <h3>点击菜单'...'分享给好友</h3>
+            <h1 class="close-share"><a class="btn btn-lg btn-danger">知道了</a></h1>
+        </div>
+        <!--<img id="share-text" src="http://dev.vxtong.com/cases/nuannan/imgs/share-text.png">-->
+
+    </div>
+
+    <!--页头carousel-->
+    <section class="container">
+        <style>
+            .carousel-indicators {
+                bottom: 3px;
+                left: 10px;
+                margin-bottom: 0px;
+                height: auto;
+                width: auto;
+                margin-left: 0px;
+            }
+
+                .carousel-indicators li {
+                    width: 18px;
+                    height: 18px;
+                    color: white;
+                    text-indent: 0px;
+                    line-height: 16px;
+                    font-size: 10px;
+                    border-radius: 50px;
+                    padding: 0px;
+                }
+
+                    .carousel-indicators li.active {
+                        width: 18px;
+                        height: 18px;
+                        color: black;
+                    }
+        </style>
+        <div id="head-carousel" class="carousel slide  " data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators" id="elCarouselInd" name="Ind">
+                <li data-target="#head-carousel" data-slide-to="0" wbo-bind="Ind.item">0</li>
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox" id="elCarouseInner" name="Banner">
+                <div class="item" wbo-bind="Banner.item">
+                    <img src="images/top-bg-1.jpg" wbo-bind="Banner.Picture" alt="...">
+                    <div class="carousel-caption">
+                        <h2 wbo-bind="Banner.Title"></h2>
+                        <p wbo-bind="Banner.Summary"></p>
+                        <a wbo-attr="href:'Link'">详情</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <!--            <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+                <span class="sr-only">Next</span>
+            </a>-->
+        </div>
+    </section>
+
+    <section class="container">
+        <div class="clearfix text-center  panel-shadow">
+            <a href="jrys.html" class="btn btn-circle div-center btn-danger" style="padding-top: 10px">今日<br />
+                运势</a>
+        </div>
+    </section>
+
+    <!--微博-->
+    <div class="container full">
+        <style>
+            .home-panel {
+                clear: both;
+                overflow: hidden;
+            }
+
+                .home-panel:after {
+                    content: "";
+                    clear: both;
+                }
+
+            .art-info {
+                position: absolute;
+                bottom: 3px;
+                right: 3px;
+                padding: 3px;
+            }
+
+            .art-title {
+                margin-top: 0px;
+                margin-bottom: 0px;
+            }
+
+            .art-author {
+                margin-top: 0px;
+                margin-bottom: 0px;
+            }
+
+            .art-summmary {
+                height: 36px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                margin-top: 0px;
+                margin-bottom: 0px;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 3;
+            }
+        </style>
+        <div class="row" wbo="SnBlog.rows" wbo-ctrl="jsonList" name="Blog">
+            <div class="col col-xs-12 col-sm-12 col-md-6 col-lg-6 full" wbo-bind="Blog.item">
+                <div class="media home-panel list-item-lg">
+                    <a wbo-attr="href:'Blog.link'" class="media-left" style="float: left; max-width: 45%">
+                        <img wbo-bind="Blog.Picture" class="img-responsive" src="images/qh/2.jpg" style="">
+                    </a>
+                    <div class="media-body">
+                        <h3 class="art-title"><a wbo-attr="href:'Blog.link'" wbo-bind="Blog.Title">到丽江去自驾游</a></h3>
+                        <p class="art-author"><span wbo-bind="Blog.Author">沧源法师</span></p>
+                        <p class="art-summmary" wbo-bind="Blog.Summary">感觉玉龙雪山的神奇</p>
+                        <div class="art-info"><span style="color: red"><i class="fa fa-heart"></i><span wbo-bind="Blog.LikeCount">123</span></span><span style="color: green"><i class="fa fa-comment"></i><span wbo-bind="Blog.CommentsCount"> 343</span></span><a class="btn btn-sm btn-warning" style="margin-left: 10px" wbo-attr="href:'Blog.link'">查看</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container panel-shadow">
+        <div class="flex-box">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+        </div>
+        <div class="flex-box">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+            <div class="flex-item">4</div>
+            <div class="flex-item">5</div>
+        </div>
+    </div>
+
+
+    <!--手机底部导航-->
+    <div class="footer-fill  visible-xs visible-sm"></div>
+    <nav class="nav-bottom  visible-xs visible-sm" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbar">
+        <div class="col col-sm-3 col-xs-3" wbo-bind="navbar.item">
+            <a class=" img-btn" href="gw.html" wbo-attr="href:'link'" wbo-up="navbar" style="text-align: center">
+                <!--<img src="images/icon/js.png" wbo-bind="navbar.icon" />-->
+                <div style="font-size: 14px">
+                    <i style="font-size: 22px" wbo-attr="class:'icon'" class="fa fa-home icon-spin"></i>
+                </div>
+                <div class="img-btn-text" wbo-bind="navbar.text">首页</div>
+            </a>
+        </div>
+    </nav>
+
+    <!--公共浮动工具-->
+    <div class="float-bottom-tool">
+        <a class="btn" href="write.html">
+            <img class="img-circle" src="images/write.png" alt="发表" />
+        </a>
+        <a class="btn" id="btnShare">
+            <img class="img-circle" src="images/share.png" alt="分享" />
+        </a>
+    </div>
+
+</body>
+</html>

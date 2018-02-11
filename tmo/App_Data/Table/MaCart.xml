@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>MaCart</Id><Title>购物车</Title><Description>添加、编辑、维护 当前购物车中的商品</Description><ListCommand><Id>ad9098b5-f7e8-4ba8-9b84-dfde5b414d9c</Id><CommandText>--获取当前用户当日及当前商家未付款订单
+declare @OrderNo nvarchar(18);
+set @OrderNo=null;
+select top 1 @OrderNo=OrderNo from ma_order where BuyerId=@BuyerId and Status=@Status and DATEDIFF(day,CreateTime,GETDATE())=0 order by OrderNo desc
+
+select * from ma_order_details  where OrderNo=@OrderNo </CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@BuyerId</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Guid</DataType><DefaultValue>[LoginUser.Id]</DefaultValue></ParameterSchema><ParameterSchema><Id>@Status</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Byte</DataType><DefaultValue>0</DefaultValue></ParameterSchema></QueryParams></ListCommand><SubTables><SubTableSchema><Name>MaOrderDetailsAttr</Name><Fks><FkSchema><Fk>detailsId</Fk><Pk>Id</Pk></FkSchema></Fks></SubTableSchema></SubTables><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>10</PageSize><PrimaryKeys><string>Id</string></PrimaryKeys><InsertCommand><Id>a9838cfa-8ca2-4d3f-abec-7ee4f0d19ebc</Id><CommandText>set @CreateTime=getDate();
+set @DetailsId=newId();
+set @Status=0;
+
+if @Model is null  begin
+set @Model='';
+end;
+
+if @Attrs is null  begin
+set @Attrs='';
+end;
+
+
+--测试数据
+--declare @BuyerId uniqueidentifier='AF00335A-1D49-46C5-A066-B0ED020C760B';--买家Id=[LoginUser.Id] 当前用户
+--declare @SellerId uniqueidentifier='AF00335A-1D49-46C5-A066-B0ED020C760B';--卖家Id来自商品信息;
+--declare @DetailsId uniqueidentifier=newId();--卖家Id来自商品信息;
+--declare @CreateTime datetime=getDate();
+--declare @SHour nvarchar(12);
+
+--declare @GoodsId uniqueidentifier='EC64DAC0-F394-4D75-AD00-AE224EF72464';--商品-Id
+--declare @Model nvarchar(20)='t111'
+--declare @Price money=1;
+--declare @OrgPrice money=1;
+--declare @Count money=1;
+--declare @Amount money=1;
+--declare @IsPay bit=0;
+--declare @PayAmount money=1;
+--declare @Status smallint=0;
+--declare @ReceiveCountry nvarchar(20)='中国';
+--declare @ReceiveProvince nvarchar(20)='云南';
+--declare @ReceiveCity nvarchar(20)='昆明';
+--declare @ReceiveDistrict nvarchar(20)='官渡';
+--declare @ReceiveName nvarchar(20)='白阳';
+--declare @ReceiveTel nvarchar(20)='13888';
+--declare @ReceiveZip nvarchar(20)='650000';
+--declare @ReceiveDetails nvarchar(20)='双桥路11号';
+--declare @GoodsName nvarchar(20)='老白干';
+--declare @OrderNo nvarchar(18);
+
+
+
+
+--获取当前用户当日及当前商家未付款订单
+set @OrderNo=null;
+select top 1 @OrderNo=OrderNo from ma_order where BuyerId=@BuyerId and Status=@Status and DATEDIFF(day,CreateTime,GETDATE())=0 order by OrderNo desc
+
+--如果不存在则创建一张新订单
+if @OrderNo is null  begin
+	set @SHour=
+		left(replace(replace(replace(CONVERT(varchar, getdate(), 120),'-',''),' ','H'),':',''),11)+'-';
+    
+	set @OrderNo =
+		@SHour+Right(
+		(select IsNull(
+			   Convert(
+				  int,Right(Max(OrderNo),6)
+			   ),0
+			)+1000001
+		  from 
+			   ma_order 
+		  where
+			   Left(OrderNo,12)=@SHour),6
+		);
+
+	INSERT INTO ma_order (
+	 [BuyerId],
+	 [SellerId],
+         [SellerStoreId],
+	 [IsPay],
+	 [PayAmount],
+	 [Status],
+	 [ReceiveCountry],
+	 [ReceiveProvince],
+	 [ReceiveCity],
+	 [ReceiveDistrict],
+	 [ReceiveName],
+	 [ReceiveTel],
+	 [ReceiveZip],
+	 [ReceiveDetails],
+	 [CreateTime],
+	[OrderNo])
+	 VALUES (
+	@BuyerId,
+	@SellerId,
+        @SellerStoreId,
+	@IsPay,
+	@PayAmount,
+	@Status,
+	@ReceiveCountry,
+	@ReceiveProvince,
+	@ReceiveCity,
+	@ReceiveDistrict,
+	@ReceiveName,
+	@ReceiveTel,
+	@ReceiveZip,
+	@ReceiveDetails,
+	@CreateTime,
+	@OrderNo);
+
+	--设置默认送货地址
+	if(select top 1 UserId from ma_my_setting where UserId=@BuyerId) is null 
+	--如果设置了默认地址
+	begin
+		update ma_order set
+		 [ReceiveCountry]=b.Country,
+		 [ReceiveProvince]=b.Province,
+		 [ReceiveCity]=b.City,
+		 [ReceiveDistrict]=b.District,
+		 [ReceiveName]=b.Receiver,
+		 [ReceiveTel]=b.Tel,
+		 [ReceiveZip]=b.Zip,
+		 [ReceiveDetails]= b.Details
+		from 
+		 ma_user_address  b left join  ma_my_setting 
+		 on  b.UserId=ma_my_setting.UserId
+			 and b.UserId=@BuyerId
+		where
+		  b.UserId=@BuyerId and
+		  ma_order.OrderNo=@OrderNo;
+    end		  
+    else
+    begin	
+    --否则
+		update  ma_order set
+		 [ReceiveCountry]=b.Country,
+		 [ReceiveProvince]=b.Province,
+		 [ReceiveCity]=b.City,
+		 [ReceiveDistrict]=b.District,
+		 [ReceiveName]=b.UserId,
+		 [ReceiveTel]=b.Tel,
+		 [ReceiveZip]=b.Zip,
+		 [ReceiveDetails]= b.Receiver
+		from 
+		  ma_user_address  b 
+		where
+		  b.UserId=@BuyerId and
+		  ma_order.OrderNo=@OrderNo;
+	end	  
+end
+
+update ma_order_details set
+ [OrderNo]=@OrderNo,
+ [GoodsId]=@GoodsId,
+ [GoodsName]=@GoodsName,
+ [Model]=@Model,
+ [Price]=@Price,
+ [OrgPrice]=@OrgPrice,
+ [Count]=@Count,
+ [Amount]=@Price*@Count,
+ [Attrs]=@Attrs
+where
+ [OrderNo]=@OrderNo and
+ [GoodsId]=@GoodsId and
+ [GoodsName]=@GoodsName and
+ IsNull([Model],'')=IsNull(@Model,'') and
+ IsNull([Attrs],'')=IsNull(@Attrs,'');
+
+IF @@ROWCOUNT = 0 
+begin
+--插入商品明细数据
+INSERT INTO ma_order_details (
+ [Id],
+ [OrderNo],
+ [GoodsId],
+ [GoodsName],
+ [Model],
+ [Price],
+ [OrgPrice],
+ [Count],
+ [Amount],
+[Attrs])
+ VALUES (
+@DetailsId,
+@OrderNo,
+@GoodsId,
+@GoodsName,
+@Model,
+@Price,
+@OrgPrice,
+@Count,
+@Count*@Price,
+@Attrs)
+end;
+
+update ma_order 
+   set
+      PayAmount=(select sum(Amount)  from ma_order_details where OrderNo=@OrderNo)
+Where OrderNo=@OrderNo;
+
+select * from ma_order_details    where
+ [OrderNo]=@OrderNo and
+ [GoodsId]=@GoodsId and
+ [GoodsName]=@GoodsName and
+ [Model]=@Model and
+ [Attrs]=@Attrs;
+
+
+
+</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@BuyerId</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Guid</DataType><DefaultValue>[LoginUser.Id]</DefaultValue></ParameterSchema><ParameterSchema><Id>@SHour</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>AnsiString</DataType><DefaultValue>20170810H12-</DefaultValue></ParameterSchema><ParameterSchema><Id>@OrderNo</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>AnsiString</DataType><DefaultValue>20170810H12-000001</DefaultValue></ParameterSchema><ParameterSchema><Id>@Status</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Byte</DataType><DefaultValue>0</DefaultValue></ParameterSchema><ParameterSchema><Id>@UpdateCount</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Int32</DataType><DefaultValue>0</DefaultValue></ParameterSchema></QueryParams></InsertCommand><UpdateCommand><Id>bb365b41-afb5-4b6a-bf58-f73b26933da6</Id><CommandText>UPDATE ma_order_details SET 
+ [Id]=@Id,
+ [GoodsId]=@GoodsId,
+ [GoodsName]=@GoodsName,
+ [Model]=@Model,
+ [Price]=@Price,
+ [OrgPrice]=@OrgPrice,
+ [Count]=@Count,
+ [Amount]=@Amount
+ WHERE 
+ [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></UpdateCommand><DeleteCommand><Id>e7012191-d989-458b-b978-55c710703b55</Id><CommandText>DELETE FROM ma_order_details WHERE  [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></DeleteCommand><SelectCommand><Id>271a1770-4455-42ec-b18d-ccef73ed84d3</Id><CommandText>Select * From ma_order_details Where Id=@Id</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@Id</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Guid</DataType><DefaultValue /></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>Id</Id><Title>Id</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>OrderNo</Id><Title>订单号</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>GoodsId</Id><Title>商品Id</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>GoodsName</Id><Title>商品名称</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Model</Id><Title>型号规格</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Price</Id><Title>单价</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Decimal</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>OrgPrice</Id><Title>原价</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Decimal</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Count</Id><Title>数量</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Double</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Amount</Id><Title>金额</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Decimal</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Attrs</Id><Title>其他属性</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>ma_order_details</TableName><IsPagingByParams>false</IsPagingByParams></DataSourceSchema>

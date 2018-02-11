@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WxConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+   
+	<Domain>http://ysxy.cy168.cc</Domain>
+
+  <!--公众平台-->
+  <Token>ysxy32578964</Token>
+	<EncodingAESKey>6E65wdTw4yFpMubzDrJUIQ874fAIK19SncxCDk9ZCDM</EncodingAESKey>
+	<AppID>wx604fdcffa66d0b00</AppID>
+	<AppSecret>8102a42d748e7b7093af51fd33c8b321</AppSecret>
+
+  <!--微信支付-->
+  <!--商户号-->
+  <MchId>1487148142</MchId>
+  <!--微信支付sign 加密Key，参见商户平台 "账户中心->账户设置->密码安全->API安全"中API证书、密钥-->
+  <SignKey>dlsddp13688884517342345678945532</SignKey>
+
+  <AppID_Open>wxf96452b66298ba26</AppID_Open>
+	<ComponentAppid>wx33dff875ebf4930e</ComponentAppid>
+	<ComponentAppsecret>0c79e1fa963cd80cc0be99b20a18faeb</ComponentAppsecret>
+	<AppSecret_Open>d331ddf2d72d8f229bdb1d9097379226</AppSecret_Open>
+	<PartnerKey>65489423gjkjlkjjkl564894ydfytgoj</PartnerKey>
+	<SslcertPath>cert/apiclient_cert.p12</SslcertPath>
+	<DeviceInfo />
+	<SpBillCreateIp />
+</WxConfig>

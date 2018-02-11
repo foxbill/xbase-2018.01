@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>SnBlogMan</Id><ListCommand><Id>185391fb-ef84-493d-9cf0-1c07977e4dae</Id><CommandText>Select 
+   sn_blog.*,
+   'write.html?Id='+cast(sn_blog.Id as varchar(60)) as Edit,
+case when sn_blog.checked=1 then 'fa fa-flag' else 'fa fa-flag-o' end  as CheckedIcon,
+   xsys_user_account.display_name as Author ,
+   xsys_user_account.head_photo as AuthorPhoto,
+   IsNull(sn_v_like_count.LikeCount,0) as LikeCount,
+   IsNull(d.Count,0) as CommentsCount
+ From 
+    sn_blog 
+    left join 
+       xsys_user_account 
+       on sn_blog.AuthorId=xsys_user_account.uni_id
+    left join
+       sn_v_like_count 
+       on sn_v_like_count.TargetId=sn_blog.Id 
+       and sn_v_like_count.TargetType='sn_blog' 
+    left join sn_v_comments_count  d
+       on d.TargetId= sn_blog.Id
+       and d.TargetType='sn_blog'
+order by CreateTime desc
+
+    </CommandText><CommandType>Text</CommandType></ListCommand><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>10</PageSize><PrimaryKeys><string>Id</string></PrimaryKeys><InsertCommand><Id>d9bfa63f-60dc-40eb-b60b-8e79bf518108</Id><CommandText>INSERT INTO sn_blog (
+ [Id],
+ [Title],
+ [Body],
+ [AuthorId],
+ [CreateTime],
+ [UpdateTime],
+ [Picture],
+ [Icon],
+ [Summary],
+ [TypeId],
+ [checked],
+ [checkor])
+ VALUES (
+@Id,
+@Title,
+@Body,
+@AuthorId,
+@CreateTime,
+@UpdateTime,
+@Picture,
+@Icon,
+@Summary,
+@TypeId,
+@checked,
+@checkor)</CommandText><CommandType>Text</CommandType></InsertCommand><UpdateCommand><Id>cda8e3c6-ffdf-48cd-a3d8-74d982d03dd0</Id><CommandText>UPDATE sn_blog SET 
+ [checked]=@checked,
+ [checkor]=@checkor
+ WHERE 
+ [Id]=@pk_Id</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@checkor</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>String</DataType><DefaultValue>[LoginUser.Name]</DefaultValue></ParameterSchema></QueryParams></UpdateCommand><DeleteCommand><Id>0fccd694-c331-4c31-bd2b-3991eda7a699</Id><CommandText>DELETE FROM sn_blog WHERE  [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></DeleteCommand><SelectCommand><Id>313abcd0-2abb-434b-80bb-8f298f024599</Id><CommandText>Select 
+   sn_blog.*,
+   'write.html?Id='+cast(sn_blog.Id as varchar(60)) as Edit,
+case when sn_blog.checked=1 then 'fa fa-flag' else 'fa fa-flag-o' end  as CheckedIcon,
+   xsys_user_account.display_name as Author ,
+   xsys_user_account.head_photo as AuthorPhoto,
+   IsNull(sn_v_like_count.LikeCount,0) as LikeCount
+From 
+    sn_blog left join xsys_user_account 
+    on    
+    sn_blog.AuthorId=xsys_user_account.uni_id
+
+    left join
+       sn_v_like_count 
+       on sn_v_like_count.TargetId=sn_blog .Id 
+       and sn_v_like_count.TargetType='sn_blog' 
+
+Where 
+    sn_blog.Id=@Id
+</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@Id</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Guid</DataType><DefaultValue /></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>Id</Id><Title>Id</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Title</Id><Title>Title</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Body</Id><Title>Body</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>AuthorId</Id><Title>AuthorId</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>CreateTime</Id><Title>CreateTime</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>DateTime</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>UpdateTime</Id><Title>UpdateTime</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>DateTime</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Picture</Id><Title>Picture</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Icon</Id><Title>Icon</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Summary</Id><Title>Summary</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>TypeId</Id><Title>TypeId</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>checked</Id><Title>审核通过</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Boolean</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>checkor</Id><Title>审核人</Title><DisplayWidth>60</DisplayWidth><Option><QueryParams /></Option><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Edit</Id><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Author</Id><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>AuthorPhoto</Id><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>LikeCount</Id><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int32</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>CheckedIcon</Id><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>sn_blog</TableName><IsPagingByParams>true</IsPagingByParams></DataSourceSchema>

@@ -1,0 +1,247 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>运势小赢+</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../html-plugin/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/hammer.min.js"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/jquery.hammer.js"></script>
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+
+    <script type="text/javascript">
+        //设置激活按钮状态
+        $(function () {
+            var color = "#7f9f5c";
+            var $btn = $("#" + $.paramVal("nId"));
+            $btn.find("i").css("color", color);
+            $btn.find("div").css("color", color);
+        });
+
+
+        $(function () {
+            $("#btnShare").click(function () {
+                wxshare();
+            })
+            //  $("#myCarousel").carousel('cycle');
+
+            $('#head-carousel').hammer().on('swipeleft', function () {
+                $(this).carousel('next');
+            });
+
+            $('#head-carousel').hammer().on('swiperight', function () {
+
+                $(this).carousel('prev');
+
+            });
+
+        })
+        function wxshare() {
+            $(shareit).show();
+            $("#shareit .close-share").click(function () {
+                $(shareit).hide();
+            });
+        }
+
+
+    </script>
+    <script>
+        $(function () {
+            $(".grid-9-cell").click(function () {
+                var v = $(elNum).html();
+                if (v.length >= 2)
+                    v = "";
+                v += $(this).html()
+                $(elNum).html(v);
+
+                if (v.length == 2) {
+                    var r = $.rCall("AppYsk.row?" + $.param({ Num: v }));
+                    $(elYsText).html(r.Text);
+                }
+            })
+        });
+    </script>
+    <style>
+        .grid-9 {
+            width: 181px;
+            margin-left: auto;
+            margin-right: auto;
+            /*border-left: 1px solid;
+            border-top: 1px solid;*/
+        }
+
+            .grid-9:after, .grid-9:before {
+                display: table;
+                content: " ";
+                clear: both;
+            }
+
+        .grid-9-cell {
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            /*border-right: 1px solid;*/
+            /*border-bottom: 1px solid;*/
+            float: left;
+            text-align: center;
+            padding: 3px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #ffd800;
+            font-size: 20px;
+            font-weight: bolder;
+        }
+
+        .alert-opacity {
+            background-color: rgba(95,95,95,0.4);
+        }
+
+        .alert-opacity-title {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header" wbo="Site.row">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only" wbo-bind="Name">运势小赢+</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-bind="Name">运势小赢+</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+
+    <!--分享提示-->
+    <div id="shareit">
+        <style>
+            .share-text {
+                color: red;
+            }
+
+            #shareit .arrow {
+                height: 300px;
+            }
+        </style>
+        <div class="arrow">
+            <img src="images/share-it.png">
+        </div>
+        <div class="share-text">
+            <h3>点击菜单'...'分享给好友</h3>
+            <h3>领取红包</h3>
+            <h1 class="close-share"><a class="btn btn-lg btn-danger">知道了</a></h1>
+        </div>
+        <!--<img id="share-text" src="http://dev.vxtong.com/cases/nuannan/imgs/share-text.png">-->
+
+    </div>
+
+
+    <!--九宫格-->
+    <section class="container full">
+        <div class="panel-shadow" style="background-image: url('images/x9.jpg');margin-bottom:0px">
+            <div class="alert alert-opacity">
+                <span class="alert-opacity-title">从以下9个数字中选择2个数字</span>
+            </div>
+            <div class="grid-9 fore-red">
+                <div class="grid-9-cell">4</div>
+                <div class="grid-9-cell">9</div>
+                <div class="grid-9-cell">2</div>
+                <div class="grid-9-cell">3</div>
+                <div class="grid-9-cell">5</div>
+                <div class="grid-9-cell">7</div>
+                <div class="grid-9-cell">8</div>
+                <div class="grid-9-cell">1</div>
+                <div class="grid-9-cell">6</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container full">
+        <div class="panel-shadow" style="background-color:#7d0606;margin-bottom:0px">
+            <div id="elNum" class="fore-red text-center" style="margin-left: auto;min-height:31px; margin-right: auto; padding-top: 3px; font-size: 20px;color:#c4b4b4">
+            </div>
+        </div>
+    </section>
+
+    <section class="container full">
+        <div class="panel-shadow" style="min-height:400px">
+            <div id="elYsText"></div>
+        </div>
+    </section>
+
+    <!--手机底部导航-->
+    <div class="footer-fill  visible-xs visible-sm"></div>
+    <nav class="nav-bottom  visible-xs visible-sm" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbar">
+        <div class="col col-sm-3 col-xs-3" wbo-bind="navbar.item">
+            <a class=" img-btn" href="gw.html" wbo-attr="href:'link'" wbo-up="navbar" style="text-align: center">
+                <!--<img src="images/icon/js.png" wbo-bind="navbar.icon" />-->
+                <div style="font-size: 14px">
+                    <i style="font-size: 22px" wbo-attr="class:'icon'" class="fa fa-home icon-spin"></i>
+                </div>
+                <div class="img-btn-text" wbo-bind="navbar.text">首页</div>
+            </a>
+        </div>
+    </nav>
+
+    <!--悬浮工具-->
+    <!--    <div class="float-bottom-tool">
+        <a class="btn" href="write.html">
+            <img class="img-circle" src="images/write.png" alt="发表" />
+        </a>
+        <a class="btn" id="btnShare">
+            <img class="img-circle" src="images/share.png" alt="分享" />
+        </a>
+    </div>-->
+
+</body>
+</html>

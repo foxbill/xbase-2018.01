@@ -1,0 +1,343 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>我的收货地址</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../html-plugin/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+
+
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/hammer.min.js"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/jquery.hammer.js"></script>
+
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+    <script>
+
+
+        $(function () {
+            //$(txtName).val(""); // 收货人姓名
+            //$(txtPostCode).val(""); // 邮编
+            //$(txtProvince).val(""); // 国标收货地址第一级地址（省）
+            //$(txtCity).val(""); // 国标收货地址第二级地址（市）
+            //$(txtCountry).val(""); // 国标收货地址第三级地址（国家）
+            //$(txtDetails).val(""); // 详细收货地址信息
+            //// var nationalCode = res.nationalCode; // 收货地址国家码
+            //$(txtTel).val(""); // 收货人手机号码
+
+            if (!$.rCall("BrowserAgent.isWeiXin")) {
+                $("#btnGetWxAddress").hide();
+                return;
+            }
+
+            var config = $.rCall("WxJsCfg.call");
+            config.jsApiList = [
+                  'openAddress'
+            ]
+            wx.config(config);
+            wx.ready(function () {
+                $("#btnGetWxAddress").click(function () {
+                    wx.openAddress({
+                        success: function (res) {
+                            $(txtName).val(res.userName); // 收货人姓名
+                            $(txtPostCode).val(res.postalCode); // 邮编
+                            $(txtProvince).val(res.provinceName); // 国标收货地址第一级地址（省）
+                            $(txtCity).val(res.cityName); // 国标收货地址第二级地址（市）
+                            $(txtCountry).val(res.nationalCode); // 收货地址国家码
+                            $(txtDistrict).val(res.countryName);// 国标收货地址第三级地址（区县）
+                            $(txtDetails).val(res.detailInfo); // 详细收货地址信息
+                            $(txtTel).val(res.telNumber); // 收货人手机号码
+                        }
+                    });
+                });
+            });
+
+            wx.error(function (res) {
+                alert(res.errMsg);
+            });
+
+
+            //$("#btnGetWxAddress").click(function () {
+            //    wx.openAddress({
+            //        success: function (res) {
+            //            var userName = res.userName; // 收货人姓名
+            //            var postalCode = res.postalCode; // 邮编
+            //            var provinceName = res.provinceName; // 国标收货地址第一级地址（省）
+            //            var cityName = res.cityName; // 国标收货地址第二级地址（市）
+            //            var countryName = res.countryName; // 国标收货地址第三级地址（国家）
+            //            var detailInfo = res.detailInfo; // 详细收货地址信息
+            //            var nationalCode = res.nationalCode; // 收货地址国家码
+            //            var telNumber = res.telNumber; // 收货人手机号码
+            //        }
+            //    });
+            //});
+
+        });
+    </script>
+
+    <script type="text/javascript">
+
+        //设置激活按钮状态
+        $(function () {
+            var color = "#7f9f5c";
+            var $btn = $("#" + $.paramVal("nId"));
+            $btn.find("i").css("color", color);
+            $btn.find("div").css("color", color);
+        });
+
+        function wxshare() {
+            $(shareit).show();
+            $("#shareit .close-share").click(function () {
+                $(shareit).hide();
+            });
+        }
+
+    </script>
+    <style>
+        body {
+            background-color: #FAFAFA;
+        }
+
+        a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .person-info .head-photo {
+            width: 80px;
+            height: 80px;
+        }
+
+        .media {
+            padding: 15px;
+        }
+
+        .media-body {
+            padding-top: 15px;
+        }
+
+        .media-right {
+            padding-top: 15px;
+        }
+
+        .list-group {
+            margin: 10px;
+            padding-top: 20px;
+        }
+
+        .list-group-item-icon {
+            max-width: 32px;
+            max-height: 32px;
+        }
+
+        h4 {
+            margin: 0px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+            h4 img {
+                width: 40px;
+                height: 40px;
+            }
+    </style>
+</head>
+<body>
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header" wbo="Site.row">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only" wbo-bind="Name">运势小赢+</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-bind="Name">运势小赢+</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+
+    <!--分享提示-->
+    <div id="shareit">
+        <style>
+            .share-text {
+                color: red;
+            }
+
+            #shareit .arrow {
+                height: 300px;
+            }
+        </style>
+        <div class="arrow">
+            <img src="images/share-it.png">
+        </div>
+        <div class="share-text">
+            <h3>点击菜单'...'分享给好友</h3>
+            <h3>领取红包</h3>
+            <h1 class="close-share"><a class="btn btn-lg btn-danger">知道了</a></h1>
+        </div>
+        <!--<img id="share-text" src="http://dev.vxtong.com/cases/nuannan/imgs/share-text.png">-->
+
+    </div>
+
+    <!--用户信息-->
+    <div class="container">
+        <style>
+            .media-body {
+                padding-top: 10px;
+            }
+
+            .person-info {
+                padding-top: 30px;
+                padding-bottom: 30px;
+                margin-top: 0px;
+            }
+
+                .person-info .media-body a {
+                    margin-right: 10px;
+                }
+        </style>
+        <div class="media person-info section-panel bg-blue-1" wbo="LoginUser.call" name="user">
+            <div class="">
+                <div class="media-left " href="#">
+                    <img class="head-photo  img-circle" src="images/headphoto.jpg" wbo-bind="user.HeadPhoto" alt="头像">
+                </div>
+                <div class="media-body">
+                    <h3 class="media-heading white" wbo-bind="user.Name">LOLA</h3>
+                    <div class="white" wbo-bind="user.Sign">朝花夕拾杯中酒</div>
+                    <div><a href="my-redbag-pay.html" class="btn btn-danger btn-xs">我要推广</a><a class="btn btn-danger btn-xs" href="mutual-fund.html">我要保玻璃</a></div>
+                </div>
+                <a class="btn media-right white" link="my-info.html">
+                    <i class="fa fa-arrow-right white" style="vertical-align: central; font-size: 30px"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!--页面标题-->
+    <section class="container">
+        <div class="page-header">
+            <h1>编辑收货地址</h1>
+        </div>
+    </section>
+
+    <!--地址表单-->
+    <section class="container container-s">
+        <div>
+            <form class="" action="MaMyAddr.form" method="post" id="frmMyAddr" wbo="MaMyAddr.row" wbo-query="Id:$.paramVal('Id')" name="Addr" role="form">
+                <input wbo-bind="Addr.pk_Id" name="pk_Id" type="hidden" />
+                <div class="form-group  col-xs-8 full" style="padding-right: 1px">
+                    <label for="nickname">收货人</label>
+                    <input wbo-bind="Addr.Receiver" type="text" name="Receiver" class="form-control" id="txtName" placeholder="如：张三">
+                </div>
+                <div class="form-group col-xs-4 full" style="padding-left: 1px">
+                    <label for="txtTel">电话</label>
+                    <input wbo-bind="Addr.Tel" type="text" name="Tel" class="form-control" id="txtTel" placeholder="139xxxxxxx8">
+                </div>
+                <div class="form-group  col-xs-4 col-md-4 full">
+                    <label for="txtCountry">国家码</label>
+                    <input type="text" name="Country" wbo-bind="Addr.Country" class="form-control" id="txtCountry" placeholder="如：530100">
+                </div>
+                <div class="form-group col-xs-4 col-md-4  full" style="padding-left: 1px; padding-right: 1px">
+                    <label for="txtProvince">省</label>
+                    <input type="text" name="Province" wbo-bind="Addr.Province" class="form-control" id="txtProvince" placeholder="省">
+                </div>
+                <div class="form-group col-xs-4 col-md-4  full" style="padding-left: 1px">
+                    <label for="txtCity">市</label>
+                    <input type="text" name="City" wbo-bind="Addr.City" class="form-control" id="txtCity" placeholder="市">
+                </div>
+                <div class="form-group  col-xs-9 col-md-9  full">
+                    <label for="txtDistrict">区县</label>
+                    <input type="text" name="District" wbo-bind="Addr.District" class="form-control" id="txtDistrict" placeholder="区县">
+                </div>
+                <div class="form-group col-xs-3 col-md-3 full" style="padding-left: 1px">
+                    <label for="txtSign">邮编</label>
+                    <input type="text" wbo-bind="Addr.Zip" name="Zip" id="txtPostCode" class="form-control" placeholder="100010">
+                </div>
+                <div class="form-group">
+                    <label for="txtTel">详细地址</label>
+                    <input type="text" wbo-bind="Addr.Details" name="Details" class="form-control" id="txtDetails" placeholder="详细地址">
+                </div>
+                <div style="float: right">
+                    <button type="button" class="btn btn-default btn-sm" id="btnGetWxAddress">提取微信地址</button>
+                    <button type="button" class="btn btn-default" id="btnSubmit">确定</button>
+                    <button type="button" class="btn btn-default" id="btnCancel">取消</button>
+                </div>
+            </form>
+        </div>
+        <script>
+            $(function () {
+                $(btnSubmit).click(function () {
+                    $(frmMyAddr).postForm(function (json) {
+                        if (json.Err)
+                            alert(json.Err.Text);
+                        else {
+                            $(frmMyAddr).jsonForm(json.Form);
+                            location = document.referrer;
+                        }
+                    });
+                });
+            });
+        </script>
+    </section>
+
+    <!--手机底部导航-->
+    <div class="footer-fill  visible-xs visible-sm"></div>
+    <nav class="nav-bottom  visible-xs visible-sm" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbar">
+        <div class="col col-sm-3 col-xs-3" wbo-bind="navbar.item">
+            <a class=" img-btn" href="gw.html" wbo-attr="href:'link'" wbo-up="navbar" style="text-align: center">
+                <!--<img src="images/icon/js.png" wbo-bind="navbar.icon" />-->
+                <div style="font-size: 14px">
+                    <i style="font-size: 22px" wbo-attr="class:'icon'" class="fa fa-home icon-spin"></i>
+                </div>
+                <div class="img-btn-text" wbo-bind="navbar.text">首页</div>
+            </a>
+        </div>
+    </nav>
+
+</body>
+</html>

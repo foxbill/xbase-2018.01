@@ -1,0 +1,444 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>我的店铺</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../html-plugin/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+
+
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+    <link rel="stylesheet" href="../html-plugin/cropper/cropper.css">
+
+
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../html-plugin/cropper/cropper.js"></script>
+    <script src="../html-plugin/cropper/cropper-modal.js?v1.1.1.63"></script>
+
+
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+
+
+    <script type="text/javascript">
+        function saveStore(e) {
+            $(frmStore).postForm(function (json) {
+                if (json && json.Err) {
+                    alert(json.Err.Text);
+                    return;
+                }
+            });
+        }
+        function deleteGoods(el) {
+            var ret = $.rCall("MaMainStoreGoods.delete", { row: { pk_Id: $(el).attr("goods-id") } });
+            $("[wbo='MaMainStoreGoods.rows']").jsonList().reload();
+        }
+        function takenOff(el) {
+            if (el.data.TakenOff.toLowerCase() == "true")
+                el.data.TakenOff = false;
+            else
+                el.data.TakenOff = true;
+
+            $.rCall("MaMainStoreGoods.update", { row: el.data });
+            $("[wbo='MaMainStoreGoods.rows']").jsonList().reload();
+        }
+    </script>
+    <script>
+        $(function () {
+            var $title = $(".store-title");
+            var $input = $(".store-title-input");
+
+            var $summary = $(".store-summary");
+            var $summaryInput = $(".store-summary-input");
+
+
+            var $logo = $(".Store.Logo");
+
+
+            var modal = new CropperDialog(modalCropper, [{ img: imgLogo, fld: inpStoreLogo, x: 400, y: 400 }, {
+                img: imgStorePic, fld: inpStorePic, x: 1000, y: 400
+            }])
+
+
+            $input.blur(function () {
+                $input.hide();
+                $title.html($input.val());
+            })
+
+            $title.click(function () {
+                $input.val($title.html());
+                $input.width($title.innerWidth());
+                $input.height($title.innerHeight());
+                $input.show();
+                $input.focus();
+            });
+
+            $summary.click(function () {
+                var p = $summary.position();
+                $summaryInput.css("left", p.left);
+                $summaryInput.css("top", p.top);
+                $summaryInput.css("font-size", $summary.css("font-size"));
+                $summaryInput.val($summary.html());
+                $summaryInput.width($summary.innerWidth());
+                $summaryInput.height($summary.innerHeight());
+                $summaryInput.show();
+                $summaryInput.focus();
+            });
+
+            $summaryInput.blur(function () {
+                $summaryInput.hide();
+                $summary.html($summaryInput.val());
+            })
+
+            $(modalCropper).bind("ok", saveStore);
+            $("#frmStore input").change(saveStore);
+
+        });
+    </script>
+    <script>
+        $(function () {
+            var loading = false;
+            $(window).scroll(function () {
+                //$(window).scrollTop()这个方法是当前滚动条滚动的距离
+                //$(window).height()获取当前窗体的高度
+                //$(document).height()获取当前文档的高度
+                if (loading) return;
+                var bot = 50; //bot是底部距离的高度
+                if ((bot + $(window).scrollTop()) >= ($(document).height() - $(window).height())) {
+                    //当底部基本距离+滚动的高度〉=文档的高度-窗体的高度时；
+                    //我们需要去异步加载数据了
+                    //$.getJSON("url", { page: "2" }, function (str) { alert(str); });
+                    loading = true;
+                //    $(pageLoading).show();
+                    $("[wbo='MaMainStoreGoods.rows']").jsonList().addPaging();
+                  //  $(pageLoading).hide();
+                    loading = false;
+                }
+            });
+        })
+    </script>
+
+
+    <style type="text/css">
+        .container-s {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        /* 小屏幕（平板，大于等于 768px） */
+        @media (min-width: 450px) {
+            .container-s {
+                width: 450px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header" wbo="Site.row">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only" wbo-bind="Name">运势小赢+</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-bind="Name">运势小赢+</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+    <!--分享提示-->
+    <div id="shareit">
+        <style>
+            .share-text {
+                color: red;
+            }
+
+            #shareit .arrow {
+                height: 300px;
+            }
+        </style>
+        <div class="arrow">
+            <img src="images/share-it.png">
+        </div>
+        <div class="share-text">
+            <h3>点击菜单'...'分享给好友</h3>
+            <h3>领取红包</h3>
+            <h1 class="close-share"><a class="btn btn-lg btn-danger">知道了</a></h1>
+        </div>
+        <!--<img id="share-text" src="http://dev.vxtong.com/cases/nuannan/imgs/share-text.png">-->
+
+    </div>
+
+    <!--店铺牌匾-->
+    <div class="container-fluid clearfix"  style="color: white; position: relative">
+        <style>
+            .store {
+                position: absolute;
+                top: 50px;
+                width: 100%;
+            }
+
+            .store-logo {
+                width: 20%;
+                float: left;
+                max-width: 150px;
+                margin-left: 20px;
+                margin-top: 30px;
+            }
+                .store-logo img {
+                    min-width:40px;
+                    min-height:40px;
+                }
+
+            .store-text {
+                float: left;
+                margin-left: 20px;
+                position: relative;
+            }
+
+            .store-title {
+                position: relative;
+                margin-bottom: 0px;
+                font-size: 26px;
+            }
+
+            .store-title-input {
+                outline: none;
+                display: none;
+                /*border: 1px solid #eee;*/
+                border: none;
+                color: black;
+                position: absolute;
+                top: 20px;
+                left: 0px;
+                font-size: 30px;
+                line-height: 33px;
+                height: 33px;
+                padding-top: 0px;
+                padding-bottom: 0px;
+                margin: 0px;
+            }
+
+            .store-title-input-show {
+                display: block;
+            }
+
+            .store-summary {
+                position: relative;
+                line-height: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+
+            .store-summary-input {
+                display: none;
+                position: absolute;
+                border: none;
+                outline: none;
+                color: black;
+            }
+        </style>
+        <div class="container" wbo="MaMainStore.row" name="Store" style="position: relative">
+            <form method="post" action="MaMainStore.form" id="frmStore">
+                <input name="pk_Id" id="elStorePk" wbo-bind="Store.pk_Id" type="hidden" />
+                <img wbo-bind="Store.Picture" id="imgStorePic" class="img-responsive" src="images/store.jpg" style="min-height:100px" />
+                <input type="hidden" name="Picture" wbo-bind="Store.Picture" id="inpStorePic" />
+                <div class="store">
+                    <div class="store-logo">
+                        <img wbo-bind="Store.Logo" id="imgLogo" class="img-circle img-responsive" src="images/headphoto.jpg" alt="Logo" />
+                        <input type="hidden" wbo-bind="Store.Logo" name="Logo" id="inpStoreLogo" />
+                    </div>
+                    <div class="store-text">
+                        <h1 wbo-bind="Store.Name" class="store-title">店铺名称</h1>
+                        <input wbo-bind="Store.Name" name="Name" class="store-title-input" type="text" />
+
+                        <div wbo-bind="Store.Summary" class="store-summary">店铺简介</div>
+                        <input wbo-bind="Store.Summary" name="Summary" class="store-summary-input" type="text" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!--店铺管理工具-->
+    <section class="container" style="margin-top: 10px">
+        <style>
+            .tools {
+            }
+
+            .tools-item {
+                float: left;
+                text-align: center;
+                cursor: pointer;
+            }
+
+            .tools-title {
+                padding: 3px;
+                margin: 0px;
+            }
+        </style>
+        <div class="tools">
+            <div class="tools-item" id="btnAddGoods">
+                <i class="fa fa-plus-square fa-2x "></i>
+                <p class="tools-title">添加商品</p>
+            </div>
+            <div class="tools-item">
+                <i class="fa fa-address-card-o fa-2x "></i>
+                <p class="tools-title">信用设置</p>
+            </div>
+            <div class="tools-item"></div>
+        </div>
+        <script>
+            $("#btnAddGoods").click(function () {
+                var storeId = $("[wbo='MaMainStore.row']").jsonForm().data().Id;
+                if (!$("#elStorePk").val()) {
+                    saveStore(function () {
+                        location = "goods-edit.html?" + $.param({ StoreId: storeId });
+                    })
+                } else {
+                    location = "goods-edit.html?" + $.param({ StoreId: storeId });
+                }
+
+            });
+        </script>
+    </section>
+
+    <!--商品列表-->
+    <div class="container" style="margin-top: 10px">
+        <style>
+            .col {
+                /*border:1px solid red;*/
+                padding-right: 0px;
+            }
+
+            .row {
+            }
+
+            .goods {
+                background-color: white;
+                padding: 5px;
+                overflow: hidden;
+            }
+
+            .goods-price {
+                font-size: 20px;
+                color: red;
+                margin-right: 20px;
+            }
+
+            .goods-org-price {
+                text-decoration: line-through;
+                margin-right: 20px;
+            }
+
+            .goods-name {
+                padding: 5px;
+                font-size: 20px;
+                margin: 0px;
+                min-height: 32px;
+            }
+
+            .goods-body {
+                float: left;
+            }
+
+            .goods-tools {
+                float: right;
+                padding-top: 18px;
+            }
+        </style>
+        <div class="row" wbo="MaMainStoreGoods.rows" wbo-params="{page:1,rows:20}" wbo-ctrl="jsonList" name="Goods">
+            <div class="col col-sm-12 col-md-6" wbo-bind="Goods.item">
+                <div class="goods">
+                    <img wbo-bind="Goods.Pic1" class="img-responsive" src="images/st-3.jpg" />
+                    <div class="goods-body">
+                        <span class="goods-price">￥<span wbo-bind="Goods.Price">12.00</span>元</span>
+                        <h1 class="goods-name" wbo-bind="Goods.Name">和田玉</h1>
+                    </div>
+                    <div class="goods-tools">
+                        <a class="btn btn-danger btn-sm" wbo-attr="'goods-id':'Id'" onclick="deleteGoods(this)">删除</a>
+                        <a class="btn btn-primary btn-sm" wbo-attr="href:'link'">编辑</a>
+                        <a class="btn btn-warning btn-sm" wbo-bind="Goods.TakenOffText" wbo-attr="'goods-id':'Id'" data-get="Goods.row" onclick="takenOff(this)">下架</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modalCropper" aria-labelledby="modalLabel" role="dialog" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modalLabel">剪辑图像</h4>
+                </div>
+                <div class="modal-body">
+                    <div style="background-color: azure; max-height: 350px; overflow: hidden">
+                        <img id="croImage" src="" alt="Picture" style="left: 0px; top: 0px; width: 100%" />
+                        <input type="file" id="cropFile" style="display: none" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="btnOk">确定</button>
+                    <button type="button" class="btn btn-default" id="btnCancel">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--手机底部导航-->
+    <div class="footer-fill  visible-xs visible-sm"></div>
+    <nav class="nav-bottom  visible-xs visible-sm" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbar">
+        <div class="col col-sm-3 col-xs-3" wbo-bind="navbar.item">
+            <a class=" img-btn" href="gw.html" wbo-attr="href:'link'" wbo-up="navbar" style="text-align: center">
+                <!--<img src="images/icon/js.png" wbo-bind="navbar.icon" />-->
+                <div style="font-size: 14px">
+                    <i style="font-size: 22px" wbo-attr="class:'icon'" class="fa fa-home icon-spin"></i>
+                </div>
+                <div class="img-btn-text" wbo-bind="navbar.text">首页</div>
+            </a>
+        </div>
+    </nav>
+</body>
+</html>

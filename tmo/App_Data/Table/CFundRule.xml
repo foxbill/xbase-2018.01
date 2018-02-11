@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>CFundRule</Id><ListCommand><Id>3de481aa-25c9-48ad-99d1-de941c375426</Id><CommandText>c_fund_rule</CommandText><CommandType>TableDirect</CommandType></ListCommand><SubTables /><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>10</PageSize><References /><PrimaryKeys><string>Id</string></PrimaryKeys><InsertCommand><Id>3299cb6f-a0f0-4b34-88c0-0caae882ffa5</Id><CommandText>INSERT INTO c_fund_rule (
+ [Id],
+ [Value],
+ [Fund])
+ VALUES (
+@Id,
+@Value,
+@Fund)</CommandText><CommandType>Text</CommandType></InsertCommand><UpdateCommand><Id>7176793f-61c4-461d-a00d-ac10a8cc2558</Id><CommandText>UPDATE c_fund_rule SET 
+ [Id]=@Id,
+ [Value]=@Value,
+ [Fund]=@Fund
+ WHERE 
+ [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></UpdateCommand><DeleteCommand><Id>f601fc1a-0383-4e16-a437-529cbf525a78</Id><CommandText>DELETE FROM c_fund_rule WHERE  [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></DeleteCommand><SelectCommand><Id>cf71a0de-2778-46c2-a985-353c1db5136c</Id><CommandText>Select * From c_fund_rule Where Id=@Id</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@Id</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Int32</DataType><DefaultValue /></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>Id</Id><Title>Id</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int32</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Value</Id><Title>估值</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>Fund</Id><Title>互助金</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Int32</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>c_fund_rule</TableName><IsPagingByParams>false</IsPagingByParams></DataSourceSchema>

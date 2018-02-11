@@ -1,0 +1,243 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>广告编辑</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../html-plugin/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+    <link rel="stylesheet" href="../html-plugin/cropper/cropper.css">
+
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/hammer.min.js"></script>
+    <script type="text/javascript" src="../html-plugin/hammer/jquery.hammer.js"></script>
+
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+
+    <script src="../html-plugin/cropper/cropper.js"></script>
+    <script src="../html-plugin/cropper/cropper-modal.js?v1.1.1.63"></script>
+
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+
+
+    <script type="text/javascript">
+
+        //设置激活按钮状态
+        $(function () {
+            var color = "#7f9f5c";
+            var $btn = $("#" + $.paramVal("nId"));
+            $btn.find("i").css("color", color);
+            $btn.find("div").css("color", color);
+        });
+
+
+    </script>
+    <script>
+        $(function () {
+            new CropperDialog(modalCropper, [
+                    {
+                        img: imgPicture, fld: inpPicture, x: 1000, y: 480
+                    }
+            ])
+        })
+    </script>
+    <script>
+        $(function () {
+            $(btnSubmit).click(function () {
+                $(frmBanner).postForm(function (json) {
+                    if (json.Err)
+                        alert(json.Err.Text);
+                    else {
+                        $(frmBanner).jsonForm(json.Form);
+                        debugger;
+                        history.back();
+                    }
+                });
+            });
+        });
+    </script>
+
+    <style>
+        body {
+            background-color: #FAFAFA;
+        }
+
+        a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .person-info .head-photo {
+            width: 80px;
+            height: 80px;
+        }
+
+        .media {
+            padding: 15px;
+        }
+
+        .media-body {
+            padding-top: 15px;
+        }
+
+        .media-right {
+            padding-top: 15px;
+        }
+
+        .list-group {
+            margin: 10px;
+            padding-top: 20px;
+        }
+
+        .list-group-item-icon {
+            max-width: 32px;
+            max-height: 32px;
+        }
+
+        h4 {
+            margin: 0px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+            h4 img {
+                width: 40px;
+                height: 40px;
+            }
+    </style>
+</head>
+<body>
+
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header" wbo="Site.row">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only" wbo-bind="Name">运势小赢+</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-bind="Name">运势小赢+</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+
+    <!--广告编辑表单-->
+    <section class="container">
+        <div wbo="Banner.row" wbo-query="Id:$.paramVal('Id')" name="Banner">
+            <div>
+                <img id="imgPicture" src="images/1000-480.jpg" class="img-responsive" wbo-bind="Banner.Picture" style="min-height:150px"/>
+            </div>
+            <form action="Banner.form" method="post" id="frmBanner" role="form">
+                <input wbo-bind="Banner.pk_Id" name="pk_Id" type="hidden" />
+                <input type="hidden" wbo-bind="Banner.Picture" name="Picture" id="inpPicture" />
+                <input wbo-bind="Banner.Sort" type="hidden" name="Sort">
+
+                <div class="form-group" style="padding-right: 1px">
+                    <label for="nickname">广告标题</label>
+                    <input wbo-bind="Banner.Title" type="text" name="Title" class="form-control" id="nickname" placeholder="广告标题">
+                </div>
+                <div class="form-group" style="padding-left: 1px">
+                    <label for="txtTel">摘要</label>
+                    <input wbo-bind="Banner.Summary" type="text" name="Summary" class="form-control" id="Text1" placeholder="广告摘要">
+                </div>
+                <div class="form-group">
+                    <label for="txtTel">类别</label>
+                    <select class="form-control" wbo-bind="Banner.TypeId" wbo="BannerType.rows" wbo-ctrl="jsonList" name="TypeId">
+                        <option wbo-bind="TypeId.item" wbo-attr="value:'Id',innerHTML:'Type'"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="txtTel">连接</label>
+                    <div class="input-group">
+                        <div class="input-group-addon">http://</div>
+                        <input type="text" wbo-bind="Banner.Link" class="form-control" name="Link" placeholder="广告连接">
+                    </div>
+                </div>
+                <div style="float: right">
+                    <button type="button" class="btn btn-default" id="btnSubmit">确定</button>
+                    <button type="button" class="btn btn-default">取消</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!--图像剪辑窗口-->
+    <div class="modal" id="modalCropper" aria-labelledby="modalLabel" role="dialog" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title" id="modalLabel">剪辑图像</h4>
+                </div>
+                <div class="modal-body">
+                    <div style="background-color: azure; max-height: 350px; overflow: hidden">
+                        <img id="croImage" src="" alt="Picture" style="left: 0px; top: 0px; width: 100%">
+                        <input type="file" id="cropFile" accept="jpge,jpg,png,gif" style="display: none">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="btnOk">确定</button>
+                    <button type="button" class="btn btn-default" id="btnCancel">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--手机底部导航-->
+    <div class="footer-fill  visible-xs visible-sm"></div>
+    <nav class="nav-bottom  visible-xs visible-sm" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbar">
+        <div class="col col-sm-3 col-xs-3" wbo-bind="navbar.item">
+            <a class=" img-btn" href="gw.html" wbo-attr="href:'link'" wbo-up="navbar" style="text-align: center">
+                <!--<img src="images/icon/js.png" wbo-bind="navbar.icon" />-->
+                <div style="font-size: 14px">
+                    <i style="font-size: 22px" wbo-attr="class:'icon'" class="fa fa-home icon-spin"></i>
+                </div>
+                <div class="img-btn-text" wbo-bind="navbar.text">首页</div>
+            </a>
+        </div>
+    </nav>
+
+</body>
+</html>

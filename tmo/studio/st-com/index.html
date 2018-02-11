@@ -90,7 +90,7 @@
             <div style="float: left; padding: 5px">
             </div>
             <div class="layout-table-head-right" wbo="LoginUser" style="padding-top: 3px">
-                当前用户 <span xdata="user" name="Id"></span><a href="../index.html">回首页</a>
+                当前用户 <span xdata="user" name="Name"></span><a href="../index.html">回首页</a>
             </div>
 
         </div>
@@ -149,7 +149,7 @@
                                     <th class="hc">说明 </th>
                                 </tr>
                                 <tbody id="proTabbody">
-                                    <tr obj="WboSchema.Properties" list="ir">
+                                    <tr wbo-bind="WboSchema.Properties.item">
                                         <td class="ic" name="WboSchema.Properties.Id">属性名 </td>
                                         <td class="ic">
                                             <input name="WboSchema.Properties.Title" type="text" /></td>
@@ -171,7 +171,7 @@
                                     <th class="hc">测试 </th>
                                 </tr>
                                 <tbody>
-                                    <tr list="ir" obj="WboSchema.Methods">
+                                    <tr wbo-bind="WboSchema.Methods.item">
                                         <td class="ic" name="WboSchema.Methods.Id">a a </td>
                                         <td class="ic">
                                             <input type="text" name="WboSchema.Methods.Title" /></td>
@@ -180,7 +180,7 @@
                                         <td class="ic" name="d">d </td>
                                         <td class="ic" name="e">e </td>
                                     </tr>
-                                    <tr list="ir" obj="WboSchema.Methods">
+                                    <tr  wbo-bind="WboSchema.Methods.item">
                                         <td class="ic" style="border-bottom: 1px solid #808080">&nbsp; </td>
                                         <td colspan="2" class="ic" style="border-bottom: 1px solid #808080">
                                             <table class="AutoWidthInput" name="WboSchema.Methods.Params">
@@ -189,7 +189,7 @@
                                                     <td>显示名称 </td>
                                                     <td>说明 </td>
                                                 </tr>
-                                                <tr list="ir" obj="WboSchema.Methods.Params">
+                                                <tr wbo-bind="WboSchema.Methods.Params.item">
                                                     <td name="WboSchema.Methods.Params.Id">ID </td>
                                                     <td>
                                                         <input id="Text1" type="text" name="WboSchema.Methods.Params.Title" /></td>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <title>CKEditor 5 - Bolloon editor </title>
+
+    <script src="../html-plugin/jquery.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/1.0.0-alpha.1/balloon/ckeditor.js"></script>
+    <script>
+        $(function () {
+            alert("aa");
+            //BalloonEditor
+            //    .create(document.querySelector('#editor'))
+            //    .catch(function (error) {
+            //        console.error(error);
+            //    });
+            alert("bb");
+            $(editor).focus(function () {
+                $(ht).html(new Date());
+                $(bar).css({ "top": "200px", "height": "30px" });
+                $(bar).css({ "top": "300px", "height": "30px" });
+
+            });
+            //var tid = setInterval(function () {
+            //    $(ht).html(new Date());
+            //    $(bar).css("bottom", "30px");
+
+            //}, 500);
+        });
+    </script>
+</head>
+<body>
+    <h1 id="ht">v4 Classic editor</h1>
+    <div id="editor" contenteditable="true">
+        <h1 data-editor="inline" >xxxxx</h1>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <p data-editor="inline" >This is some sample content.xxxxx</p>
+        <img src="images/iccgirl.png"  />
+    </div>
+
+    <section id="bar" style="display: flex; position:fixed; height: 30px;">
+        <a>aaaaa</a>
+        <input type="text" />
+        <button>xxxx</button>
+    </section>
+
+    <script>
+        var tid = setInterval(function () {
+            $(ht).html(new Date());
+            $(bar).css({ "top": "300px", "height": "30px" });
+
+        }, 500);
+
+    </script>
+</body>
+</html>

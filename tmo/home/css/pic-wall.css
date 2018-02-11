@@ -1,0 +1,50 @@
+﻿.pic-wall {
+}
+
+    .pic-wall header .headphoto {
+        width: 50px;
+        margin-right: 5px;
+    }
+
+    .pic-wall header h4 {
+        padding-top: 5px;
+        margin-top: 5px;
+        margin-bottom: 2px;
+    }
+
+    .pic-wall header p {
+        margin-bottom: 0px;
+    }
+
+    .pic-wall .body {
+        width: 100%;
+    }
+
+    .pic-wall .img-box {
+        float: left;
+        /*position: relative;*/
+    }
+
+    .pic-wall .img-box-v {
+        width: 48.6%;
+        padding-right: 1px;
+    }
+
+    .pic-wall .img-box-h {
+        width: 51.4%;
+        padding-bottom: 1px;
+        padding-left: 1px;
+    }
+
+    .pic-wall footer {
+        width: 100%;
+    }
+
+    .pic-wall .img-box-3 {
+        width: 50%;
+        padding-top: 1px;
+    }
+
+    .pic-wall footer {
+        padding: 5px 0px 5px 0px;
+    }

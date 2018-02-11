@@ -1,0 +1,425 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>文章</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+    <link href="../html-plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../html-plugin/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/style.css?v1.1.1.63" rel="stylesheet" />
+    <style>
+        #eReaderTools .btn {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+    </style>
+    <style type="text/css">
+        article .title {
+            text-align: center;
+            font-size: 24px;
+        }
+
+        article .author {
+            text-align: center;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            font-size: 14px;
+            line-height: 14px;
+        }
+        article .summary {
+            font-size:11px;
+            text-align:center;
+        }
+
+        article .date {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            text-align: center;
+        }
+
+        article .content {
+            overflow-x:hidden;
+        }
+
+        .author-photo {
+            max-width: 30px;
+            vertical-align: middle;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .qr-code {
+            max-width: 80px;
+        }
+
+        .media {
+            width: 100%;
+        }
+
+        .media-body {
+        }
+
+            .media-body h4 {
+                margin-top: 2px;
+                margin-bottom: 2px;
+            }
+
+        .media-left img {
+            width: 50px;
+            vertical-align: middle;
+        }
+
+        .media-right {
+            width: 50px;
+        }
+
+        .reader-tools {
+            *right: 0px;
+            *left: 0px;
+            height: 40px;
+            *bottom: 45px;
+            *position: fixed;
+            *z-index: 1000;
+            padding-top: 5px;
+        }
+
+        .tools-col {
+            width: 50%;
+            float: left;
+        }
+
+        .tools-btn {
+            text-align: center;
+            width: 100px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 16px;
+            *color: #8c8b8b;
+            color: red;
+        }
+    </style>
+
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+    <script src="../html-plugin/jquery.min.js"></script>
+<!--    <script src="../html-plugin/jquery.cookie.js"></script>-->
+    <script src="../html-plugin/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../html-plugin/cropper/cropper.js"></script>
+
+
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.form.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/jquery.xbase.jsonform.js?v1.1.1.63"></script>
+
+
+    <script src="js/top-nav.js?v1.1.1.63"></script>
+    <script type="text/javascript" src="../xbase.js/wx.share.js?v1.1.1.63"></script>
+
+
+    <script>
+        /**强制微信登录**/
+        //$.rCall("Security.OA20Login");
+
+        var gBizId = "article";
+        var art;
+
+
+
+        $(function () {
+            $("title").html($('[wbo-bind="art.Title"]').html());
+            art = article.ctrl.data();
+            if (xBase.LoginUser.Id == art.AuthorId) {
+                $(eMyTools).show();
+                $(eReaderTools).hide();
+            }
+            else {
+                $(eMyTools).hide();
+                $(eReaderTools).show();
+            }
+        });
+
+        $(function () {
+            $("[data-cmd='DelArt']").click(function () {
+                var ret = $.rCall("SnBlog.delete", { row: { pk_Id: $.paramVal("Id") } });
+                if (!ret || !ret.Err) {
+                    history.back();
+                }
+            })
+        })
+
+
+        $(function () {
+            //  art = article.ctrl.data();
+            //$.rCall("readAppend.insert", { row: { bizType: gBizId, owner: art.Author, share: $.paramVal("datapath"), cId: art.articleId } });
+            function checkILike() {
+                var $icon = $(iconLike);
+                ret = $.rCall("SnLike.row?" + $.param({ TargetId: $.paramVal("Id") }));
+
+                if (ret.LikerId) {
+                    $icon.removeClass("fa-heart-o");
+                    $icon.addClass("fa-heart");
+                }
+                else {
+                    $icon.removeClass("fa-heart");
+                    $icon.addClass("fa-heart-o");
+                }
+            }
+            function getCommentsCount() {
+                var data = $.rCall("SnCommentsCount.row?" + $.param({ TargetId: $.paramVal("Id") }));
+                $(btnComments).find("[wbo-bind='art.CommentsCount']").html(data.Count);
+
+            }
+            checkILike();
+            getCommentsCount();
+            $(btnLike).click(function () {
+                var ret = $.rCall("SnLikeCount.insert", { row: { TargetId: $.paramVal("Id"), TargetType: "sn_blog" } });
+                $(this).find("p").html(ret.LikeCount);
+                checkILike();
+                $("[wbo='SnLike.rows']").jsonList().reload();
+                // eLikeList.ctrl.reload();
+            });
+
+            $(btnComments).click(function () {
+                $(eModComments).modal("show");
+            })
+
+            $(eBtnSentComments).click(function () {
+                var ret = $.rCall("SnComments.insert", { row: { TargetId: $.paramVal("Id"), CommentText: eCommentsText.value } });
+                if (ret && !ret.Err) {
+                    $(eModComments).modal("hide");
+                    $("[wbo='SnComments.rows']").jsonList().reload();
+                    getCommentsCount();
+                }
+
+            });
+            $(ebtnCancelComments).click(function () {
+                $(eModComments).hide();
+            });
+
+        });
+
+        //      获取分享订单
+        //var gOrderId = $.paramVal("oId");
+        //var gOrder = $.rCall("newShareOrder.row?cId=" + $.paramVal("cId"));
+        //xBaseWXAPI.onShareTimeLine = function (path) {
+        //    $.rCall("shareInfo.insert", { row: { bizType: gBizId, owner: art.Author, share: path, cId: art.ID } });
+
+        //    if (gOrder) {
+        //        var ret = $.rCall("newShareOrder.update", { row: gOrder });
+        //        if (!(ret && ret.Err))
+        //            alert("这是一个有偿分享，奖励￥" + gOrder.amount + "元已经放入你的钱包");
+        //    }
+        //};
+
+
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            var color = "#7f9f5c";
+            var $btn = $("#" + $.paramVal("nId"));
+            $btn.find("i").css("color", color);
+            $btn.find("div").css("color", color);
+        });
+    </script>
+
+
+
+</head>
+<body class="bg-white">
+    <!--pc网站菜单-->
+    <div class="container">
+        <nav class="navbar navbar-inverse hidden-xs hidden-sm">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header" wbo="Site.row">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only" wbo-bind="Name">运势小赢+</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="" />
+                    <a class="navbar-brand" href="index.html" wbo-bind="Name">运势小赢+</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbtn">
+                        <li wbo-bind="navbtn.item" class="active"><a href="#" wbo-bind="navbtn.text" wbo-attr="href:'link'">首页</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分享<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <img id="imgWxfx" src="" /></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">微信扫一扫</a></li>
+                            </ul>
+                        </li>
+                        <li wbo="LoginUser" name="user" id="navUser">
+                            <a href="my.html?v=g1.0" style="padding: 10px 10px; line-height: 30px">
+                                <span wbo-bind="user.Name" id="navUserName">我的</span>
+                                <img wbo-bind="user.HeadPhoto" src="images/head.jpg" style="height: 30px; width: 30px; border: none; border-radius: 50%; margin-left: 5px" /></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+
+    <!--分享提示-->
+    <div id="shareit">
+        <style>
+            .share-text {
+                color: red;
+            }
+
+            #shareit .arrow {
+                height: 300px;
+            }
+        </style>
+        <div class="arrow">
+            <img src="images/share-it.png">
+        </div>
+        <div class="share-text">
+            <h3>点击菜单'...'分享给好友</h3>
+            <h3>领取红包</h3>
+            <h1 class="close-share"><a class="btn btn-lg btn-danger">知道了</a></h1>
+        </div>
+        <!--<img id="share-text" src="http://dev.vxtong.com/cases/nuannan/imgs/share-text.png">-->
+
+    </div>
+
+    <!--文章-->
+    <div class="container" style="padding: 10px; margin-top: 80px" id="article" wbo="SnBlog.row" name="art" wbo-query="Id:$.paramVal('Id')">
+        <article>
+            <h3 wbo-bind="art.Title" class="title"></h3>
+            <div class="author">
+                <img wbo-bind="art.AuthorPhoto" class="author-photo img-circle" /><br />
+                <span wbo-bind="art.Author"></span>
+            </div>
+            <div class='summary' wbo-bind="art.Summary" style="display:none"></div>
+            <div class="date" wbo-bind="art.UpdateTime"></div>
+            <section class="content wxshare-img" wbo-bind="art.Body">
+            </section>
+        </article>
+
+        <!--        <div class="text-center">
+            <img class="qr-code" src="images/qrcode.jpg?v1" />
+            <p class="text-center">关注</p>
+        </div>-->
+
+        <div class="text-center" id="eReaderTools" style="display: none">
+            <a class="btn btn-circle btn-danger" id="btnLike">
+                <i class="fa fa-heart-o" id="iconLike"></i>
+                <p wbo-bind="art.LikeCount">15</p>
+            </a>
+            <a class="btn  btn-circle btn-success " id="btnComments">
+                <i class="fa fa-comments-o"></i>
+                <p wbo-bind="art.CommentsCount">28</p>
+            </a>
+        </div>
+
+
+        <!--公共浮动工具-->
+        <div class="float-bottom-tool" id="eMyTools" style="display: none">
+            <div class="pull-right">
+                <a class="btn btn-warning  btn-circle" link="write.html" link-params="Id:$.paramVal('Id'),cType:'article'">
+                    <i class="fa fa-pencil"></i>
+                </a>
+                <a class="btn btn-warning  btn-circle" id="btnShare">
+                    <i class="fa fa-share-alt"></i>
+                </a>
+<!--                <a class="btn btn-warning btn-circle" data-cmd='DelArt'>
+                    <i class="fa fa-remove"></i>
+                </a>-->
+            </div>
+        </div>
+
+
+    </div>
+
+    <!--评论对话框-->
+    <div id="eModComments" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <textarea id="eCommentsText" style="width: 100%; height: 150px"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button id="ebtnCancelComments" type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button id="eBtnSentComments" type="button" class="btn btn-primary">发送</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--点赞列表-->
+    <div class="container">
+        <div class="panel-shadow" style="padding: 0px; border-top: 1px solid #ccc">
+            <div wbo="SnLike.rows" wbo-query="TargetId:$.paramVal('Id')" wbo-ctrl="jsonList" name="Likes">
+                <a>
+                    <i class="fa fa-heart red"></i>
+                </a>
+                <a class="btn btn-xs" wbo-bind="Likes.item">
+                    <img wbo-bind="Likes.LikerHeader" src="images/head.jpg" class="img-circle" style="width: 30px" />
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!--评论列表-->
+    <div class="container full">
+        <div wbo="SnComments.rows" wbo-ctrl="jsonList" wbo-query="TargetId:$.paramVal('Id')" name="Comments" class="comments-list panel-shadow" style="padding: 0px 0px 0px 0px">
+            <div>评论</div>
+            <div class="comments" wbo-bind="Comments.item">
+                <div class="comments-man">
+                    <img wbo-bind="Comments.CommentatorHeader" class="img-circle" src="images/head.jpg" />
+                    <a wbo-bind="Comments.CommentatorName">小雅</a>
+                    <a wbo-bind="Comments.CreateTime">2017/12/33</a>
+                </div>
+                <div class="comments-body">
+                    <p wbo-bind="Comments.CommentText">xxxxxonga asdf asdf oasd fj asdofij afsdfa sdfasldkfj iasd fasldkfja s9asdfasjdfaskdjf oasdf 0 asdfasdfasdf oasidf asdf asdf as a xxxx</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--文章版权-->
+    <!--    <div class="container-fluid bg-color4" style="display: none">
+        <div class="container">
+            <div style="margin-left: auto; margin-right: auto; width: 150px" class="text-center">
+                <h5 style="color: red">关注出彩云南人</h5>
+                <img class="img-responsive" src="images/qrcode.jpg?v1" />
+                <p>长按二维码</p>
+            </div>
+        </div>
+    </div>-->
+
+    <!--手机底部导航-->
+    <div class="footer-fill  visible-xs visible-sm"></div>
+    <nav class="nav-bottom  visible-xs visible-sm" wbo="PcNav.rows" wbo-ctrl="jsonList" wbo-query="{PId:'01'}" name="navbar">
+        <div class="col col-sm-3 col-xs-3" wbo-bind="navbar.item">
+            <a class=" img-btn" href="gw.html" wbo-attr="href:'link'" wbo-up="navbar" style="text-align: center">
+                <!--<img src="images/icon/js.png" wbo-bind="navbar.icon" />-->
+                <div style="font-size: 14px">
+                    <i style="font-size: 22px" wbo-attr="class:'icon'" class="fa fa-home icon-spin"></i>
+                </div>
+                <div class="img-btn-text" wbo-bind="navbar.text">首页</div>
+            </a>
+        </div>
+    </nav>
+
+</body>
+</html>

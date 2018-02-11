@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DataSourceSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>SnComments</Id><ListCommand><Id>d6297af8-d710-45aa-a3da-8ccc896b8cd7</Id><CommandText>select 
+     a.*,
+    b.head_photo as CommentatorHeader,
+    isnull(b.display_name,'游客') as CommentatorName
+
+from 
+      sn_comments a left join xsys_user_account b    
+      on
+      a.CommentatorId=b.uni_id
+where 
+   a.TargetId like @TargetId
+   and a.TargetType like @TargetType</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@TargetId</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>AnsiString</DataType><DefaultValue>%</DefaultValue></ParameterSchema><ParameterSchema><Id>@TargetType</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>AnsiString</DataType><DefaultValue>sn_blog</DefaultValue></ParameterSchema></QueryParams></ListCommand><IsAutoNewLine>false</IsAutoNewLine><UserSqlCommands /><PageSize>10</PageSize><PrimaryKeys><string>Id</string></PrimaryKeys><InsertCommand><Id>5d06122c-b847-4a83-b3a4-07ecc56b8cd3</Id><CommandText>Set @Id=newId();
+Set @CreateTime=getDate();
+
+INSERT INTO sn_comments (
+ [Id],
+ [TargetType],
+ [TargetId],
+ [CommentText],
+ [CommentatorId],
+ [CreateTime],
+ [ToId])
+ VALUES (
+@Id,
+@TargetType,
+@TargetId,
+@CommentText,
+@CommentatorId,
+@CreateTime,
+@ToId)</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@CommentatorId</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>Guid</DataType><DefaultValue>[LoginUser.Id]</DefaultValue></ParameterSchema><ParameterSchema><Id>@TargetType</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>AnsiString</DataType><DefaultValue>sn_blog</DefaultValue></ParameterSchema></QueryParams></InsertCommand><UpdateCommand><Id>2e7dd15c-ed77-427d-a331-cbf43404deeb</Id><CommandText>UPDATE sn_comments SET 
+ [Id]=@Id,
+ [TargetType]=@TargetType,
+ [TargetId]=@TargetId,
+ [CommentText]=@CommentText,
+ [CommentatorId]=@CommentatorId,
+ [CreateTime]=@CreateTime,
+ [ToId]=@ToId
+ WHERE 
+ [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></UpdateCommand><DeleteCommand><Id>673cc0e8-78c2-4083-8d04-744cf30814bd</Id><CommandText>DELETE FROM sn_comments WHERE  [Id]=@pk_Id</CommandText><CommandType>Text</CommandType></DeleteCommand><SelectCommand><Id>3498fb12-6a36-4d88-ad28-2cc0f9da6847</Id><CommandText>select 
+     a.*,
+    b.head_photo as CommentatorHeader,
+    isnull(b.display_name,'游客') as CommentatorName
+
+from 
+      sn_comments a left join xsys_user_account b    
+      on
+      a.CommentatorId=b.uni_id
+where 
+   a.TargetId like @TargetId
+   and a.TargetType like @TargetType</CommandText><CommandType>Text</CommandType><QueryParams><ParameterSchema><Id>@TargetId</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>AnsiString</DataType><DefaultValue>%</DefaultValue></ParameterSchema><ParameterSchema><Id>@TargetType</Id><DataSize>4</DataSize><Direction>Input</Direction><DataType>AnsiString</DataType><DefaultValue>sn_blog</DefaultValue></ParameterSchema></QueryParams></SelectCommand><Fields><FieldSchema><Id>Id</Id><Title>Id</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>true</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>TargetType</Id><Title>评论对象类型</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>TargetId</Id><Title>评论对象Id</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>CommentText</Id><Title>评论内容</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>CommentatorId</Id><Title>评论人Id</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>CreateTime</Id><Title>评论时间</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>DateTime</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>ToId</Id><Title>回复对象</Title><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>Guid</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>CommentatorHeader</Id><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema><FieldSchema><Id>CommentatorName</Id><DisplayWidth>60</DisplayWidth><Option /><IsInForm>true</IsInForm><IsInCard>true</IsInCard><IsKey>false</IsKey><ExtendType>None</ExtendType><ReadOnly>false</ReadOnly><Valids /><DataType>String</DataType><Visable>true</Visable><IsAutoInc>false</IsAutoInc><IsGUID>false</IsGUID></FieldSchema></Fields><TableName>sn_comments</TableName><IsPagingByParams>false</IsPagingByParams></DataSourceSchema>
